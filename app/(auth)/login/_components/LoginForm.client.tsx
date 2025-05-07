@@ -1,15 +1,15 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { MailIcon, LockIcon, ChevronRightIcon } from "lucide-react";
-import { Icon } from "@iconify/react";
-import { object, string } from "yup";
-import { Controller, useForm, useWatch } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { AppInput } from "@/components/compose";
+'use client';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { MailIcon, LockIcon, ChevronRightIcon } from 'lucide-react';
+import { Icon } from '@iconify/react';
+import { object, string } from 'yup';
+import { Controller, useForm, useWatch } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { AppInput } from '@/components/compose';
 
 const schema = object().shape({
   email: string().email().required(),
@@ -18,20 +18,20 @@ const schema = object().shape({
 
 export default function LoginForm() {
   const [passwordStrength, setPasswordStrength] = useState(0);
-  const [strengthText, setStrengthText] = useState("");
+  const [strengthText, setStrengthText] = useState('');
 
   const { control, handleSubmit } = useForm({
     resolver: yupResolver(schema),
   });
 
   // Calculate password strength
-  const password = useWatch({ control, name: "password", defaultValue: "" });
+  const password = useWatch({ control, name: 'password', defaultValue: '' });
 
   useEffect(() => {
     console.log({ password });
     if (!password) {
       setPasswordStrength(0);
-      setStrengthText("");
+      setStrengthText('');
       return;
     }
 
@@ -74,13 +74,13 @@ export default function LoginForm() {
 
     // Set strength text based on score
     if (strength < 30) {
-      setStrengthText("Weak");
+      setStrengthText('Weak');
     } else if (strength < 60) {
-      setStrengthText("Medium");
+      setStrengthText('Medium');
     } else if (strength < 80) {
-      setStrengthText("Strong");
+      setStrengthText('Strong');
     } else {
-      setStrengthText("Very Strong");
+      setStrengthText('Very Strong');
     }
 
     setPasswordStrength(strength);
@@ -88,10 +88,10 @@ export default function LoginForm() {
 
   // Get color based on strength
   const getStrengthColor = () => {
-    if (passwordStrength < 30) return "bg-red-500";
-    if (passwordStrength < 60) return "bg-yellow-500";
-    if (passwordStrength < 80) return "bg-green-400";
-    return "bg-green-600";
+    if (passwordStrength < 30) return 'bg-red-500';
+    if (passwordStrength < 60) return 'bg-yellow-500';
+    if (passwordStrength < 80) return 'bg-green-400';
+    return 'bg-green-600';
   };
 
   const onSuccess = () => {};
@@ -107,7 +107,7 @@ export default function LoginForm() {
             <AppInput
               label="Email"
               icon={<MailIcon className="icon-input" />}
-              inputProps={{ placeholder: "name@example.com" }}
+              inputProps={{ placeholder: 'name@example.com' }}
               errorMessage={error?.message}
               {...field}
             />
@@ -117,10 +117,7 @@ export default function LoginForm() {
         <div className="space-y-2">
           <div className="flex justify-between">
             <Label htmlFor="password">Password</Label>
-            <Link
-              href="/forgot-password"
-              className="text-sm text-primary hover:underline"
-            >
+            <Link href="/forgot-password" className="text-sm text-primary hover:underline">
               Forgot password?
             </Link>
           </div>
@@ -129,11 +126,7 @@ export default function LoginForm() {
             control={control}
             name="password"
             render={({ field }) => (
-              <AppInput
-                icon={<LockIcon className="icon-input" />}
-                {...field}
-                password
-              />
+              <AppInput icon={<LockIcon className="icon-input" />} {...field} password />
             )}
           />
 
@@ -142,18 +135,16 @@ export default function LoginForm() {
           {password.length > 0 && (
             <div className="mt-2 space-y-1">
               <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">
-                  Password strength:
-                </span>
+                <span className="text-xs text-gray-500">Password strength:</span>
                 <span
                   className={`text-xs font-medium ${
                     passwordStrength < 30
-                      ? "text-red-500"
+                      ? 'text-red-500'
                       : passwordStrength < 60
-                      ? "text-yellow-500"
-                      : passwordStrength < 80
-                      ? "text-green-400"
-                      : "text-green-600"
+                        ? 'text-yellow-500'
+                        : passwordStrength < 80
+                          ? 'text-green-400'
+                          : 'text-green-600'
                   }`}
                 >
                   {strengthText}
@@ -173,16 +164,10 @@ export default function LoginForm() {
                 {passwordStrength < 60 && (
                   <ul className="list-disc list-inside space-y-0.5">
                     {password.length < 8 && <li>Use at least 8 characters</li>}
-                    {!/[A-Z]/.test(password) && (
-                      <li>Include uppercase letters</li>
-                    )}
-                    {!/[a-z]/.test(password) && (
-                      <li>Include lowercase letters</li>
-                    )}
+                    {!/[A-Z]/.test(password) && <li>Include uppercase letters</li>}
+                    {!/[a-z]/.test(password) && <li>Include lowercase letters</li>}
                     {!/[0-9]/.test(password) && <li>Include numbers</li>}
-                    {!/[^A-Za-z0-9]/.test(password) && (
-                      <li>Include special characters</li>
-                    )}
+                    {!/[^A-Za-z0-9]/.test(password) && <li>Include special characters</li>}
                   </ul>
                 )}
               </div>
@@ -209,9 +194,7 @@ export default function LoginForm() {
             <div className="w-full border-t border-gray-200"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">
-              Or continue with
-            </span>
+            <span className="px-2 bg-white text-gray-500">Or continue with</span>
           </div>
         </div>
 
