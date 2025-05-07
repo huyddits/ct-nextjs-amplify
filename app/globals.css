@@ -120,3 +120,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+.icon-input {
+  @apply h-5 w-5 text-gray-400;
+}
+
+.error-message {
+  @apply text-red-600 text-xs;
+}

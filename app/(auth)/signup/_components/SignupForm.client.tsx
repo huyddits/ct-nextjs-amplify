@@ -1,0 +1,353 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { Icon } from "@iconify/react";
+import {
+  MailIcon,
+  LockIcon,
+  ChevronRightIcon,
+  UserIcon,
+  CalendarIcon,
+  SchoolIcon,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { InferType, object, string } from "yup";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import {
+  AppInput,
+  AppRadioGroup,
+  AppSelect,
+  SelectOption,
+} from "@/components/compose";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  CHEER_STYLE_OPTIONS,
+  CHEER_TYPE_OPTIONS,
+  EQUIPMENT_OPTIONS,
+  MEASUREMENT_UNIT_OPTIONS,
+  ROLE_OPTIONS,
+  USER_TYPE_OPTIONS,
+} from "@/utils/constants";
+
+export default function Signup() {
+  const schema = object().shape({
+    userType: string()
+      .oneOf(["athlete", "coach"])
+      .required("Please select a user type"),
+    firstName: string().required("Please enter your first name"),
+    lastName: string().required("Please enter your last name"),
+    email: string()
+      .email("Please enter a valid email")
+      .required("Please enter your email"),
+    password: string().required("Please enter your password"),
+    confirmPassword: string().required("Please confirm your password"),
+    dateOfBirth: string().required("Please enter your date of birth"),
+    schoolName: string().required("Please enter your school name"),
+    cheerType: string().required("Please select your cheer type"),
+    cheerStyle: string().required("Please select your cheer style"),
+    role: string().required("Please select your role"),
+    equipment: string(),
+    measurementUnit: string(),
+  });
+
+  type Payload = InferType<typeof schema>;
+
+  const { control, setValue, handleSubmit } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      equipment: "",
+      userType: "athlete",
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      dateOfBirth: "",
+      schoolName: "",
+      cheerType: "all-girl",
+      cheerStyle: "",
+      role: "",
+      measurementUnit: "",
+    },
+  });
+
+  const onSuccess = (payload: Payload) => {
+    console.log("🚀 ~ onSuccess ~ payload:", payload);
+  };
+  const onError = (error: any) => {
+    console.log("🚀 ~ onError ~ error:", error);
+  };
+
+  const userType = useWatch({ control, name: "userType" });
+
+  useEffect(() => {
+    setValue("role", userType === "coach" ? "coach" : "");
+  }, [userType]);
+
+  return (
+    <div className="bg-white rounded-lg shadow-sm p-6">
+      <form onSubmit={handleSubmit(onSuccess, onError)} className="space-y-4">
+        <Controller
+          control={control}
+          name="userType"
+          render={({ field: { value, onChange }, fieldState }) => (
+            <AppRadioGroup
+              label="I am a:"
+              options={USER_TYPE_OPTIONS}
+              defaultSelected={value}
+              onChangeSelected={onChange}
+            />
+          )}
+        />
+
+        <div className="border-t border-gray-200 pt-4"></div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Controller
+            control={control}
+            name="firstName"
+            render={({ field, fieldState: { error } }) => (
+              <AppInput
+                label="First Name"
+                icon={<UserIcon className="icon-input" />}
+                inputProps={{ placeholder: "First" }}
+                errorMessage={error?.message}
+                required
+                {...field}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="lastName"
+            render={({ field, fieldState: { error } }) => {
+              return (
+                <AppInput
+                  label="Last Name"
+                  icon={<UserIcon className="icon-input" />}
+                  inputProps={{ placeholder: "Last" }}
+                  errorMessage={error?.message}
+                  required
+                  {...field}
+                />
+              );
+            }}
+          />
+        </div>
+
+        <Controller
+          control={control}
+          name="email"
+          render={({ field, fieldState: { error } }) => {
+            return (
+              <AppInput
+                label="Email"
+                icon={<MailIcon className="icon-input" />}
+                inputProps={{ placeholder: "name@example.com" }}
+                errorMessage={error?.message}
+                required
+                {...field}
+              />
+            );
+          }}
+        />
+
+        <Controller
+          control={control}
+          name="password"
+          render={({ field, fieldState: { error } }) => (
+            <AppInput
+              label="Password"
+              icon={<LockIcon className="icon-input" />}
+              inputProps={{ placeholder: "Password" }}
+              errorMessage={error?.message}
+              required
+              password
+              {...field}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="confirmPassword"
+          render={({ field, fieldState: { error } }) => (
+            <AppInput
+              label="Confirm Password"
+              icon={<LockIcon className="icon-input" />}
+              inputProps={{ placeholder: "Confirm Password" }}
+              errorMessage={error?.message}
+              required
+              password
+              {...field}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="dateOfBirth"
+          render={({ field, fieldState: { error } }) => (
+            <AppInput
+              label="Date of Birth"
+              icon={<CalendarIcon className="icon-input" />}
+              inputProps={{ type: "date", placeholder: "Date of Birth" }}
+              errorMessage={error?.message}
+              required
+              {...field}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="schoolName"
+          render={({ field, fieldState: { error } }) => (
+            <AppInput
+              label="School Name"
+              icon={<SchoolIcon className="icon-input" />}
+              inputProps={{ placeholder: "School Name" }}
+              errorMessage={error?.message}
+              required
+              {...field}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="cheerType"
+          render={({ field: { value, onChange } }) => (
+            <AppSelect
+              label="Type of Cheer"
+              placeholder="Select Type"
+              selectedValue={value}
+              onChangeSelected={onChange}
+              options={CHEER_TYPE_OPTIONS}
+              fullWidth
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="cheerStyle"
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
+            <AppSelect
+              label="Style of Cheer"
+              selectedValue={value}
+              onChangeSelected={onChange}
+              placeholder="Select Style"
+              options={CHEER_STYLE_OPTIONS}
+              errorMessage={error?.message}
+              fullWidth
+            />
+          )}
+        />
+
+        {userType === "athlete" ? (
+          <Controller
+            control={control}
+            name="role"
+            render={({ field: { value, onChange }, fieldState: { error } }) => (
+              <AppSelect
+                label="Role"
+                options={ROLE_OPTIONS}
+                selectedValue={value}
+                onChangeSelected={onChange}
+                placeholder="Select Role"
+                fullWidth
+              />
+            )}
+          />
+        ) : (
+          <div className="space-y-2">
+            <Label htmlFor="role">Role</Label>
+            <Input id="role" value="Coach" disabled className="bg-gray-50" />
+          </div>
+        )}
+
+        <Controller
+          control={control}
+          name="equipment"
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
+            <AppSelect
+              label="Equipment Access"
+              options={EQUIPMENT_OPTIONS}
+              selectedValue={value}
+              onChangeSelected={onChange}
+              placeholder="Select Equipment"
+              errorMessage={error?.message}
+              fullWidth
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="measurementUnit"
+          render={({ field: { value, onChange } }) => (
+            <AppSelect
+              label="Mesurement Unit"
+              options={MEASUREMENT_UNIT_OPTIONS}
+              selectedValue={value}
+              onChangeSelected={(value) => onChange(value)}
+              placeholder="Select Unit"
+              fullWidth
+            />
+          )}
+        />
+
+        <div className="flex items-center space-x-2">
+          <Checkbox id="terms" />
+          <Label htmlFor="terms" className="text-sm">
+            I agree to the{" "}
+            <Link
+              href="/terms-and-conditions"
+              className="text-primary hover:underline"
+              target="_blank"
+            >
+              Terms and Conditions
+            </Link>
+          </Label>
+        </div>
+
+        <Button type="submit" className="w-full">
+          Create Account
+          <ChevronRightIcon className="ml-2 h-4 w-4" />
+        </Button>
+      </form>
+
+      <div className="mt-6">
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">Or sign up with</span>
+          </div>
+        </div>
+
+        <div className="mt-6 grid grid-cols-3 gap-3">
+          <Button variant="outline" className="w-full">
+            <Icon icon="simple-icons:facebook" color="#1877F2" />
+            <span className="sr-only">Facebook</span>
+          </Button>
+          <Button variant="outline" className="w-full">
+            <Icon icon="simple-icons:twitter" color="#1DA1F2" />
+            <span className="sr-only">Twitter</span>
+          </Button>
+          <Button variant="outline" className="w-full">
+            <Icon icon="simple-icons:instagram" color="#E1306C" />
+            <span className="sr-only">Instagram</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
