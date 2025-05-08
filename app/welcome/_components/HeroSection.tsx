@@ -4,7 +4,7 @@ import { ArrowRightIcon } from 'lucide-react';
 
 export default function HeroSection() {
   return (
-    <section className="flex flex-col h-[50vh]">
+    <section className="flex flex-col h-[50vh] min-h-fit">
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-b from-(--primary)/90 to-(--primary)/70 z-10" />
         <div className="relative h-[50vh] min-h-[400px] bg-cover bg-center">
