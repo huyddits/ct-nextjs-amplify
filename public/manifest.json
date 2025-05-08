@@ -2,6 +2,7 @@
   "name": "Cheer Trainer",
   "short_name": "Cheer Trainer",
   "description": "A PWA for athletes and trainers to track their progress",
+  "start_url": "/",
   "icons": [
     {
       "src": "windows11/SmallTile.scale-100.png",

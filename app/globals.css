@@ -1,7 +1,17 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
+
+@theme {
+  --breakpoint-xs: 30rem;
+  --breakpoint-sm: 48rem;
+  --breakpoint-md: 64rem;
+  --breakpoint-lg: 80rem;
+  --breakpoint-xl: 90rem;
+  --breakpoint-2xl: 100rem;
+  --breakpoint-3xl: 120rem;
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -127,4 +137,8 @@
 
 .error-message {
   @apply text-red-600 text-xs;
+}
+
+.container {
+  @apply 3xl:max-w-[100rem] 2xl:max-w-[90rem] xl:max-w-[80rem] lg:max-w-[64rem] md:max-w-[48rem] mx-auto w-full px-4 py-12;
 }

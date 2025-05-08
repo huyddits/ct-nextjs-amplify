@@ -4,15 +4,15 @@ import {
   FeatureSection,
   BenefitSection,
   CallToActionSection,
-  FooterSection
-} from "./_components";
+  FooterSection,
+} from './_components';
 
 export default function WelcomePage() {
   return (
     <div>
       <HeroSection />
 
-      <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-12">
+      <main className="flex-1 container ">
         <AboutSection />
         <FeatureSection />
         <BenefitSection />

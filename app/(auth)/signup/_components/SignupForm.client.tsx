@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { Icon } from "@iconify/react";
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { Icon } from '@iconify/react';
 import {
   MailIcon,
   LockIcon,
@@ -10,87 +10,33 @@ import {
   UserIcon,
   CalendarIcon,
   SchoolIcon,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { InferType, object, string } from "yup";
-import { Controller, useForm, useWatch } from "react-hook-form";
-import {
-  AppInput,
-  AppRadioGroup,
-  AppSelect,
-  SelectOption,
-} from "@/components/compose";
-import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  CHEER_STYLE_OPTIONS,
-  CHEER_TYPE_OPTIONS,
-  EQUIPMENT_OPTIONS,
-  MEASUREMENT_UNIT_OPTIONS,
-  ROLE_OPTIONS,
-  USER_TYPE_OPTIONS,
-} from "@/utils/constants";
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Controller } from 'react-hook-form';
+import { AppInput, AppRadioGroup, AppSelect } from '@/components/compose';
+import { USER_TYPE_OPTIONS } from '@/utils/constants';
+import { useCategories } from '@/hooks';
+import { useSignup } from '../_hooks';
+import { SSOViaSocial } from '@/app/_components';
 
 export default function Signup() {
-  const schema = object().shape({
-    userType: string()
-      .oneOf(["athlete", "coach"])
-      .required("Please select a user type"),
-    firstName: string().required("Please enter your first name"),
-    lastName: string().required("Please enter your last name"),
-    email: string()
-      .email("Please enter a valid email")
-      .required("Please enter your email"),
-    password: string().required("Please enter your password"),
-    confirmPassword: string().required("Please confirm your password"),
-    dateOfBirth: string().required("Please enter your date of birth"),
-    schoolName: string().required("Please enter your school name"),
-    cheerType: string().required("Please select your cheer type"),
-    cheerStyle: string().required("Please select your cheer style"),
-    role: string().required("Please select your role"),
-    equipment: string(),
-    measurementUnit: string(),
-  });
+  const {
+    roles: roleOptions,
+    cheerStyles: cheerStyleOptions,
+    cheerTypes: cheerTypeOptions,
+    equipments: equipmentOptions,
+    measurementUnits: measurementUnitOptions,
+  } = useCategories();
+  const { control, userType, onSubmit } = useSignup();
 
-  type Payload = InferType<typeof schema>;
-
-  const { control, setValue, handleSubmit } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      equipment: "",
-      userType: "athlete",
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      dateOfBirth: "",
-      schoolName: "",
-      cheerType: "all-girl",
-      cheerStyle: "",
-      role: "",
-      measurementUnit: "",
-    },
-  });
-
-  const onSuccess = (payload: Payload) => {
-    console.log("🚀 ~ onSuccess ~ payload:", payload);
-  };
-  const onError = (error: any) => {
-    console.log("🚀 ~ onError ~ error:", error);
-  };
-
-  const userType = useWatch({ control, name: "userType" });
-
-  useEffect(() => {
-    setValue("role", userType === "coach" ? "coach" : "");
-  }, [userType]);
+  const [isAgree, setIsAgree] = useState(false);
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <form onSubmit={handleSubmit(onSuccess, onError)} className="space-y-4">
+      <form onSubmit={onSubmit} className="space-y-4">
         <Controller
           control={control}
           name="userType"
@@ -114,7 +60,7 @@ export default function Signup() {
               <AppInput
                 label="First Name"
                 icon={<UserIcon className="icon-input" />}
-                inputProps={{ placeholder: "First" }}
+                inputProps={{ placeholder: 'First' }}
                 errorMessage={error?.message}
                 required
                 {...field}
@@ -130,7 +76,7 @@ export default function Signup() {
                 <AppInput
                   label="Last Name"
                   icon={<UserIcon className="icon-input" />}
-                  inputProps={{ placeholder: "Last" }}
+                  inputProps={{ placeholder: 'Last' }}
                   errorMessage={error?.message}
                   required
                   {...field}
@@ -148,7 +94,7 @@ export default function Signup() {
               <AppInput
                 label="Email"
                 icon={<MailIcon className="icon-input" />}
-                inputProps={{ placeholder: "name@example.com" }}
+                inputProps={{ placeholder: 'name@example.com' }}
                 errorMessage={error?.message}
                 required
                 {...field}
@@ -164,7 +110,7 @@ export default function Signup() {
             <AppInput
               label="Password"
               icon={<LockIcon className="icon-input" />}
-              inputProps={{ placeholder: "Password" }}
+              inputProps={{ placeholder: 'Password' }}
               errorMessage={error?.message}
               required
               password
@@ -180,7 +126,7 @@ export default function Signup() {
             <AppInput
               label="Confirm Password"
               icon={<LockIcon className="icon-input" />}
-              inputProps={{ placeholder: "Confirm Password" }}
+              inputProps={{ placeholder: 'Confirm Password' }}
               errorMessage={error?.message}
               required
               password
@@ -196,7 +142,7 @@ export default function Signup() {
             <AppInput
               label="Date of Birth"
               icon={<CalendarIcon className="icon-input" />}
-              inputProps={{ type: "date", placeholder: "Date of Birth" }}
+              inputProps={{ type: 'date', placeholder: 'Date of Birth' }}
               errorMessage={error?.message}
               required
               {...field}
@@ -211,7 +157,7 @@ export default function Signup() {
             <AppInput
               label="School Name"
               icon={<SchoolIcon className="icon-input" />}
-              inputProps={{ placeholder: "School Name" }}
+              inputProps={{ placeholder: 'School Name' }}
               errorMessage={error?.message}
               required
               {...field}
@@ -228,7 +174,7 @@ export default function Signup() {
               placeholder="Select Type"
               selectedValue={value}
               onChangeSelected={onChange}
-              options={CHEER_TYPE_OPTIONS}
+              options={cheerTypeOptions}
               fullWidth
             />
           )}
@@ -243,21 +189,21 @@ export default function Signup() {
               selectedValue={value}
               onChangeSelected={onChange}
               placeholder="Select Style"
-              options={CHEER_STYLE_OPTIONS}
+              options={cheerStyleOptions}
               errorMessage={error?.message}
               fullWidth
             />
           )}
         />
 
-        {userType === "athlete" ? (
+        {userType === 'athlete' ? (
           <Controller
             control={control}
             name="role"
             render={({ field: { value, onChange }, fieldState: { error } }) => (
               <AppSelect
                 label="Role"
-                options={ROLE_OPTIONS}
+                options={roleOptions}
                 selectedValue={value}
                 onChangeSelected={onChange}
                 placeholder="Select Role"
@@ -278,7 +224,7 @@ export default function Signup() {
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <AppSelect
               label="Equipment Access"
-              options={EQUIPMENT_OPTIONS}
+              options={equipmentOptions}
               selectedValue={value}
               onChangeSelected={onChange}
               placeholder="Select Equipment"
@@ -294,9 +240,9 @@ export default function Signup() {
           render={({ field: { value, onChange } }) => (
             <AppSelect
               label="Mesurement Unit"
-              options={MEASUREMENT_UNIT_OPTIONS}
+              options={measurementUnitOptions}
               selectedValue={value}
-              onChangeSelected={(value) => onChange(value)}
+              onChangeSelected={onChange}
               placeholder="Select Unit"
               fullWidth
             />
@@ -304,9 +250,13 @@ export default function Signup() {
         />
 
         <div className="flex items-center space-x-2">
-          <Checkbox id="terms" />
+          <Checkbox
+            id="terms"
+            // checked={isAgree}
+            // onCheckedChange={checked => setIsAgree(checked === 'indeterminate' ? false : checked)}
+          />
           <Label htmlFor="terms" className="text-sm">
-            I agree to the{" "}
+            I agree to the{' '}
             <Link
               href="/terms-and-conditions"
               className="text-primary hover:underline"
@@ -333,20 +283,7 @@ export default function Signup() {
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-3 gap-3">
-          <Button variant="outline" className="w-full">
-            <Icon icon="simple-icons:facebook" color="#1877F2" />
-            <span className="sr-only">Facebook</span>
-          </Button>
-          <Button variant="outline" className="w-full">
-            <Icon icon="simple-icons:twitter" color="#1DA1F2" />
-            <span className="sr-only">Twitter</span>
-          </Button>
-          <Button variant="outline" className="w-full">
-            <Icon icon="simple-icons:instagram" color="#E1306C" />
-            <span className="sr-only">Instagram</span>
-          </Button>
-        </div>
+        <SSOViaSocial type="signup" />
       </div>
     </div>
   );

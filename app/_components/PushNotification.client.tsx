@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { subscribeUser, unsubscribeUser, sendNotification } from "../actions";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from 'react';
+import { subscribeUser, unsubscribeUser, sendNotification } from '../actions';
+import { Button } from '@/components/ui/button';
 
 function urlBase64ToUint8Array(base64String: string) {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
 
   const rawData = window.atob(base64);
   const outputArray = new Uint8Array(rawData.length);
@@ -19,22 +19,24 @@ function urlBase64ToUint8Array(base64String: string) {
 
 export default function PushNotification() {
   const [isSupported, setIsSupported] = useState(false);
-  const [subscription, setSubscription] = useState<PushSubscription | null>(
-    null
-  );
-  const [message, setMessage] = useState("");
+  const [subscription, setSubscription] = useState<PushSubscription | null>(null);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if ("serviceWorker" in navigator && "PushManager" in window) {
+    if (
+      'serviceWorker' in navigator &&
+      'PushManager' in window &&
+      process.env.NODE_ENV === 'production'
+    ) {
       setIsSupported(true);
       registerServiceWorker();
     }
   }, []);
 
   async function registerServiceWorker() {
-    const registration = await navigator.serviceWorker.register("/sw.js", {
-      scope: "/",
-      updateViaCache: "none",
+    const registration = await navigator.serviceWorker.register('/sw.js', {
+      scope: '/',
+      updateViaCache: 'none',
     });
     const sub = await registration.pushManager.getSubscription();
     setSubscription(sub);
@@ -42,16 +44,14 @@ export default function PushNotification() {
 
   async function subscribeToPush() {
     const registration = await navigator.serviceWorker.ready;
-    console.log("🚀 ~ subscribeToPush ~ registration:", registration)
+    console.log('🚀 ~ subscribeToPush ~ registration:', registration);
     const sub = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(
-        process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
-      ),
+      applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
     });
     setSubscription(sub);
     const serializedSub = JSON.parse(JSON.stringify(sub));
-    console.log("🚀 ~ subscribeToPush ~ serializedSub:", serializedSub);
+    console.log('🚀 ~ subscribeToPush ~ serializedSub:', serializedSub);
     await subscribeUser(serializedSub);
   }
 
@@ -64,7 +64,7 @@ export default function PushNotification() {
   async function sendTestNotification() {
     if (subscription) {
       await sendNotification(message);
-      setMessage("");
+      setMessage('');
     }
   }
 
@@ -83,7 +83,7 @@ export default function PushNotification() {
             type="text"
             placeholder="Enter notification message"
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={e => setMessage(e.target.value)}
           />
           <button onClick={sendTestNotification}>Send Test</button>
         </>
