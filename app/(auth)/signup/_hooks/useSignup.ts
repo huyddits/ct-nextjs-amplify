@@ -45,6 +45,7 @@ export const useSignup = () => {
     defaultValues: {
       ...DEFAULT_FORM,
     },
+    mode: 'onBlur',
   });
 
   const onValid = () => {};
