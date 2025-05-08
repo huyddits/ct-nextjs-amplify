@@ -1,0 +1,33 @@
+import { create } from 'zustand';
+
+type CategoryItem = {
+  label: string;
+  value: string;
+};
+type CategoryStore = {
+  roles: CategoryItem[];
+  equipments: CategoryItem[];
+  cheerTypes: CategoryItem[];
+  cheerStyles: CategoryItem[];
+  measurementUnits: CategoryItem[];
+  setRoles: (value: CategoryItem[]) => void;
+  setEquipments: (value: CategoryItem[]) => void;
+  setCheerTypes: (value: CategoryItem[]) => void;
+  setCheerStyles: (value: CategoryItem[]) => void;
+  setMeasurementUnits: (value: CategoryItem[]) => void;
+};
+
+export const useCategoriesStore = create<CategoryStore>((set, get) => {
+  return {
+    roles: [],
+    equipments: [],
+    cheerTypes: [],
+    cheerStyles: [],
+    measurementUnits: [],
+    setRoles: value => set({ roles: value }),
+    setEquipments: value => set({ equipments: value }),
+    setCheerTypes: value => set({ cheerTypes: value }),
+    setCheerStyles: value => set({ cheerStyles: value }),
+    setMeasurementUnits: value => set({ measurementUnits: value }),
+  };
+});

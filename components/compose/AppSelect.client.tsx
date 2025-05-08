@@ -1,15 +1,9 @@
-"use client";
-import React, { useCallback, useEffect, useState } from "react";
-import { twMerge } from "tailwind-merge";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import {
-  SelectTrigger,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "../ui/select";
+'use client';
+import React, { useCallback, useEffect, useState } from 'react';
+import { twMerge } from 'tailwind-merge';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { SelectTrigger, Select, SelectContent, SelectItem, SelectValue } from '../ui/select';
 
 export type SelectOption = {
   label: string;
@@ -43,8 +37,7 @@ export default function AppSelect({
   onChangeSelected,
 }: AppSelectProps) {
   const [isChanged, setIsChanged] = useState(false);
-  const selectedLabel =
-    defaultLabel ?? options.find((o) => o.value === selectedValue)?.label;
+  const selectedLabel = defaultLabel ?? options.find(o => o.value === selectedValue)?.label;
 
   const onValueChange = useCallback(
     (value: string) => {
@@ -54,13 +47,10 @@ export default function AppSelect({
     [onChangeSelected]
   );
   return (
-    <div className={twMerge("space-y-2", className)}>
+    <div className={twMerge('space-y-2', className)}>
       {label && <Label id={id}>{label}</Label>}
       <Select value={selectedValue} onValueChange={onValueChange}>
-        <SelectTrigger
-          aria-labelledby={id}
-          className={fullWidth ? "w-full" : ""}
-        >
+        <SelectTrigger aria-labelledby={id} className={fullWidth ? 'w-full' : ''}>
           {!isChanged ? (
             <Input
               readOnly
@@ -73,11 +63,15 @@ export default function AppSelect({
           )}
         </SelectTrigger>
         <SelectContent>
-          {options.map((item) => (
-            <SelectItem key={item.value} value={item.value}>
-              {item.label}
-            </SelectItem>
-          ))}
+          {options.length ? (
+            options.map(item => (
+              <SelectItem key={item.value} value={item.value}>
+                {item.label}
+              </SelectItem>
+            ))
+          ) : (
+            <div className="text-center text-sm py-1 text-gray-500">No data</div>
+          )}
         </SelectContent>
       </Select>
       {errorMessage && (
