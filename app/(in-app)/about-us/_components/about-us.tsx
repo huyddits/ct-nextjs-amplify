@@ -1,11 +1,7 @@
 'use client';
-
-import { useState } from 'react';
 import { Mail, Phone, Instagram, Twitter, Facebook } from 'lucide-react';
 
 export default function AboutUs() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Main Content */}

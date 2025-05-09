@@ -1,8 +1,5 @@
 'use client';
 
-import Link from 'next/link';
-import { ClipboardCheck, UserCircle2, Target, Dumbbell, Ruler } from 'lucide-react';
-
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-gray-50">
