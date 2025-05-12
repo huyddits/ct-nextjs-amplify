@@ -11,9 +11,16 @@ import { AppInput } from '@/components/compose';
 import { useLogin } from '../_hooks';
 import PasswordStrength from './PasswordStrength.client';
 import { SSOViaSocial } from '@/app/_components';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/utils/constants';
 
 export default function LoginForm() {
-  const { control, password, onSubmit } = useLogin();
+  const router = useRouter();
+  const { control, password, onSubmit } = useLogin({
+    onSuccess: () => {
+      router.replace(`/${ROUTES.HOME}`);
+    },
+  });
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">

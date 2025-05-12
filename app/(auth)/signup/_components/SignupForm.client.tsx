@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Icon } from '@iconify/react';
 import {
   MailIcon,
   LockIcon,
@@ -17,12 +16,14 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Controller } from 'react-hook-form';
 import { AppInput, AppRadioGroup, AppSelect } from '@/components/compose';
-import { USER_TYPE_OPTIONS } from '@/utils/constants';
+import { ROUTES, USER_TYPE_OPTIONS } from '@/utils/constants';
 import { useCategories } from '@/hooks';
 import { useSignup } from '../_hooks';
 import { SSOViaSocial } from '@/app/_components';
+import { useRouter } from 'next/navigation';
 
-export default function Signup() {
+export default function SignupForm() {
+  const router = useRouter();
   const {
     roles: roleOptions,
     cheerStyles: cheerStyleOptions,
@@ -30,7 +31,11 @@ export default function Signup() {
     equipments: equipmentOptions,
     measurementUnits: measurementUnitOptions,
   } = useCategories();
-  const { control, userType, onSubmit } = useSignup();
+  const { control, userType, onSubmit } = useSignup({
+    onSuccess: () => {
+      router.push(`/${ROUTES.LOGIN}`);
+    },
+  });
 
   const [isAgree, setIsAgree] = useState(false);
 
@@ -168,14 +173,16 @@ export default function Signup() {
         <Controller
           control={control}
           name="cheerType"
-          render={({ field: { value, onChange } }) => (
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
             <AppSelect
               label="Type of Cheer"
               placeholder="Select Type"
               selectedValue={value}
               onChangeSelected={onChange}
               options={cheerTypeOptions}
+              errorMessage={error?.message}
               fullWidth
+              required
             />
           )}
         />
@@ -192,6 +199,7 @@ export default function Signup() {
               options={cheerStyleOptions}
               errorMessage={error?.message}
               fullWidth
+              required
             />
           )}
         />
@@ -207,13 +215,17 @@ export default function Signup() {
                 selectedValue={value}
                 onChangeSelected={onChange}
                 placeholder="Select Role"
+                errorMessage={error?.message}
                 fullWidth
+                required
               />
             )}
           />
         ) : (
           <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
+            <Label htmlFor="role">
+              Role <span className="text-red-500">*</span>
+            </Label>
             <Input id="role" value="Coach" disabled className="bg-gray-50" />
           </div>
         )}
@@ -252,8 +264,8 @@ export default function Signup() {
         <div className="flex items-center space-x-2">
           <Checkbox
             id="terms"
-            // checked={isAgree}
-            // onCheckedChange={checked => setIsAgree(checked === 'indeterminate' ? false : checked)}
+            checked={isAgree}
+            onCheckedChange={checked => setIsAgree(checked === 'indeterminate' ? false : checked)}
           />
           <Label htmlFor="terms" className="text-sm">
             I agree to the{' '}
@@ -267,7 +279,7 @@ export default function Signup() {
           </Label>
         </div>
 
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" disabled={!isAgree}>
           Create Account
           <ChevronRightIcon className="ml-2 h-4 w-4" />
         </Button>

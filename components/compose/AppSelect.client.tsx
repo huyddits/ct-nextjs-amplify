@@ -14,6 +14,7 @@ export type SelectOption = {
 interface AppSelectProps {
   id?: string;
   label?: string;
+  required?: boolean;
   options: SelectOption[];
   selectedValue?: string;
   defaultLabel?: string;
@@ -28,6 +29,7 @@ export default function AppSelect({
   id,
   label,
   options,
+  required,
   className,
   fullWidth,
   placeholder,
@@ -48,7 +50,11 @@ export default function AppSelect({
   );
   return (
     <div className={twMerge('space-y-2', className)}>
-      {label && <Label id={id}>{label}</Label>}
+      {label && (
+        <Label id={id}>
+          {label} {required && <span className="text-red-600">*</span>}
+        </Label>
+      )}
       <Select value={selectedValue} onValueChange={onValueChange}>
         <SelectTrigger aria-labelledby={id} className={fullWidth ? 'w-full' : ''}>
           {!isChanged ? (
