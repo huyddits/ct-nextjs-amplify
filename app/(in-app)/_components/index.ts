@@ -1,2 +1,1 @@
-export { default as FooterSection } from './FooterSection';
 export { default as RouteGuard } from './RouteGuard.client';
