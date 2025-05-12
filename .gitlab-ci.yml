@@ -4,7 +4,9 @@ stages:
 
 build:
   stage: build
-  image: node:18
+  image: node:20
+  tags:
+    - trainer
   script:
     - npm ci
     - npm run build
