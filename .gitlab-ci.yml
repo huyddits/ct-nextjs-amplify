@@ -1,26 +1,28 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization
-# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 stages:
-- build
-- test
-- deploy
-- review
-- dast
-- staging
-- canary
-- production
-- incremental rollout 10%
-- incremental rollout 25%
-- incremental rollout 50%
-- incremental rollout 100%
-- performance
-- cleanup
-sast:
-  stage: test
-include:
-- template: Auto-DevOps.gitlab-ci.yml
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: node:18
+  script:
+    - npm ci
+    - npm run build
+    - cd .next
+    - zip -r ../dist.zip .
+    - cd ..
+    - aws s3 cp dist.zip s3://cheer-trainer-artifacts/artifacts/dist.zip
+  artifacts:
+    paths:
+      - dist.zip
+  only:
+    - staging
+
+deploy:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  script:
+    - aws configure set region ap-southeast-1
+    - aws amplify start-deployment --app-id d2cf06t0qfs9ao --branch-name staging --source-url https://cheer-trainer-artifacts.s3.ap-southeast-1.amazonaws.com/artifacts/dist.zip
+  only:
+    - staging
