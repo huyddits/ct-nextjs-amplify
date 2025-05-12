@@ -8,6 +8,8 @@ build:
   tags:
     - trainer
   script:
+    - apt-get update
+    - apt-get install -y zip
     - npm ci
     - npm run build
     - cd .next
@@ -23,6 +25,8 @@ build:
 deploy:
   stage: deploy
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  tags:
+    - trainer
   script:
     - aws configure set region ap-southeast-1
     - aws amplify start-deployment --app-id d2cf06t0qfs9ao --branch-name staging --source-url https://cheer-trainer-artifacts.s3.ap-southeast-1.amazonaws.com/artifacts/dist.zip
