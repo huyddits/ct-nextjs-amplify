@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 type AuthStore = {
   token: string | null;
-  setToken: (value: string) => void;
+  setToken: (value: string | null) => void;
 };
 
 export const useAuthStore = create<AuthStore>((set, _get) => {
@@ -11,7 +11,7 @@ export const useAuthStore = create<AuthStore>((set, _get) => {
     token: null,
     setToken: value => {
       set({ token: value });
-      localStorage.setItem(STORAGE_KEY.TOKEN, value);
+      localStorage.setItem(STORAGE_KEY.TOKEN, value ?? '');
     },
   };
 });
