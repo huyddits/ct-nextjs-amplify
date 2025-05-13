@@ -3,10 +3,10 @@ import { Icon } from '@iconify/react';
 import { FacebookLogin } from './FacebookLogin';
 import { TwitterLogin } from './TwitterLogin';
 
-export default function SSOViaSocial({ type }: { type: 'signup' | 'signin' }) {
+export default function SSOViaSocial({ type }: { readonly type: 'signup' | 'login' }) {
   return (
     <div className="mt-6 grid grid-cols-3 gap-3">
-      <FacebookLogin />
+      <FacebookLogin type={type} />
       <TwitterLogin />
       <Button variant="outline" className="w-full" disabled>
         <Icon icon="simple-icons:instagram" color="#E1306C" />
