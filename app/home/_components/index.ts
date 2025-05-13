@@ -1,2 +1,3 @@
-export { default as TeamCheckOff } from './TeamCheckOff';
-export { default as HitOrMiss } from './HitOrMiss';
+export { default as StatisticOnTimeSection } from './StatisticOnTimeSection';
+export { default as StatisticOnValueSection } from './StatisticOnValueSection';
+export { default as AlertItemSection } from './AlertItemSection';
