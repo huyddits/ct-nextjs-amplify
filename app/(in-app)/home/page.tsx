@@ -1,10 +1,12 @@
-import { RouteGuard } from '../_components';
+'use client';
+import { Button } from '@/components/ui/button';
+import { useAuthStore } from '@/store';
 
 export default function HomePage() {
+  const { removeToken } = useAuthStore();
   return (
     <div>
-      <RouteGuard />
-      <div>In App</div>
+      <Button onClick={removeToken}>Remove Token</Button>
     </div>
   );
 }

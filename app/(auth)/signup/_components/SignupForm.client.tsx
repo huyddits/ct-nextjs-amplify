@@ -273,7 +273,7 @@ export default function SignupForm() {
           <Label htmlFor="terms" className="text-sm">
             I agree to the{' '}
             <Link
-              href="/terms-and-conditions"
+              href="/term-and-conditions"
               className="text-primary hover:underline"
               target="_blank"
             >

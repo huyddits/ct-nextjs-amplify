@@ -4,6 +4,7 @@ import { create } from 'zustand';
 type AuthStore = {
   token: string | null;
   setToken: (value: string | null) => void;
+  removeToken: () => void;
 };
 
 export const useAuthStore = create<AuthStore>((set, _get) => {
@@ -12,6 +13,10 @@ export const useAuthStore = create<AuthStore>((set, _get) => {
     setToken: value => {
       set({ token: value });
       localStorage.setItem(STORAGE_KEY.TOKEN, value ?? '');
+    },
+    removeToken: () => {
+      set({ token: null });
+      localStorage.removeItem(STORAGE_KEY.TOKEN);
     },
   };
 });
