@@ -4,6 +4,7 @@ import { InferType, object, string } from 'yup';
 import { AuthApi } from '@/api';
 import { useAuthStore } from '@/store';
 import { SocialProvider } from '@/utils/types';
+import { END_POINTS } from '@/utils/constants';
 
 type UseLoginOptions = {
   onSuccess?: (result: { token: string }) => void;
@@ -49,18 +50,39 @@ export const useLogin = (options: UseLoginOptions) => {
     accessToken: accessTokenFromProvider,
     provider,
   }: {
-    accessToken: string;
+    accessToken?: string;
     provider: SocialProvider;
   }) => {
     try {
-      const response = await AuthApi.loginSocial({
-        provider,
-        accessToken: accessTokenFromProvider,
-      });
-      const inAppAccessToken = response.data.data.token.access_token;
-      setToken(inAppAccessToken);
-      console.log('response', response);
-      options?.onSuccess?.({ token: inAppAccessToken });
+      let inAppAccessToken = '';
+      if (provider === SocialProvider.Twitter) {
+        window.location.href =
+          process.env.NEXT_PUBLIC_API_BASE_URL +
+          '/' +
+          process.env.NEXT_PUBLIC_API_VERSION +
+          '/' +
+          END_POINTS.AUTH_LOGIN_TWITTER;
+        return;
+      }
+
+      const providerUsingAccessToken = [
+        SocialProvider.Facebook,
+        SocialProvider.Google,
+        SocialProvider.Instagram,
+      ];
+
+      if (providerUsingAccessToken.includes(provider) && accessTokenFromProvider) {
+        const response = await AuthApi.loginSocial({
+          provider,
+          accessToken: accessTokenFromProvider,
+        });
+        inAppAccessToken = response.data.data.token.access_token;
+        setToken(inAppAccessToken);
+      }
+
+      if (inAppAccessToken) {
+        options?.onSuccess?.({ token: inAppAccessToken });
+      }
     } catch (error) {
       console.log(error);
     }
