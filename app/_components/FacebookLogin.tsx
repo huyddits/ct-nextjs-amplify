@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { initFacebookSDK, loginViaFacebook } from '@/utils/helpers';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
-import { AuthApi } from '@/api';
 import { useLogin } from '../(auth)/login/_hooks';
 import { SocialProvider } from '@/utils/types';
 import { useRouter } from 'next/navigation';
@@ -17,7 +16,7 @@ import { ROUTES } from '@/utils/constants';
  * authResponse: 'accessToken'|'expiresIn'|'signedRequest'|'userID' (available when status === 'connected')
  */
 
-export function FacebookLogin() {
+export function FacebookLogin({ type }: { readonly type: 'signup' | 'login' }) {
   const router = useRouter();
   const { loginWithProvider } = useLogin({
     onSuccess: () => {
@@ -47,7 +46,12 @@ export function FacebookLogin() {
   };
 
   return (
-    <Button variant="outline" className="w-full" onClick={() => loginViaFacebook(callbackLogin)}>
+    <Button
+      variant="outline"
+      className="w-full"
+      onClick={() => loginViaFacebook(callbackLogin)}
+      disabled={type === 'signup'}
+    >
       <Icon icon="simple-icons:facebook" color="#1877F2" />
       <span className="sr-only">Facebook</span>
     </Button>

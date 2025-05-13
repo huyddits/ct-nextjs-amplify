@@ -1,8 +1,11 @@
+import { TopApp, BottomApp, RouteGuard } from './_components';
 export default function InAppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
-      <div>Layout In App</div>
+      <RouteGuard />
+      <TopApp />
       <div>{children}</div>
+      <BottomApp />
     </div>
   );
 }

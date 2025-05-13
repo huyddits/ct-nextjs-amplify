@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { MailIcon, LockIcon, ChevronRightIcon } from 'lucide-react';
-import { Icon } from '@iconify/react';
 import { Controller } from 'react-hook-form';
 import { AppInput } from '@/components/compose';
 import { useLogin } from '../_hooks';
@@ -81,7 +80,7 @@ export default function LoginForm() {
           </div>
         </div>
 
-        <SSOViaSocial type="signin" />
+        <SSOViaSocial type="login" />
       </div>
     </div>
   );
