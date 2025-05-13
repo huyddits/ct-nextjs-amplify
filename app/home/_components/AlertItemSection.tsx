@@ -1,13 +1,14 @@
-import AlertItem from './AlertItem';
+import AlertGroup from './AlertItemGroup';
+import Alert from '@/components/compose/Alert';
 
 export default function AlertItemSection() {
   const listItems = [
     {
       title: 'Past-due check-offs',
       content: [
-        { name: 'Michael Johnson', exercise: '3 Hand in Hand', value: 'Mar 12, 2025' },
-        { name: 'Sarah Williams', exercise: '5 Back Tucks', value: 'Mar 10, 2025' },
-        { name: 'David Chen', exercise: '2 Full Up and 2 Back Tucks', value: 'Mar 13, 2025' },
+        { name: 'Michael Johnson', content: '3 Hand in Hand', value: 'Mar 12, 2025' },
+        { name: 'Sarah Williams', content: '5 Back Tucks', value: 'Mar 10, 2025' },
+        { name: 'David Chen', content: '2 Full Up and 2 Back Tucks', value: 'Mar 13, 2025' },
       ],
       colorClass: 'red',
       closable: true,
@@ -15,8 +16,8 @@ export default function AlertItemSection() {
     {
       title: 'Submitted check-offs',
       content: [
-        { name: 'Michael Johnson', exercise: '5 Back Tucks', value: 'Mar 15, 2025' },
-        { name: 'James Wilson', exercise: '2 Full Up and 2 Back Tucks', value: 'Mar 14, 2025' },
+        { name: 'Michael Johnson', content: '5 Back Tucks', value: 'Mar 15, 2025' },
+        { name: 'James Wilson', content: '2 Full Up and 2 Back Tucks', value: 'Mar 14, 2025' },
       ],
       colorClass: 'green',
       closable: true,
@@ -24,8 +25,8 @@ export default function AlertItemSection() {
     {
       title: 'Recent measurements',
       content: [
-        { name: 'Alex Thompson', exercise: 'Max Squat', value: '225 lbs' },
-        { name: 'Olivia Parker', exercise: 'Mile Time', value: '5:42 min' },
+        { name: 'Alex Thompson', content: 'Max Squat', value: '225 lbs' },
+        { name: 'Olivia Parker', content: 'Mile Time', value: '5:42 min' },
       ],
       colorClass: 'blue',
       closable: true,
@@ -39,7 +40,18 @@ export default function AlertItemSection() {
 
           <div className="grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-8">
             {listItems.map(item => (
-              <AlertItem key={item.title} {...item} />
+              <AlertGroup key={item.title} title={item.title} colorClass={item.colorClass}>
+                {item.content.map((alertItem, idx) => (
+                  <Alert
+                    key={idx}
+                    name={alertItem.name}
+                    content={alertItem.content}
+                    value={alertItem.value}
+                    colorClass={item.colorClass}
+                    closable={item.closable}
+                  />
+                ))}
+              </AlertGroup>
             ))}
           </div>
         </div>
