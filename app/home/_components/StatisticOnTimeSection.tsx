@@ -20,7 +20,7 @@ export default function StatisticOnTimeSection() {
   ];
   return (
     <section>
-      <div className="pt-4 pb-[80px] max-w-3xl mx-auto p-4">
+      <div className="mb-12">
         <div className="grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-8">
           {listItems.map(item => (
             <StatisticOnTime key={item.appellation} {...item} />
