@@ -7,15 +7,7 @@ export default function PasswordStrength({ password }: { password: string }) {
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [strengthText, setStrengthText] = useState('');
 
-  const strengthColor = useMemo(() => {
-    if (passwordStrength < 30) return 'bg-red-500';
-    if (passwordStrength < 60) return 'bg-yellow-500';
-    if (passwordStrength < 80) return 'bg-green-400';
-    return 'bg-green-600';
-  }, [passwordStrength]);
-
   useEffect(() => {
-    console.log({ password });
     if (!password) {
       setPasswordStrength(0);
       setStrengthText('');
@@ -55,7 +47,7 @@ export default function PasswordStrength({ password }: { password: string }) {
       strength += 25;
       checks++;
     }
-    console.log(checks);
+
     // Normalize strength to 100
     strength = Math.min(100, Math.floor(strength));
 
@@ -72,33 +64,36 @@ export default function PasswordStrength({ password }: { password: string }) {
 
     setPasswordStrength(strength);
   }, [password]);
+
+  const strengthTextColor = useMemo(() => {
+    if (passwordStrength < 30) return 'text-red-500';
+    if (passwordStrength < 60) return 'text-yellow-500';
+    if (passwordStrength < 80) return 'text-green-400';
+    return 'text-green-600';
+  }, [passwordStrength]);
+
+  const strengthProgressColor = useMemo(() => {
+    if (passwordStrength < 30) return 'bg-red-500';
+    if (passwordStrength < 60) return 'bg-yellow-500';
+    if (passwordStrength < 80) return 'bg-green-400';
+    return 'bg-green-500';
+  }, [passwordStrength]);
+
   return (
     <div className="mt-2 space-y-1">
       <div className="flex justify-between items-center">
         <span className="text-xs text-gray-500">Password strength:</span>
-        <span
-          className={`text-xs font-medium ${
-            passwordStrength < 30
-              ? 'text-red-500'
-              : passwordStrength < 60
-                ? 'text-yellow-500'
-                : passwordStrength < 80
-                  ? 'text-green-400'
-                  : 'text-green-600'
-          }`}
-        >
-          {strengthText}
-        </span>
+        <span className={`text-xs font-medium ${strengthTextColor}`}>{strengthText}</span>
       </div>
+
       <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
         <div
-          className={`h-full ${strengthColor} transition-all duration-300 ease-in-out`}
+          className={`h-full ${strengthProgressColor} transition-all duration-300 ease-in-out`}
           style={{ width: `${passwordStrength}%` }}
-          role="progressbar"
           aria-valuenow={passwordStrength}
           aria-valuemin={0}
           aria-valuemax={100}
-        ></div>
+        />
       </div>
       <div className="text-xs text-gray-500 mt-1">
         {passwordStrength < 60 && (

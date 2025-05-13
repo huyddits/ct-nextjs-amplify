@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function FooterSection() {
   return (
@@ -11,16 +11,10 @@ export default function FooterSection() {
           © {new Date().getFullYear()} Cheer Trainer. All rights reserved.
         </p>
         <div className="flex justify-center space-x-6">
-          <Link
-            href="/privacy-policy"
-            className="text-gray-600 hover:text-primary"
-          >
+          <Link href="/privacy" className="text-gray-600 hover:text-primary">
             Privacy Policy
           </Link>
-          <Link
-            href="/terms-and-conditions"
-            className="text-gray-600 hover:text-primary"
-          >
+          <Link href="/term-and-conditions" className="text-gray-600 hover:text-primary">
             Terms & Conditions
           </Link>
           <Link href="/about-us" className="text-gray-600 hover:text-primary">

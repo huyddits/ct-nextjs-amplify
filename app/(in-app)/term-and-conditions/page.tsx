@@ -6,7 +6,6 @@ export default function TermsAndConditions() {
         {/* Terms and Conditions Content */}
         <div className="bg-white p-6 rounded-lg shadow-sm mb-4">
           <h1 className="text-2xl font-bold text-primary mb-6">Terms and Conditions</h1>
-
           <div className="space-y-6">
             <section>
               <h2 className="text-lg font-semibold text-gray-800 mb-2">Agreement to Terms</h2>

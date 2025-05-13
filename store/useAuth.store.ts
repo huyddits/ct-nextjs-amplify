@@ -1,3 +1,4 @@
+import { STORAGE_KEY } from '@/utils/constants';
 import { create } from 'zustand';
 
 type AuthStore = {
@@ -10,7 +11,7 @@ export const useAuthStore = create<AuthStore>((set, _get) => {
     token: null,
     setToken: value => {
       set({ token: value });
-      localStorage.setItem('token', value);
+      localStorage.setItem(STORAGE_KEY.TOKEN, value);
     },
   };
 });
