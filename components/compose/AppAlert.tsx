@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-export default function Alert({
+export default function AppAlert({
   name,
   content,
   value,

@@ -1,7 +1,7 @@
-import AlertGroup from './AlertItemGroup';
-import Alert from '@/components/compose/Alert';
+import AlertGroup from './AlertGroup';
+import AppAlert from '@/components/compose/AppAlert';
 
-export default function AlertItemSection() {
+export default function AlertSection() {
   const listItems = [
     {
       title: 'Past-due check-offs',
@@ -42,7 +42,7 @@ export default function AlertItemSection() {
             {listItems.map(item => (
               <AlertGroup key={item.title} title={item.title} colorClass={item.colorClass}>
                 {item.content.map((alertItem, idx) => (
-                  <Alert
+                  <AppAlert
                     key={idx}
                     name={alertItem.name}
                     content={alertItem.content}
