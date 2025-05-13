@@ -1,12 +1,11 @@
-'use client';
-import { Button } from '@/components/ui/button';
-import { useAuthStore } from '@/store';
+import { StatisticOnTimeSection, StatisticOnValueSection, AlertSection } from './_components';
 
-export default function HomePage() {
-  const { removeToken } = useAuthStore();
+export default function Dashboard() {
   return (
-    <div>
-      <Button onClick={removeToken}>Remove Token</Button>
+    <div className="pt-4 pb-[80px] max-w-3xl mx-auto p-4">
+      <StatisticOnTimeSection />
+      <StatisticOnValueSection />
+      <AlertSection />
     </div>
   );
 }
