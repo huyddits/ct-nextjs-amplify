@@ -89,8 +89,13 @@
 
   /* custom variables or preserved colors */
   --color-red-500: oklch(63.7% 0.237 25.331);
+  --color-red-50: oklch(97.1% 0.013 17.38);
   --color-yellow-500: oklch(79.5% 0.184 86.047);
   --color-green-500: oklch(72.3% 0.219 149.579);
+  --color-green-50: oklch(98.2% 0.018 155.826);
+  --color-blue-50: oklch(97% 0.014 254.604);
+  --color-blue-500: oklch(62.3% 0.214 259.815);
+  --color-blue-600: oklch(54.6% 0.245 262.881);
 }
 
 .dark {
@@ -148,4 +153,28 @@
 
 .container {
   @apply 3xl:max-w-[100rem] 2xl:max-w-[90rem] xl:max-w-[80rem] lg:max-w-[64rem] md:max-w-[48rem] mx-auto w-full px-4 py-12;
+}
+
+/* Add background */
+.bg-red-50 {
+  @apply bg-[var(--color-red-50)];
+}
+.bg-blue-50 {
+  @apply bg-[var(--color-blue-50)];
+}
+
+/* Add border */
+.border-red-500 {
+  @apply border-[var(--color-red-500)];
+}
+.border-blue-500 {
+  @apply border-[var(--color-blue-500)];
+}
+.border-green-500 {
+  @apply border-[var(--color-green-500)];
+}
+
+/* add text */
+.text-blue-600 {
+  @apply text-[var(--color-blue-600)];
 }
