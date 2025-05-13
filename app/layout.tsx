@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from 'next/font/google';
 // import { ServiceWorkerRegister } from "./_components";
+import { ToastContainerClient } from './_components';
 import './globals.css';
 
 const geistSans = Geist({
@@ -37,6 +38,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
         {/* <ServiceWorkerRegister /> */}
+        <ToastContainerClient />
       </body>
     </html>
   );
