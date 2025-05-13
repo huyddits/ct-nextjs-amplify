@@ -12,4 +12,5 @@ export enum SocialProvider {
   Facebook = 'FACEBOOK',
   Google = 'GOOGLE',
   Instagram = 'INSTAGRAM',
+  Twitter = 'TWITTER',
 }

@@ -1,41 +1,22 @@
-// /pages/login.tsx
-import crypto from 'crypto';
-export function generateCodeVerifier(): string {
-  const array = new Uint8Array(64);
-  crypto.getRandomValues(array);
-  return btoa(String.fromCharCode(...array))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
-}
+// const TWITTER_AUTH_URL = 'https://twitter.com/i/oauth2/authorize';
+// const TWITTER_SCOPE = ['tweet.read', 'users.read', 'offline.access'].join(' ');
+// const TWITTER_STATE = 'twitter-increaser-state';
+// const TWITTER_CODE_CHALLENGE = 'challenge';
 
-export async function generateCodeChallenge(verifier: string): Promise<string> {
-  const data = new TextEncoder().encode(verifier);
-  const digest = await crypto.subtle.digest('SHA-256', data);
-  return btoa(String.fromCharCode(...new Uint8Array(digest)))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
-}
+// export const initiateTwitterLogin = async () => {
+//   const twitterAuthURL =
+//     TWITTER_AUTH_URL +
+//     '?' +
+//     new URLSearchParams({
+//       response_type: 'code',
+//       client_id: process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID!,
+//       // redirect_uri: process.env.NEXT_PUBLIC_API_BASE_URL + '/v1/auth/twitter/callback',
+//       redirect_uri: process.env.NEXT_PUBLIC_API_BASE_URL + '/home',
+//       scope: TWITTER_SCOPE,
+//       state: TWITTER_STATE,
+//       code_challenge: TWITTER_CODE_CHALLENGE,
+//       code_challenge_method: 'plain',
+//     }).toString();
 
-export const initiateTwitterLogin = async () => {
-  const codeVerifier = generateCodeVerifier();
-  const codeChallenge = await generateCodeChallenge(codeVerifier);
-
-  // Save verifier in local/session storage or a secure cookie
-  sessionStorage.setItem('code_verifier', codeVerifier);
-
-  const twitterAuthURL =
-    `https://twitter.com/i/oauth2/authorize?` +
-    new URLSearchParams({
-      response_type: 'code',
-      client_id: process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID!,
-      redirect_uri: 'http://localhost:3000/api/auth/twitter/callback',
-      scope: 'tweet.read users.read offline.access',
-      state: 'someRandomState',
-      code_challenge: codeChallenge,
-      code_challenge_method: 'S256',
-    }).toString();
-
-  window.location.href = twitterAuthURL;
-};
+//   window.location.href = twitterAuthURL;
+// };

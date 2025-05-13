@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Controller } from 'react-hook-form';
 import { AppInput, AppRadioGroup, AppSelect } from '@/components/compose';
-import { ROUTES, USER_TYPE_OPTIONS } from '@/utils/constants';
+import { MEASUREMENT_UNIT_OPTIONS, ROUTES, USER_TYPE_OPTIONS } from '@/utils/constants';
 import { useCategories } from '@/hooks';
 import { useSignup } from '../_hooks';
 import { SSOViaSocial } from '@/app/_components';
@@ -31,7 +31,7 @@ export default function SignupForm() {
     equipments: equipmentOptions,
     measurementUnits: measurementUnitOptions,
   } = useCategories();
-  const { control, userType, onSubmit } = useSignup({
+  const { control, userType, onSubmit, isValid } = useSignup({
     onSuccess: () => {
       router.push(`/${ROUTES.LOGIN}`);
     },
@@ -249,14 +249,17 @@ export default function SignupForm() {
         <Controller
           control={control}
           name="measurementUnit"
-          render={({ field: { value, onChange } }) => (
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
             <AppSelect
               label="Mesurement Unit"
-              options={measurementUnitOptions}
+              // options={measurementUnitOptions}
+              options={MEASUREMENT_UNIT_OPTIONS}
               selectedValue={value}
               onChangeSelected={onChange}
               placeholder="Select Unit"
+              errorMessage={error?.message}
               fullWidth
+              required
             />
           )}
         />
@@ -279,7 +282,7 @@ export default function SignupForm() {
           </Label>
         </div>
 
-        <Button type="submit" className="w-full" disabled={!isAgree}>
+        <Button type="submit" className="w-full" disabled={!isAgree || !isValid}>
           Create Account
           <ChevronRightIcon className="ml-2 h-4 w-4" />
         </Button>
@@ -295,7 +298,7 @@ export default function SignupForm() {
           </div>
         </div>
 
-        <SSOViaSocial type="signup" />
+        {/* <SSOViaSocial type="signup" /> */}
       </div>
     </div>
   );

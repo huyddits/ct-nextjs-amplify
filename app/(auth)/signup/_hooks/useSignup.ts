@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { InferType, object, string } from 'yup';
+import { InferType, object, string, ref } from 'yup';
 import { UserApi } from '@/api';
 
 type UseSignupOptions = {
@@ -30,14 +30,16 @@ export const useSignup = (options: UseSignupOptions) => {
       confirmPassword: string()
         .required('Please confirm your password')
         .min(8, 'Password must be at least 8 characters')
-        .max(100, 'Password cannot exceed 100 characters'),
+
+        .max(100, 'Password cannot exceed 100 characters')
+        .oneOf([ref('password')], 'Passwords must match'),
       dateOfBirth: string().required('Please enter your date of birth'),
       schoolName: string().max(100, 'School Name cannot exceed 100 characters'),
       cheerType: string().required('Please select type of cheer'),
       cheerStyle: string().required('Please select style of cheer'),
       role: string().required('Please select your role'),
       equipment: string().notRequired().nonNullable(),
-      measurementUnit: string().notRequired().nonNullable(),
+      measurementUnit: string().required('Please select your measurement unit'),
     });
   }, []);
 
@@ -59,7 +61,12 @@ export const useSignup = (options: UseSignupOptions) => {
     measurementUnit: '',
   };
 
-  const { control, setValue, handleSubmit } = useForm({
+  const {
+    control,
+    setValue,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm({
     resolver: yupResolver(formSchema),
     defaultValues: {
       ...DEFAULT_FORM,
@@ -101,6 +108,7 @@ export const useSignup = (options: UseSignupOptions) => {
   }, [userType]);
 
   return {
+    isValid,
     userType,
     control,
     onSubmit,

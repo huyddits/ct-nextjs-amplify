@@ -9,3 +9,7 @@ export const login = (payload: LoginPayload) => {
 export const loginSocial = (payload: LoginSocialPayload) => {
   return axiosIns.post<LoginSocialResponse>(END_POINTS.AUTH_LOGIN_SOCIAL, payload);
 };
+
+export const loginTwitter = () => {
+  return axiosIns.get<LoginSocialResponse>(END_POINTS.AUTH_LOGIN_TWITTER);
+};
