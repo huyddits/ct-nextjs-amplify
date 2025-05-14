@@ -10,6 +10,7 @@ import {
 import { usePathname } from 'next/navigation';
 import BottomNavigationItem from './BottomNavigationItem.client';
 import { useAuthStore } from '@/store';
+import { ROUTES } from '@/utils/constants';
 export default function BottomApp() {
   const { token } = useAuthStore();
   const pathname = usePathname();
@@ -17,17 +18,17 @@ export default function BottomApp() {
   const listItems = [
     {
       name: 'Home',
-      href: '/home',
+      href: `/${ROUTES.HOME}`,
       icon: UserCircle2Icon,
     },
     {
       name: 'Training',
-      href: '/training',
+      href: `/${ROUTES.TRAINING}`,
       icon: DumbbellIcon,
     },
     {
-      name: 'Measure',
-      href: '/measure',
+      name: 'Measurement',
+      href: `/${ROUTES.MEASUREMENT}`,
       icon: RulerIcon,
     },
     {
@@ -55,7 +56,7 @@ export default function BottomApp() {
               <BottomNavigationItem
                 key={item.href}
                 href={item.href}
-                isActive={pathname === item.href}
+                isActive={pathname.startsWith(item.href)}
                 label={item.name}
                 component={item.icon}
               />
