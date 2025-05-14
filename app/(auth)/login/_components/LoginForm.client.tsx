@@ -17,7 +17,7 @@ export default function LoginForm() {
   const router = useRouter();
   const { control, password, onSubmit } = useLogin({
     onSuccess: () => {
-      router.replace(`/${ROUTES.HOME}`);
+      router.push(`/${ROUTES.HOME}`);
     },
   });
 

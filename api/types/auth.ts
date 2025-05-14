@@ -6,7 +6,9 @@ export type LoginPayload = {
 };
 
 export type LoginResponse = ApiResponse<{
-  access_token: string;
+  token: {
+    access_token: string;
+  };
   user: {
     created_at: string;
     email: string;
