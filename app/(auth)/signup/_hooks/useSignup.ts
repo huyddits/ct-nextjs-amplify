@@ -4,6 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { InferType, object, string, ref } from 'yup';
 import { UserApi } from '@/api';
 import dayjs from 'dayjs';
+import { AccountType, MeasurementUnit } from '@/utils/types';
 type UseSignupOptions = {
   onSuccess?: () => void;
   onFailure?: (message: string) => void;
@@ -12,7 +13,9 @@ type UseSignupOptions = {
 export const useSignup = (options: UseSignupOptions) => {
   const formSchema = useMemo(() => {
     return object().shape({
-      userType: string().oneOf(['athlete', 'coach']).required('Please select a user type'),
+      userType: string()
+        .oneOf([AccountType.Athlete, AccountType.Coach])
+        .required('Please select a user type'),
       firstName: string()
         .required('Please enter your first name')
         .max(50, 'First name cannot exceed 50 characters'),
@@ -39,7 +42,9 @@ export const useSignup = (options: UseSignupOptions) => {
       cheerStyle: string().required('Please select style of cheer'),
       role: string().required('Please select your role'),
       equipment: string().notRequired().nonNullable(),
-      measurementUnit: string().required('Please select your measurement unit'),
+      measurementUnit: string()
+        .oneOf([MeasurementUnit.Imperial, MeasurementUnit.Metric, ''])
+        .required('Please select your measurement unit'),
     });
   }, []);
 
@@ -47,7 +52,7 @@ export const useSignup = (options: UseSignupOptions) => {
 
   const DEFAULT_FORM: Required<FormType> = {
     cheerStyle: '',
-    userType: 'athlete',
+    userType: AccountType.Athlete,
     firstName: '',
     cheerType: '',
     confirmPassword: '',
@@ -78,6 +83,7 @@ export const useSignup = (options: UseSignupOptions) => {
   const onValid = async (data: FormType) => {
     try {
       const response = await UserApi.registerUser({
+        account_type: data.userType,
         cheer_style_id: Number(data.cheerStyle),
         cheer_type_id: Number(data.cheerType),
         date_of_birth: dayjs(data.dateOfBirth).toISOString(),
@@ -87,6 +93,7 @@ export const useSignup = (options: UseSignupOptions) => {
         last_name: data.lastName,
         password: data.password,
         role_id: +data.role,
+        measurement_unit: data.measurementUnit as MeasurementUnit,
       });
       console.log('🚀 ~ onValid ~ response:', response);
       options?.onSuccess?.();

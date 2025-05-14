@@ -1,3 +1,5 @@
+import { AccountType, MeasurementUnit } from '../types';
+
 // TODO(ducnm): Check usage
 export const CHEER_STYLE_OPTIONS = [
   { label: 'All Girl', value: 'all-girl' },
@@ -46,11 +48,11 @@ export const EQUIPMENT_OPTIONS = [
 ];
 
 export const MEASUREMENT_UNIT_OPTIONS = [
-  { value: 'imperial', label: 'Imperial (lb, ft)' },
-  { value: 'metric', label: 'Metric (kg, m)' },
+  { value: MeasurementUnit.Imperial, label: 'Imperial (lb, ft)' },
+  { value: MeasurementUnit.Metric, label: 'Metric (kg, m)' },
 ];
 
 export const USER_TYPE_OPTIONS = [
-  { value: 'athlete', label: 'Athlete' },
-  { value: 'coach', label: 'Coach' },
+  { value: AccountType.Athlete, label: 'Athlete' },
+  { value: AccountType.Coach, label: 'Coach' },
 ];
