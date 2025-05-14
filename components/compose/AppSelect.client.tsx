@@ -13,7 +13,7 @@ export type SelectOption = {
 
 interface AppSelectProps {
   id?: string;
-  label?: string;
+  label?: string | React.JSX.Element;
   required?: boolean;
   options: SelectOption[];
   selectedValue?: string;
@@ -37,7 +37,7 @@ export default function AppSelect({
   errorMessage,
   selectedValue,
   onChangeSelected,
-}: AppSelectProps) {
+}: Readonly<AppSelectProps>) {
   const [isChanged, setIsChanged] = useState(false);
   const selectedLabel = defaultLabel ?? options.find(o => o.value === selectedValue)?.label;
 
@@ -50,11 +50,14 @@ export default function AppSelect({
   );
   return (
     <div className={twMerge('space-y-2', className)}>
-      {label && (
-        <Label id={id}>
-          {label} {required && <span className="text-red-600">*</span>}
-        </Label>
-      )}
+      {label &&
+        (label instanceof React.Component ? (
+          label
+        ) : (
+          <Label id={id}>
+            {label} {required && <span className="text-red-600">*</span>}
+          </Label>
+        ))}
       <Select value={selectedValue} onValueChange={onValueChange}>
         <SelectTrigger aria-labelledby={id} className={fullWidth ? 'w-full' : ''}>
           {!isChanged ? (
