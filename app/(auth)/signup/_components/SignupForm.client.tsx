@@ -19,8 +19,8 @@ import { AppInput, AppRadioGroup, AppSelect } from '@/components/compose';
 import { MEASUREMENT_UNIT_OPTIONS, ROUTES, USER_TYPE_OPTIONS } from '@/utils/constants';
 import { useCategories } from '@/hooks';
 import { useSignup } from '../_hooks';
-import { SSOViaSocial } from '@/app/_components';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function SignupForm() {
   const router = useRouter();
@@ -31,9 +31,13 @@ export default function SignupForm() {
     equipments: equipmentOptions,
     measurementUnits: measurementUnitOptions,
   } = useCategories();
-  const { control, userType, onSubmit, isValid } = useSignup({
+  const { control, userType, isValid, onSubmit, trigger } = useSignup({
     onSuccess: () => {
+      toast.success('Account create successfully');
       router.push(`/${ROUTES.LOGIN}`);
+    },
+    onFailure: () => {
+      toast.error('Something went wrong');
     },
   });
 
@@ -69,6 +73,7 @@ export default function SignupForm() {
                 errorMessage={error?.message}
                 required
                 {...field}
+                onBlur={() => trigger('firstName')}
               />
             )}
           />
@@ -85,6 +90,7 @@ export default function SignupForm() {
                   errorMessage={error?.message}
                   required
                   {...field}
+                  onBlur={() => trigger('lastName')}
                 />
               );
             }}
@@ -103,6 +109,7 @@ export default function SignupForm() {
                 errorMessage={error?.message}
                 required
                 {...field}
+                onBlur={() => trigger('email')}
               />
             );
           }}
@@ -288,7 +295,7 @@ export default function SignupForm() {
         </Button>
       </form>
 
-      <div className="mt-6">
+      {/* <div className="mt-6">
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200"></div>
@@ -298,8 +305,8 @@ export default function SignupForm() {
           </div>
         </div>
 
-        {/* <SSOViaSocial type="signup" /> */}
-      </div>
+        <SSOViaSocial type="signup" />
+      </div> */}
     </div>
   );
 }

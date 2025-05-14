@@ -3,10 +3,10 @@ import { useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { InferType, object, string, ref } from 'yup';
 import { UserApi } from '@/api';
-
+import dayjs from 'dayjs';
 type UseSignupOptions = {
   onSuccess?: () => void;
-  onFailure?: () => void;
+  onFailure?: (message: string) => void;
 };
 
 export const useSignup = (options: UseSignupOptions) => {
@@ -63,6 +63,7 @@ export const useSignup = (options: UseSignupOptions) => {
 
   const {
     control,
+    trigger,
     setValue,
     handleSubmit,
     formState: { isValid },
@@ -71,16 +72,15 @@ export const useSignup = (options: UseSignupOptions) => {
     defaultValues: {
       ...DEFAULT_FORM,
     },
-    mode: 'onBlur',
+    mode: 'onChange',
   });
 
   const onValid = async (data: FormType) => {
-    console.log(data);
     try {
       const response = await UserApi.registerUser({
         cheer_style_id: Number(data.cheerStyle),
         cheer_type_id: Number(data.cheerType),
-        date_of_birth: data.dateOfBirth,
+        date_of_birth: dayjs(data.dateOfBirth).toISOString(),
         email: data.email,
         equipment_ids: data.equipment ? [+data.equipment] : [],
         first_name: data.firstName,
@@ -88,7 +88,7 @@ export const useSignup = (options: UseSignupOptions) => {
         password: data.password,
         role_id: +data.role,
       });
-
+      console.log('🚀 ~ onValid ~ response:', response);
       options?.onSuccess?.();
     } catch (error) {
       console.log(error);
@@ -104,13 +104,14 @@ export const useSignup = (options: UseSignupOptions) => {
   const userType = useWatch({ control, name: 'userType' });
 
   useEffect(() => {
-    setValue('role', userType === 'coach' ? 'coach' : 'athlete');
+    setValue('role', userType === 'coach' ? 'coach' : '');
   }, [userType]);
 
   return {
     isValid,
     userType,
     control,
+    trigger,
     onSubmit,
   };
 };
