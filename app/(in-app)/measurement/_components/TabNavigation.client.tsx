@@ -18,16 +18,10 @@ export default function TabNavigation() {
   return (
     <Tabs defaultValue={defaultValue} onValueChange={onValueChange}>
       <TabsList className="flex">
-        <TabsTrigger
-          value={TAB_VALUES[0]}
-          className="flex-1 flex text-gray-600 py-2 px-4 text-center data-[state=active]:bg-primary data-[state=active]:text-white"
-        >
+        <TabsTrigger value={TAB_VALUES[0]} className="tab-navigation-item">
           New Measurement
         </TabsTrigger>
-        <TabsTrigger
-          value={TAB_VALUES[1]}
-          className="flex-1 flex text-gray-600 py-2 px-4 text-center data-[state=active]:bg-primary data-[state=active]:text-white"
-        >
+        <TabsTrigger value={TAB_VALUES[1]} className="tab-navigation-item">
           Team Data
         </TabsTrigger>
       </TabsList>
