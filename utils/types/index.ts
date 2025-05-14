@@ -14,3 +14,13 @@ export enum SocialProvider {
   Instagram = 'INSTAGRAM',
   Twitter = 'TWITTER',
 }
+
+export enum AccountType {
+  Athlete = 'athlete',
+  Coach = 'coach',
+}
+
+export enum MeasurementUnit {
+  Imperial = 'imperial',
+  Metric = 'metric',
+}
