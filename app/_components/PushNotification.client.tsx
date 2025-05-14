@@ -1,98 +1,98 @@
-'use client';
+// 'use client';
 
-import { useState, useEffect } from 'react';
-import { subscribeUser, unsubscribeUser, sendNotification } from '../actions';
-import { Button } from '@/components/ui/button';
+// import { useState, useEffect } from 'react';
+// import { subscribeUser, unsubscribeUser, sendNotification } from '../actions';
+// import { Button } from '@/components/ui/button';
 
-function urlBase64ToUint8Array(base64String: string) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+// function urlBase64ToUint8Array(base64String: string) {
+//   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+//   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
 
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
+//   const rawData = window.atob(base64);
+//   const outputArray = new Uint8Array(rawData.length);
 
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-}
+//   for (let i = 0; i < rawData.length; ++i) {
+//     outputArray[i] = rawData.charCodeAt(i);
+//   }
+//   return outputArray;
+// }
 
-export default function PushNotification() {
-  const [isSupported, setIsSupported] = useState(false);
-  const [subscription, setSubscription] = useState<PushSubscription | null>(null);
-  const [message, setMessage] = useState('');
+// export default function PushNotification() {
+//   const [isSupported, setIsSupported] = useState(false);
+//   const [subscription, setSubscription] = useState<PushSubscription | null>(null);
+//   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    if (
-      'serviceWorker' in navigator &&
-      'PushManager' in window &&
-      process.env.NODE_ENV === 'production'
-    ) {
-      setIsSupported(true);
-      registerServiceWorker();
-    }
-  }, []);
+//   useEffect(() => {
+//     if (
+//       'serviceWorker' in navigator &&
+//       'PushManager' in window &&
+//       process.env.NODE_ENV === 'production'
+//     ) {
+//       setIsSupported(true);
+//       registerServiceWorker();
+//     }
+//   }, []);
 
-  async function registerServiceWorker() {
-    const registration = await navigator.serviceWorker.register('/sw.js', {
-      scope: '/',
-      updateViaCache: 'none',
-    });
-    const sub = await registration.pushManager.getSubscription();
-    setSubscription(sub);
-  }
+//   async function registerServiceWorker() {
+//     const registration = await navigator.serviceWorker.register('/sw.js', {
+//       scope: '/',
+//       updateViaCache: 'none',
+//     });
+//     const sub = await registration.pushManager.getSubscription();
+//     setSubscription(sub);
+//   }
 
-  async function subscribeToPush() {
-    const registration = await navigator.serviceWorker.ready;
-    console.log('🚀 ~ subscribeToPush ~ registration:', registration);
-    const sub = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
-    });
-    setSubscription(sub);
-    const serializedSub = JSON.parse(JSON.stringify(sub));
-    console.log('🚀 ~ subscribeToPush ~ serializedSub:', serializedSub);
-    await subscribeUser(serializedSub);
-  }
+//   async function subscribeToPush() {
+//     const registration = await navigator.serviceWorker.ready;
+//     console.log('🚀 ~ subscribeToPush ~ registration:', registration);
+//     const sub = await registration.pushManager.subscribe({
+//       userVisibleOnly: true,
+//       applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
+//     });
+//     setSubscription(sub);
+//     const serializedSub = JSON.parse(JSON.stringify(sub));
+//     console.log('🚀 ~ subscribeToPush ~ serializedSub:', serializedSub);
+//     await subscribeUser(serializedSub);
+//   }
 
-  async function unsubscribeFromPush() {
-    await subscription?.unsubscribe();
-    setSubscription(null);
-    await unsubscribeUser();
-  }
+//   async function unsubscribeFromPush() {
+//     await subscription?.unsubscribe();
+//     setSubscription(null);
+//     await unsubscribeUser();
+//   }
 
-  async function sendTestNotification() {
-    if (subscription) {
-      await sendNotification(message);
-      setMessage('');
-    }
-  }
+//   async function sendTestNotification() {
+//     if (subscription) {
+//       await sendNotification(message);
+//       setMessage('');
+//     }
+//   }
 
-  if (!isSupported) {
-    return <p>Push notifications are not supported in this browser.</p>;
-  }
+//   if (!isSupported) {
+//     return <p>Push notifications are not supported in this browser.</p>;
+//   }
 
-  return (
-    <div>
-      <h3 className="font-bold mb-2">Push Notifications</h3>
-      {subscription ? (
-        <>
-          <p>You are subscribed to push notifications.</p>
-          <Button onClick={unsubscribeFromPush}>Unsubscribe</Button>
-          <input
-            type="text"
-            placeholder="Enter notification message"
-            value={message}
-            onChange={e => setMessage(e.target.value)}
-          />
-          <button onClick={sendTestNotification}>Send Test</button>
-        </>
-      ) : (
-        <>
-          <p className="mb-2">You are not subscribed to push notifications.</p>
-          <Button onClick={subscribeToPush}>Subscribe</Button>
-        </>
-      )}
-    </div>
-  );
-}
+//   return (
+//     <div>
+//       <h3 className="font-bold mb-2">Push Notifications</h3>
+//       {subscription ? (
+//         <>
+//           <p>You are subscribed to push notifications.</p>
+//           <Button onClick={unsubscribeFromPush}>Unsubscribe</Button>
+//           <input
+//             type="text"
+//             placeholder="Enter notification message"
+//             value={message}
+//             onChange={e => setMessage(e.target.value)}
+//           />
+//           <button onClick={sendTestNotification}>Send Test</button>
+//         </>
+//       ) : (
+//         <>
+//           <p className="mb-2">You are not subscribed to push notifications.</p>
+//           <Button onClick={subscribeToPush}>Subscribe</Button>
+//         </>
+//       )}
+//     </div>
+//   );
+// }
