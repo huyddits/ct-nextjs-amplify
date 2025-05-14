@@ -1,9 +1,9 @@
-"use client";
-import React, { JSX, InputHTMLAttributes, useState } from "react";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { twMerge } from "tailwind-merge";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+'use client';
+import React, { JSX, InputHTMLAttributes, useState, useMemo } from 'react';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { twMerge } from 'tailwind-merge';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 interface AppInputProps extends React.HTMLAttributes<HTMLDivElement> {
   id?: string;
@@ -13,35 +13,46 @@ interface AppInputProps extends React.HTMLAttributes<HTMLDivElement> {
   password?: boolean;
   inputProps?: InputHTMLAttributes<HTMLInputElement>;
   errorMessage?: string;
+  postfix: string;
 }
 
 export default function AppInput({
   id,
   icon,
   label,
+  postfix,
   required,
   password,
   inputProps,
   errorMessage,
   ...containerProps
-}: AppInputProps) {
+}: Readonly<AppInputProps>) {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
+    setShowPassword(prev => !prev);
   };
 
+  const inputType = useMemo(() => {
+    let defaultType = 'text';
+    if (password) {
+      if (!showPassword) {
+        defaultType = 'password';
+      }
+    } else if (inputProps?.type) {
+      defaultType = inputProps.type;
+    }
+    return defaultType;
+  }, [password, showPassword, inputProps?.type]);
+
   return (
-    <div
-      {...containerProps}
-      className={twMerge("space-y-2", containerProps.className)}
-    >
+    <div {...containerProps} className={twMerge('space-y-2', containerProps.className)}>
       {label && (
         <Label htmlFor={id}>
           {label}
           {required && <span className="text-red-600">*</span>}
         </Label>
       )}
-      <div className="relative">
+      <div className="relative flex items-stretch">
         {icon && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             {icon}
@@ -49,15 +60,15 @@ export default function AppInput({
         )}
         <Input
           id={id}
-          type={password ? (showPassword ? "text" : "password") : "text"}
-          className="pl-10"
+          type={inputType}
+          className={twMerge(icon ? 'pl-10' : 'pl-3', postfix && 'pr-20')}
           {...inputProps}
         />
         {password && (
           <button
             type="button"
             className="absolute inset-y-0 right-0 pr-3 flex items-center"
-            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
             onClick={togglePasswordVisibility}
           >
             {showPassword ? (
@@ -66,6 +77,11 @@ export default function AppInput({
               <EyeIcon className="icon-input" />
             )}
           </button>
+        )}
+        {postfix && (
+          <div className="absolute top-0 right-0 h-full bg-gray-100 border border-l-0 border-gray-300 rounded-r-md text-gray-500 flex items-center px-3">
+            {postfix}
+          </div>
         )}
       </div>
       {errorMessage && (
