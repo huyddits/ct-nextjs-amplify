@@ -13,7 +13,7 @@ interface AppInputProps extends React.HTMLAttributes<HTMLDivElement> {
   password?: boolean;
   inputProps?: InputHTMLAttributes<HTMLInputElement>;
   errorMessage?: string;
-  postfix: string;
+  postfix?: string;
 }
 
 export default function AppInput({

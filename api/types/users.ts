@@ -1,4 +1,4 @@
-import { ApiResponse } from '@/utils/types';
+import { AccountType, ApiResponse, MeasurementUnit } from '@/utils/types';
 
 export type CreateUserPayload = {
   first_name: string;
@@ -10,6 +10,8 @@ export type CreateUserPayload = {
   cheer_style_id: number;
   role_id: number;
   equipment_ids: number[];
+  account_type: AccountType;
+  measurement_unit: MeasurementUnit;
 };
 
 export type CreateUserResponse = ApiResponse<
