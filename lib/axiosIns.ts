@@ -32,6 +32,9 @@ axiosIns.interceptors.response.use(
       toast.error(errorMessage);
     } else if (error.response?.status === 500) {
       console.error('Server error occurred');
+    } else if ((error?.response?.data as { message: string })?.message) {
+      const dataResponse = error?.response?.data as { message: string };
+      toast.error(dataResponse.message);
     }
     console.log('🚀 ~ error:', error);
     return Promise.reject(error);

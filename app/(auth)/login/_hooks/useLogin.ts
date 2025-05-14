@@ -32,10 +32,10 @@ export const useLogin = (options: UseLoginOptions) => {
   const password = useWatch({ control, name: 'password', defaultValue: '' });
 
   const onValid = async (data: FormPayload) => {
-    console.log(data);
     try {
       const response = await AuthApi.login(data);
-      const accessToken = response.data.data.access_token;
+      console.log(response.data.data);
+      const accessToken = response.data.data.token.access_token;
       setToken(accessToken);
       options?.onSuccess?.({ token: accessToken });
     } catch (error) {
