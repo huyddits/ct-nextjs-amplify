@@ -5,6 +5,7 @@ export default function MeasurementLayout({ children }: { children: React.ReactN
     <div>
       <TabNavigation />
       <div>{children}</div>
+      <div className="h-32" />
     </div>
   );
 }
