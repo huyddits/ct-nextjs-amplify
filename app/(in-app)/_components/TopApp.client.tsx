@@ -35,7 +35,11 @@ export default function TopApp() {
   };
 
   if (!token) {
-    return <div></div>;
+    return null;
+  }
+
+  if (pathname.startsWith(`/${ROUTES.TRAINING}`) || pathname.startsWith(`/${ROUTES.MEASUREMENT}`)) {
+    return null;
   }
 
   return (
