@@ -33,20 +33,20 @@ deploy:
     - trainer
   script:
     - echo "🌐 Starting deployment to AWS Amplify..."
-    - echo "🔑 Configuring AWS credentials..."
+    - echo "🔑 Configuring AWS credentials... $AWS_ACCESS_KEY_ID"
     - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-    - echo "⚙️ Configuring AWS region to ap-southeast-1..."
-    - aws configure set region ap-southeast-1
+    - echo "⚙️ Configuring AWS region to $STAGING_AWS_REGION..."
+    - aws configure set region $STAGING_AWS_REGION
     - echo "🔍 Verifying AWS authentication..."
     - aws sts get-caller-identity
     - echo "📋 Checking deployment file..."
     - ls -la deploy.zip
     - echo "📤 Deploying application to Amplify..."
-    - aws amplify start-deployment --app-id $STAGING_AMPLIFY_APP_ID --branch-name staging --zip-file fileb://deploy.zip
+    - aws amplify start-deployment --app-id $STAGING_AMPLIFY_APP_ID --branch-name $STAGING_BRANCH --zip-file fileb://deploy.zip
     - echo "🔎 Checking deployment status..."
     - sleep 5
-    - aws amplify list-jobs --app-id $STAGING_AMPLIFY_APP_ID --branch-name staging --max-results 1
+    - aws amplify list-jobs --app-id $STAGING_AMPLIFY_APP_ID --branch-name $STAGING_BRANCH --max-results 1
     - echo "🎉 Deployment process completed successfully!"
   only:
     - staging
