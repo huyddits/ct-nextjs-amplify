@@ -40,9 +40,14 @@ deploy:
     - aws configure set region ap-southeast-1
     - echo "🔍 Verifying AWS authentication..."
     - aws sts get-caller-identity
+    - echo "📋 Checking deployment file..."
+    - ls -la deploy.zip
     - echo "📤 Deploying application to Amplify..."
-    - aws amplify start-deployment --app-id $STAGING_AMPLIFY_APP_ID --branch-name staging --source-url file://deploy.zip
-    - echo "🎉 Deployment completed successfully! Your application is now live."
+    - aws amplify start-deployment --app-id $STAGING_AMPLIFY_APP_ID --branch-name staging --zip-file fileb://deploy.zip
+    - echo "🔎 Checking deployment status..."
+    - sleep 5
+    - aws amplify list-jobs --app-id $STAGING_AMPLIFY_APP_ID --branch-name staging --max-results 1
+    - echo "🎉 Deployment process completed successfully!"
   only:
     - staging
   dependencies:
