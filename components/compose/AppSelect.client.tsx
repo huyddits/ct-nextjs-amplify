@@ -1,9 +1,9 @@
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
-import { twMerge } from 'tailwind-merge';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { SelectTrigger, Select, SelectContent, SelectItem, SelectValue } from '../ui/select';
+import { cn } from '@/lib/utils';
 
 export type SelectOption = {
   label: string;
@@ -49,7 +49,7 @@ export default function AppSelect({
     [onChangeSelected]
   );
   return (
-    <div className={twMerge('space-y-2', className)}>
+    <div className={cn('space-y-2', className)}>
       {label &&
         (label instanceof React.Component ? (
           label
