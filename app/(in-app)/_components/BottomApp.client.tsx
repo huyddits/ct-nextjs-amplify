@@ -1,10 +1,10 @@
 'use client';
 
 import {
-  UserCircle2Icon,
-  DumbbellIcon,
   RulerIcon,
-  HeartPulseIcon,
+  TargetIcon,
+  DumbbellIcon,
+  UserCircle2Icon,
   ClipboardCheckIcon,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -14,7 +14,6 @@ import { ROUTES } from '@/utils/constants';
 export default function BottomApp() {
   const { token } = useAuthStore();
   const pathname = usePathname();
-  console.log(pathname);
   const listItems = [
     {
       name: 'Home',
@@ -32,9 +31,9 @@ export default function BottomApp() {
       icon: RulerIcon,
     },
     {
-      name: 'Health',
-      href: '/health',
-      icon: HeartPulseIcon,
+      name: 'Hit/Miss',
+      href: `/${ROUTES.HIT_MISS}`,
+      icon: TargetIcon,
     },
     {
       name: 'Report',

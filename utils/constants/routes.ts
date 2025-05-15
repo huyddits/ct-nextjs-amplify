@@ -14,6 +14,11 @@ export const ROUTES = {
   MEASUREMENT: 'measurement',
   MEASUREMENT_NEW: 'measurement/new',
   MEASUREMENT_TEAM_DATA: 'measurement/team-data',
+  HIT_MISS: 'hit-miss',
+  HIT_MISS_ROUTINES: 'hit-miss/routines',
+  HIT_MISS_ROUTINES_NEW: 'hit-miss/routines/new',
+  HIT_MISS_REPORT: 'hit-miss/report',
+  HIT_MISS_DATA: 'hit-miss/data',
 };
 
 export const WHITE_LIST = [`${ROUTES.TERMS_AND_CONDITIONS}`, `/${ROUTES.ABOUT_US}`];

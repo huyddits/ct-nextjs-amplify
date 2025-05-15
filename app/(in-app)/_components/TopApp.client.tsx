@@ -38,7 +38,11 @@ export default function TopApp() {
     return null;
   }
 
-  if (pathname.startsWith(`/${ROUTES.TRAINING}`) || pathname.startsWith(`/${ROUTES.MEASUREMENT}`)) {
+  if (
+    pathname.startsWith(`/${ROUTES.TRAINING}`) ||
+    pathname.startsWith(`/${ROUTES.MEASUREMENT}`) ||
+    pathname.startsWith(`/${ROUTES.HIT_MISS}`)
+  ) {
     return null;
   }
 

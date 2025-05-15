@@ -1,2 +1,2 @@
-export { default as TabNavigation } from './TabNavigation.client';
+export { default as TabNavigationMeasurement } from './TabNavigationMeasurement.client';
 export { default as VideoPlayer } from './VideoPlayer';
