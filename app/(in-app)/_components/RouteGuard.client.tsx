@@ -1,19 +1,25 @@
 'use client';
 import { AppLoadingFullScreen } from '@/components/compose';
 import { useAuthStore } from '@/store';
-import { ROUTES, STORAGE_KEY } from '@/utils/constants';
-import { useRouter } from 'next/navigation';
+import { ROUTES, WHITE_LIST, STORAGE_KEY } from '@/utils/constants';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function RouteGuard() {
   const router = useRouter();
+  const pathname = usePathname();
   const { setToken } = useAuthStore();
   const [isChecking, setIsChecking] = useState(true);
 
+  console.log({ pathname });
+
   useEffect(() => {
     const token = localStorage.getItem(STORAGE_KEY.TOKEN);
+
     if (!token) {
-      router.replace(`/${ROUTES.WELCOME}`);
+      if (!WHITE_LIST.includes(pathname)) {
+        router.replace(`/${ROUTES.WELCOME}`);
+      }
     } else {
       setToken(token);
     }
