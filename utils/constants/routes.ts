@@ -15,3 +15,5 @@ export const ROUTES = {
   MEASUREMENT_NEW: 'measurement/new',
   MEASUREMENT_TEAM_DATA: 'measurement/team-data',
 };
+
+export const WHITE_LIST = [`${ROUTES.TERMS_AND_CONDITIONS}`, `/${ROUTES.ABOUT_US}`];
