@@ -15,12 +15,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Controller } from 'react-hook-form';
-import { AppInput, AppRadioGroup, AppSelect } from '@/components/compose';
+import { AppDatePicker, AppInput, AppRadioGroup, AppSelect } from '@/components/compose';
 import { MEASUREMENT_UNIT_OPTIONS, ROUTES, USER_TYPE_OPTIONS } from '@/utils/constants';
 import { useCategories } from '@/hooks';
 import { useSignup } from '../_hooks';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import AppMultipleSelect from '@/components/compose/AppMultipleSelect';
+import { PasswordStrength } from '../../_components';
 
 export default function SignupForm() {
   const router = useRouter();
@@ -29,9 +31,9 @@ export default function SignupForm() {
     cheerStyles: cheerStyleOptions,
     cheerTypes: cheerTypeOptions,
     equipments: equipmentOptions,
-    measurementUnits: measurementUnitOptions,
+    measurementUnits: _measurementUnitOptions,
   } = useCategories();
-  const { control, userType, isValid, onSubmit, trigger } = useSignup({
+  const { control, isValid, userType, password, onSubmit, trigger } = useSignup({
     onSuccess: () => {
       toast.success('Account create successfully');
       router.push(`/${ROUTES.LOGIN}`);
@@ -131,6 +133,8 @@ export default function SignupForm() {
           )}
         />
 
+        <PasswordStrength password={password} />
+
         <Controller
           control={control}
           name="confirmPassword"
@@ -151,13 +155,15 @@ export default function SignupForm() {
           control={control}
           name="dateOfBirth"
           render={({ field, fieldState: { error } }) => (
-            <AppInput
-              label="Date of Birth"
+            <AppDatePicker
               icon={<CalendarIcon className="icon-input" />}
-              inputProps={{ type: 'date', placeholder: 'Date of Birth' }}
+              label="Date of Birth"
+              dateFormat="MM/dd/yyyy"
+              placeholder="mm/dd/yyyy"
+              value={field.value}
+              onChange={field.onChange}
               errorMessage={error?.message}
-              required
-              {...field}
+              fullWidth
             />
           )}
         />
@@ -241,14 +247,13 @@ export default function SignupForm() {
           control={control}
           name="equipment"
           render={({ field: { value, onChange }, fieldState: { error } }) => (
-            <AppSelect
+            <AppMultipleSelect
               label="Equipment Access"
               options={equipmentOptions}
-              selectedValue={value}
+              selectedValues={value}
               onChangeSelected={onChange}
               placeholder="Select Equipment"
               errorMessage={error?.message}
-              fullWidth
             />
           )}
         />
