@@ -17,7 +17,7 @@ export default function TabNavigation() {
 
   return (
     <Tabs defaultValue={defaultValue} onValueChange={onValueChange}>
-      <TabsList className="flex sticky top-0 z-50 bg-white">
+      <TabsList className="flex fixed top-0 left-0 right-0 z-50 bg-white">
         <TabsTrigger value={TAB_VALUES[0]} className="tab-navigation-item">
           Strength
         </TabsTrigger>
