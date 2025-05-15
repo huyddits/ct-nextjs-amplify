@@ -7,7 +7,7 @@ import { MailIcon, LockIcon, ChevronRightIcon } from 'lucide-react';
 import { Controller } from 'react-hook-form';
 import { AppInput } from '@/components/compose';
 import { useLogin } from '../_hooks';
-import { SSOViaSocial } from '@/app/_components';
+// import { SSOViaSocial } from '@/app/_components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/utils/constants';
 import PasswordStrength from '@/app/(auth)/_components/PasswordStrength.client';
@@ -62,7 +62,7 @@ export default function LoginForm() {
         </Button>
       </form>
 
-      <div className="mt-6">
+      {/* <div className="mt-6">
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200"></div>
@@ -73,7 +73,7 @@ export default function LoginForm() {
         </div>
 
         <SSOViaSocial type="login" />
-      </div>
+      </div> */}
     </div>
   );
 }

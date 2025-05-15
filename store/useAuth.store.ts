@@ -11,6 +11,7 @@ export const useAuthStore = create<AuthStore>((set, _get) => {
   return {
     token: null,
     setToken: value => {
+      if (!value) return;
       set({ token: value });
       localStorage.setItem(STORAGE_KEY.TOKEN, value ?? '');
     },

@@ -12,7 +12,7 @@ export default function WelcomePage() {
     <div>
       <HeroSection />
 
-      <main className="flex-1 container ">
+      <main className="flex-1 container px-4 py-12">
         <AboutSection />
         <FeatureSection />
         <BenefitSection />
