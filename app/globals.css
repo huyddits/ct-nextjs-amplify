@@ -163,7 +163,7 @@
 }
 
 .container {
-  @apply 3xl:max-w-[100rem] 2xl:max-w-[90rem] xl:max-w-[80rem] lg:max-w-[64rem] md:max-w-[48rem] mx-auto w-full px-4 py-12;
+  @apply 3xl:max-w-[100rem] 2xl:max-w-[90rem] xl:max-w-[80rem] lg:max-w-[64rem] md:max-w-[48rem] mx-auto w-full;
 }
 
 /* Add background */
@@ -192,4 +192,43 @@
 
 .tab-navigation-item {
   @apply flex-1 flex text-gray-600 py-2 px-4 text-center bg-white data-[state=active]:bg-primary data-[state=active]:text-white;
+}
+
+/* add shadow */
+.shadow-top-sm {
+  @apply shadow-[0_-1px_3px_rgba(0,0,0,0.05)];
+}
+
+.shadow-top {
+  @apply shadow-[0_-2px_6px_rgba(0,0,0,0.08)];
+}
+
+.shadow-top-lg {
+  @apply shadow-[0_-4px_12px_rgba(0,0,0,0.12)];
+}
+
+/* add position */
+.position-avoid-top-app {
+  @apply fixed top-[64px] left-0 right-0 z-10;
+}
+
+.position-avoid-top-nav {
+  @apply fixed top-[36px] left-0 right-0 z-10;
+}
+
+.position-avoid-bottom-app {
+  @apply fixed bottom-[60px] left-0 right-0 z-10;
+}
+
+/* add padding */
+.padding-top-app {
+  @apply pt-[64px];
+}
+
+.padding-top-nav {
+  @apply pt-[36px];
+}
+
+.padding-bottom-app {
+  @apply pb-[60px];
 }
