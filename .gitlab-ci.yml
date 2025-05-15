@@ -4,25 +4,39 @@ stages:
 
 build:
   stage: build
-  image: node:18
+  image: node:20
+  tags:
+    - trainer
   script:
+    - echo "🚀 Starting build process for application..."
+    - echo "📦 Installing dependencies with npm ci..."
     - npm ci
+    - echo "🔨 Building application..."
     - npm run build
-    - cd .next
-    - zip -r ../dist.zip .
+    - echo "📂 Creating deployment package..."
+    - cd dist
+    - zip -r ../deploy.zip .
     - cd ..
-    - aws s3 cp dist.zip s3://cheer-trainer-artifacts/artifacts/dist.zip
+    - echo "✅ Build completed successfully! Deployment package created."
   artifacts:
     paths:
-      - dist.zip
+      - deploy.zip
   only:
     - staging
 
 deploy:
   stage: deploy
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  tags:
+    - trainer
   script:
+    - echo "🌐 Starting deployment to AWS Amplify..."
+    - echo "⚙️ Configuring AWS region to ap-southeast-1..."
     - aws configure set region ap-southeast-1
-    - aws amplify start-deployment --app-id d2cf06t0qfs9ao --branch-name staging --source-url https://cheer-trainer-artifacts.s3.ap-southeast-1.amazonaws.com/artifacts/dist.zip
+    - echo "📤 Deploying application to Amplify..."
+    - aws amplify start-deployment --app-id $STAGING_AMPLIFY_APP_ID --branch-name staging --source-url file://deploy.zip
+    - echo "🎉 Deployment completed successfully! Your application is now live."
   only:
     - staging
+  dependencies:
+    - build
