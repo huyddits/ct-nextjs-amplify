@@ -21,4 +21,8 @@ export const ROUTES = {
   HIT_MISS_DATA: 'hit-miss/data',
 };
 
+<<<<<<< HEAD
 export const WHITE_LIST = [`/${ROUTES.TERMS_AND_CONDITIONS}`, `/${ROUTES.ABOUT_US}`];
+=======
+export const WHITE_LIST = [`${ROUTES.TERMS_AND_CONDITIONS}`, `/${ROUTES.ABOUT_US}`];
+>>>>>>> 401cbbb (fix(component): fix feedback)
