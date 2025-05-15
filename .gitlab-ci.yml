@@ -9,6 +9,8 @@ build:
     - trainer
   script:
     - echo "🚀 Starting build process for application..."
+    - echo "🔧 Installing required tools..."
+    - apt-get update -qq && apt-get install -y -qq zip
     - echo "📦 Installing dependencies with npm ci..."
     - npm ci
     - echo "🔨 Building application..."
@@ -31,8 +33,13 @@ deploy:
     - trainer
   script:
     - echo "🌐 Starting deployment to AWS Amplify..."
+    - echo "🔑 Configuring AWS credentials..."
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
     - echo "⚙️ Configuring AWS region to ap-southeast-1..."
     - aws configure set region ap-southeast-1
+    - echo "🔍 Verifying AWS authentication..."
+    - aws sts get-caller-identity
     - echo "📤 Deploying application to Amplify..."
     - aws amplify start-deployment --app-id $STAGING_AMPLIFY_APP_ID --branch-name staging --source-url file://deploy.zip
     - echo "🎉 Deployment completed successfully! Your application is now live."
