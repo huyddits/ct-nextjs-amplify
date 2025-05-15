@@ -3,15 +3,14 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { MailIcon, LockIcon, ChevronRightIcon } from 'lucide-react';
 import { Controller } from 'react-hook-form';
 import { AppInput } from '@/components/compose';
 import { useLogin } from '../_hooks';
-import PasswordStrength from './PasswordStrength.client';
 import { SSOViaSocial } from '@/app/_components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/utils/constants';
+import PasswordStrength from '@/app/(auth)/_components/PasswordStrength.client';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -54,14 +53,7 @@ export default function LoginForm() {
             )}
           />
 
-          {password.length > 0 && <PasswordStrength password={password} />}
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Checkbox id="remember" />
-          <Label htmlFor="remember" className="text-sm">
-            Remember me
-          </Label>
+          <PasswordStrength password={password} />
         </div>
 
         <Button type="submit" className="w-full">
