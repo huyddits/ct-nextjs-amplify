@@ -1,11 +1,11 @@
 import React from 'react';
-import { TabNavigation } from './_components';
+import { TabNavigationMeasurement } from './_components';
 export default function MeasurementLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
-      <TabNavigation />
+      <TabNavigationMeasurement />
       <div>{children}</div>
-      <div className="h-32" />
+      <div className="h-16" />
     </div>
   );
 }
