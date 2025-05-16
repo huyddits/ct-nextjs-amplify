@@ -1,10 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { InferType, object, string, ref } from 'yup';
+import { InferType, object, string, ref, array } from 'yup';
 import { UserApi } from '@/api';
 import dayjs from 'dayjs';
 import { AccountType, MeasurementUnit } from '@/utils/types';
+import { usePasswordStrength } from '../../_hooks';
 type UseSignupOptions = {
   onSuccess?: () => void;
   onFailure?: (message: string) => void;
@@ -29,6 +30,16 @@ export const useSignup = (options: UseSignupOptions) => {
       password: string()
         .required('Please enter your password')
         .min(8, 'Password must be at least 8 characters')
+        .test('is-strong', 'Password is too weak', value => {
+          if (!value) return false;
+          const strength =
+            (value.length >= 8 ? 1 : 0) +
+            (/[A-Z]/.test(value) ? 1 : 0) +
+            (/[a-z]/.test(value) ? 1 : 0) +
+            (/\d/.test(value) ? 1 : 0) +
+            (/[^A-Za-z0-9]/.test(value) ? 1 : 0);
+          return strength >= 3; // Equivalent to 60%
+        })
         .max(100, 'Password cannot exceed 100 characters'),
       confirmPassword: string()
         .required('Please confirm your password')
@@ -41,7 +52,7 @@ export const useSignup = (options: UseSignupOptions) => {
       cheerType: string().required('Please select type of cheer'),
       cheerStyle: string().required('Please select style of cheer'),
       role: string().required('Please select your role'),
-      equipment: string().notRequired().nonNullable(),
+      equipment: array(string().required()).required(),
       measurementUnit: string()
         .oneOf([MeasurementUnit.Imperial, MeasurementUnit.Metric, ''])
         .required('Please select your measurement unit'),
@@ -62,7 +73,7 @@ export const useSignup = (options: UseSignupOptions) => {
     password: '',
     schoolName: '',
     role: '',
-    equipment: '',
+    equipment: [],
     measurementUnit: '',
   };
 
@@ -82,13 +93,14 @@ export const useSignup = (options: UseSignupOptions) => {
 
   const onValid = async (data: FormType) => {
     try {
+      console.log(data);
       const response = await UserApi.registerUser({
         account_type: data.userType,
         cheer_style_id: Number(data.cheerStyle),
         cheer_type_id: Number(data.cheerType),
         date_of_birth: dayjs(data.dateOfBirth).toISOString(),
         email: data.email,
-        equipment_ids: data.equipment ? [+data.equipment] : [],
+        equipment_ids: data.equipment.map(value => Number(value)),
         first_name: data.firstName,
         last_name: data.lastName,
         password: data.password,
@@ -109,6 +121,7 @@ export const useSignup = (options: UseSignupOptions) => {
   const onSubmit = handleSubmit(onValid, onInvalid);
 
   const userType = useWatch({ control, name: 'userType' });
+  const password = useWatch({ control, name: 'password' });
 
   useEffect(() => {
     setValue('role', userType === 'coach' ? 'coach' : '');
@@ -117,6 +130,7 @@ export const useSignup = (options: UseSignupOptions) => {
   return {
     isValid,
     userType,
+    password,
     control,
     trigger,
     onSubmit,
