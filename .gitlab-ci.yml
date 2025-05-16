@@ -10,7 +10,7 @@ build:
   script:
     - echo "🚀 Starting build process for application..."
     - echo "🔧 Installing required tools..."
-    - apt-get update -qq && apt-get install -y -qq zip
+    - apt-get update -qq && apt-get install -y -qq zip build-essential python3
     - echo "📦 Installing dependencies with npm ci..."
     - npm ci
     - echo "🔨 Building application..."
@@ -33,20 +33,42 @@ deploy:
     - trainer
   script:
     - echo "🌐 Starting deployment to AWS Amplify..."
-    - echo "🔑 Configuring AWS credentials... $AWS_ACCESS_KEY_ID"
-    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - echo "🔍 Checking environment variables..."
+    - |
+      if [ -z "$AWS_ACCESS_KEY_ID" ]; then
+        echo "❌ ERROR: AWS_ACCESS_KEY_ID is not set!"
+        exit 1
+      fi
+      if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+        echo "❌ ERROR: AWS_SECRET_ACCESS_KEY is not set!"
+        exit 1
+      fi
+      if [ -z "$STAGING_AWS_REGION" ]; then
+        echo "❌ ERROR: STAGING_AWS_REGION is not set!"
+        exit 1
+      fi
+      if [ -z "$STAGING_AMPLIFY_APP_ID" ]; then
+        echo "❌ ERROR: STAGING_AMPLIFY_APP_ID is not set!"
+        exit 1
+      fi
+      if [ -z "$STAGING_BRANCH" ]; then
+        echo "❌ ERROR: STAGING_BRANCH is not set!"
+        exit 1
+      fi
+    - echo "🔑 Configuring AWS credentials..."
+    - aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID"
+    - aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY"
     - echo "⚙️ Configuring AWS region to $STAGING_AWS_REGION..."
-    - aws configure set region $STAGING_AWS_REGION
+    - aws configure set region "$STAGING_AWS_REGION"
     - echo "🔍 Verifying AWS authentication..."
     - aws sts get-caller-identity
     - echo "📋 Checking deployment file..."
     - ls -la deploy.zip
     - echo "📤 Deploying application to Amplify..."
-    - aws amplify start-deployment --app-id $STAGING_AMPLIFY_APP_ID --branch-name $STAGING_BRANCH --zip-file fileb://deploy.zip
+    - aws amplify start-deployment --app-id "$STAGING_AMPLIFY_APP_ID" --branch-name "$STAGING_BRANCH" --zip-file fileb://deploy.zip
     - echo "🔎 Checking deployment status..."
     - sleep 5
-    - aws amplify list-jobs --app-id $STAGING_AMPLIFY_APP_ID --branch-name $STAGING_BRANCH --max-results 1
+    - aws amplify list-jobs --app-id "$STAGING_AMPLIFY_APP_ID" --branch-name "$STAGING_BRANCH" --max-results 1
     - echo "🎉 Deployment process completed successfully!"
   only:
     - staging
