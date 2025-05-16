@@ -7,16 +7,17 @@ import { MailIcon, LockIcon, ChevronRightIcon } from 'lucide-react';
 import { Controller } from 'react-hook-form';
 import { AppInput } from '@/components/compose';
 import { useLogin } from '../_hooks';
-// import { SSOViaSocial } from '@/app/_components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/utils/constants';
 import PasswordStrength from '@/app/(auth)/_components/PasswordStrength.client';
+import { toast } from 'react-toastify';
 
 export default function LoginForm() {
   const router = useRouter();
   const { control, password, onSubmit } = useLogin({
     onSuccess: () => {
       router.push(`/${ROUTES.HOME}`);
+      toast.success('Login successfully');
     },
   });
 
