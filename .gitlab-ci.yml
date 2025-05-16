@@ -13,9 +13,13 @@ build:
     - apt-get update -qq && apt-get install -y -qq zip build-essential python3
     - echo "📦 Installing dependencies with npm ci..."
     - npm ci
-    - npm rebuild --platform=linux --arch=x64
     - echo "🔨 Building application..."
-    - if [ -n "$STAGING_ENV_FILE" ]; then cp $STAGING_ENV_FILE .env; else echo "No env file provided"; fi
+    - npm install @next/swc-linux-x64-gnu @next/swc-linux-x64-musl --save-dev
+    - cd node_modules/lightningcss
+    - npm rebuild --platform=linux --arch=x64 --libc=glibc
+    - cd ../..
+    - echo "$STAGING_ENV" > .env
+    - cat .env
     - npm run build
     - echo "📂 Creating deployment package..."
     - cd dist
