@@ -45,6 +45,10 @@ export default function ForgotPasswordPage() {
     } catch (error) {
       setError('email', { message: 'Email is not valid!' });
       console.log(error);
+
+      setTimeout(() => {
+        recaptchaRef.current?.reset();
+      }, 1000);
     }
   };
 
