@@ -15,7 +15,7 @@ build:
     - npm ci
     - npm rebuild --platform=linux --arch=x64
     - echo "🔨 Building application..."
-    - cp $STAGING_ENV_FILE .env
+    - if [ -n "$STAGING_ENV_FILE" ]; then cp $STAGING_ENV_FILE .env; else echo "No env file provided"; fi
     - npm run build
     - echo "📂 Creating deployment package..."
     - cd dist
