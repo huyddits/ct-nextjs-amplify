@@ -3,6 +3,7 @@ import { Info } from 'lucide-react';
 import { AppInput, AppSelect } from '@/components/compose';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import Link from 'next/link';
 
 export default function CardioPage() {
   return (
@@ -122,10 +123,11 @@ export default function CardioPage() {
           </Button>
 
           <div className="h-6"></div>
-
-          <Button className="w-full" size="lg">
-            Past Cardio Training
-          </Button>
+          <Link href="/training/cardio/past">
+            <Button className="w-full" size="lg">
+              Past Cardio Training
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
