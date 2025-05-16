@@ -30,10 +30,7 @@ export default function StrengthPage() {
           <div className="relative mb-4">
             <AppInput
               inputProps={{
-                type: 'search',
                 placeholder: 'Search programs...',
-                value: searchQuery,
-                onChange: handleSearch,
               }}
               icon={<Search className="h-4 w-4 text-gray-400" />}
               className="w-full"
