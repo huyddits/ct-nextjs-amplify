@@ -13,6 +13,20 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+export const metadata = {
+  title: 'Cheer Trainer',
+  description: 'Cheer Trainer Descriptions',
+  manifest: '/manifest.json',
+  themeColor: '#000000',
+  viewport:
+    'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Tên ứng dụng',
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
