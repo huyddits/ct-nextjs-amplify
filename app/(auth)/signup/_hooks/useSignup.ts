@@ -93,13 +93,14 @@ export const useSignup = (options: UseSignupOptions) => {
 
   const onValid = async (data: FormType) => {
     try {
+      console.log(data);
       const response = await UserApi.registerUser({
         account_type: data.userType,
         cheer_style_id: Number(data.cheerStyle),
         cheer_type_id: Number(data.cheerType),
         date_of_birth: dayjs(data.dateOfBirth).toISOString(),
         email: data.email,
-        equipment_ids: data.equipment ? [+data.equipment] : [],
+        equipment_ids: data.equipment.map(value => Number(value)),
         first_name: data.firstName,
         last_name: data.lastName,
         password: data.password,
