@@ -27,7 +27,7 @@ export default function TabNavigation({
 
   return (
     <Tabs defaultValue={defaultValue} onValueChange={onValueChange} className={className}>
-      <TabsList className="flex">
+      <TabsList className="flex fixed top-0 left-0 right-0 z-50 bg-white">
         {listTabs.map((tab: TabOption) => (
           <TabsTrigger key={tab.value} value={tab.value} className="tab-navigation-item">
             {tab.title}
