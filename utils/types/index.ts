@@ -1,8 +1,8 @@
 export interface ApiResponse<T, K = undefined> {
   status: string;
   message: string;
-  data: T;
-  error: {
+  data?: T;
+  error?: {
     code: string;
     details: K extends undefined ? unknown : K;
   };
