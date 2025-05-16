@@ -1,9 +1,9 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import StrengthSection from './_components/StrengthSection';
+import { AppInput } from '@/components/compose';
 
 export default function StrengthPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,20 +21,22 @@ export default function StrengthPage() {
           </div>
         </div>
       </div>
-      <div className="max-w-3xl mb-4 mx-auto px-4 pt-[60px] pb-[140px]">
+      <div className="max-w-3xl mb-4 mx-auto px-4 padding-top-section padding-bottom-section">
         <Button className="w-full border-dashed border-2 " size="lg" variant="outline">
           <Plus className="h-5 w-5 mr-2" />
           Create New Program
         </Button>
         <div className="pt-4">
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              className="pl-10 h-10 bg-white"
-              placeholder="Search programs..."
-              type="search"
-              value={searchQuery}
-              onChange={handleSearch}
+            <AppInput
+              inputProps={{
+                type: 'search',
+                placeholder: 'Search programs...',
+                value: searchQuery,
+                onChange: handleSearch,
+              }}
+              icon={<Search className="h-4 w-4 text-gray-400" />}
+              className="w-full"
             />
           </div>
           <div className="space-y-4">
@@ -42,9 +44,9 @@ export default function StrengthPage() {
           </div>
         </div>
       </div>
-      <div className="fixed bottom-[60px] left-0 right-0 px-4 py-2 bg-white border-t border-gray-200">
+      <div className="fixed bottom-app left-0 right-0 px-4 py-2 bg-white border-t border-gray-200">
         <div className="max-w-3xl mx-auto flex justify-center">
-          <Button className="w-4/5 bg-[#257951] hover:bg-[#1e6040] h-10 text-sm font-medium rounded-lg">
+          <Button className="w-4/5" size="lg">
             Past Strength Training
           </Button>
         </div>

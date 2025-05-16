@@ -225,10 +225,23 @@
   @apply pt-[64px];
 }
 
+.padding-top-section {
+  @apply pt-[60px];
+}
+
 .padding-top-nav {
   @apply pt-[36px];
 }
 
 .padding-bottom-app {
   @apply pb-[60px];
+}
+
+.padding-bottom-section {
+  @apply pb-[140px];
+}
+
+/* add bottom */
+.bottom-app {
+  @apply bottom-[60px];
 }
