@@ -15,6 +15,7 @@ build:
     - npm ci
     - npm rebuild --platform=linux --arch=x64
     - echo "🔨 Building application..."
+    - cp $STAGING_ENV_FILE .env
     - npm run build
     - echo "📂 Creating deployment package..."
     - cd dist
