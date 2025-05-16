@@ -23,3 +23,22 @@ export type CreateUserResponse = ApiResponse<
   },
   {}
 >;
+
+export type ForgotPasswordPayload = {
+  email: string;
+  captcha: string;
+};
+
+export type ForgotPasswordResponse = ApiResponse<
+  {
+    token: string;
+  },
+  {
+    email: string;
+  }
+>;
+
+export type ResetPasswordPayload = {
+  token: string;
+  new_password: string;
+};
