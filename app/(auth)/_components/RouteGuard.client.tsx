@@ -10,12 +10,15 @@ export default function Redirect() {
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem(STORAGE_KEY.TOKEN);
-    if (!token) {
+    try {
+      const token = localStorage.getItem(STORAGE_KEY.TOKEN);
+      if (token) {
+        location.replace(`/${ROUTES.HOME}`);
+      }
       setIsChecking(false);
-      return;
+    } catch (error) {
+      console.log(error);
     }
-    router.replace(`/${ROUTES.HOME}`);
   }, [router]);
 
   if (isChecking) return <AppLoadingFullScreen />;

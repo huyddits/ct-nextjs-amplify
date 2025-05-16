@@ -8,6 +8,8 @@ export const ROUTES = {
   TERMS_AND_CONDITIONS: 'term-and-conditions',
   ABOUT_US: 'about-us',
   TRAINING: 'training',
+  FORGOT_PASSWORD: 'forgot-password',
+  RESET_PASSWORD: 'reset-password',
   TRAINING_STRENGTH: 'training/strength',
   TRAINING_CARDIO: 'training/cardio',
   TRAINING_TEAM_TRAINING_LOG: 'training/team-training-log',
