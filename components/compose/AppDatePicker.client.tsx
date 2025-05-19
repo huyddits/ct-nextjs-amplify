@@ -11,6 +11,7 @@ interface AppDatePickerProps {
   icon?: JSX.Element;
   label: string | React.JSX.Element;
   value: string;
+  maxDate?: Date;
   fullWidth?: boolean;
   dateFormat?: string;
   placeholder?: string;
@@ -22,6 +23,7 @@ export default function AppDatePicker({
   icon,
   label,
   value,
+  maxDate,
   fullWidth,
   dateFormat,
   placeholder,
@@ -54,6 +56,7 @@ export default function AppDatePicker({
           )}
           wrapperClassName={cn(fullWidth && 'w-full flex items-stretch')}
           placeholderText={placeholder}
+          maxDate={maxDate}
         />
       </div>
       {errorMessage && <span className="error-message">{errorMessage}</span>}
