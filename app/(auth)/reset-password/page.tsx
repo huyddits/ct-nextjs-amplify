@@ -9,9 +9,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { AppInput } from '@/components/compose';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { CheckCircleIcon } from 'lucide-react';
 import Link from 'next/link';
+import { FooterSection, LogoSection } from '../_components';
 
 const schema = object().shape({
   password: string()
@@ -80,56 +81,65 @@ export default function ResetPasswordPage() {
         <div className="flex flex-col items-center space-y-4 shadow p-5 justify-center rounded-xl">
           <CheckCircleIcon className="text-primary" size="100" />
           <h1 className="text-2xl">Password reset successfully</h1>
-          <Button variant="link" asChild>
-            <Link href={`/${ROUTES.LOGIN}`} className="text-center mb-10">
-              Back to login
-            </Link>
-          </Button>
+
+          <Link
+            href={`/${ROUTES.LOGIN}`}
+            className="text-center mb-10 text-primary font-medium hover:underline"
+          >
+            Back to login
+          </Link>
         </div>
       ) : (
-        <form onSubmit={handleSubmit(onValid, onInvalid)} className="space-y-8">
-          <div>
-            <h1 className="text-2xl font-bold text-center mb-10">Reset Password</h1>
+        <React.Fragment>
+          <LogoSection description="Reset your password" />
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <form onSubmit={handleSubmit(onValid, onInvalid)} className="space-y-8">
+              <Controller
+                control={control}
+                name="password"
+                render={({ field, fieldState: { error } }) => {
+                  return (
+                    <AppInput
+                      label="New Password"
+                      inputProps={{ placeholder: 'Enter your new password' }}
+                      errorMessage={error?.message}
+                      password
+                      {...field}
+                    />
+                  );
+                }}
+              />
+
+              <Controller
+                control={control}
+                name="confirmPassword"
+                render={({ field, fieldState: { error } }) => {
+                  return (
+                    <AppInput
+                      label="Confirm Password"
+                      inputProps={{
+                        placeholder: 'Confirm your new password',
+                      }}
+                      errorMessage={error?.message}
+                      password
+                      {...field}
+                    />
+                  );
+                }}
+              />
+              <Button type="submit" className="w-full">
+                Reset Password
+              </Button>
+            </form>
           </div>
-
-          <Controller
-            control={control}
-            name="password"
-            render={({ field, fieldState: { error } }) => {
-              return (
-                <AppInput
-                  label="New Password"
-                  inputProps={{ placeholder: 'Enter your new password' }}
-                  errorMessage={error?.message}
-                  password
-                  {...field}
-                />
-              );
-            }}
-          />
-
-          <Controller
-            control={control}
-            name="confirmPassword"
-            render={({ field, fieldState: { error } }) => {
-              return (
-                <AppInput
-                  label="Confirm Password"
-                  inputProps={{
-                    placeholder: 'Confirm your new password',
-                  }}
-                  errorMessage={error?.message}
-                  password
-                  {...field}
-                />
-              );
-            }}
-          />
-          <Button type="submit" className="w-full">
-            Reset Password
-          </Button>
-        </form>
+          <div className="text-center mt-8">
+            <Link href={`/${ROUTES.LOGIN}`} className="text-primary font-medium hover:underline">
+              Back to Login
+            </Link>
+          </div>
+        </React.Fragment>
       )}
+      <FooterSection />
     </div>
   );
 }
