@@ -20,7 +20,7 @@ export default function AvailablePlanBlock({ className }: AvailablePlanBlockProp
       <h2 className="text-sm text-gray-600 mb-3">Available Plans</h2>
 
       <div className="space-y-4">
-        <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mt-2">
+        <h3 className="text-xs font-medium text-gray-600 uppercase tracking-wider mt-2">
           Coach Plans
         </h3>
 
@@ -28,11 +28,11 @@ export default function AvailablePlanBlock({ className }: AvailablePlanBlockProp
         <div className="border rounded-md p-3 flex justify-between items-center">
           <div>
             <div className="font-medium">Coach Plan</div>
-            <div className="text-sm text-gray-500">$9.99/month</div>
-            <div className="text-xs text-gray-500">Billed monthly</div>
+            <div className="text-sm text-gray-600">$9.99/month</div>
+            <div className="text-xs text-gray-600">Billed monthly</div>
           </div>
           {currentPlan.name === 'Coach Plan' && currentPlan.interval === 'monthly' ? (
-            <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded">
+            <div className="bg-green-50 text-green-600 text-xs font-medium px-2.5 py-1 rounded">
               Current
             </div>
           ) : (
@@ -62,10 +62,10 @@ export default function AvailablePlanBlock({ className }: AvailablePlanBlockProp
                   <Badge className="ml-2 bg-blue-600">Save 5%</Badge>
                 </div>
               )}
-              <div className="text-xs text-gray-500">Billed every 3 months</div>
+              <div className="text-xs text-gray-600">Billed every 3 months</div>
             </div>
             {currentPlan.name === 'Coach Plan' && currentPlan.interval === 'quarterly' ? (
-              <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded">
+              <div className="bg-green-50 text-gray-600 text-xs font-medium px-2.5 py-1 rounded">
                 Current
               </div>
             ) : (
@@ -96,10 +96,10 @@ export default function AvailablePlanBlock({ className }: AvailablePlanBlockProp
               <div className="text-sm text-blue-600 font-medium">$107.89</div>
               <Badge className="ml-2 bg-blue-600">Save 10%</Badge>
             </div>
-            <div className="text-xs text-gray-500">Billed annually</div>
+            <div className="text-xs text-gray-600">Billed annually</div>
           </div>
           {currentPlan.name === 'Coach Plan' && currentPlan.interval === 'annual' ? (
-            <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded">
+            <div className="bg-green-50 text-gray-600 text-xs font-medium px-2.5 py-1 rounded">
               Current
             </div>
           ) : (
@@ -109,7 +109,7 @@ export default function AvailablePlanBlock({ className }: AvailablePlanBlockProp
           )}
         </div>
 
-        <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mt-4">
+        <h3 className="text-xs font-medium text-gray-600 uppercase tracking-wider mt-4">
           Athlete Plans
         </h3>
 
@@ -117,11 +117,11 @@ export default function AvailablePlanBlock({ className }: AvailablePlanBlockProp
         <div className="border rounded-md p-3 flex justify-between items-center">
           <div>
             <div className="font-medium">Athlete Plan</div>
-            <div className="text-sm text-gray-500">$4.99/month</div>
-            <div className="text-xs text-gray-500">Billed monthly</div>
+            <div className="text-sm text-gray-600">$4.99/month</div>
+            <div className="text-xs text-gray-600">Billed monthly</div>
           </div>
           {currentPlan.name === 'Athlete Plan' && currentPlan.interval === 'monthly' ? (
-            <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded">
+            <div className="bg-green-50 text-gray-600 text-xs font-medium px-2.5 py-1 rounded">
               Current
             </div>
           ) : (
@@ -151,10 +151,10 @@ export default function AvailablePlanBlock({ className }: AvailablePlanBlockProp
                   <Badge className="ml-2 bg-blue-600">Save 5%</Badge>
                 </div>
               )}
-              <div className="text-xs text-gray-500">Billed every 3 months</div>
+              <div className="text-xs text-gray-600">Billed every 3 months</div>
             </div>
             {currentPlan.name === 'Athlete Plan' && currentPlan.interval === 'quarterly' ? (
-              <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded">
+              <div className="bg-green-50 text-gray-600 text-xs font-medium px-2.5 py-1 rounded">
                 Current
               </div>
             ) : (
@@ -185,10 +185,10 @@ export default function AvailablePlanBlock({ className }: AvailablePlanBlockProp
               <div className="text-sm text-blue-600 font-medium">$53.89</div>
               <Badge className="ml-2 bg-blue-600">Save 10%</Badge>
             </div>
-            <div className="text-xs text-gray-500">Billed annually</div>
+            <div className="text-xs text-gray-600">Billed annually</div>
           </div>
           {currentPlan.name === 'Athlete Plan' && currentPlan.interval === 'annual' ? (
-            <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded">
+            <div className="bg-green-50 text-gray-600 text-xs font-medium px-2.5 py-1 rounded">
               Current
             </div>
           ) : (
@@ -199,7 +199,7 @@ export default function AvailablePlanBlock({ className }: AvailablePlanBlockProp
         </div>
       </div>
 
-      <div className="text-xs text-gray-500 mt-3">
+      <div className="text-xs text-gray-600 mt-3">
         All plans automatically renew until canceled. You can cancel anytime.
       </div>
     </div>

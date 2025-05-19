@@ -58,7 +58,7 @@ export default function AppMultipleSelect({
   };
 
   return (
-    <div className={cn('space-y-2', className)}>
+    <div className={cn('space-y-2 relative', className)}>
       {label && (
         <Label>
           {label}
@@ -77,10 +77,10 @@ export default function AppMultipleSelect({
             <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none opacity-50" />
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="space-y-3 max-h-56 overflow-y-auto">
+        <DropdownMenuContent className="space-y-3 max-h-56 overflow-y-auto w-[var(--radix-dropdown-menu-trigger-width)]">
           {options.map(item => (
             <div key={item.value} className="flex space-x-4 px-2">
-              <Label>
+              <Label className="text-md font-light">
                 <Checkbox
                   checked={selectedValues.includes(item.value)}
                   onCheckedChange={checked => onCheckedChange(checked, item.value)}

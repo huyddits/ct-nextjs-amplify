@@ -10,7 +10,7 @@ import {
 
 export default function BillingAndSubscriptionPage() {
   return (
-    <div className="p-6 grid grid-cols-1 gap-4">
+    <div className="p-6 grid grid-cols-1 gap-4 container">
       <CurrentPlanCard className="col-span-1 row-span-1" />
       <PromoCode className="col-span-1 row-span-1" />
       <AvailablePlanBlock className="row-span-3" />
