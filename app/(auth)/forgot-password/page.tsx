@@ -11,6 +11,8 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
 import { ROUTES } from '@/utils/constants';
 import Link from 'next/link';
+import { FooterSection, LogoSection } from '../_components';
+import React from 'react';
 
 const schema = object().shape({
   email: string().email('Please enter a valid email').required(),
@@ -79,38 +81,56 @@ export default function ForgotPasswordPage() {
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
-          <Controller
-            control={control}
-            name="email"
-            render={({ field, fieldState: { error } }) => {
-              return (
-                <AppInput
-                  label="Email"
-                  icon={<MailIcon className="icon-input" />}
-                  inputProps={{ placeholder: 'name@example.com' }}
-                  errorMessage={error?.message}
-                  {...field}
+        <React.Fragment>
+          <LogoSection description="Enter your email address and follow the instructions provided in the email" />
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="space-y-4">
+              <Controller
+                control={control}
+                name="email"
+                render={({ field, fieldState: { error } }) => {
+                  return (
+                    <AppInput
+                      label="Email"
+                      icon={<MailIcon className="icon-input" />}
+                      inputProps={{ placeholder: 'name@example.com' }}
+                      errorMessage={error?.message}
+                      {...field}
+                    />
+                  );
+                }}
+              />
+              <div className="mx-auto w-fit">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={process.env.NEXT_PUBLIC_SITE_KEY as string}
+                  onChange={onChange}
                 />
-              );
-            }}
-          />
-          <div className="mx-auto w-fit">
-            <ReCAPTCHA
-              ref={recaptchaRef}
-              sitekey={process.env.NEXT_PUBLIC_SITE_KEY as string}
-              onChange={onChange}
-            />
+              </div>
+              <Button
+                onClick={onForgotPassword}
+                className="w-full"
+                disabled={!isValid || !reCaptchaToken}
+              >
+                Submit
+              </Button>
+            </div>
           </div>
-          <Button
-            onClick={onForgotPassword}
-            className="w-full"
-            disabled={!isValid || !reCaptchaToken}
-          >
-            Submit
-          </Button>
-        </div>
+
+          <div>
+            <p className="text-center mt-8">
+              <Link
+                href={`/${ROUTES.WELCOME}`}
+                className="text-primary font-medium hover:underline"
+              >
+                Back to home
+              </Link>
+            </p>
+          </div>
+        </React.Fragment>
       )}
+
+      <FooterSection />
     </div>
   );
 }
