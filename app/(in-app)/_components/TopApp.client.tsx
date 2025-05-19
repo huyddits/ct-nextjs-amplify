@@ -22,8 +22,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ROUTES } from '@/utils/constants';
 import Link from 'next/link';
 import { useAuthStore } from '@/store';
+import { cn } from '@/lib/utils';
 
-export default function TopApp() {
+export default function TopApp({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const { removeToken, token } = useAuthStore();
   const pathname = usePathname();
@@ -47,7 +48,12 @@ export default function TopApp() {
   }
 
   return (
-    <div className="flex items-center justify-between bg-primary p-4 rounded-t-lg mb-4 text-white">
+    <div
+      className={cn(
+        'flex items-center justify-between bg-primary p-4 rounded-t-lg mb-4 text-white',
+        className
+      )}
+    >
       {!pathname.includes(ROUTES.HOME) && (
         <Link href={ROUTES.HOME} className="flex items-center">
           <ArrowLeftIcon className="h-5 w-5 mr-2" />
@@ -68,7 +74,10 @@ export default function TopApp() {
             <UserCircle2Icon className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer flex items-center">
+          <DropdownMenuItem
+            className="cursor-pointer flex items-center"
+            onClick={() => router.push(ROUTES.BILLING_AND_SUBSCRIPTION)}
+          >
             <CreditCardIcon className="mr-2 h-4 w-4" />
             <span>Subscription and Billing</span>
           </DropdownMenuItem>

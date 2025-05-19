@@ -3,6 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* https://tailwindcss.com/docs/theme */
 @theme {
   --breakpoint-xs: 30rem;
   --breakpoint-sm: 48rem;
@@ -190,8 +191,16 @@
   @apply text-[var(--color-blue-600)];
 }
 
-.tab-navigation-item {
-  @apply flex-1 flex text-gray-600 py-2 px-4 text-center bg-white data-[state=active]:bg-primary data-[state=active]:text-white;
+.text-info-dark {
+  @apply text-gray-800;
+}
+
+.text-info {
+  @apply text-gray-600;
+}
+
+.text-info-light {
+  @apply text-gray-400;
 }
 
 /* add shadow */
@@ -244,4 +253,15 @@
 /* add bottom */
 .bottom-app {
   @apply bottom-[60px];
+}
+
+/* add component */
+
+.tab-navigation-item {
+  @apply flex-1 flex text-gray-600 py-2 px-4 text-center bg-white data-[state=active]:bg-primary data-[state=active]:text-white;
+}
+
+/* button */
+.button-outline-danger {
+  @apply text-red-600 bg-red-50 border border-red-500 hover:bg-red-100;
 }
