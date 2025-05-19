@@ -18,7 +18,8 @@ export const useCategories = () => {
   const getRoles = async () => {
     try {
       const response = await CategoryApi.getRoles();
-      const { data } = response.data;
+      const { data, error } = response.data;
+      if (!data) throw error;
       const roleItems = data.map(({ name, id }) => ({
         label: name,
         value: id.toString(),
@@ -32,7 +33,8 @@ export const useCategories = () => {
   const getCheerStyles = async () => {
     try {
       const response = await CategoryApi.getCheerStyles();
-      const { data } = response.data;
+      const { data, error } = response.data;
+      if (!data) throw error;
       const cheerStyleItems = data.map(({ name, id }) => ({
         label: name,
         value: id.toString(),
@@ -44,7 +46,8 @@ export const useCategories = () => {
   };
   const getEquipments = async () => {
     const response = await CategoryApi.getEquipments();
-    const { data } = response.data;
+    const { data, error } = response.data;
+    if (!data) throw error;
     const equipmentItems = data.map(({ name, id }) => ({
       label: name,
       value: id.toString(),
@@ -54,7 +57,8 @@ export const useCategories = () => {
   const getCheerTypes = async () => {
     try {
       const response = await CategoryApi.getCheerTypes();
-      const { data } = response.data;
+      const { data, error } = response.data;
+      if (!data) throw error;
       const cheerTypeItems = data.map(({ name, id }) => ({
         label: name,
         value: id.toString(),

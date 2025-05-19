@@ -1,5 +1,5 @@
 export const isContainNumber = (value: string) => {
-  return /[0-9]/.test(value);
+  return /\d/.test(value);
 };
 
 export const isContainUppercase = (value: string) => {
@@ -12,4 +12,8 @@ export const isContainLowercase = (value: string) => {
 
 export const isContainSpecialChar = (value: string) => {
   return /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(value);
+};
+
+export const isEmail = (value: string) => {
+  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
 };
