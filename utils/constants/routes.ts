@@ -23,4 +23,8 @@ export const ROUTES = {
   HIT_MISS_DATA: 'hit-miss/data',
 };
 
-export const WHITE_LIST = [`/${ROUTES.TERMS_AND_CONDITIONS}`, `/${ROUTES.ABOUT_US}`];
+export const WHITE_LIST = [
+  `/${ROUTES.TERMS_AND_CONDITIONS}`,
+  `/${ROUTES.ABOUT_US}`,
+  `/${ROUTES.PRIVACY}`,
+];
