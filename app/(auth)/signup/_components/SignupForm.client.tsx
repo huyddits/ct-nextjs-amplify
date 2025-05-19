@@ -160,6 +160,7 @@ export default function SignupForm() {
               label="Date of Birth"
               dateFormat="MM/dd/yyyy"
               placeholder="mm/dd/yyyy"
+              maxDate={new Date()}
               value={field.value}
               onChange={field.onChange}
               errorMessage={error?.message}
@@ -179,6 +180,7 @@ export default function SignupForm() {
               errorMessage={error?.message}
               required
               {...field}
+              onBlur={() => trigger('schoolName')}
             />
           )}
         />
