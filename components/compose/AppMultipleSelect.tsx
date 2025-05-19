@@ -92,7 +92,7 @@ export default function AppMultipleSelect({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
   );
 }
