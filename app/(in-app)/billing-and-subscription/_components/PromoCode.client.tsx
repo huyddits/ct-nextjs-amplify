@@ -7,13 +7,15 @@ import { cn } from '@/lib/utils';
 
 interface PromoCodeProps {
   className?: string;
+  onApply?: (value: string) => void;
 }
 
-export default function PromoCode({ className }: PromoCodeProps) {
+export default function PromoCode({ className, onApply }: PromoCodeProps) {
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const handleApplyPromo = () => {
     console.log('handleApplyPromo', promoCode);
+    onApply?.(promoCode);
   };
   return (
     <div className={cn('bg-white p-4 rounded-lg shadow-sm mb-4', className)}>
