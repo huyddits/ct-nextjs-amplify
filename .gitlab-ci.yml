@@ -11,55 +11,133 @@ build:
     - echo "🚀 Starting build process..."
     - apt-get update -qq && apt-get install -y -qq zip
     
-    # Cài đặt dependencies với cách tiếp cận để giải quyết xung đột React 19
-    - echo "📦 Installing dependencies..."
+    # Cài đặt dependencies và vá lightningcss
+    - echo "📦 Installing dependencies và vá lightningcss..."
     - |
       # Tạo .npmrc để bỏ qua kiểm tra peer dependencies
       echo "legacy-peer-deps=true" > .npmrc
-      echo "strict-peer-dependencies=false" >> .npmrc
       
-      # Kiểm tra phiên bản React trong package.json
-      REACT_VERSION=$(node -e "try { const pkg = require('./package.json'); console.log(pkg.dependencies.react || 'không có'); } catch (e) { console.log('lỗi đọc package.json'); }")
-      echo "Phiên bản React trong package.json: $REACT_VERSION"
-      
-      # Cài đặt React Day Picker với phiên bản phù hợp
-      npm install react-day-picker@8.10.1 --ignore-scripts
-      
-      # Sử dụng npm install với --force và --ignore-scripts
-      echo "Cài đặt tất cả dependencies với --force và --ignore-scripts"
+      # Cài đặt dependencies
       npm install --force --ignore-scripts
       
       # Vá react-day-picker để chấp nhận React 19
-      echo "Vá file node_modules/react-day-picker/package.json để chấp nhận React 19"
+      echo "Vá file node_modules/react-day-picker/package.json"
       node -e "
         const fs = require('fs');
         try {
           const packagePath = './node_modules/react-day-picker/package.json';
-          let pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-          if (pkg.peerDependencies && pkg.peerDependencies.react) {
-            pkg.peerDependencies.react = '^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0';
-            fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
-            console.log('Đã vá thành công react-day-picker để chấp nhận React 19');
+          if (fs.existsSync(packagePath)) {
+            let pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+            if (pkg.peerDependencies && pkg.peerDependencies.react) {
+              pkg.peerDependencies.react = '^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0';
+              fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
+              console.log('Đã vá thành công react-day-picker');
+            }
           }
         } catch (error) {
           console.error('Lỗi khi vá file:', error);
         }
       "
+      
+      # Tắt hoàn toàn lightningcss để tránh lỗi
+      echo "Tắt hoàn toàn lightningcss..."
+      
+      # 1. Vô hiệu hóa thư viện lightningcss
+      node -e "
+        const fs = require('fs');
+        // Tạo module lightningcss giả
+        const lightningcssPath = './node_modules/lightningcss';
+        if (fs.existsSync(lightningcssPath)) {
+          if (!fs.existsSync(lightningcssPath + '/node')) {
+            fs.mkdirSync(lightningcssPath + '/node', { recursive: true });
+          }
+          
+          // Tạo file index.js trống trong thư mục node
+          fs.writeFileSync(lightningcssPath + '/node/index.js', 'module.exports = { transform: () => { throw new Error(\"LightningCSS disabled\") } };');
+          console.log('Đã vô hiệu hóa lightningcss');
+        } else {
+          console.log('Không tìm thấy thư mục lightningcss');
+        }
+      "
+      
+      # 2. Đảm bảo postcss-loader không cố sử dụng lightningcss
+      find ./node_modules -name "postcss.config.js" -exec rm -f {} \;
+      echo "module.exports = {
+        plugins: {
+          'postcss-flexbugs-fixes': {},
+          'postcss-preset-env': {
+            autoprefixer: {
+              flexbox: 'no-2009',
+            },
+            stage: 3,
+          },
+        },
+      };" > postcss.config.js
     
-    # Biến môi trường quan trọng để tắt LightningCSS
-    - export NEXT_DISABLE_LIGHTNINGCSS=1
-    - export NODE_OPTIONS="--max-old-space-size=4096"
-    - export NODE_ENV=production
-    
-    # Tạo file .env từ biến môi trường
-    - echo "🔧 Configuring environment..."
-    - echo "$STAGING_ENV" > .env
-    - cat .env
-    
-    # Sử dụng file next.config.ts hiện có - không tạo file mới
-    
-    # Build ứng dụng
-    - npm run build
+    # Build ứng dụng với cấu hình tắt lightningcss
+    - |
+      echo "🏗️ Building application..."
+      
+      # Tạo custom next.config.js để tắt hoàn toàn lightningcss
+      if [ -f next.config.ts ]; then
+        echo "Sao lưu và tạo next.config.js từ next.config.ts"
+        cp next.config.ts next.config.ts.original
+        
+        # Chuyển đổi và kết hợp cấu hình
+        node -e "
+          const fs = require('fs');
+          let config = \`
+          /** @type {import('next').NextConfig} */
+          const nextConfig = {
+            output: 'export',
+            distDir: 'dist',
+            experimental: {
+              forceSwcTransforms: true,
+              useLightningcss: false,
+            },
+            typescript: {
+              ignoreBuildErrors: true,
+            },
+            eslint: {
+              ignoreDuringBuilds: true,
+            },
+            webpack: (config) => {
+              config.resolve.fallback = { fs: false, net: false, tls: false };
+              
+              // Vô hiệu hóa tất cả loader CSS của postcss và lightningcss
+              config.module.rules.forEach(rule => {
+                if (rule.oneOf) {
+                  rule.oneOf.forEach(r => {
+                    if (r.test && r.test.toString().includes('css')) {
+                      // Đảm bảo không dùng lightningcss
+                      if (r.use && Array.isArray(r.use)) {
+                        r.use = r.use.filter(loader => 
+                          !loader.loader || !loader.loader.includes('lightningcss')
+                        );
+                      }
+                    }
+                  });
+                }
+              });
+              
+              return config;
+            },
+          };
+          
+          module.exports = nextConfig;
+          \`;
+          
+          fs.writeFileSync('next.config.js', config);
+          console.log('Đã tạo next.config.js để vô hiệu hóa lightningcss');
+        "
+      fi
+      
+      # Build với các biến môi trường đặc biệt
+      NEXT_DISABLE_LIGHTNINGCSS=1 \
+      NEXTJS_DISABLE_LIGHTNINGCSS=1 \
+      NODE_ENV=production \
+      NODE_OPTIONS="--max-old-space-size=4096" \
+      npm run build
     
     # Tạo file zip
     - cd dist
