@@ -6,6 +6,7 @@ import { UserApi } from '@/api';
 import dayjs from 'dayjs';
 import { AccountType, MeasurementUnit } from '@/utils/types';
 import { usePasswordStrength } from '../../_hooks';
+import * as $v from '@/utils/validators';
 type UseSignupOptions = {
   onSuccess?: () => void;
   onFailure?: (message: string) => void;
@@ -19,27 +20,32 @@ export const useSignup = (options: UseSignupOptions) => {
         .required('Please select a user type'),
       firstName: string()
         .required('Please enter your first name')
+        .matches($v.PATTERN.NAME, 'First name can only contain letters')
         .max(50, 'First name cannot exceed 50 characters'),
       lastName: string()
         .required('Please enter your last name')
+        .matches($v.PATTERN.NAME, 'Last name can only contain letters')
         .max(50, 'Last name cannot exceed 50 characters'),
       email: string()
-        .email('Please enter a valid email')
         .required('Please enter your email')
+        .test('is-email', 'Please enter a valid email', value => {
+          if (!value) return false;
+          return $v.isEmail(value);
+        })
         .max(100, 'Email cannot exceed 100 characters'),
       password: string()
         .required('Please enter your password')
         .min(8, 'Password must be at least 8 characters')
-        .test('is-strong', 'Password is too weak', value => {
-          if (!value) return false;
-          const strength =
-            (value.length >= 8 ? 1 : 0) +
-            (/[A-Z]/.test(value) ? 1 : 0) +
-            (/[a-z]/.test(value) ? 1 : 0) +
-            (/\d/.test(value) ? 1 : 0) +
-            (/[^A-Za-z0-9]/.test(value) ? 1 : 0);
-          return strength >= 3; // Equivalent to 60%
-        })
+        // .test('is-strong', 'Password is too weak', value => {
+        //   if (!value) return false;
+        //   const strength =
+        //     (value.length >= 8 ? 1 : 0) +
+        //     (/[A-Z]/.test(value) ? 1 : 0) +
+        //     (/[a-z]/.test(value) ? 1 : 0) +
+        //     (/\d/.test(value) ? 1 : 0) +
+        //     (/[^A-Za-z0-9]/.test(value) ? 1 : 0);
+        //   return strength >= 3; // Equivalent to 60%
+        // })
         .max(100, 'Password cannot exceed 100 characters'),
       confirmPassword: string()
         .required('Please confirm your password')
@@ -48,7 +54,9 @@ export const useSignup = (options: UseSignupOptions) => {
         .max(100, 'Password cannot exceed 100 characters')
         .oneOf([ref('password')], 'Passwords must match'),
       dateOfBirth: string().required('Please enter your date of birth'),
-      schoolName: string().max(100, 'School Name cannot exceed 100 characters'),
+      schoolName: string()
+        .max(100, 'School Name cannot exceed 100 characters')
+        .required('Please enter your school name'),
       cheerType: string().required('Please select type of cheer'),
       cheerStyle: string().required('Please select style of cheer'),
       role: string().required('Please select your role'),

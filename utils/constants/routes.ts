@@ -21,6 +21,11 @@ export const ROUTES = {
   HIT_MISS_ROUTINES_NEW: 'hit-miss/routines/new',
   HIT_MISS_REPORT: 'hit-miss/report',
   HIT_MISS_DATA: 'hit-miss/data',
+  BILLING_AND_SUBSCRIPTION: 'billing-and-subscription',
 };
 
-export const WHITE_LIST = [`/${ROUTES.TERMS_AND_CONDITIONS}`, `/${ROUTES.ABOUT_US}`];
+export const WHITE_LIST = [
+  `/${ROUTES.TERMS_AND_CONDITIONS}`,
+  `/${ROUTES.ABOUT_US}`,
+  `/${ROUTES.PRIVACY}`,
+];
