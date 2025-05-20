@@ -42,3 +42,43 @@ export type ResetPasswordPayload = {
   token: string;
   new_password: string;
 };
+
+export type PersonalInfoResponse = ApiResponse<
+  {
+    user_id: string;
+    account_type: AccountType;
+    first_name: string;
+    last_name: string;
+    email: string;
+    is_active: boolean;
+    created_at: string;
+    profile: {
+      profile_id: string;
+      date_of_birth: string;
+      measurement_unit: string;
+      role: {
+        id: number;
+        name: string;
+      };
+      cheer_types: [
+        {
+          id: number;
+          name: string;
+        },
+      ];
+      cheer_styles: [
+        {
+          id: number;
+          name: string;
+        },
+      ];
+    };
+    equipments: [
+      {
+        id: number;
+        name: string;
+      },
+    ];
+  },
+  {}
+>;
