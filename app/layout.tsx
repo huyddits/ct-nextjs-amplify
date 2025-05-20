@@ -1,17 +1,17 @@
-import { Geist, Geist_Mono } from 'next/font/google';
+// import { Geist, Geist_Mono } from 'next/font/google';
 // import { ServiceWorkerRegister } from "./_components";
 import { ToastContainerClient } from './_components';
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
+// const geistSans = Geist({
+//   variable: '--font-geist-sans',
+//   subsets: ['latin'],
+// });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
+// const geistMono = Geist_Mono({
+//   variable: '--font-geist-mono',
+//   subsets: ['latin'],
+// });
 
 export default function RootLayout({
   children,
@@ -34,8 +34,12 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="touch-icon-iphone-retina.png" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Geist&family=Geist+Mono&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="antialiased" style={{ fontFamily: 'var(--font-geist-sans)' }}>
         {children}
         {/* <ServiceWorkerRegister /> */}
         <ToastContainerClient />
