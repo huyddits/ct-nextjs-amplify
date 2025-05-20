@@ -10,20 +10,28 @@ build:
   script:
     - echo "🚀 Starting build process for application..."
     - apt-get update -qq && apt-get install -y -qq zip build-essential python3
-    - echo "📦 Installing dependencies with npm ci..."
-    # Force disable lightningcss and ensure proper environment
+    
+    # Ensure LightningCSS is completely disabled
     - export NEXT_DISABLE_LIGHTNINGCSS=1
+    - export NODE_OPTIONS="--no-experimental-fetch"
+    
+    echo "📦 Installing dependencies..."
     - npm ci --legacy-peer-deps
-    - echo "🔧 Applying Next.js configuration overrides..."
-    - echo "$STAGING_ENV" > .env
+    
+    echo "🔧 Configuring Next.js..."
+     - echo "$STAGING_ENV" > .env
     - cat .env
-    - echo "🏗️ Building application..."
+    
+    echo "🏗️ Building application..."
+    # Force clean build
+    - rm -rf .next
     - npm run build
-    - echo "📂 Creating deployment package..."
+    
+    echo "📂 Creating deployment package..."
     - cd dist
     - zip -r ../deploy.zip .
     - cd ..
-    - echo "✅ Build completed successfully! Deployment package created."
+    - echo "✅ Build completed successfully!"
   artifacts:
     paths:
       - deploy.zip
