@@ -3,7 +3,7 @@ export default function InAppLayout({ children }: { children: React.ReactNode })
   return (
     <div className="bg-gray-50 flex flex-col min-h-screen">
       <RouteGuard />
-      <TopApp />
+      <TopApp className="sticky top-0 z-10" />
       <div>{children}</div>
       <BottomApp />
     </div>

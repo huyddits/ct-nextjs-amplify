@@ -5,6 +5,7 @@ import { AuthApi } from '@/api';
 import { useAuthStore } from '@/store';
 import { SocialProvider } from '@/utils/types';
 import { END_POINTS } from '@/utils/constants';
+import * as $v from '@/utils/validators';
 
 type UseLoginOptions = {
   onSuccess?: (result: { token: string }) => void;
@@ -18,7 +19,12 @@ export const useLogin = (options: UseLoginOptions) => {
   };
 
   const formSchema = object().shape({
-    email: string().email('Please enter a valid email').required('Please enter your email'),
+    email: string()
+      .test('is-email', 'Please enter a valid email', value => {
+        if (!value) return false;
+        return $v.isEmail(value);
+      })
+      .required('Please enter your email'),
     password: string().required('Please enter your password'),
   });
 
@@ -35,9 +41,13 @@ export const useLogin = (options: UseLoginOptions) => {
     try {
       const response = await AuthApi.login(data);
       console.log(response.data.data);
-      const accessToken = response.data.data.token.access_token;
-      setToken(accessToken);
-      options?.onSuccess?.({ token: accessToken });
+      if (response.data.data?.token) {
+        const accessToken = response.data.data.token.access_token;
+        setToken(accessToken);
+        options?.onSuccess?.({ token: accessToken });
+      } else {
+        throw response.data.error;
+      }
     } catch (error) {
       console.log(error);
     }
@@ -76,6 +86,9 @@ export const useLogin = (options: UseLoginOptions) => {
           provider,
           accessToken: accessTokenFromProvider,
         });
+        if (!response.data.data?.token) {
+          throw response.data.error;
+        }
         inAppAccessToken = response.data.data.token.access_token;
         setToken(inAppAccessToken);
       }

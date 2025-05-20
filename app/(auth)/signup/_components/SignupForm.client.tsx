@@ -160,10 +160,12 @@ export default function SignupForm() {
               label="Date of Birth"
               dateFormat="MM/dd/yyyy"
               placeholder="mm/dd/yyyy"
+              maxDate={new Date()}
               value={field.value}
               onChange={field.onChange}
               errorMessage={error?.message}
               fullWidth
+              required
             />
           )}
         />
@@ -179,6 +181,7 @@ export default function SignupForm() {
               errorMessage={error?.message}
               required
               {...field}
+              onBlur={() => trigger('schoolName')}
             />
           )}
         />
@@ -263,7 +266,7 @@ export default function SignupForm() {
           name="measurementUnit"
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <AppSelect
-              label="Mesurement Unit"
+              label="Measurement Unit"
               // options={measurementUnitOptions}
               options={MEASUREMENT_UNIT_OPTIONS}
               selectedValue={value}
