@@ -11,21 +11,20 @@ build:
     - echo "🚀 Starting build process..."
     - apt-get update -qq && apt-get install -y -qq zip
     
-    # Cài đặt dependencies với cách tiếp cận ổn định hơn
+    # Cài đặt dependencies với cách tiếp cận giải quyết xung đột react-day-picker
     - echo "📦 Installing dependencies..."
     - |
-      # Thử cài đặt thông thường trước
-      npm ci || {
-        echo "⚠️ Thông thường npm ci thất bại, thử phương pháp thay thế..."
-        
-        # Nếu cài đặt thất bại, thử với --force và --no-optional
-        npm i --no-optional --force || {
-          echo "⚠️ Cài đặt với --force thất bại, thử --legacy-peer-deps..."
-          
-          # Nếu vẫn thất bại, thử --legacy-peer-deps
-          npm i --legacy-peer-deps
-        }
-      }
+      # Cài đặt React phiên bản cụ thể trước để tránh xung đột
+      echo "Cài đặt React với phiên bản tương thích trước"
+      npm install --no-save react@"18.0.0" react-dom@"18.0.0"
+      
+      # Sau đó cài đặt các dependencies còn lại với --legacy-peer-deps
+      echo "Cài đặt các dependencies còn lại với --legacy-peer-deps"
+      npm install --legacy-peer-deps
+      
+      # Kiểm tra phiên bản React đã cài đặt
+      echo "Phiên bản React đã cài đặt:"
+      npm list react
     
     # Biến môi trường quan trọng để tắt LightningCSS
     - export NEXT_DISABLE_LIGHTNINGCSS=1
