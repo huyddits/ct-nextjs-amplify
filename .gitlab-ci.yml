@@ -11,6 +11,11 @@ build:
     - echo "🚀 Starting build process..."
     - apt-get update -qq && apt-get install -y -qq zip
     
+    # Tạo file .env từ biến môi trường
+    - echo "🔧 Configuring environment..."
+    - echo "$STAGING_ENV" > .env
+    - cat .env
+    
     # Cài đặt dependencies và vá lightningcss
     - echo "📦 Installing dependencies và vá lightningcss..."
     - |
@@ -53,7 +58,7 @@ build:
           }
           
           // Tạo file index.js trống trong thư mục node
-          fs.writeFileSync(lightningcssPath + '/node/index.js', 'module.exports = { transform: () => { throw new Error(\"LightningCSS disabled\") } };');
+          fs.writeFileSync(lightningcssPath + '/node/index.js', 'module.exports = { transform: () => ({ code: \"\", exports: [], warnings: [] }) };');
           console.log('Đã vô hiệu hóa lightningcss');
         } else {
           console.log('Không tìm thấy thư mục lightningcss');
@@ -74,75 +79,128 @@ build:
         },
       };" > postcss.config.js
     
-    # Build ứng dụng với cấu hình tắt lightningcss
+    # Tạo custom next.config.js để tắt hoàn toàn lightningcss
     - |
-      echo "🏗️ Building application..."
+      echo "📝 Tạo next.config.mjs (ES Module) tùy chỉnh..."
       
-      # Tạo custom next.config.js để tắt hoàn toàn lightningcss
-      if [ -f next.config.ts ]; then
-        echo "Sao lưu và tạo next.config.js từ next.config.ts"
-        cp next.config.ts next.config.ts.original
-        
-        # Chuyển đổi và kết hợp cấu hình
-        node -e "
-          const fs = require('fs');
-          let config = \`
-          /** @type {import('next').NextConfig} */
-          const nextConfig = {
-            output: 'export',
-            distDir: 'dist',
-            experimental: {
-              forceSwcTransforms: true,
-              useLightningcss: false,
-            },
-            typescript: {
-              ignoreBuildErrors: true,
-            },
-            eslint: {
-              ignoreDuringBuilds: true,
-            },
-            webpack: (config) => {
-              config.resolve.fallback = { fs: false, net: false, tls: false };
-              
-              // Vô hiệu hóa tất cả loader CSS của postcss và lightningcss
-              config.module.rules.forEach(rule => {
-                if (rule.oneOf) {
-                  rule.oneOf.forEach(r => {
-                    if (r.test && r.test.toString().includes('css')) {
-                      // Đảm bảo không dùng lightningcss
-                      if (r.use && Array.isArray(r.use)) {
-                        r.use = r.use.filter(loader => 
-                          !loader.loader || !loader.loader.includes('lightningcss')
-                        );
-                      }
-                    }
-                  });
+      # Kiểm tra package.json để xác định loại module
+      IS_ESM=$(node -e "try { const pkg = require('./package.json'); console.log(pkg.type === 'module' ? 'true' : 'false'); } catch (e) { console.log('false'); }")
+      
+      if [ "$IS_ESM" == "true" ]; then
+        echo "Dự án sử dụng ES Modules, tạo next.config.mjs..."
+        cat > next.config.mjs << 'EOL'
+        /** @type {import('next').NextConfig} */
+        const nextConfig = {
+          output: 'export',
+          distDir: 'dist',
+          experimental: {
+            forceSwcTransforms: true,
+            useLightningcss: false,
+          },
+          typescript: {
+            ignoreBuildErrors: true,
+          },
+          eslint: {
+            ignoreDuringBuilds: true,
+          },
+          webpack: (config) => {
+            // Đảm bảo fallback cho các module Node.js
+            config.resolve.fallback = { 
+              fs: false, 
+              net: false, 
+              tls: false 
+            };
+            
+            // Lọc ra các loader liên quan đến lightningcss
+            const cssRule = config.module.rules.find(rule => rule.oneOf);
+            if (cssRule && cssRule.oneOf) {
+              cssRule.oneOf.forEach(rule => {
+                if (rule.use && Array.isArray(rule.use)) {
+                  rule.use = rule.use.filter(u => 
+                    !u.loader || !u.loader.includes('lightningcss')
+                  );
                 }
               });
-              
-              return config;
-            },
-          };
-          
-          module.exports = nextConfig;
-          \`;
-          
-          fs.writeFileSync('next.config.js', config);
-          console.log('Đã tạo next.config.js để vô hiệu hóa lightningcss');
-        "
+            }
+            
+            return config;
+          },
+        };
+
+        export default nextConfig;
+        EOL
+        
+        # Xóa next.config.js nếu tồn tại để tránh xung đột
+        rm -f next.config.js
+        cat next.config.mjs
+      else
+        echo "Dự án sử dụng CommonJS, tạo next.config.js..."
+        cat > next.config.js << 'EOL'
+        /** @type {import('next').NextConfig} */
+        const nextConfig = {
+          output: 'export',
+          distDir: 'dist',
+          experimental: {
+            forceSwcTransforms: true,
+            useLightningcss: false,
+          },
+          typescript: {
+            ignoreBuildErrors: true,
+          },
+          eslint: {
+            ignoreDuringBuilds: true,
+          },
+          webpack: (config) => {
+            // Đảm bảo fallback cho các module Node.js
+            config.resolve.fallback = { 
+              fs: false, 
+              net: false, 
+              tls: false 
+            };
+            
+            // Lọc ra các loader liên quan đến lightningcss
+            const cssRule = config.module.rules.find(rule => rule.oneOf);
+            if (cssRule && cssRule.oneOf) {
+              cssRule.oneOf.forEach(rule => {
+                if (rule.use && Array.isArray(rule.use)) {
+                  rule.use = rule.use.filter(u => 
+                    !u.loader || !u.loader.includes('lightningcss')
+                  );
+                }
+              });
+            }
+            
+            return config;
+          },
+        };
+
+        module.exports = nextConfig;
+        EOL
+        
+        cat next.config.js
       fi
-      
-      # Build với các biến môi trường đặc biệt
+    
+    # Build ứng dụng với các biến môi trường đặc biệt
+    - |
+      echo "🏗️ Building application..."
       NEXT_DISABLE_LIGHTNINGCSS=1 \
-      NEXTJS_DISABLE_LIGHTNINGCSS=1 \
+      NEXT_TELEMETRY_DISABLED=1 \
       NODE_ENV=production \
       NODE_OPTIONS="--max-old-space-size=4096" \
       npm run build
     
     # Tạo file zip
-    - cd dist
-    - zip -r ../deploy.zip .
-    - cd ..
+    - |
+      if [ -d "dist" ]; then
+        echo "📦 Đóng gói thư mục dist..."
+        cd dist
+        zip -r ../deploy.zip .
+        cd ..
+      else
+        echo "⚠️ Không tìm thấy thư mục dist! Kiểm tra output..."
+        ls -la
+        exit 1
+      fi
   artifacts:
     paths:
       - deploy.zip
