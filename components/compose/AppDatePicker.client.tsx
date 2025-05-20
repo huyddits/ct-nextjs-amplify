@@ -12,6 +12,7 @@ interface AppDatePickerProps {
   label: string | React.JSX.Element;
   value: string;
   maxDate?: Date;
+  required?: boolean;
   fullWidth?: boolean;
   dateFormat?: string;
   placeholder?: string;
@@ -24,6 +25,7 @@ export default function AppDatePicker({
   label,
   value,
   maxDate,
+  required,
   fullWidth,
   dateFormat,
   placeholder,
@@ -39,7 +41,11 @@ export default function AppDatePicker({
   }, [value, format]);
   return (
     <div className={cn('space-y-2', fullWidth && 'w-full')}>
-      {label && <Label>{label}</Label>}
+      {label && (
+        <Label>
+          {label} {required && <span className="text-red-600">*</span>}
+        </Label>
+      )}
       <div className="relative flex items-stretch">
         {icon && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
