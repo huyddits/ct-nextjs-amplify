@@ -8,34 +8,26 @@ build:
   tags:
     - trainer
   script:
-    - echo "🚀 Starting build process..."
+    - echo "🚀 Starting build process for application..."
     - apt-get update -qq && apt-get install -y -qq zip build-essential python3
-
-    # Cấu hình môi trường để vô hiệu hóa LightningCSS
+    
+    # Ensure LightningCSS is completely disabled
     - export NEXT_DISABLE_LIGHTNINGCSS=1
     - export NODE_OPTIONS="--no-experimental-fetch"
-
-    echo "📦 Installing dependencies..."
-    # Cài đặt dependencies và đảm bảo không cài LightningCSS
-    - npm ci --legacy-peer-deps --no-optional
-    - npm remove lightningcss || true
-
-    echo "🔧 Verifying environment..."
-    # Kiểm tra xem LightningCSS đã bị gỡ chưa
-    - if [ -d "node_modules/lightningcss" ]; then 
-        echo "⚠️ Warning: LightningCSS still exists! Forcing removal..."; 
-        rm -rf node_modules/lightningcss*;
-      fi
-
+    
+    - echo "📦 Installing dependencies..."
+    - npm ci --legacy-peer-deps
+    
+    - echo "🔧 Configuring environment..."
     - echo "$STAGING_ENV" > .env
     - cat .env
-
-    echo "🏗️ Building application..."
-    # Build với Next.js và đảm bảo clean cache
+    
+    - echo "🏗️ Building application..."
+    # Force clean build
     - rm -rf .next
     - npm run build
-
-    echo "📂 Creating deployment package..."
+    
+    - echo "📂 Creating deployment package..."
     - cd dist
     - zip -r ../deploy.zip .
     - cd ..
