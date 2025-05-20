@@ -12,13 +12,13 @@ import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
 
 interface AppCalendarPickerProps {
   icon?: JSX.Element;
-  label: string | React.JSX.Element;
-  value: Date;
+  label?: string | React.JSX.Element;
+  value?: Date;
   fullWidth?: boolean;
   dateFormat?: string;
   placeholder?: string;
   errorMessage?: string;
-  onChange: (date?: Date) => void;
+  onChange?: (date?: Date) => void;
 }
 
 export default function AppCalendarPicker({
@@ -55,7 +55,7 @@ export default function AppCalendarPicker({
           <Calendar
             mode="single"
             selected={value}
-            onSelect={date => onChange(date ?? undefined)}
+            onSelect={date => onChange?.(date ?? undefined)}
             initialFocus
           />
         </PopoverContent>
