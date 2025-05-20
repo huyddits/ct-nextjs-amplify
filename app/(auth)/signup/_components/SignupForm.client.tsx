@@ -165,6 +165,7 @@ export default function SignupForm() {
               onChange={field.onChange}
               errorMessage={error?.message}
               fullWidth
+              required
             />
           )}
         />
@@ -265,7 +266,7 @@ export default function SignupForm() {
           name="measurementUnit"
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <AppSelect
-              label="Mesurement Unit"
+              label="Measurement Unit"
               // options={measurementUnitOptions}
               options={MEASUREMENT_UNIT_OPTIONS}
               selectedValue={value}
