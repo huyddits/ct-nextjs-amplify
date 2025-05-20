@@ -6,7 +6,6 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true,
   },
-  optimizeFonts: false,
   typescript: {
     ignoreBuildErrors: true,
   },
