@@ -24,3 +24,23 @@ export enum MeasurementUnit {
   Imperial = 'imperial',
   Metric = 'metric',
 }
+
+export type PersonalInfo = {
+  id: string;
+  accountType: AccountType;
+  firstName: string;
+  lastName: string;
+  email: string;
+  isActive: boolean;
+  createdAt: string;
+  profileId: string;
+  dateOfBirth: string;
+  measurementUnit: string;
+  roleId: number;
+  roleName: string;
+  cheerTypeId: number;
+  cheerTypeName: string;
+  cheerStyleId: number;
+  cheerStyleName: string;
+  equipmentIds: number[];
+} | null;
