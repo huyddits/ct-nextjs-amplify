@@ -11,10 +11,13 @@ build:
     - echo "🚀 Starting build process for application..."
     - apt-get update -qq && apt-get install -y -qq zip build-essential python3
     - echo "📦 Installing dependencies with npm ci..."
-    - LIGHTNINGCSS_FORCE_BUILD=1 npm rebuild lightningcss
+    # Force disable lightningcss and ensure proper environment
+    - export NEXT_DISABLE_LIGHTNINGCSS=1
     - npm ci --legacy-peer-deps
+    - echo "🔧 Applying Next.js configuration overrides..."
     - echo "$STAGING_ENV" > .env
     - cat .env
+    - echo "🏗️ Building application..."
     - npm run build
     - echo "📂 Creating deployment package..."
     - cd dist

@@ -5,6 +5,7 @@ const nextConfig = {
   distDir: 'dist',
   experimental: {
     forceSwcTransforms: true,
+    useLightningcss: false,
   },
   typescript: {
     ignoreBuildErrors: true,
