@@ -36,8 +36,8 @@ export default function BottomApp() {
       icon: TargetIcon,
     },
     {
-      name: 'Report',
-      href: '/report',
+      name: 'Check Off',
+      href: `/${ROUTES.CHECK_OFF}`,
       icon: ClipboardCheckIcon,
     },
   ];

@@ -32,7 +32,7 @@ export default function TopApp({ className }: { className?: string }) {
 
   const onLogout = () => {
     removeToken();
-    location.reload();
+    location.href = `${ROUTES.LOGIN}`;
   };
 
   if (!token) {
@@ -42,7 +42,8 @@ export default function TopApp({ className }: { className?: string }) {
   if (
     pathname.startsWith(`/${ROUTES.TRAINING}`) ||
     pathname.startsWith(`/${ROUTES.MEASUREMENT}`) ||
-    pathname.startsWith(`/${ROUTES.HIT_MISS}`)
+    pathname.startsWith(`/${ROUTES.HIT_MISS}`) ||
+    pathname.startsWith(`/${ROUTES.CHECK_OFF}`)
   ) {
     return null;
   }
