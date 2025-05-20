@@ -11,20 +11,40 @@ build:
     - echo "🚀 Starting build process..."
     - apt-get update -qq && apt-get install -y -qq zip
     
-    # Cài đặt dependencies với cách tiếp cận giải quyết xung đột react-day-picker
+    # Cài đặt dependencies với cách tiếp cận để giải quyết xung đột React 19
     - echo "📦 Installing dependencies..."
     - |
-      # Cài đặt React phiên bản cụ thể trước để tránh xung đột
-      echo "Cài đặt React với phiên bản tương thích trước"
-      npm install --no-save react@"18.0.0" react-dom@"18.0.0"
+      # Tạo .npmrc để bỏ qua kiểm tra peer dependencies
+      echo "legacy-peer-deps=true" > .npmrc
+      echo "strict-peer-dependencies=false" >> .npmrc
       
-      # Sau đó cài đặt các dependencies còn lại với --legacy-peer-deps
-      echo "Cài đặt các dependencies còn lại với --legacy-peer-deps"
-      npm install --legacy-peer-deps
+      # Kiểm tra phiên bản React trong package.json
+      REACT_VERSION=$(node -e "try { const pkg = require('./package.json'); console.log(pkg.dependencies.react || 'không có'); } catch (e) { console.log('lỗi đọc package.json'); }")
+      echo "Phiên bản React trong package.json: $REACT_VERSION"
       
-      # Kiểm tra phiên bản React đã cài đặt
-      echo "Phiên bản React đã cài đặt:"
-      npm list react
+      # Cài đặt React Day Picker với phiên bản phù hợp
+      npm install react-day-picker@8.10.1 --ignore-scripts
+      
+      # Sử dụng npm install với --force và --ignore-scripts
+      echo "Cài đặt tất cả dependencies với --force và --ignore-scripts"
+      npm install --force --ignore-scripts
+      
+      # Vá react-day-picker để chấp nhận React 19
+      echo "Vá file node_modules/react-day-picker/package.json để chấp nhận React 19"
+      node -e "
+        const fs = require('fs');
+        try {
+          const packagePath = './node_modules/react-day-picker/package.json';
+          let pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+          if (pkg.peerDependencies && pkg.peerDependencies.react) {
+            pkg.peerDependencies.react = '^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0';
+            fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
+            console.log('Đã vá thành công react-day-picker để chấp nhận React 19');
+          }
+        } catch (error) {
+          console.error('Lỗi khi vá file:', error);
+        }
+      "
     
     # Biến môi trường quan trọng để tắt LightningCSS
     - export NEXT_DISABLE_LIGHTNINGCSS=1
