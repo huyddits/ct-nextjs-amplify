@@ -39,7 +39,7 @@ export default function WeeklyWorkoutsSection() {
                 <div className="mb-2">
                   <span className="text-gray-600">{w.date}</span>
                   <span className="mx-1">-</span>
-                  <span className="font-medium text-[#257951]">{w.type}</span>
+                  <span className="font-medium text-primary">{w.type}</span>
                 </div>
 
                 <div className="space-y-1 mb-2">
