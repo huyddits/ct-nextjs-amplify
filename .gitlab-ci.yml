@@ -8,131 +8,36 @@ build:
   tags:
     - trainer
   script:
-    - echo "🚀 Starting build process for application..."
-    - apt-get update -qq && apt-get install -y -qq zip build-essential python3
+    - echo "🚀 Starting build process..."
+    - apt-get update -qq && apt-get install -y -qq zip
     
-    # Ensure LightningCSS is completely disabled - sử dụng nhiều cách khác nhau
-    - |
-      export NEXT_DISABLE_LIGHTNINGCSS=1
-      export NODE_OPTIONS="--no-experimental-fetch --max-old-space-size=4096"
-      # Thêm các cài đặt đặc biệt để tắt hoàn toàn các tính năng thử nghiệm
-      export NEXT_TELEMETRY_DISABLED=1
-      export NEXT_MINIMAL=1
-    
-    # Sử dụng biến môi trường trực tiếp cho Next.js
-    - echo "📦 Installing dependencies..."
+    # Cài đặt dependencies
     - npm ci --legacy-peer-deps
     
-    # Điều chỉnh cấu hình Next.js để tắt LightningCSS
-    - echo "📄 Kiểm tra cấu hình Next.js..."
-    - |
-      if [ -f next.config.ts ]; then
-        echo "✅ Tìm thấy file next.config.ts, bỏ qua tạo file cấu hình"
-      elif [ -f next.config.js ]; then
-        echo "✅ Tìm thấy file next.config.js, đảm bảo LightningCSS bị tắt"
-        echo "const config = require('./next.config.js');
-        config.experimental = config.experimental || {};
-        config.experimental.useLightningcss = false;
-        config.experimental.forceSwcTransforms = true;
-        module.exports = config;" > update-config.js
-        node update-config.js
-      else
-        echo "⚠️ Không tìm thấy file cấu hình Next.js, tạo file mới..."
-        echo "/** @type {import('next').NextConfig} */
-        const nextConfig = {
-          output: 'export',
-          distDir: 'dist',
-          experimental: {
-            forceSwcTransforms: true,
-            useLightningcss: false,
-          },
-          typescript: {
-            ignoreBuildErrors: true,
-          },
-          eslint: {
-            ignoreDuringBuilds: true,
-          },
-        };
-        
-        module.exports = nextConfig;" > next.config.js
-      fi
+    # Biến môi trường quan trọng để tắt LightningCSS
+    - export NEXT_DISABLE_LIGHTNINGCSS=1
+    - export NODE_OPTIONS="--max-old-space-size=4096"
+    - export NODE_ENV=production
     
+    # Tạo file .env từ biến môi trường
     - echo "🔧 Configuring environment..."
     - echo "$STAGING_ENV" > .env
     - cat .env
     
-    - echo "🏗️ Building application..."
-    # Force clean build
-    - rm -rf .next dist out
-    - |
-      echo "💡 Thực hiện build với tất cả biến môi trường đã cấu hình..."
-      NEXT_DISABLE_LIGHTNINGCSS=1 \
-      NODE_OPTIONS="--no-experimental-fetch --max-old-space-size=4096" \
-      NEXT_TELEMETRY_DISABLED=1 \
-      NEXT_MINIMAL=1 \
-      npm run build
-      
-      # Kiểm tra kết quả build
-      BUILD_STATUS=$?
-      if [ $BUILD_STATUS -ne 0 ]; then
-        echo "❌ Lỗi khi build! Đang thử với thông số thay thế..."
-        
-        echo "💡 Thử build với --openssl-legacy-provider..."
-        NEXT_DISABLE_LIGHTNINGCSS=1 \
-        NODE_OPTIONS="--no-experimental-fetch --max-old-space-size=4096 --openssl-legacy-provider" \
-        npm run build
-        
-        # Kiểm tra lại kết quả build
-        BUILD_STATUS=$?
-        if [ $BUILD_STATUS -ne 0 ]; then
-          echo "❌ Build vẫn thất bại! Kiểm tra logs để biết thêm chi tiết."
-          exit 1
-        fi
-      fi
+    # Sử dụng file next.config.ts hiện có - không tạo file mới
     
-    - echo "📂 Creating deployment package..."
-    # Kiểm tra thư mục đầu ra chính xác dựa trên cấu hình next.config.ts
-    - |
-      OUTPUT_DIR="dist"  # Mặc định theo next.config.ts
-      
-      if [ -d "$OUTPUT_DIR" ]; then
-        echo "📦 Đóng gói thư mục $OUTPUT_DIR..."
-        cd $OUTPUT_DIR
-        zip -r ../deploy.zip .
-        cd ..
-      else
-        echo "⚠️ Không tìm thấy thư mục $OUTPUT_DIR! Tìm kiếm thư mục thay thế..."
-        if [ -d ".next" ]; then
-          echo "📦 Đóng gói thư mục .next..."
-          cd .next
-          zip -r ../deploy.zip .
-          cd ..
-        elif [ -d "out" ]; then
-          echo "📦 Đóng gói thư mục out..."
-          cd out
-          zip -r ../deploy.zip .
-          cd ..
-        else
-          echo "❌ Không tìm thấy thư mục đầu ra nào (dist, .next, hoặc out)!"
-          echo "Cấu trúc thư mục hiện tại:"
-          ls -la
-          
-          echo "Đang tạo gói từ các tệp hiện có..."
-          zip -r deploy.zip . -x "node_modules/*" -x ".git/*"
-        fi
-      fi
+    # Build ứng dụng
+    - npm run build
     
-    - echo "✅ Build completed successfully!"
+    # Tạo file zip
+    - cd dist
+    - zip -r ../deploy.zip .
+    - cd ..
   artifacts:
     paths:
       - deploy.zip
-    expire_in: 1 week
   only:
     - staging
-  cache:
-    paths:
-      - node_modules/
-    key: ${CI_COMMIT_REF_SLUG}
 
 deploy:
   stage: deploy
@@ -141,61 +46,22 @@ deploy:
     - trainer
   script:
     - echo "🌐 Starting deployment to AWS Amplify..."
-    - echo "🔍 Checking environment variables..."
-    - |
-      if [ -z "$AWS_ACCESS_KEY_ID" ]; then
-        echo "❌ ERROR: AWS_ACCESS_KEY_ID is not set!"
-        exit 1
-      fi
-      if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
-        echo "❌ ERROR: AWS_SECRET_ACCESS_KEY is not set!"
-        exit 1
-      fi
-      if [ -z "$STAGING_AWS_REGION" ]; then
-        echo "❌ ERROR: STAGING_AWS_REGION is not set!"
-        exit 1
-      fi
-      if [ -z "$STAGING_AMPLIFY_APP_ID" ]; then
-        echo "❌ ERROR: STAGING_AMPLIFY_APP_ID is not set!"
-        exit 1
-      fi
-      if [ -z "$STAGING_BRANCH" ]; then
-        echo "❌ ERROR: STAGING_BRANCH is not set!"
-        exit 1
-      fi
     
-    - echo "🔑 Configuring AWS credentials..."
+    # Cấu hình AWS
     - aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID"
     - aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY"
-    - echo "⚙️ Configuring AWS region to $STAGING_AWS_REGION..."
     - aws configure set region "$STAGING_AWS_REGION"
     
-    - echo "🔍 Verifying AWS authentication..."
+    # Kiểm tra xác thực
     - aws sts get-caller-identity
     
-    - echo "📋 Checking deployment file..."
-    - ls -la deploy.zip
+    # Deploy lên Amplify
+    - aws amplify start-deployment --app-id "$STAGING_AMPLIFY_APP_ID" --branch-name "$STAGING_BRANCH" --zip-file fileb://deploy.zip
     
-    - echo "📤 Deploying application to Amplify..."
-    - |
-      DEPLOY_RESULT=$(aws amplify start-deployment --app-id "$STAGING_AMPLIFY_APP_ID" --branch-name "$STAGING_BRANCH" --zip-file fileb://deploy.zip)
-      echo "$DEPLOY_RESULT"
-      
-      # Extract job ID for better tracking
-      JOB_ID=$(echo "$DEPLOY_RESULT" | grep -o '"jobId": "[^"]*' | cut -d'"' -f4)
-      if [ -n "$JOB_ID" ]; then
-        echo "📝 Deployment job ID: $JOB_ID"
-      fi
-    
-    - echo "🔎 Checking deployment status..."
-    - sleep 10
-    - aws amplify list-jobs --app-id "$STAGING_AMPLIFY_APP_ID" --branch-name "$STAGING_BRANCH" --max-results 3
-    
-    - echo "🎉 Deployment process completed successfully!"
+    # Kiểm tra trạng thái
+    - sleep 5
+    - aws amplify list-jobs --app-id "$STAGING_AMPLIFY_APP_ID" --branch-name "$STAGING_BRANCH" --max-results 1
   only:
     - staging
   dependencies:
     - build
-  environment:
-    name: staging
-    url: https://staging.d2gkzv5wx7qsyt.amplifyapp.com
