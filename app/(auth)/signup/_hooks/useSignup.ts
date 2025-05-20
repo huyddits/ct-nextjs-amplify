@@ -20,18 +20,18 @@ export const useSignup = (options: UseSignupOptions) => {
         .required('Please select a user type'),
       firstName: string()
         .required('Please enter your first name')
-        .matches(/^[A-Za-z ]+$/, 'First name can only contain letters')
+        .matches($v.PATTERN.NAME, 'First name can only contain letters')
         .max(50, 'First name cannot exceed 50 characters'),
       lastName: string()
         .required('Please enter your last name')
-        .matches(/^[A-Za-z ]+$/, 'Last name can only contain letters')
+        .matches($v.PATTERN.NAME, 'Last name can only contain letters')
         .max(50, 'Last name cannot exceed 50 characters'),
       email: string()
+        .required('Please enter your email')
         .test('is-email', 'Please enter a valid email', value => {
           if (!value) return false;
           return $v.isEmail(value);
         })
-        .required('Please enter your email')
         .max(100, 'Email cannot exceed 100 characters'),
       password: string()
         .required('Please enter your password')
