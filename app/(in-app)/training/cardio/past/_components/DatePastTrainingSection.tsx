@@ -1,45 +1,48 @@
 'use client';
 
-import { useState } from 'react';
-import AppDatePicker from '@/components/compose/AppDatePicker.client';
+import { useState, useMemo } from 'react';
+import AppCalendar from '@/components/compose/AppCalendar.client';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
-import dayjs from 'dayjs';
+import { startOfWeek, endOfWeek, addWeeks, subWeeks, format } from 'date-fns';
 
 export default function DatePastTrainingSection() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [highlightedDate, setHighlightedDate] = useState<Date>();
 
-  const previousWeek = () => {
-    if (selectedDate) {
-      const prevWeek = new Date(selectedDate);
-      prevWeek.setDate(prevWeek.getDate() - 7);
-      setSelectedDate(prevWeek);
-    }
-  };
+  const previousWeek = () => setSelectedDate(prev => subWeeks(prev, 1));
+  const nextWeek = () => setSelectedDate(prev => addWeeks(prev, 1));
 
-  const nextWeek = () => {
-    if (selectedDate) {
-      const nextWeek = new Date(selectedDate);
-      nextWeek.setDate(nextWeek.getDate() + 7);
-      setSelectedDate(nextWeek);
+  const formatDateRange = () => {
+    const start = startOfWeek(selectedDate, { weekStartsOn: 1 });
+    const end = endOfWeek(selectedDate, { weekStartsOn: 1 });
+
+    if (start.getMonth() !== end.getMonth()) {
+      return `${format(start, 'MMM d')} - ${format(end, 'MMM d, yyyy')}`;
     }
+
+    return `${format(start, 'MMM d')} - ${format(end, 'd, yyyy')}`;
   };
 
   return (
-    <div className="flex items-center mb-4">
+    <div className="flex items-center mb-4 w-full">
       <Button variant="outline" size="icon" onClick={previousWeek} className="mr-1">
         <ChevronLeft className="h-4 w-4" />
       </Button>
 
-      <AppDatePicker
-        icon={<CalendarIcon className="icon-input" />}
-        label="Select Date"
-        dateFormat="MM/dd/yyyy"
-        placeholder="mm/dd/yyyy"
-        value={dayjs(selectedDate).format('MM/DD/YYYY')}
+      <AppCalendar
+        icon={<CalendarIcon className="h-4 w-4" />}
+        label=""
+        value={highlightedDate ?? selectedDate}
+        placeholder={formatDateRange()}
+        dateFormat="DD/MM/YYYY"
         onChange={date => {
-          if (date) setSelectedDate(date);
+          if (date) {
+            setHighlightedDate(date);
+            setSelectedDate(startOfWeek(date, { weekStartsOn: 1 }));
+          }
         }}
+        fullWidth
       />
 
       <Button variant="outline" size="icon" onClick={nextWeek} className="ml-1">
