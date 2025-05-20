@@ -11,6 +11,7 @@ build:
     - echo "🚀 Starting build process for application..."
     - apt-get update -qq && apt-get install -y -qq zip build-essential python3
     - echo "📦 Installing dependencies with npm ci..."
+    - LIGHTNINGCSS_FORCE_BUILD=1 npm rebuild lightningcss
     - npm ci --legacy-peer-deps
     - echo "$STAGING_ENV" > .env
     - cat .env
