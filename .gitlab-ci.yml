@@ -11,12 +11,57 @@ build:
     - echo "🚀 Starting build process for application..."
     - apt-get update -qq && apt-get install -y -qq zip build-essential python3
     
-    # Ensure LightningCSS is completely disabled
+    # Ensure LightningCSS is completely disabled - sử dụng nhiều cách khác nhau
     - export NEXT_DISABLE_LIGHTNINGCSS=1
-    - export NODE_OPTIONS="--no-experimental-fetch"
+    - export NODE_OPTIONS="--no-experimental-fetch --max-old-space-size=4096"
     
+    # Sử dụng biến môi trường trực tiếp cho Next.js
     - echo "📦 Installing dependencies..."
     - npm ci --legacy-peer-deps
+    
+    # Thêm cấu hình để tắt LightningCSS trong next.config.js nếu cần
+    - |
+      if [ -f next.config.js ]; then
+        echo "Backing up original next.config.js..."
+        cp next.config.js next.config.js.bak
+        
+        echo "Updating next.config.js to disable LightningCSS..."
+        cat > temp_script.js << 'EOF'
+        const fs = require('fs');
+        const config = require('./next.config.js');
+        
+        // Ensure config has experimental property
+        if (!config.experimental) {
+          config.experimental = {};
+        }
+        
+        // Disable LightningCSS explicitly
+        config.experimental.swcMinify = true;
+        config.experimental.optimizeCss = false;
+        config.experimental.nextScriptWorkers = false;
+        
+        if (config.webpack) {
+          const originalWebpack = config.webpack;
+          config.webpack = (webpackConfig, options) => {
+            let newConfig = originalWebpack(webpackConfig, options);
+            return newConfig;
+          };
+        } else {
+          config.webpack = (webpackConfig, options) => {
+            return webpackConfig;
+          };
+        }
+        
+        fs.writeFileSync('next.config.js', `module.exports = ${JSON.stringify(config, null, 2)}`);
+        EOF
+        
+        node temp_script.js
+        echo "Updated next.config.js content:"
+        cat next.config.js
+      else
+        echo "No next.config.js found, creating one to disable LightningCSS..."
+        echo "module.exports = { experimental: { swcMinify: true, optimizeCss: false } };" > next.config.js
+      fi
     
     - echo "🔧 Configuring environment..."
     - echo "$STAGING_ENV" > .env
@@ -25,18 +70,43 @@ build:
     - echo "🏗️ Building application..."
     # Force clean build
     - rm -rf .next
-    - npm run build
+    - NEXT_DISABLE_LIGHTNINGCSS=1 NODE_OPTIONS="--no-experimental-fetch --max-old-space-size=4096" npm run build
     
     - echo "📂 Creating deployment package..."
-    - cd dist
-    - zip -r ../deploy.zip .
-    - cd ..
+    # Kiểm tra thư mục đầu ra chính xác
+    - |
+      if [ -d "dist" ]; then
+        cd dist
+        zip -r ../deploy.zip .
+        cd ..
+      elif [ -d ".next" ]; then
+        # Nếu sử dụng thư mục .next làm thư mục đầu ra
+        cd .next
+        zip -r ../deploy.zip .
+        cd ..
+      elif [ -d "out" ]; then
+        # Nếu sử dụng export trong Next.js
+        cd out
+        zip -r ../deploy.zip .
+        cd ..
+      else
+        echo "❌ Could not find output directory (dist, .next, or out)!"
+        echo "Current directory structure:"
+        ls -la
+        exit 1
+      fi
+    
     - echo "✅ Build completed successfully!"
   artifacts:
     paths:
       - deploy.zip
+    expire_in: 1 week
   only:
     - staging
+  cache:
+    paths:
+      - node_modules/
+    key: ${CI_COMMIT_REF_SLUG}
 
 deploy:
   stage: deploy
@@ -67,22 +137,39 @@ deploy:
         echo "❌ ERROR: STAGING_BRANCH is not set!"
         exit 1
       fi
+    
     - echo "🔑 Configuring AWS credentials..."
     - aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID"
     - aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY"
     - echo "⚙️ Configuring AWS region to $STAGING_AWS_REGION..."
     - aws configure set region "$STAGING_AWS_REGION"
+    
     - echo "🔍 Verifying AWS authentication..."
     - aws sts get-caller-identity
+    
     - echo "📋 Checking deployment file..."
     - ls -la deploy.zip
+    
     - echo "📤 Deploying application to Amplify..."
-    - aws amplify start-deployment --app-id "$STAGING_AMPLIFY_APP_ID" --branch-name "$STAGING_BRANCH" --zip-file fileb://deploy.zip
+    - |
+      DEPLOY_RESULT=$(aws amplify start-deployment --app-id "$STAGING_AMPLIFY_APP_ID" --branch-name "$STAGING_BRANCH" --zip-file fileb://deploy.zip)
+      echo "$DEPLOY_RESULT"
+      
+      # Extract job ID for better tracking
+      JOB_ID=$(echo "$DEPLOY_RESULT" | grep -o '"jobId": "[^"]*' | cut -d'"' -f4)
+      if [ -n "$JOB_ID" ]; then
+        echo "📝 Deployment job ID: $JOB_ID"
+      fi
+    
     - echo "🔎 Checking deployment status..."
-    - sleep 5
-    - aws amplify list-jobs --app-id "$STAGING_AMPLIFY_APP_ID" --branch-name "$STAGING_BRANCH" --max-results 1
+    - sleep 10
+    - aws amplify list-jobs --app-id "$STAGING_AMPLIFY_APP_ID" --branch-name "$STAGING_BRANCH" --max-results 3
+    
     - echo "🎉 Deployment process completed successfully!"
   only:
     - staging
   dependencies:
     - build
+  environment:
+    name: staging
+    url: https://staging.d2gkzv5wx7qsyt.amplifyapp.com
