@@ -6,6 +6,7 @@ import {
   ResetPasswordPayload,
   ForgotPasswordPayload,
   ForgotPasswordResponse,
+  PersonalInfoResponse,
 } from './types/users';
 
 export const registerUser = (payload: CreateUserPayload) => {
@@ -26,4 +27,8 @@ export const resetPassword = (payload: ResetPasswordPayload) => {
       },
     }
   );
+};
+
+export const getPersonalInfo = () => {
+  return axiosIns.get<PersonalInfoResponse>(END_POINTS.USERS_ME);
 };
