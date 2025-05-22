@@ -1,3 +1,5 @@
 export * as CategoryApi from './categories.api';
 export * as UserApi from './users.api';
 export * as AuthApi from './auth.api';
+export * as CardioSelectApi from './cardioSelect.api';
+export * as CardioTrainingSelectionApi from './cardioTrainingSelection.api';
