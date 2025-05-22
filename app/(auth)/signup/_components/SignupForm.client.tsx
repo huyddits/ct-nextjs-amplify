@@ -129,6 +129,7 @@ export default function SignupForm() {
               required
               password
               {...field}
+              onBlur={() => trigger('password')}
             />
           )}
         />
@@ -163,6 +164,7 @@ export default function SignupForm() {
               maxDate={new Date()}
               value={field.value}
               onChange={field.onChange}
+              onBlur={() => trigger('dateOfBirth')}
               errorMessage={error?.message}
               fullWidth
               required
