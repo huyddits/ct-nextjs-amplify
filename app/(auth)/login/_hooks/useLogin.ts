@@ -20,12 +20,12 @@ export const useLogin = (options: UseLoginOptions) => {
 
   const formSchema = object().shape({
     email: string()
-      .test('is-email', 'Please enter a valid email', value => {
+      .required('This field is required. Please enter a value to continue.')
+      .test('is-email', 'Please enter a valid email address (example: name@domain.com).', value => {
         if (!value) return false;
         return $v.isEmail(value);
-      })
-      .required('Please enter your email'),
-    password: string().required('Please enter your password'),
+      }),
+    password: string().required('This field is required. Please enter a value to continue.'),
   });
 
   type FormPayload = InferType<typeof formSchema>;

@@ -20,11 +20,17 @@ export const useSignup = (options: UseSignupOptions) => {
         .required('Please select a user type'),
       firstName: string()
         .required('Please enter your first name')
-        .matches($v.PATTERN.NAME, 'First name can only contain letters')
+        .matches(
+          $v.PATTERN.NAME,
+          'Please avoid using special characters like [@, #, !, *, $, %, ^, &, +] in this field.'
+        )
         .max(50, 'First name cannot exceed 50 characters'),
       lastName: string()
         .required('Please enter your last name')
-        .matches($v.PATTERN.NAME, 'Last name can only contain letters')
+        .matches(
+          $v.PATTERN.NAME,
+          'Please avoid using special characters like [@, #, !, *, $, %, ^, &, +] in this field.'
+        )
         .max(50, 'Last name cannot exceed 50 characters'),
       email: string()
         .required('Please enter your email')
@@ -36,16 +42,10 @@ export const useSignup = (options: UseSignupOptions) => {
       password: string()
         .required('Please enter your password')
         .min(8, 'Password must be at least 8 characters')
-        // .test('is-strong', 'Password is too weak', value => {
-        //   if (!value) return false;
-        //   const strength =
-        //     (value.length >= 8 ? 1 : 0) +
-        //     (/[A-Z]/.test(value) ? 1 : 0) +
-        //     (/[a-z]/.test(value) ? 1 : 0) +
-        //     (/\d/.test(value) ? 1 : 0) +
-        //     (/[^A-Za-z0-9]/.test(value) ? 1 : 0);
-        //   return strength >= 3; // Equivalent to 60%
-        // })
+        .matches($v.PATTERN.LOWERCASE, 'Password must contain at least one lowercase letter')
+        .matches($v.PATTERN.UPPERCASE, 'Password must contain at least one uppercase letter')
+        .matches($v.PATTERN.NUMBER, 'Password must contain at least one number')
+        .matches($v.PATTERN.SPECIAL_CHAR, 'Password must contain at least one special character')
         .max(100, 'Password cannot exceed 100 characters'),
       confirmPassword: string()
         .required('Please confirm your password')
