@@ -22,6 +22,10 @@ export const ROUTES = {
   HIT_MISS_REPORT: 'hit-miss/report',
   HIT_MISS_DATA: 'hit-miss/data',
   BILLING_AND_SUBSCRIPTION: 'billing-and-subscription',
+  CHECK_OFF: 'check-off',
+  CHECK_OFF_NEW: 'check-off/new',
+  CHECK_OFF_REVIEW: 'check-off/review',
+  CHECK_OFF_TEAM_DATA: 'check-off/team-data',
 };
 
 export const WHITE_LIST = [

@@ -1,15 +1,23 @@
 import { STORAGE_KEY } from '@/utils/constants';
 import { create } from 'zustand';
+import { type PersonalInfo } from '@/utils/types';
 
 type AuthStore = {
+  info: PersonalInfo;
   token: string | null;
+  setInfo: (value: PersonalInfo) => void;
   setToken: (value: string | null) => void;
   removeToken: () => void;
 };
 
 export const useAuthStore = create<AuthStore>((set, _get) => {
   return {
+    info: null,
     token: null,
+    setInfo: value => {
+      if (!value) return;
+      set({ info: value });
+    },
     setToken: value => {
       if (!value) return;
       set({ token: value });
