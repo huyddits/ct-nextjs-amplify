@@ -33,12 +33,12 @@ export default function CardioPage() {
       setInputDisabled(false);
       setValue('intervals', [
         {
-          duration: undefined,
+          duration: '',
           rpe: '0',
-          distance: undefined,
+          distance: '',
           distance_unit: '',
-          heartRateMin: undefined,
-          heartRateMax: undefined,
+          heartRateMin: '',
+          heartRateMax: '',
         },
       ]);
     }
@@ -73,9 +73,9 @@ export default function CardioPage() {
       !current.distance &&
       !current.distance_unit &&
       !current.heartRateMin &&
-      current.heartRateMin !== 0 &&
+      current.heartRateMin &&
       !current.heartRateMax &&
-      current.heartRateMax !== 0;
+      current.heartRateMax;
 
     if (isEmpty) {
       toast.error('Please enter interval data before adding a new one.');

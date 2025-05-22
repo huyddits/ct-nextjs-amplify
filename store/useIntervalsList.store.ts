@@ -2,12 +2,12 @@
 import { create } from 'zustand';
 
 type Interval = {
-  duration?: number;
+  duration?: string;
   rpe?: string;
-  distance?: number;
+  distance?: string;
   distance_unit?: string;
-  heartRateMin?: number;
-  heartRateMax?: number;
+  heartRateMin?: string;
+  heartRateMax?: string;
 };
 
 type CardioStore = {

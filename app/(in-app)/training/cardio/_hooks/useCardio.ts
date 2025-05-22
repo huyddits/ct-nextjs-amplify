@@ -2,7 +2,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { InferType, object, string, number, array } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useMemo, useState } from 'react';
-import { CardioTrainingSelectionApi, CardioSelectApi } from '@/api';
+import { CardioTrainingSelectionApi } from '@/api';
 import { type SelectOption } from '@/components/compose';
 import dayjs from 'dayjs';
 import { useIntervalsCardioStore } from '@/store';
@@ -12,6 +12,31 @@ type UseCardioFormOptions = {
   onSuccess?: () => void;
   onFailure?: (message: string) => void;
 };
+
+const schema = object().shape({
+  exercises: string(),
+  notes: string().max(500),
+  intervals: array(
+    object().shape({
+      cardio_interval_id: string(),
+      duration: string(),
+      distance: string().min(0),
+      distance_unit: string(),
+      rpe: string().min(0).max(10),
+      heartRateMin: string().min(0).max(250).optional(),
+      heartRateMax: string().min(0).max(250).optional(),
+    })
+  )
+    .min(1)
+    .required(),
+});
+
+class NoCreateIntervalsError extends Error {
+  constructor() {
+    super('No completed intervals');
+    this.name = 'NoIntervalsError';
+  }
+}
 
 export const useCardio = (options?: UseCardioFormOptions) => {
   const [exercisesItems, setExercisesItems] = useState<
@@ -24,9 +49,8 @@ export const useCardio = (options?: UseCardioFormOptions) => {
 
   const getExercises = async () => {
     try {
-      const response = await CardioSelectApi.getExercises();
+      const response = await CardioTrainingSelectionApi.getExercises();
       const { data, error } = response.data;
-      console.log(response.data, 'sa ');
       if (!data) throw error;
       const ExercisesItems = data.map(({ name, cardio_exercises_id, units }) => ({
         label: name,
@@ -41,7 +65,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
 
   const getRpe = async () => {
     try {
-      const response = await CardioSelectApi.getRpe();
+      const response = await CardioTrainingSelectionApi.getRpe();
       const { data, error } = response.data;
       if (!data) throw error;
       const RpeItems = data.map(({ name, cardio_rpe_id }) => ({
@@ -54,38 +78,18 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     }
   };
 
-  const schema = useMemo(() => {
-    return object().shape({
-      exercises: string(),
-      notes: string().max(500),
-      intervals: array(
-        object().shape({
-          cardio_interval_id: number(),
-          duration: number(),
-          distance: number().min(0),
-          distance_unit: string(),
-          rpe: string().min(0).max(10),
-          heartRateMin: number().min(0).max(250).optional(),
-          heartRateMax: number().min(0).max(250).optional(),
-        })
-      )
-        .min(1)
-        .required(),
-    });
-  }, []);
-
   type FormType = InferType<typeof schema>;
   const DEFAULT_FORM: Required<FormType> = {
     exercises: '1',
     notes: '',
     intervals: [
       {
-        duration: undefined,
-        distance: undefined,
+        duration: '',
+        distance: '',
         distance_unit: 'Kilometers',
         rpe: '0',
-        heartRateMin: undefined,
-        heartRateMax: undefined,
+        heartRateMin: '',
+        heartRateMax: '',
       },
     ],
   };
@@ -118,7 +122,10 @@ export const useCardio = (options?: UseCardioFormOptions) => {
 
   const onCompleteWorkout = async (formData: FormType) => {
     try {
-      if (intervalsList.length === 0) throw new Error('No completed intervals');
+      if (intervalsList.length === 0) {
+        toast.error('Please create at least one interval before completing the workout.');
+        return;
+      }
       await CardioTrainingSelectionApi.postExercises({
         workout_date: dayjs().format('YYYY-MM-DD'),
         exercises: Number(formData.exercises),
@@ -136,12 +143,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
       options?.onSuccess?.();
     } catch (error: unknown) {
       console.error('Workout submission failed:', error);
-
-      if (error instanceof Error && error.message === 'No completed intervals') {
-        toast.error('Please create at least one interval before completing the workout.');
-      } else {
-        toast.error('Failed to save workout');
-      }
+      toast.error('Failed to save workout');
       options?.onFailure?.('Failed to save workout');
     }
   };

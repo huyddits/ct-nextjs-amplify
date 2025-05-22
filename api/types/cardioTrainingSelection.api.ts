@@ -1,5 +1,21 @@
 import { ApiResponse } from '@/utils/types';
 
+type ExerciseRecord = {
+  cardio_exercises_id: number;
+  name: string;
+  units: [
+    {
+      cardio_unit_id: number;
+      name: string;
+    },
+  ];
+};
+
+type rpeRecord = {
+  cardio_rpe_id: number;
+  name: string;
+};
+
 export type CreateCardioPayload = {
   workout_date: string; // YYYY-MM-DD
   exercises: number;
@@ -15,5 +31,9 @@ export type intervalsPayload = {
   heart_rate_max: number;
   rpe: string;
 };
+
+export type GetListExerciseResponse = ApiResponse<ExerciseRecord[], {}>;
+
+export type GetListRpeResponse = ApiResponse<rpeRecord[], {}>;
 
 export type CreateCardioResponse = ApiResponse<{}, {}>;
