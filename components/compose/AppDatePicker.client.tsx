@@ -17,6 +17,7 @@ interface AppDatePickerProps {
   dateFormat?: string;
   placeholder?: string;
   errorMessage?: string;
+  onBlur?: () => void;
   onChange: (date: Date | null) => void;
 }
 
@@ -30,6 +31,7 @@ export default function AppDatePicker({
   dateFormat,
   placeholder,
   errorMessage,
+  onBlur,
   onChange,
 }: Readonly<AppDatePickerProps>) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -54,18 +56,23 @@ export default function AppDatePicker({
         )}
         <DatePicker
           selected={selectedDate}
-          onChange={onChange}
           dateFormat={format}
+          placeholderText={placeholder}
+          maxDate={maxDate}
+          wrapperClassName={cn(fullWidth && 'w-full flex items-stretch')}
           className={cn(
             'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input w-full flex h-9 min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
             icon && 'pl-10'
           )}
-          wrapperClassName={cn(fullWidth && 'w-full flex items-stretch')}
-          placeholderText={placeholder}
-          maxDate={maxDate}
+          onBlur={onBlur}
+          onChange={onChange}
         />
       </div>
-      {errorMessage && <span className="error-message">{errorMessage}</span>}
+      {errorMessage && (
+        <div className="-mt-2">
+          <span className="error-message">{errorMessage}</span>
+        </div>
+      )}
     </div>
   );
 }
