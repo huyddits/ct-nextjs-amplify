@@ -11,4 +11,7 @@ export const END_POINTS = {
   AUTH_LOGIN: 'auth/login',
   AUTH_LOGIN_SOCIAL: 'auth/social-login',
   AUTH_LOGIN_TWITTER: 'auth/twitter/login',
+  EXERCISES: 'cardio/exercises',
+  CARDIO_CREATE: 'cardio/session',
+  RPE: 'cardio/rpes',
 };
