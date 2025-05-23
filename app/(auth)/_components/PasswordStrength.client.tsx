@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import * as $v from '@/utils/validators';
 import { usePasswordStrength } from '@/app/(auth)/_hooks';
+import { cn } from '@/lib/utils';
 
 export default function PasswordStrength({ password }: { password: string }) {
   const { passwordStrength, strengthText } = usePasswordStrength(password);
@@ -40,13 +41,23 @@ export default function PasswordStrength({ password }: { password: string }) {
         />
       </div>
       <div className="text-xs text-gray-500 mt-1">
-        {passwordStrength < 60 && (
+        {passwordStrength >= 0 && passwordStrength < 100 && (
           <ul className="list-disc list-inside space-y-0.5">
-            {password.length < 8 && <li>Use at least 8 characters</li>}
-            {!$v.isContainUppercase(password) && <li>Include uppercase letters</li>}
-            {!$v.isContainLowercase(password) && <li>Include lowercase letters</li>}
-            {!$v.isContainNumber(password) && <li>Include numbers</li>}
-            {!$v.isContainSpecialChar(password) && <li>Include special characters</li>}
+            <li className={cn(password.length >= 8 && 'text-primary')}>
+              The password MUST be at least 8 characters long
+            </li>
+            <li className={cn($v.isContainUppercase(password) && 'text-primary')}>
+              The password MUST contain at least one uppercase letter
+            </li>
+            <li className={cn($v.isContainLowercase(password) && 'text-primary')}>
+              The password MUST contain at least one lowercase letter
+            </li>
+            <li className={cn($v.isContainNumber(password) && 'text-primary')}>
+              The password MUST contain at least one number
+            </li>
+            <li className={cn($v.isContainSpecialChar(password) && 'text-primary')}>
+              The password MUST contain at least one special character
+            </li>
           </ul>
         )}
       </div>
