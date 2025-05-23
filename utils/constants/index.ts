@@ -7,3 +7,8 @@ export const USER_TYPE = {
   ATHLETE: 'athlete',
   COACH: 'coach',
 };
+
+export const ERROR_MESSAGES = {
+  INPUT: 'This field is required. Please enter a value to continue.',
+  SELECT: 'This field is required. Please select an option to continue.',
+};

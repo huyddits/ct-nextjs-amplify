@@ -1,51 +1,45 @@
 'use client';
 
-import { ROUTES } from '@/utils/constants';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useState } from 'react';
+import { ERROR_MESSAGES, ROUTES } from '@/utils/constants';
+import { useSearchParams } from 'next/navigation';
 import { UserApi } from '@/api';
-import { InferType, object, string } from 'yup';
+import { InferType, object, ref, string } from 'yup';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AppInput } from '@/components/compose';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
-import React, { useState } from 'react';
 import { CheckCircleIcon } from 'lucide-react';
 import Link from 'next/link';
 import { FooterSection, LogoSection } from '../_components';
+import * as $v from '@/utils/validators';
 
 const schema = object().shape({
   password: string()
-    .required('Please enter your password')
+    .required(ERROR_MESSAGES.INPUT)
     .min(8, 'Password must be at least 8 characters')
-    .max(100, 'Password cannot exceed 100 characters')
-    .test('is-strong', 'Password is too weak', value => {
-      if (!value) return false;
-      const strength =
-        (value.length >= 8 ? 1 : 0) +
-        (/[A-Z]/.test(value) ? 1 : 0) +
-        (/[a-z]/.test(value) ? 1 : 0) +
-        (/\d/.test(value) ? 1 : 0) +
-        (/[^A-Za-z0-9]/.test(value) ? 1 : 0);
-      return strength >= 3; // Equivalent to 60%
-    }),
+    .matches($v.PATTERN.LOWERCASE, 'Password must contain at least one lowercase letter')
+    .matches($v.PATTERN.UPPERCASE, 'Password must contain at least one uppercase letter')
+    .matches($v.PATTERN.NUMBER, 'Password must contain at least one number')
+    .matches($v.PATTERN.SPECIAL_CHAR, 'Password must contain at least one special character')
+    .max(100, 'Password cannot exceed 100 characters'),
   confirmPassword: string()
-    .test('password-match', 'Passwords do not match', function (value) {
-      const { password } = this.parent;
-      return password === value;
-    })
-    .required('Please confirm your password'),
+    .required(ERROR_MESSAGES.INPUT)
+    .oneOf(
+      [ref('password')],
+      'Passwords do not match. Please make sure both entries are identical.'
+    ),
 });
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
   const [isSuccess, setIsSuccess] = useState(false);
-  const router = useRouter();
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, trigger } = useForm({
     resolver: yupResolver(schema),
-    mode: 'onBlur',
+    mode: 'onChange',
     defaultValues: {
       password: '',
       confirmPassword: '',
@@ -105,6 +99,7 @@ export default function ResetPasswordPage() {
                       errorMessage={error?.message}
                       password
                       {...field}
+                      onBlur={() => trigger('password')}
                     />
                   );
                 }}
@@ -123,6 +118,7 @@ export default function ResetPasswordPage() {
                       errorMessage={error?.message}
                       password
                       {...field}
+                      onBlur={() => trigger('confirmPassword')}
                     />
                   );
                 }}
