@@ -22,6 +22,7 @@ interface AppSelectProps {
   fullWidth?: boolean;
   placeholder?: string;
   errorMessage?: string;
+  disabled?: boolean;
   onChangeSelected: (selectedValue: string) => void;
 }
 
@@ -36,6 +37,7 @@ export default function AppSelect({
   defaultLabel,
   errorMessage,
   selectedValue,
+  disabled,
   onChangeSelected,
 }: Readonly<AppSelectProps>) {
   const [isChanged, setIsChanged] = useState(false);
@@ -59,13 +61,18 @@ export default function AppSelect({
           </Label>
         ))}
       <Select value={selectedValue} onValueChange={onValueChange}>
-        <SelectTrigger aria-labelledby={id} className={fullWidth ? 'w-full' : ''}>
+        <SelectTrigger
+          aria-labelledby={id}
+          disabled={disabled}
+          className={fullWidth ? 'w-full' : ''}
+        >
           {!isChanged ? (
             <Input
               readOnly
               value={selectedLabel}
               className="border-none p-0 text-black"
               placeholder={placeholder}
+              disabled={disabled}
             />
           ) : (
             <SelectValue placeholder={placeholder} />
