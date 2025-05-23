@@ -1,3 +1,5 @@
+'use client';
+import { useState } from 'react';
 import {
   PastTraining,
   DatePastTrainingSection,
@@ -7,13 +9,14 @@ import {
 } from './_components';
 
 export default function PastTrainingPage() {
+  const [selectedDate, setSelectedDate] = useState(new Date());
   return (
     <div className="pt-[56px] pb-[80px] max-w-3xl mx-auto px-4">
-      <PastTraining />
+      {/* <PastTraining /> */}
       <main>
-        <DatePastTrainingSection />
+        <DatePastTrainingSection selectedDate={selectedDate} onChangeDate={setSelectedDate} />
         <PerformanceMetrics />
-        <WeeklySummarySection />
+        <WeeklySummarySection selectedDate={selectedDate} />
         <WeeklyWorkoutsSection />
       </main>
     </div>
