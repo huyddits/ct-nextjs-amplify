@@ -9,12 +9,11 @@ import { AppInput } from '@/components/compose';
 import { useLogin } from '../_hooks';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/utils/constants';
-import PasswordStrength from '@/app/(auth)/_components/PasswordStrength.client';
 import { toast } from 'react-toastify';
 
 export default function LoginForm() {
   const router = useRouter();
-  const { control, password, onSubmit } = useLogin({
+  const { control, onSubmit, trigger } = useLogin({
     onSuccess: () => {
       router.push(`/${ROUTES.HOME}`);
       toast.success('Login successfully');
@@ -34,6 +33,7 @@ export default function LoginForm() {
               inputProps={{ placeholder: 'name@example.com' }}
               errorMessage={error?.message}
               {...field}
+              onBlur={() => trigger('email')}
             />
           )}
         />
@@ -49,12 +49,18 @@ export default function LoginForm() {
           <Controller
             control={control}
             name="password"
-            render={({ field }) => (
-              <AppInput icon={<LockIcon className="icon-input" />} {...field} password />
+            render={({ field, fieldState: { error } }) => (
+              <AppInput
+                icon={<LockIcon className="icon-input" />}
+                {...field}
+                password
+                errorMessage={error?.message}
+                onBlur={() => trigger('password')}
+              />
             )}
           />
 
-          <PasswordStrength password={password} />
+          {/* <PasswordStrength password={password} /> */}
         </div>
 
         <Button type="submit" className="w-full">
