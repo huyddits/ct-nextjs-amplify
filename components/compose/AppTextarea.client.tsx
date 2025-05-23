@@ -36,7 +36,7 @@ export default function AppTextarea({
   return (
     <div {...containerProps} className={twMerge('space-y-2', containerProps?.className)}>
       {label && (
-        <Label htmlFor={id} className="text-sm text-gray-600">
+        <Label htmlFor={id} className=" text-gray-600">
           {label}
           {required && <span className="text-red-600">*</span>}
         </Label>
