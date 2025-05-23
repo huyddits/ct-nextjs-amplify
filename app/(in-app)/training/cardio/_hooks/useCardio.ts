@@ -31,13 +31,6 @@ const schema = object().shape({
     .required(),
 });
 
-class NoCreateIntervalsError extends Error {
-  constructor() {
-    super('No completed intervals');
-    this.name = 'NoIntervalsError';
-  }
-}
-
 export const useCardio = (options?: UseCardioFormOptions) => {
   const [exercisesItems, setExercisesItems] = useState<
     (SelectOption & { units: SelectOption[] })[]
