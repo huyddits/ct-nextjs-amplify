@@ -11,26 +11,25 @@ export const usePasswordStrength = (password: string) => {
     }
 
     let strength = 0;
-    let checks = 0;
 
     if ($v.isContainUppercase(password)) {
       strength += 25;
-      checks++;
     }
 
     if ($v.isContainLowercase(password)) {
       strength += 25;
-      checks++;
     }
 
     if ($v.isContainNumber(password)) {
       strength += 25;
-      checks++;
     }
 
     if ($v.isContainSpecialChar(password)) {
       strength += 25;
-      checks++;
+    }
+
+    if (password.length < 8) {
+      strength = 0;
     }
 
     strength = Math.min(100, Math.floor(strength));
