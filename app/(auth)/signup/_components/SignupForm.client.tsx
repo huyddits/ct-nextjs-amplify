@@ -125,11 +125,11 @@ export default function SignupForm() {
               label="Password"
               icon={<LockIcon className="icon-input" />}
               inputProps={{ placeholder: 'Password' }}
-              errorMessage={error?.message}
               required
               password
               {...field}
               onBlur={() => trigger('password')}
+              errorMessage={error?.type === 'required' ? error.message : undefined}
             />
           )}
         />
@@ -148,6 +148,7 @@ export default function SignupForm() {
               required
               password
               {...field}
+              onBlur={() => trigger('confirmPassword')}
             />
           )}
         />
@@ -287,8 +288,8 @@ export default function SignupForm() {
             checked={isAgree}
             onCheckedChange={checked => setIsAgree(checked === 'indeterminate' ? false : checked)}
           />
-          <Label htmlFor="terms" className="text-sm">
-            I agree to the{' '}
+          <Label htmlFor="terms" className="text-sm gap-1">
+            I agree to the
             <Link
               href="/term-and-conditions"
               className="text-primary hover:underline"
