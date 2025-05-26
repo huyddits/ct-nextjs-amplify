@@ -1,5 +1,5 @@
 export const PATTERN = {
-  NAME: /^[A-Za-z '-]+$/,
+  NAME: /^[\p{L}\p{M} '-]+$/u,
   EMAIL: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
   NUMBER: /\d/,
   UPPERCASE: /[A-Z]/,
