@@ -1,9 +1,10 @@
 import { UserApi } from '@/api';
 import { useAuthStore } from '@/store';
+import { BillingCycle, PlanStatus, PlanType } from '@/utils/types';
 import { useEffect } from 'react';
 
 export const usePersonalInfo = () => {
-  const { info, setInfo } = useAuthStore();
+  const { info, setInfo, token } = useAuthStore();
 
   const handleGetPersonalInfo = async () => {
     try {
@@ -12,6 +13,9 @@ export const usePersonalInfo = () => {
       if (!data) {
         throw response.data.error;
       }
+      const foundPlan = data.plan.find(({ status }) =>
+        [PlanStatus.Active, PlanStatus.Canceled].includes(status)
+      );
       setInfo({
         id: data.user_id,
         accountType: data.account_type,
@@ -30,14 +34,29 @@ export const usePersonalInfo = () => {
         cheerStyleId: data.profile?.cheer_styles?.[0]?.id ?? 0,
         cheerStyleName: data.profile?.cheer_styles?.[0]?.name ?? '',
         equipmentIds: data.equipments?.map(e => e.id) ?? [],
+        userPlanId: foundPlan?.user_plan_id ?? '',
+        planId: foundPlan?.plan.plan_id ?? '',
+        planEndDate: foundPlan?.end_date ?? '',
+        planStartDate: foundPlan?.start_date ?? '',
+        planNextBillingDate: foundPlan?.next_billing_date ?? '',
+        planStatus: foundPlan?.status ?? PlanStatus.Active,
+        planActualPrice: Number(foundPlan?.plan.actual_price),
+        planBasePrice: Number(foundPlan?.plan.base_price),
+        planBillingCycle: foundPlan?.plan.billing_cycle ?? BillingCycle.Free,
+        planType: foundPlan?.plan.type ?? PlanType.Athlete,
+        planPromo: foundPlan?.plan.promo_code ?? '',
+        planStripePriceId: foundPlan?.plan.stripe_price_id ?? '',
+        planStripeCustomerId: data.stripe_customer_id,
+        planStripeSubscriptionId: foundPlan?.stripe_subscription_id ?? '',
       });
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
+    if (!token) return;
     handleGetPersonalInfo();
-  }, []);
+  }, [token]);
 
   return { data: info };
 };

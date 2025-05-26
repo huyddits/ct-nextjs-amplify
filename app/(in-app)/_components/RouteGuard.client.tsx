@@ -1,6 +1,6 @@
 'use client';
 import { AppLoadingFullScreen } from '@/components/compose';
-import { usePersonalInfo } from '@/hooks/usePersonalInfo';
+import { usePersonalInfo } from '@/hooks';
 import { useAuthStore } from '@/store';
 import { ROUTES, WHITE_LIST, STORAGE_KEY } from '@/utils/constants';
 import { usePathname, useRouter } from 'next/navigation';
@@ -12,15 +12,12 @@ export default function RouteGuard() {
   const { setToken } = useAuthStore();
   const [isChecking, setIsChecking] = useState(true);
   usePersonalInfo();
-
-  console.log({ pathname });
-
   useEffect(() => {
     const token = localStorage.getItem(STORAGE_KEY.TOKEN);
 
     if (!token) {
       if (!WHITE_LIST.includes(pathname)) {
-        router.replace(`/${ROUTES.WELCOME}`);
+        router.replace(`/${ROUTES.LOGIN}`);
       }
     } else {
       setToken(token);
