@@ -12,4 +12,7 @@ export const END_POINTS = {
   AUTH_LOGIN_SOCIAL: 'auth/social-login',
   AUTH_LOGIN_TWITTER: 'auth/twitter/login',
   WEEKLY_SUMMARY: 'cardio/past-training/weekly-summary',
+  EXERCISES: 'cardio/exercises',
+  CARDIO_CREATE: 'cardio/session',
+  RPE: 'cardio/rpes',
 };

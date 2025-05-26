@@ -4,7 +4,7 @@ import { InferType, object, string } from 'yup';
 import { AuthApi } from '@/api';
 import { useAuthStore } from '@/store';
 import { SocialProvider } from '@/utils/types';
-import { END_POINTS } from '@/utils/constants';
+import { END_POINTS, ERROR_MESSAGES } from '@/utils/constants';
 import * as $v from '@/utils/validators';
 
 type UseLoginOptions = {
@@ -20,19 +20,20 @@ export const useLogin = (options: UseLoginOptions) => {
 
   const formSchema = object().shape({
     email: string()
-      .required('This field is required. Please enter a value to continue.')
-      .test('is-email', 'Please enter a valid email address (example: name@domain.com).', value => {
-        if (!value) return false;
-        return $v.isEmail(value);
-      }),
-    password: string().required('This field is required. Please enter a value to continue.'),
+      .required(ERROR_MESSAGES.INPUT)
+      .matches($v.PATTERN.EMAIL, 'Please enter a valid email address (example: name@domain.com).')
+      .max(100, 'Email cannot exceed 100 characters'),
+    password: string()
+      .required(ERROR_MESSAGES.INPUT)
+      .max(100, 'Password cannot exceed 100 characters'),
   });
 
   type FormPayload = InferType<typeof formSchema>;
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, trigger } = useForm({
     resolver: yupResolver(formSchema),
     defaultValues: { ...DEFAULT_FORM },
+    mode: 'onChange',
   });
 
   const password = useWatch({ control, name: 'password', defaultValue: '' });
@@ -104,6 +105,7 @@ export const useLogin = (options: UseLoginOptions) => {
   return {
     control,
     password,
+    trigger,
     onSubmit,
     loginWithProvider,
   };

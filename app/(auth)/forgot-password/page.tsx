@@ -2,20 +2,22 @@
 import { AppInput } from '@/components/compose';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MailIcon, CheckCircleIcon } from 'lucide-react';
-import { createRef, useState } from 'react';
+import React, { createRef, useState } from 'react';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { object, string } from 'yup';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { UserApi } from '@/api';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
-import { ROUTES } from '@/utils/constants';
+import { ERROR_MESSAGES, ROUTES } from '@/utils/constants';
 import Link from 'next/link';
 import { FooterSection, LogoSection } from '../_components';
-import React from 'react';
-
+import * as $v from '@/utils/validators';
 const schema = object().shape({
-  email: string().email('Please enter a valid email').required(),
+  email: string()
+    .required(ERROR_MESSAGES.INPUT)
+    .matches($v.PATTERN.EMAIL, 'Please enter a valid email address (example: name@domain.com).')
+    .max(100, 'Email cannot exceed 100 characters'),
 });
 
 export default function ForgotPasswordPage() {

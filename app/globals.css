@@ -240,6 +240,10 @@
   @apply pb-[140px];
 }
 
+.padding-left-button {
+  @apply pl-[40%];
+}
+
 /* add bottom */
 .bottom-app {
   @apply bottom-[60px];
