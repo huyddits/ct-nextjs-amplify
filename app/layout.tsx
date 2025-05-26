@@ -2,6 +2,7 @@
 // import { ServiceWorkerRegister } from "./_components";
 import { ToastContainerClient } from './_components';
 import './globals.css';
+import type { Metadata, Viewport } from 'next';
 
 // const geistSans = Geist({
 //   variable: '--font-geist-sans',
@@ -12,6 +13,49 @@ import './globals.css';
 //   variable: '--font-geist-mono',
 //   subsets: ['latin'],
 // });
+
+export const metadata: Metadata = {
+  title: 'My PWA App',
+  description: 'My Progressive Web App',
+  applicationName: 'My PWA App',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'My PWA App',
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    siteName: 'My PWA App',
+    title: {
+      default: 'My PWA App',
+      template: '%s - My PWA App',
+    },
+    description: 'My Progressive Web App',
+  },
+  twitter: {
+    card: 'summary',
+    title: {
+      default: 'My PWA App',
+      template: '%s - My PWA App',
+    },
+    description: 'My Progressive Web App',
+  },
+  manifest: '/manifest.json',
+  icons: {
+    icon: [
+      { url: '/icons/icon-32x32.jpg', sizes: '32x32', type: 'image/jpeg' },
+      { url: '/icons/icon-16x16.jpg', sizes: '16x16', type: 'image/jpeg' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#000000',
+};
 
 export default function RootLayout({
   children,
