@@ -1,7 +1,7 @@
 'use client';
-import { CreditCardIcon, CheckCircleIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { CheckCircleIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Icon } from '@iconify/react';
 
 interface PaymentMethodProps {
   className?: string;
@@ -14,16 +14,13 @@ export default function PaymentMethod({ className }: PaymentMethodProps) {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
           <div className="bg-blue-100 p-2 rounded mr-3">
-            <CreditCardIcon className="h-5 w-5 text-blue-600" />
+            <Icon icon="simple-icons:stripe" width="24" height="24"></Icon>
           </div>
           <div>
-            <div className="text-sm font-medium">Visa ending in 4242</div>
-            <div className="text-xs text-gray-500">Expires 09/2026</div>
+            <div className="text-sm font-medium">Redirect to Stripe for payment</div>
+            <div className="text-xs text-gray-500">Fast, secure and easy</div>
           </div>
         </div>
-        <Button variant="ghost" size="sm" className="text-sm">
-          Change
-        </Button>
       </div>
       <div className="text-xs text-gray-500 flex items-center">
         <CheckCircleIcon className="h-3 w-3 mr-1 text-green-600" />
