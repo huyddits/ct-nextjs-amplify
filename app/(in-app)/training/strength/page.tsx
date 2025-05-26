@@ -12,7 +12,7 @@ export default function StrengthPage() {
   };
   return (
     <section>
-      <div className="border-b sticky top-9 z-50 bg-white border-b">
+      <div className="border-b sticky top-9 z-50 bg-white">
         <div className="max-w-3xl mx-auto px-4">
           <div className="flex items-center space-x-6 overflow-x-auto py-3 ">
             <button className="text-gray-500 whitespace-nowrap">Cheer Trainer</button>

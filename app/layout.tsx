@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono } from 'next/font/google';
 // import { ServiceWorkerRegister } from "./_components";
 import { ToastContainerClient } from './_components';
+import { AppConfirm } from '@/components/compose';
+import { StripeProvider } from '@/context/StripeContext';
 import './globals.css';
 
 const geistSans = Geist({
@@ -36,9 +38,10 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
+        <StripeProvider>{children}</StripeProvider>
         {/* <ServiceWorkerRegister /> */}
         <ToastContainerClient />
+        <AppConfirm />
       </body>
     </html>
   );

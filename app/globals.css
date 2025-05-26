@@ -252,7 +252,7 @@
 /* add component */
 
 .tab-navigation-item {
-  @apply flex-1 flex text-gray-600 py-2 px-4 text-center bg-white data-[state=active]:bg-primary data-[state=active]:text-white;
+  @apply flex-1 flex text-gray-600 py-2 px-4 rounded-none text-center bg-white data-[state=active]:bg-primary data-[state=active]:text-white;
 }
 /* stop color */
 .stop-primary {
