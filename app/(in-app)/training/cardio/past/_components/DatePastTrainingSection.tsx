@@ -48,6 +48,7 @@ export default function DatePastTrainingSection({
         }}
         fullWidth
         maxDate={new Date()}
+        disabled
       />
 
       <Button variant="outline" size="icon" onClick={nextWeek} className="ml-1">

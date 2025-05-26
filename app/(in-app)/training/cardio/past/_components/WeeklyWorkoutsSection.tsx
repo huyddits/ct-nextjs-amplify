@@ -1,27 +1,37 @@
-export default function WeeklyWorkoutsSection() {
+'use client';
+import { useMemo } from 'react';
+import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
+import { usePastCardioTraining } from '../_hooks';
+export default function WeeklyWorkoutsSection({ selectedDate }: Readonly<{ selectedDate: Date }>) {
+  dayjs.extend(isoWeek);
+  const from = useMemo(() => {
+    return dayjs(selectedDate).startOf('isoWeek').format('YYYY-MM-DD');
+  }, [selectedDate]);
+
+  const to = useMemo(() => {
+    return dayjs(selectedDate).endOf('isoWeek').format('YYYY-MM-DD');
+  }, [selectedDate]);
+
+  const { weeklyWorkoutItems } = usePastCardioTraining({ from, to });
+
+  if (!weeklyWorkoutItems) {
+    return <div className="bg-white rounded-lg shadow p-4 mb-4"></div>;
+  }
+
   const listItems = [
     {
       title: 'Weekly Workouts',
-      content: [
-        {
-          date: '1/20',
-          type: 'Row',
-          duration: '30 mins',
-          distance: '4.2 km',
-          rpe: '7',
-          heartRate: '145 BPM',
-          note: 'Felt strong during the session',
-        },
-        {
-          date: '1/21',
-          type: 'Bike',
-          duration: '25 mins',
-          stairs: '1000 stairs',
-          rpe: '6',
-          heartRate: '138 BPM',
-          note: 'Slight fatigue today',
-        },
-      ],
+      content: weeklyWorkoutItems.map(data => ({
+        date: `${data.date}`,
+        type: `${data.duration}`,
+        duration: `${data.distance}`,
+        distance: `${data.rpe}`,
+        stairs: `${data.stairs}`,
+        rpe: `${data.heart_rate_min}`,
+        heartRate: `${data.heart_rate_max}`,
+        note: `${data.notes}`,
+      })),
     },
   ];
 

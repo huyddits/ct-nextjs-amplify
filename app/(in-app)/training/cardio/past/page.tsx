@@ -12,12 +12,12 @@ export default function PastTrainingPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   return (
     <div className="pt-[56px] pb-[80px] max-w-3xl mx-auto px-4">
-      {/* <PastTraining /> */}
+      <PastTraining />
       <main>
         <DatePastTrainingSection selectedDate={selectedDate} onChangeDate={setSelectedDate} />
-        <PerformanceMetrics />
+        <PerformanceMetrics selectedDate={selectedDate} />
         <WeeklySummarySection selectedDate={selectedDate} />
-        <WeeklyWorkoutsSection />
+        <WeeklyWorkoutsSection selectedDate={selectedDate} />
       </main>
     </div>
   );

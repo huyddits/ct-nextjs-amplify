@@ -1,32 +1,33 @@
 'use client';
-import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { usePastCardioTraining } from '../_hooks';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
 
-export default function WeeklySummarySection({ selectedDate }: { selectedDate: Date }) {
+export default function WeeklySummarySection({ selectedDate }: Readonly<{ selectedDate: Date }>) {
+  dayjs.extend(isoWeek);
   const from = useMemo(() => {
-    return dayjs(selectedDate).startOf('week').format('YYYY-MM-DD');
+    return dayjs(selectedDate).startOf('isoWeek').format('YYYY-MM-DD');
   }, [selectedDate]);
 
   const to = useMemo(() => {
-    return dayjs(selectedDate).endOf('week').format('YYYY-MM-DD');
+    return dayjs(selectedDate).endOf('isoWeek').format('YYYY-MM-DD');
   }, [selectedDate]);
 
-  const { weeklySummary } = usePastCardioTraining({ from, to });
+  const { weeklySummaryItems } = usePastCardioTraining({ from, to });
 
-  if (!weeklySummary) {
+  if (!weeklySummaryItems) {
     return <div className="bg-white rounded-lg shadow p-4 mb-4"></div>;
   }
 
   const listData = [
-    { label: 'Daily Average Distance', value: `${weeklySummary.dailyAverageDistance} km` },
-    { label: 'Total Distance', value: `${weeklySummary.totalDistance} km` },
-    { label: 'Daily Average Duration', value: `${weeklySummary.dailyAverageDuration} mins` },
-    { label: 'Total Duration', value: `${weeklySummary.totalDuration} mins` },
-    { label: 'Daily Average Stairs', value: `${weeklySummary.dailyAverageStairs} floors` },
-    { label: 'Total Stairs', value: `${weeklySummary.totalStairs} floors` },
-    { label: 'Daily Average Heart Rate', value: `${weeklySummary.dailyAverageHeartRate} bpm` },
+    { label: 'Daily Average Distance', value: `${weeklySummaryItems.dailyAverageDistance} km` },
+    { label: 'Total Distance', value: `${weeklySummaryItems.totalDistance} km` },
+    { label: 'Daily Average Duration', value: `${weeklySummaryItems.dailyAverageDuration} mins` },
+    { label: 'Total Duration', value: `${weeklySummaryItems.totalDuration} mins` },
+    { label: 'Daily Average Stairs', value: `${weeklySummaryItems.dailyAverageStairs} floors` },
+    { label: 'Total Stairs', value: `${weeklySummaryItems.totalStairs} floors` },
+    { label: 'Daily Average Heart Rate', value: `${weeklySummaryItems.dailyAverageHeartRate} bpm` },
   ];
 
   return (

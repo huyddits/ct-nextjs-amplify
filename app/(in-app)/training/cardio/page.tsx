@@ -6,6 +6,7 @@ import { useCardio } from './_hooks';
 import { useEffect, useState } from 'react';
 import { useIntervalsCardioStore } from '@/store/useIntervalsList.store';
 import { toast } from 'react-toastify';
+import Link from 'next/link';
 
 export default function CardioPage() {
   const {
@@ -266,9 +267,11 @@ export default function CardioPage() {
               Complete Workout
             </Button>
 
-            <Button type="button" className="w-full mt-2" size="lg">
-              Past Cardio Training
-            </Button>
+            <Link href="/training/cardio/past">
+              <Button className="w-full" size="lg">
+                Past Cardio Training
+              </Button>
+            </Link>
           </form>
         </div>
       </div>
