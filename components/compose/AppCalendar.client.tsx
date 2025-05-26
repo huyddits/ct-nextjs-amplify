@@ -19,6 +19,7 @@ interface AppCalendarPickerProps {
   dateFormat?: string;
   triggerLabel?: string;
   errorMessage?: string;
+  disabled?: boolean;
   onChange?: (date?: Date) => void;
 }
 
@@ -30,6 +31,7 @@ export default function AppCalendarPicker({
   fullWidth,
   dateFormat,
   triggerLabel,
+  disabled,
   errorMessage,
   onChange,
 }: Readonly<AppCalendarPickerProps>) {
@@ -46,7 +48,8 @@ export default function AppCalendarPicker({
               'w-full font-normal h-9 flex items-center',
               !value && 'text-muted-foreground',
               icon && 'pl-10',
-              fullWidth && 'w-full'
+              fullWidth && 'w-full',
+              disabled && 'pointer-events-none opacity-100 cursor-default'
             )}
           >
             {icon && <span className="mr-2">{icon}</span>}
