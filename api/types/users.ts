@@ -1,4 +1,37 @@
-import { AccountType, ApiResponse, MeasurementUnit } from '@/utils/types';
+import {
+  AccountType,
+  ApiResponse,
+  BillingCycle,
+  MeasurementUnit,
+  PlanStatus,
+  PlanType,
+} from '@/utils/types';
+
+type PlanInfo = {
+  plan_id: string;
+  type: PlanType; // tighten if enum is known
+  billing_cycle: BillingCycle; // adjust if more values exist
+  base_price: string; // assuming price as string for fixed-precision
+  actual_price: string;
+  stripe_price_id: string;
+  stripe_payment_link: string | null;
+  promo_code: string | null;
+  created_at: string; // ISO 8601 timestamp
+  updated_at: string;
+  features: any[];
+};
+
+type PlanSubscription = {
+  user_plan_id: string;
+  stripe_subscription_id: string | null;
+  next_billing_date: null;
+  start_date: string;
+  end_date: null;
+  status: PlanStatus;
+  created_at: string;
+  updated_at: string;
+  plan: PlanInfo;
+};
 
 export type CreateUserPayload = {
   first_name: string;
@@ -52,6 +85,7 @@ export type PersonalInfoResponse = ApiResponse<
     email: string;
     is_active: boolean;
     created_at: string;
+    stripe_customer_id: string;
     profile: {
       profile_id: string;
       date_of_birth: string;
@@ -79,6 +113,7 @@ export type PersonalInfoResponse = ApiResponse<
         name: string;
       },
     ];
+    plan: PlanSubscription[];
   },
   {}
 >;

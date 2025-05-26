@@ -29,7 +29,7 @@ export default function TabNavigationMeasurement() {
       value={subPath}
       listTabs={listTabs}
       prefixPath={`/${ROUTES.MEASUREMENT}`}
-      className="fixed w-full z-20 shadow"
+      className="fixed w-full z-20 shadow top-0"
     />
   );
 }
