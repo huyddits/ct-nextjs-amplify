@@ -2,13 +2,14 @@
 import React, { JSX, InputHTMLAttributes, useState, useMemo } from 'react';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { twMerge } from 'tailwind-merge';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface AppInputProps extends React.HTMLAttributes<HTMLDivElement> {
   id?: string;
   label?: string;
   icon?: JSX.Element;
+  iconPosition?: 'start' | 'end';
   value?: string;
   required?: boolean;
   password?: boolean;
@@ -16,6 +17,7 @@ interface AppInputProps extends React.HTMLAttributes<HTMLDivElement> {
     InputHTMLAttributes<HTMLInputElement>,
     'value' | 'onChange' | 'onBlur' | 'name' | 'ref'
   >;
+  fullWidth?: boolean;
   errorMessage?: string;
   postfix?: string | JSX.Element;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -29,8 +31,10 @@ export default function AppInput({
   postfix,
   required,
   password,
+  fullWidth,
   inputProps,
   errorMessage,
+  iconPosition,
   onChange,
   ...containerProps
 }: Readonly<AppInputProps>) {
@@ -51,8 +55,25 @@ export default function AppInput({
     return defaultType;
   }, [password, showPassword, inputProps?.type]);
 
+  const iconPos = useMemo(() => {
+    return iconPosition ?? 'start';
+  }, [iconPosition]);
+
+  const inputClasses = useMemo(() => {
+    if (icon && iconPos === 'start') {
+      return 'pl-10';
+    }
+    if (icon && iconPos === 'end') {
+      return 'pr-10';
+    }
+    return 'pl-3';
+  }, [icon, iconPos]);
+
   return (
-    <div {...containerProps} className={twMerge('space-y-2', containerProps.className)}>
+    <div
+      {...containerProps}
+      className={cn('space-y-2', containerProps.className, fullWidth && 'w-full')}
+    >
       {label && (
         <Label htmlFor={id}>
           {label}
@@ -60,7 +81,7 @@ export default function AppInput({
         </Label>
       )}
       <div className="relative flex items-stretch">
-        {icon && (
+        {icon && iconPos === 'start' && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             {icon}
           </div>
@@ -68,7 +89,7 @@ export default function AppInput({
         <Input
           id={id}
           type={inputType}
-          className={twMerge(icon ? 'pl-10' : 'pl-3', postfix && 'pr-20')}
+          className={cn(inputClasses, postfix && 'pr-20')}
           value={value}
           onChange={onChange}
           {...inputProps}
@@ -93,6 +114,9 @@ export default function AppInput({
           </div>
         ) : (
           postfix
+        )}
+        {icon && iconPos === 'end' && (
+          <div className="absolute inset-y-0 right-0 pr-3 flex items-center">{icon}</div>
         )}
       </div>
       {errorMessage && (

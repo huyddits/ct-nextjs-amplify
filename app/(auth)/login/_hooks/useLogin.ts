@@ -41,7 +41,6 @@ export const useLogin = (options: UseLoginOptions) => {
   const onValid = async (data: FormPayload) => {
     try {
       const response = await AuthApi.login(data);
-      console.log(response.data.data);
       if (response.data.data?.token) {
         const accessToken = response.data.data.token.access_token;
         setToken(accessToken);
