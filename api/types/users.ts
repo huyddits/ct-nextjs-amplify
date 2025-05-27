@@ -23,7 +23,7 @@ type PlanInfo = {
 
 type PlanSubscription = {
   user_plan_id: string;
-  stripe_subscription_id: string | null;
+  // stripe_subscription_id: string | null;
   next_billing_date: null;
   start_date: string;
   end_date: null;
@@ -86,6 +86,7 @@ export type PersonalInfoResponse = ApiResponse<
     is_active: boolean;
     created_at: string;
     stripe_customer_id: string;
+    stripe_subscription_id: string | null;
     profile: {
       profile_id: string;
       date_of_birth: string;

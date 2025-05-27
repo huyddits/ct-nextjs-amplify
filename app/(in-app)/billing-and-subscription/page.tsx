@@ -44,19 +44,20 @@ export default function BillingAndSubscriptionPage() {
       confirmTitle: 'Switch',
       onConfirm: () => {
         const hasPlan =
-          currentPlan?.stripePriceId &&
-          currentPlan?.stripeSubscriptionId &&
-          currentPlan.billingCycle !== BillingCycle.Free;
+          currentPlan?.stripeSubscriptionId && currentPlan.billingCycle !== BillingCycle.Free;
         if (currentPlan?.billingCycle === BillingCycle.Free) {
           // from free to paid
+          console.log('subscribe');
           handleSubscribePlan({ priceId: plan.stripePriceId });
         } else if (hasPlan) {
+          console.log('change');
           // from paid to paid
           handleChangePlan({
-            priceId: currentPlan.stripePriceId!,
             customerId: currentPlan.stripeCustomerId!,
             subscriptionId: currentPlan.stripeSubscriptionId!,
           });
+        } else {
+          console.log('No plan found to upgrade');
         }
       },
     });

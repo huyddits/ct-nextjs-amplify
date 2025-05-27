@@ -69,6 +69,7 @@ export type GetBillingHistoryResponse = ApiResponse<BillingRecord[], {}>;
 
 export type CreateSubscriptionSessionPayload = {
   price_id: string;
+  discounts: string;
 };
 
 export type CreateSubscriptionSessionResponse = ApiResponse<{
@@ -92,7 +93,7 @@ export type CancelSubscriptionResponse = ApiResponse<{}, {}>;
 export type ChangePlanPayload = {
   customer_id: string;
   subscription_id: string;
-  new_price_id: string;
+  promotion_code: string[];
 };
 
 export type ChangePlanResponse = ApiResponse<{
