@@ -6,28 +6,41 @@ import isoWeek from 'dayjs/plugin/isoWeek';
 
 export default function WeeklySummarySection({ selectedDate }: Readonly<{ selectedDate: Date }>) {
   dayjs.extend(isoWeek);
+  const dateFormat = 'YYYY-MM-DD';
   const from = useMemo(() => {
-    return dayjs(selectedDate).startOf('isoWeek').format('YYYY-MM-DD');
+    return dayjs(selectedDate).startOf('isoWeek').format(dateFormat);
   }, [selectedDate]);
 
   const to = useMemo(() => {
-    return dayjs(selectedDate).endOf('isoWeek').format('YYYY-MM-DD');
+    return dayjs(selectedDate).endOf('isoWeek').format(dateFormat);
   }, [selectedDate]);
 
   const { weeklySummaryItems } = usePastCardioTraining({ from, to });
 
-  if (!weeklySummaryItems) {
-    return <div className="bg-white rounded-lg shadow p-4 mb-4"></div>;
-  }
-
   const listData = [
-    { label: 'Daily Average Distance', value: `${weeklySummaryItems.dailyAverageDistance} km` },
-    { label: 'Total Distance', value: `${weeklySummaryItems.totalDistance} km` },
-    { label: 'Daily Average Duration', value: `${weeklySummaryItems.dailyAverageDuration} mins` },
-    { label: 'Total Duration', value: `${weeklySummaryItems.totalDuration} mins` },
-    { label: 'Daily Average Stairs', value: `${weeklySummaryItems.dailyAverageStairs} floors` },
-    { label: 'Total Stairs', value: `${weeklySummaryItems.totalStairs} floors` },
-    { label: 'Daily Average Heart Rate', value: `${weeklySummaryItems.dailyAverageHeartRate} bpm` },
+    {
+      label: 'Daily Average Distance',
+      value: weeklySummaryItems?.dailyAverageDistance,
+      unit: 'mins',
+    },
+    { label: 'Total Distance', value: weeklySummaryItems?.totalDistance, unit: 'mins' },
+    {
+      label: 'Daily Average Duration',
+      value: weeklySummaryItems?.dailyAverageDuration,
+      unit: 'miles',
+    },
+    { label: 'Total Duration', value: weeklySummaryItems?.totalDuration, unit: 'miles' },
+    {
+      label: 'Daily Average Stairs',
+      value: weeklySummaryItems?.dailyAverageStairs,
+      unit: 'stairs',
+    },
+    { label: 'Total Stairs', value: weeklySummaryItems?.totalStairs, unit: 'stairs' },
+    {
+      label: 'Daily Average Heart Rate',
+      value: weeklySummaryItems?.dailyAverageHeartRate,
+      unit: 'BPM',
+    },
   ];
 
   return (
@@ -36,10 +49,12 @@ export default function WeeklySummarySection({ selectedDate }: Readonly<{ select
         <h2 className="text-lg font-semibold">Weekly Summary</h2>
       </div>
       <div className="space-y-4">
-        {listData.map((item, index) => (
-          <div key={index} className="flex justify-between">
+        {listData.map(item => (
+          <div key={item.label} className="flex justify-between">
             <div className="text-gray-600">{item.label}:</div>
-            <div className="text-gray-900 font-medium">{item.value}</div>
+            <div className="text-gray-900 font-medium">
+              {item.value} {item.unit}
+            </div>
           </div>
         ))}
       </div>

@@ -1,9 +1,5 @@
 import { PastCardioTrainingApi } from '@/api';
-import {
-  PerformanceMetricsResponse,
-  WeeklySummaryResponse,
-  WeeklyWorkoutsResponse,
-} from '@/api/types/pastCardioTraining';
+import { type WeeklyWorkouts, type WeeklySummary, type PerformanceMetrics } from '../_types/index';
 import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 
@@ -16,13 +12,11 @@ type UsePastCardioTrainingOptions = {
 };
 
 export const usePastCardioTraining = (options: UsePastCardioTrainingOptions) => {
-  const [weeklySummaryItems, setWeeklySummary] = useState<WeeklySummaryResponse | null>(null);
+  const [weeklySummaryItems, setWeeklySummary] = useState<WeeklySummary | null>(null);
 
-  const [weeklyWorkoutItems, setWeeklyWorkouts] = useState<WeeklyWorkoutsResponse[]>([]);
+  const [weeklyWorkoutItems, setWeeklyWorkouts] = useState<WeeklyWorkouts[]>([]);
 
-  const [performanceMetricsItems, setPerformanceMetrics] = useState<PerformanceMetricsResponse[]>(
-    []
-  );
+  const [performanceMetricsItems, setPerformanceMetrics] = useState<PerformanceMetrics[]>([]);
 
   const getWeeklySummary = async (from: string, to: string) => {
     console.log({ from, to }, 'getWeeklySummary');
@@ -42,7 +36,7 @@ export const usePastCardioTraining = (options: UsePastCardioTrainingOptions) => 
       options?.onSuccess?.();
     } catch (error) {
       console.error(error);
-      options?.onFailure?.('Failed to get weekly summary');
+      return;
     }
   };
 
@@ -51,25 +45,24 @@ export const usePastCardioTraining = (options: UsePastCardioTrainingOptions) => 
       const response = await PastCardioTrainingApi.getWeeklyWorkouts({ from, to });
       const { data, error } = response.data;
       if (!data) throw error;
-      const WeeklyWorkoutsItems = data.map(data => ({
+      const WeeklyWorkoutsItems: WeeklyWorkouts[] = data.map(data => ({
         date: data.date,
+        name: data.name,
         duration: data.duration,
         distance: data.distance,
-        stairs: data.stairs,
+        unit: data.unit,
         rpe: data.rpe,
-        heart_rate_min: data.heart_rate_min,
-        heart_rate_max: data.heart_rate_max,
+        heartRate: data.heart_rate,
         notes: data.notes,
       }));
       setWeeklyWorkouts(WeeklyWorkoutsItems);
       options?.onSuccess?.();
-    } catch (error: unknown) {
+    } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError?.response?.status === 404) {
         setWeeklyWorkouts([]);
       } else {
-        console.error(error);
-        options?.onFailure?.('Failed to get weekly summary');
+        return;
       }
     }
   };
@@ -80,14 +73,14 @@ export const usePastCardioTraining = (options: UsePastCardioTrainingOptions) => 
       const response = await PastCardioTrainingApi.getPerformanceMetrics({ from, to, metric });
       const { data, error } = response.data;
       if (!data) throw error;
-      const PerformanceMetricsItems = data.map(data => ({
+      const PerformanceMetricsItems: PerformanceMetrics[] = data.map(data => ({
         date: data.date,
         value: data.value,
       }));
       setPerformanceMetrics(PerformanceMetricsItems);
     } catch (error) {
       console.error(error);
-      options?.onFailure?.('Failed to get performance metrics');
+      return;
     }
   };
   useEffect(() => {

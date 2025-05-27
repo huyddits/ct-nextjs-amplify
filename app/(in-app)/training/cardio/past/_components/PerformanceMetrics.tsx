@@ -9,20 +9,23 @@ import isoWeek from 'dayjs/plugin/isoWeek';
 export default function PerformanceMetrics({ selectedDate }: Readonly<{ selectedDate: Date }>) {
   dayjs.extend(isoWeek);
   const [metric, setMetric] = useState('duration');
+  const dateFormat = 'YYYY-MM-DD';
+
+  const metricOptions = [
+    { label: 'Duration', value: 'duration' },
+    { label: 'Distance', value: 'distance' },
+    { label: 'Stairs', value: 'stairs' },
+  ];
 
   const from = useMemo(() => {
-    return dayjs(selectedDate).startOf('isoWeek').format('YYYY-MM-DD');
+    return dayjs(selectedDate).startOf('isoWeek').format(dateFormat);
   }, [selectedDate]);
 
   const to = useMemo(() => {
-    return dayjs(selectedDate).endOf('isoWeek').format('YYYY-MM-DD');
+    return dayjs(selectedDate).endOf('isoWeek').format(dateFormat);
   }, [selectedDate]);
 
   const { performanceMetricsItems } = usePastCardioTraining({ from, to, metric });
-
-  if (!performanceMetricsItems) {
-    return <div className="bg-white rounded-lg shadow p-4 mb-4"></div>;
-  }
 
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-4 w-full">
@@ -35,11 +38,7 @@ export default function PerformanceMetrics({ selectedDate }: Readonly<{ selected
           placeholder="Select Metric"
           selectedValue={metric}
           onChangeSelected={value => setMetric(value)}
-          options={[
-            { label: 'Duration', value: 'duration' },
-            { label: 'Distance', value: 'distance' },
-            { label: 'Stairs', value: 'stairs' },
-          ]}
+          options={metricOptions}
           fullWidth
         />
       </div>

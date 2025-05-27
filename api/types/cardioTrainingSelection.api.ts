@@ -18,9 +18,14 @@ type rpeRecord = {
 
 export type CreateCardioPayload = {
   workout_date: string; // YYYY-MM-DD
-  exercises: number;
+  exercise: number;
   notes: string;
   intervals: intervalsPayload[];
+};
+
+export type exercisesPayload = {
+  cardio_exercises_id: number;
+  name: string;
 };
 
 export type intervalsPayload = {
