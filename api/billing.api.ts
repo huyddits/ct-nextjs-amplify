@@ -1,7 +1,7 @@
 import axiosIns from '@/lib/axiosIns';
 import { END_POINTS } from '@/utils/constants';
 import {
-  AddPromotionCodePayload,
+  AddPromotionCodeParams,
   AddPromotionCodeResponse,
   CancelSubscriptionPayload,
   ChangePlanPayload,
@@ -12,7 +12,6 @@ import {
   GetBillingHistoryResponse,
   GetSubscriptionPlansParams,
   GetSubscriptionPlansResponse,
-  PreviewSubscriptionChangePayload,
 } from './types/billing';
 
 export const getSubscriptionPlans = (params: GetSubscriptionPlansParams) => {
@@ -27,13 +26,15 @@ export const getBillingHistory = (params: GetBillingHistoryParams) => {
   });
 };
 
-export const addPromotionCode = (payload: AddPromotionCodePayload) => {
-  return axiosIns.post<AddPromotionCodeResponse>(END_POINTS.BILLING_ADD_PROMOTION_CODE, payload);
+export const applyPromotionCodeAndPreviewPrices = ({ code }: AddPromotionCodeParams) => {
+  return axiosIns.get<AddPromotionCodeResponse>(END_POINTS.VALIDATE_PROMOTION_CODE, {
+    params: { code },
+  });
 };
 
-export const createSubscriptionSession = (payload: CreateSubscriptionSessionPayload) => {
+export const subscribeToAPlan = (payload: CreateSubscriptionSessionPayload) => {
   return axiosIns.post<CreateSubscriptionSessionResponse>(
-    END_POINTS.SUBSCRIPTION_CREATE_SESSION,
+    END_POINTS.SUBSCRIPTION_SUBSCRIBE_PLAN,
     payload
   );
 };
@@ -42,10 +43,7 @@ export const cancelSubscription = (payload: CancelSubscriptionPayload) => {
   return axiosIns.post(END_POINTS.SUBSCRIPTION_CANCEL, payload);
 };
 
-export const previewPlanChange = (payload: PreviewSubscriptionChangePayload) => {
-  return axiosIns.post(END_POINTS.SUBSCRIPTION_CHANGE_PREVIEW);
-};
-
 export const changePlan = (payload: ChangePlanPayload) => {
-  return axiosIns.post<ChangePlanResponse>(END_POINTS.SUBSCRIPTION_CHANGE, payload);
+  const { new_price_id, ...rest } = payload;
+  return axiosIns.post<ChangePlanResponse>(END_POINTS.SUBSCRIPTION_CHANGE, rest);
 };
