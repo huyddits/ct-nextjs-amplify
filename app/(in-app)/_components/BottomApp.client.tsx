@@ -47,7 +47,7 @@ export default function BottomApp() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-10">
+    <div className="fixed bottom-0 left-0 right-0 z-10 shadow-top">
       <div className="bg-white border-t border-gray-200">
         <div className="max-w-3xl mx-auto">
           <div className="flex justify-between items-center py-2 px-4">

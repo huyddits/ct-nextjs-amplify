@@ -1,6 +1,7 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/store';
 import { toast } from 'react-toastify';
+import { ROUTES } from '@/utils/constants';
 
 const axiosIns = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL + '/' + process.env.NEXT_PUBLIC_API_VERSION,
@@ -16,7 +17,7 @@ axiosIns.interceptors.request.use(
   },
   error => {
     console.log('🚀 ~ error:', error);
-    return Promise.reject(error as Error as Error);
+    return Promise.reject(error as unknown as Error);
   }
 );
 
@@ -25,16 +26,19 @@ axiosIns.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
+    console.log('error.status', error.status);
+    if (error.response?.status === 401 || error?.status === 401) {
       console.warn('Unauthorized. Redirecting to login...');
       const dataResponse = error?.response?.data as { message: string };
       const errorMessage = dataResponse?.message ?? error?.message;
+      useAuthStore.getState().removeToken();
       toast.error(errorMessage);
+      location.href = `/${ROUTES.LOGIN}`;
     } else if (error.response?.status === 500) {
       console.error('Server error occurred');
     } else if ((error?.response?.data as { message: string })?.message) {
       const dataResponse = error?.response?.data as { message: string };
-      toast.error(dataResponse.message);
+      // toast.error(dataResponse.message);
     }
     console.log('🚀 ~ error:', error);
     return Promise.reject(error);

@@ -5,6 +5,7 @@ export const END_POINTS = {
   ROLES: 'roles',
   USERS: 'users',
   USERS_ME: 'users/me',
+
   USERS_FORGOT_PASSWORD: 'users/forgot-password',
   USERS_RESET_PASSWORD: 'users/reset-password',
   SIGNUP: 'users/signup',
@@ -14,4 +15,15 @@ export const END_POINTS = {
   EXERCISES: 'cardio/exercises',
   CARDIO_CREATE: 'cardio/session',
   RPE: 'cardio/rpes',
+
+  // billing and subscription
+  SUBSCRIPTION_PLANS: 'plans',
+  SUBSCRIPTION_CANCEL: 'stripe/cancel-subscription',
+  SUBSCRIPTION_SUBSCRIBE_PLAN: 'stripe/create-subscription-session',
+  SUBSCRIPTION_CHANGE: 'stripe/change-plan',
+  BILLING_HISTORY: 'users/billing-history',
+  VALIDATE_PROMOTION_CODE: 'stripe/validate-promotion-code',
+  WEEKLY_SUMMARY: 'cardio/past-training/weekly-summary',
+  WEEKLY_WORKOUTS: 'cardio/past-training/weekly-workouts',
+  PERFORMANCE_METRICS: 'cardio/past-training/performance-metrics',
 };

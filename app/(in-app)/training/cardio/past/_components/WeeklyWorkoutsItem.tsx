@@ -3,10 +3,10 @@ import { ReactNode } from 'react';
 export default function WeeklyWorkoutsItem({
   title,
   children,
-}: {
+}: Readonly<{
   title: string;
   children: ReactNode;
-}) {
+}>) {
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-4">
       <div className="mb-3">

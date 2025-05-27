@@ -11,19 +11,19 @@ export default function MeasurementTeamDataPage() {
     setTab(value);
   };
   return (
-    <div className="max-w-3xl mx-auto mt-8 mb-4">
-      <Tabs defaultValue={tab} onValueChange={onValueChange}>
-        <TabsList className="flex">
-          <TabsTrigger value={TAB_VALUES[0]} className="tab-navigation-item">
-            By flyer
-          </TabsTrigger>
-          <TabsTrigger value={TAB_VALUES[1]} className="tab-navigation-item">
-            By Base/Spotter
-          </TabsTrigger>
-          <TabsTrigger value={TAB_VALUES[2]} className="tab-navigation-item">
-            By Athlete
-          </TabsTrigger>
-        </TabsList>
+    <Tabs defaultValue={tab} onValueChange={onValueChange}>
+      <TabsList className="flex w-full top-[36px] fixed shadow-sm">
+        <TabsTrigger value={TAB_VALUES[0]} className="tab-navigation-item">
+          By flyer
+        </TabsTrigger>
+        <TabsTrigger value={TAB_VALUES[1]} className="tab-navigation-item">
+          By Base/Spotter
+        </TabsTrigger>
+        <TabsTrigger value={TAB_VALUES[2]} className="tab-navigation-item">
+          By Athlete
+        </TabsTrigger>
+      </TabsList>
+      <div className="max-w-3xl mx-auto mt-24 mb-4">
         <TabsContent value={TAB_VALUES[0]}>
           <ByFlyerContent />
         </TabsContent>
@@ -33,7 +33,7 @@ export default function MeasurementTeamDataPage() {
         <TabsContent value={TAB_VALUES[2]}>
           <ByAthleteContent />
         </TabsContent>
-      </Tabs>
-    </div>
+      </div>
+    </Tabs>
   );
 }
