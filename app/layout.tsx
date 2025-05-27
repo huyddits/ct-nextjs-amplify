@@ -1,6 +1,8 @@
 // import { Geist, Geist_Mono } from 'next/font/google';
 // import { ServiceWorkerRegister } from "./_components";
 import { ToastContainerClient } from './_components';
+import { AppConfirm } from '@/components/compose';
+import { StripeProvider } from '@/context/StripeContext';
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
 
@@ -83,10 +85,11 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased" style={{ fontFamily: 'var(--font-geist-sans)' }}>
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <StripeProvider>{children}</StripeProvider>
         {/* <ServiceWorkerRegister /> */}
         <ToastContainerClient />
+        <AppConfirm />
       </body>
     </html>
   );

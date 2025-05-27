@@ -6,6 +6,7 @@ import { useCardio } from './_hooks';
 import { useEffect, useState } from 'react';
 import { useIntervalsCardioStore } from '@/store/useIntervalsList.store';
 import { toast } from 'react-toastify';
+import Link from 'next/link';
 
 export default function CardioPage() {
   const {
@@ -101,7 +102,7 @@ export default function CardioPage() {
               <h2 className="text-lg font-medium">Cardio Training Selection</h2>
               <Controller
                 control={control}
-                name="exercises"
+                name="exercise"
                 render={({ field: { value, onChange }, fieldState: { error } }) => (
                   <AppSelect
                     placeholder="Select Type"
@@ -118,7 +119,12 @@ export default function CardioPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-medium">Intervals</h2>
-                <Button type="button" variant="outline" onClick={handleAddNew}>
+                <Button
+                  type="button"
+                  className="text-primary"
+                  variant="outline"
+                  onClick={handleAddNew}
+                >
                   + Add
                 </Button>
               </div>
@@ -136,7 +142,7 @@ export default function CardioPage() {
                         {...field}
                         value={field.value?.toString() ?? ''}
                         onBlur={() => trigger('intervals.0.duration')}
-                        className="text-sm text-gray-600"
+                        className="text-sm text-gray-600 "
                       />
                     )}
                   />
@@ -153,8 +159,9 @@ export default function CardioPage() {
                         onChangeSelected={onChange}
                         options={rpeOptions ?? []}
                         errorMessage={error?.message}
-                        className="text-sm text-gray-600 w-30"
+                        className="text-sm text-gray-600"
                         disabled={inputDisabled}
+                        fullWidth
                       />
                     )}
                   />
@@ -187,8 +194,9 @@ export default function CardioPage() {
                         onChangeSelected={onChange}
                         options={selectedExercise?.units ?? []}
                         errorMessage={error?.message}
-                        className="text-sm text-gray-600 w-30"
+                        className="text-sm text-gray-600"
                         disabled={inputDisabled}
+                        fullWidth
                       />
                     )}
                   />
@@ -256,7 +264,7 @@ export default function CardioPage() {
               />
             </div>
 
-            <div className="pl-0 padding-left-button">
+            <div className="flex justify-center">
               <Button type="button" size="lg" onClick={handleCreateInterval}>
                 Create Interval
               </Button>
@@ -266,9 +274,11 @@ export default function CardioPage() {
               Complete Workout
             </Button>
 
-            <Button type="button" className="w-full mt-2" size="lg">
-              Past Cardio Training
-            </Button>
+            <Link href="/training/cardio/past">
+              <Button className="w-full" size="lg">
+                Past Cardio Training
+              </Button>
+            </Link>
           </form>
         </div>
       </div>

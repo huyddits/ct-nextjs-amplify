@@ -1,18 +1,22 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import AppCalendar from '@/components/compose/AppCalendar.client';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { startOfWeek, endOfWeek, addWeeks, subWeeks, format } from 'date-fns';
 
-export default function DatePastTrainingSection() {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+export default function DatePastTrainingSection({
+  selectedDate,
+  onChangeDate,
+}: Readonly<{
+  selectedDate: Date;
+  onChangeDate: (date: Date) => void;
+}>) {
   const [highlightedDate, setHighlightedDate] = useState<Date>();
 
-  const previousWeek = () => setSelectedDate(prev => subWeeks(prev, 1));
-  const nextWeek = () => setSelectedDate(prev => addWeeks(prev, 1));
-
+  const previousWeek = () => onChangeDate(subWeeks(selectedDate, 1));
+  const nextWeek = () => onChangeDate(addWeeks(selectedDate, 1));
   const formatDateRange = () => {
     const start = startOfWeek(selectedDate, { weekStartsOn: 1 });
     const end = endOfWeek(selectedDate, { weekStartsOn: 1 });
@@ -34,15 +38,17 @@ export default function DatePastTrainingSection() {
         icon={<CalendarIcon className="h-4 w-4" />}
         label=""
         value={highlightedDate ?? selectedDate}
-        placeholder={formatDateRange()}
+        triggerLabel={formatDateRange()}
         dateFormat="DD/MM/YYYY"
         onChange={date => {
           if (date) {
             setHighlightedDate(date);
-            setSelectedDate(startOfWeek(date, { weekStartsOn: 1 }));
+            onChangeDate(startOfWeek(date, { weekStartsOn: 1 }));
           }
         }}
         fullWidth
+        maxDate={new Date()}
+        disabled
       />
 
       <Button variant="outline" size="icon" onClick={nextWeek} className="ml-1">

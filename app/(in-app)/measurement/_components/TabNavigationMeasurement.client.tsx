@@ -10,7 +10,6 @@ export default function TabNavigationMeasurement() {
   const { info } = useAuthStore();
   const pathname = usePathname();
   const [_, __, subPath] = pathname.split('/');
-  console.log('info', info);
   const listTabs = useMemo(
     () =>
       info?.accountType === AccountType.Coach
@@ -29,7 +28,7 @@ export default function TabNavigationMeasurement() {
       value={subPath}
       listTabs={listTabs}
       prefixPath={`/${ROUTES.MEASUREMENT}`}
-      className="fixed w-full z-20 shadow"
+      className="fixed w-full z-20 shadow top-0"
     />
   );
 }

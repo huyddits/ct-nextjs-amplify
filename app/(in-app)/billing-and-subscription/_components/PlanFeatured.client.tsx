@@ -1,6 +1,5 @@
 'use client';
 import { CheckCircleIcon } from 'lucide-react';
-import { useState } from 'react';
 
 interface PlanFeaturedProps {
   listItems: string[];

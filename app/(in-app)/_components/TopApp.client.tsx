@@ -32,7 +32,7 @@ export default function TopApp({ className }: { className?: string }) {
 
   const onLogout = () => {
     removeToken();
-    location.href = `${ROUTES.LOGIN}`;
+    location.replace(`/${ROUTES.LOGIN}`);
   };
 
   if (!token) {
@@ -50,16 +50,16 @@ export default function TopApp({ className }: { className?: string }) {
 
   return (
     <div
-      className={cn(
-        'flex items-center justify-between bg-primary p-4 rounded-t-lg mb-4 text-white',
-        className
-      )}
+      className={cn('flex items-center justify-between bg-primary p-4 mb-4 text-white', className)}
     >
       {!pathname.includes(ROUTES.HOME) && (
         <Link href={ROUTES.HOME} className="flex items-center">
           <ArrowLeftIcon className="h-5 w-5 mr-2" />
           <span>Back</span>
         </Link>
+      )}
+      {pathname.includes(ROUTES.BILLING_AND_SUBSCRIPTION) && (
+        <h2 className="ml-10">Subscription & Billing</h2>
       )}
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
@@ -70,14 +70,14 @@ export default function TopApp({ className }: { className?: string }) {
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuItem
             className="cursor-pointer flex items-center"
-            onClick={() => router.push(ROUTES.PROFILE)}
+            onClick={() => router.push(`/${ROUTES.PROFILE}`)}
           >
             <UserCircle2Icon className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer flex items-center"
-            onClick={() => router.push(ROUTES.BILLING_AND_SUBSCRIPTION)}
+            onClick={() => router.push(`/${ROUTES.BILLING_AND_SUBSCRIPTION}`)}
           >
             <CreditCardIcon className="mr-2 h-4 w-4" />
             <span>Subscription and Billing</span>
@@ -85,21 +85,21 @@ export default function TopApp({ className }: { className?: string }) {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="cursor-pointer flex items-center"
-            onClick={() => router.push(ROUTES.PRIVACY)}
+            onClick={() => router.push(`/${ROUTES.PRIVACY}`)}
           >
             <ShieldIcon className="mr-2 h-4 w-4" />
             <span>Privacy Policy</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer flex items-center"
-            onClick={() => router.push(ROUTES.TERMS_AND_CONDITIONS)}
+            onClick={() => router.push(`/${ROUTES.TERMS_AND_CONDITIONS}`)}
           >
             <FileTextIcon className="mr-2 h-4 w-4" />
             <span>Terms and Conditions</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer flex items-center"
-            onClick={() => router.push(ROUTES.ABOUT_US)}
+            onClick={() => router.push(`${ROUTES.ABOUT_US}`)}
           >
             <InfoIcon className="mr-2 h-4 w-4" />
             <span>About Us</span>
