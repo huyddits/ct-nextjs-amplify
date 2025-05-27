@@ -260,6 +260,8 @@ export default function SignupForm() {
               onChangeSelected={onChange}
               placeholder="Select Equipment"
               errorMessage={error?.message}
+              enableCheckAll
+              labelCheckAll="All Equipment"
             />
           )}
         />
