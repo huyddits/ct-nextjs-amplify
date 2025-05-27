@@ -11,19 +11,19 @@ export type WeeklySummaryResponse = {
 };
 
 export type WeeklyWorkoutsResponse = {
-  date?: string;
-  duration?: number;
-  distance?: number;
-  stairs?: number;
-  rpe?: string;
-  heart_rate_min?: number;
-  heart_rate_max?: number;
-  notes?: string;
+  date: string;
+  name: string;
+  duration: number;
+  distance: number;
+  unit: string;
+  rpe: string;
+  heart_rate: number;
+  notes: string;
 };
 
 export type PerformanceMetricsResponse = {
-  date?: string;
-  value?: number;
+  date: string;
+  value: number;
 };
 
 export type PastTrainingPayload = {
@@ -32,8 +32,23 @@ export type PastTrainingPayload = {
   metric?: string;
 };
 
-export type GetListWeeklySummaryResponse = ApiResponse<WeeklySummaryResponse, {}>;
+export type GetListWeeklySummaryResponse = ApiResponse<
+  WeeklySummaryResponse,
+  {
+    // msg?: string
+  }
+>;
 
-export type GetListWeeklyWorkoutsResponse = ApiResponse<WeeklyWorkoutsResponse[], {}>;
+export type GetListWeeklyWorkoutsResponse = ApiResponse<
+  WeeklyWorkoutsResponse[],
+  {
+    // msg?: string
+  }
+>;
 
-export type GetListPerformanceMetricsResponse = ApiResponse<PerformanceMetricsResponse[], {}>;
+export type GetListPerformanceMetricsResponse = ApiResponse<
+  PerformanceMetricsResponse[],
+  {
+    // msg?: string
+  }
+>;

@@ -102,7 +102,7 @@ export default function CardioPage() {
               <h2 className="text-lg font-medium">Cardio Training Selection</h2>
               <Controller
                 control={control}
-                name="exercises"
+                name="exercise"
                 render={({ field: { value, onChange }, fieldState: { error } }) => (
                   <AppSelect
                     placeholder="Select Type"
@@ -137,7 +137,7 @@ export default function CardioPage() {
                         {...field}
                         value={field.value?.toString() ?? ''}
                         onBlur={() => trigger('intervals.0.duration')}
-                        className="text-sm text-gray-600"
+                        className="text-sm text-gray-600 w-full"
                       />
                     )}
                   />
@@ -154,8 +154,9 @@ export default function CardioPage() {
                         onChangeSelected={onChange}
                         options={rpeOptions ?? []}
                         errorMessage={error?.message}
-                        className="text-sm text-gray-600 w-30"
+                        className="text-sm text-gray-600"
                         disabled={inputDisabled}
+                        fullWidth
                       />
                     )}
                   />
@@ -188,8 +189,9 @@ export default function CardioPage() {
                         onChangeSelected={onChange}
                         options={selectedExercise?.units ?? []}
                         errorMessage={error?.message}
-                        className="text-sm text-gray-600 w-30"
+                        className="text-sm text-gray-600"
                         disabled={inputDisabled}
+                        fullWidth
                       />
                     )}
                   />
