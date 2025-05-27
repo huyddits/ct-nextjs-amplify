@@ -10,7 +10,6 @@ export default function TabNavigationMeasurement() {
   const { info } = useAuthStore();
   const pathname = usePathname();
   const [_, __, subPath] = pathname.split('/');
-  console.log('info', info);
   const listTabs = useMemo(
     () =>
       info?.accountType === AccountType.Coach

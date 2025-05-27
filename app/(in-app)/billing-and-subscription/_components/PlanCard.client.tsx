@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { BillingCycle, PlanType } from '@/utils/types';
 import { cn } from '@/lib/utils';
 import React, { useMemo } from 'react';
+import * as $c from '@/utils/converter';
+import { calculateSavePercentFromPrice } from '@/utils/helpers';
 
 interface PlanCardProps {
   planName: string;
@@ -11,7 +13,6 @@ interface PlanCardProps {
   basePrice: number;
   salePrice: number;
   savePercent?: number;
-  billingText: string;
   billingCycle: BillingCycle;
   isCurrent: boolean;
   isDiscounted?: boolean;
@@ -81,8 +82,8 @@ export function PlanCard({
   planType,
   basePrice,
   salePrice,
-  savePercent,
-  billingText,
+  // savePercent,
+  // billingText,
   billingCycle,
   isCurrent,
   isSelected,
@@ -95,10 +96,14 @@ export function PlanCard({
 }: PlanCardProps) {
   const borderClass = useMemo(() => {
     console.log({ isDiscounted, isSelected, promoApplied });
-    if (isSelected) return 'border-primary bg-primary/10';
+    if (isSelected) return 'border-primary border-2';
     if (promoApplied && isDiscounted) return 'border-green-300 bg-green-50';
     return 'border-gray-200';
   }, [promoApplied, isSelected, isDiscounted]);
+
+  const billingText = $c.convertToBillingText(billingCycle);
+
+  const savePercent = calculateSavePercentFromPrice(basePrice, salePrice);
 
   return (
     <div

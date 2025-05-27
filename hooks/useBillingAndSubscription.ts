@@ -188,7 +188,10 @@ export const useBillingAndSubscription = () => {
 
   const handleSubscribePlan = async ({ priceId }: { priceId: string }) => {
     try {
-      const response = await BillingApi.subscribeToAPlan({ price_id: priceId });
+      const response = await BillingApi.subscribeToAPlan({
+        price_id: priceId,
+        discounts: promoCode,
+      });
       console.log(response.data);
       if (!response.data.data?.url) {
         throw response.data.error;
@@ -201,21 +204,20 @@ export const useBillingAndSubscription = () => {
 
   const handleChangePlan = async ({
     customerId,
-    priceId,
     subscriptionId,
   }: {
     customerId: string;
-    priceId: string;
     subscriptionId: string;
   }) => {
     try {
+      console.log('handleChangePlan', customerId, subscriptionId);
       const response = await BillingApi.changePlan({
         customer_id: customerId,
-        new_price_id: priceId,
+        promotion_code: [promoCode],
         subscription_id: subscriptionId,
       });
 
-      console.log(response.data);
+      console.log('response.data', response.data);
       if (!response.data.data?.url) {
         throw response.data.error;
       }
@@ -227,7 +229,6 @@ export const useBillingAndSubscription = () => {
   };
 
   const handleCancelPlan = async (activePlan: ActivePlan) => {
-    console.log('activePlan', activePlan);
     if (!activePlan.stripeSubscriptionId) {
       throw new Error(`Subscription doesn't exist`);
     }
@@ -271,9 +272,9 @@ export const useBillingAndSubscription = () => {
     handleGetBillingHistory();
   }, []);
 
-  useEffect(() => {
-    console.log({ promoCode, isPromoCodeApplied, listCoachPlans, listAthletePlans });
-  });
+  // useEffect(() => {
+  //   console.log({ promoCode, isPromoCodeApplied, listCoachPlans, listAthletePlans });
+  // });
 
   return {
     currentPlan,

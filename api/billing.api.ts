@@ -44,6 +44,5 @@ export const cancelSubscription = (payload: CancelSubscriptionPayload) => {
 };
 
 export const changePlan = (payload: ChangePlanPayload) => {
-  const { new_price_id, ...rest } = payload;
-  return axiosIns.post<ChangePlanResponse>(END_POINTS.SUBSCRIPTION_CHANGE, rest);
+  return axiosIns.post<ChangePlanResponse>(END_POINTS.SUBSCRIPTION_CHANGE, payload);
 };
