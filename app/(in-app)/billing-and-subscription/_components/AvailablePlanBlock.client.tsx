@@ -4,8 +4,6 @@ import { cn } from '@/lib/utils';
 import { PlanCard } from './PlanCard.client';
 import { type SubscriptionPlan } from '@/hooks';
 import { AccountType, BillingCycle } from '@/utils/types';
-import * as $c from '@/utils/converter';
-import { calculateSavePercentFromPrice } from '@/utils/helpers';
 import { useAuthStore } from '@/store';
 interface AvailablePlanBlockProps extends HTMLAttributes<HTMLDivElement> {
   className?: string;
@@ -37,7 +35,7 @@ export default forwardRef<HTMLDivElement, AvailablePlanBlockProps>(
   ) => {
     const { info } = useAuthStore();
 
-    console.log({ coachPlans, athletePlans });
+    // console.log({ coachPlans, athletePlans });
 
     const isCurrentPlan = (item: SubscriptionPlan) => {
       return currentPlan.type === item.type && currentPlan.billingCycle === item.billingCycle;
@@ -73,10 +71,8 @@ export default forwardRef<HTMLDivElement, AvailablePlanBlockProps>(
                     key={item.name}
                     planName={item.name}
                     planType={item.type}
-                    billingText={$c.convertToBillingText(item.billingCycle)}
                     salePrice={item.actualPrice}
                     basePrice={item.basePrice}
-                    savePercent={calculateSavePercentFromPrice(item.basePrice, item.actualPrice)}
                     billingCycle={item.billingCycle}
                     isCurrent={isCurrentPlan(item)}
                     isSelected={isSelectedPlan(item)}
@@ -108,11 +104,9 @@ export default forwardRef<HTMLDivElement, AvailablePlanBlockProps>(
                     key={item.name}
                     planName={item.name}
                     planType={item.type}
-                    billingText={$c.convertToBillingText(item.billingCycle)}
                     salePrice={item.actualPrice}
                     basePrice={item.basePrice}
                     billingCycle={item.billingCycle}
-                    savePercent={calculateSavePercentFromPrice(item.basePrice, item.actualPrice)}
                     isCurrent={isCurrentPlan(item)}
                     isSelected={isSelectedPlan(item)}
                     isDiscounted={item.isDiscounted}

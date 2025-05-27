@@ -58,7 +58,7 @@ export default function PromoCode({
           value={value}
           onChange={e => setValue(e.target.value)}
           className="text-sm"
-          inputProps={{ placeholder: 'Enter promo code' }}
+          inputProps={{ placeholder: 'Enter promo code', className: 'text-sm' }}
           fullWidth
           icon={
             showIcon ? (
@@ -73,12 +73,7 @@ export default function PromoCode({
           }
           iconPosition="end"
         />
-        <Button
-          variant="outline"
-          size="sm"
-          className="whitespace-nowrap"
-          onClick={handleApplyPromo}
-        >
+        <Button variant="outline" className="whitespace-nowrap" onClick={handleApplyPromo}>
           Apply Code
         </Button>
       </div>

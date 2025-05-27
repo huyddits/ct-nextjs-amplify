@@ -58,7 +58,7 @@ export const usePersonalInfo = () => {
         planPromo: foundPlan?.plan.promo_code ?? '',
         planStripePriceId: foundPlan?.plan.stripe_price_id ?? '',
         planStripeCustomerId: data.stripe_customer_id,
-        planStripeSubscriptionId: foundPlan?.stripe_subscription_id ?? '',
+        planStripeSubscriptionId: data?.stripe_subscription_id ?? '',
       });
     } catch (error) {
       console.log(error);
