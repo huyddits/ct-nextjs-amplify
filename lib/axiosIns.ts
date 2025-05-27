@@ -36,9 +36,11 @@ axiosIns.interceptors.response.use(
       location.href = `/${ROUTES.LOGIN}`;
     } else if (error.response?.status === 500) {
       console.error('Server error occurred');
+    } else if (error.request.status === 404) {
+      console.error('Not found');
     } else if ((error?.response?.data as { message: string })?.message) {
       const dataResponse = error?.response?.data as { message: string };
-      // toast.error(dataResponse.message);
+      toast.error(dataResponse.message);
     }
     console.log('🚀 ~ error:', error);
     return Promise.reject(error);
