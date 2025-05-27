@@ -14,10 +14,12 @@ interface AppCalendarPickerProps {
   icon?: JSX.Element;
   label?: string | React.JSX.Element;
   value?: Date;
+  maxDate?: Date;
   fullWidth?: boolean;
   dateFormat?: string;
-  placeholder?: string;
+  triggerLabel?: string;
   errorMessage?: string;
+  disabled?: boolean;
   onChange?: (date?: Date) => void;
 }
 
@@ -25,9 +27,11 @@ export default function AppCalendarPicker({
   icon = <CalendarIcon className="h-4 w-4" />,
   label,
   value,
+  maxDate,
   fullWidth,
   dateFormat,
-  placeholder,
+  triggerLabel,
+  disabled,
   errorMessage,
   onChange,
 }: Readonly<AppCalendarPickerProps>) {
@@ -44,11 +48,12 @@ export default function AppCalendarPicker({
               'w-full font-normal h-9 flex items-center',
               !value && 'text-muted-foreground',
               icon && 'pl-10',
-              fullWidth && 'w-full'
+              fullWidth && 'w-full',
+              disabled && 'pointer-events-none opacity-100 cursor-default'
             )}
           >
             {icon && <span className="mr-2">{icon}</span>}
-            {placeholder ?? dayjs(value).format(format)}
+            {triggerLabel ?? dayjs(value).format(format)}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
@@ -57,6 +62,7 @@ export default function AppCalendarPicker({
             selected={value}
             onSelect={date => onChange?.(date ?? undefined)}
             initialFocus
+            toDate={maxDate}
           />
         </PopoverContent>
       </Popover>

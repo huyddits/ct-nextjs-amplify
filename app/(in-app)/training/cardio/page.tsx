@@ -102,7 +102,7 @@ export default function CardioPage() {
               <h2 className="text-lg font-medium">Cardio Training Selection</h2>
               <Controller
                 control={control}
-                name="exercises"
+                name="exercise"
                 render={({ field: { value, onChange }, fieldState: { error } }) => (
                   <AppSelect
                     placeholder="Select Type"
