@@ -13,9 +13,20 @@ export const usePersonalInfo = () => {
       if (!data) {
         throw response.data.error;
       }
-      const foundPlan = data.plan.find(({ status }) =>
-        [PlanStatus.Active, PlanStatus.Canceled].includes(status)
-      );
+
+      // const foundPlan = data.plan.find(({ status }) =>
+      //   [PlanStatus.Active, PlanStatus.Canceled].includes(status)
+      // );
+
+      // TODO(ducnm): need to remove after BE fix
+      // workaround for both active and canceled existed
+
+      const foundPlan =
+        data.plan.find(({ status }) => status === PlanStatus.Active) ??
+        data.plan.find(({ status }) => status === PlanStatus.Canceled);
+
+      // TODO(ducnm): need to remove after BE fix
+
       setInfo({
         id: data.user_id,
         accountType: data.account_type,
@@ -47,7 +58,7 @@ export const usePersonalInfo = () => {
         planPromo: foundPlan?.plan.promo_code ?? '',
         planStripePriceId: foundPlan?.plan.stripe_price_id ?? '',
         planStripeCustomerId: data.stripe_customer_id,
-        planStripeSubscriptionId: foundPlan?.stripe_subscription_id ?? '',
+        planStripeSubscriptionId: data?.stripe_subscription_id ?? '',
       });
     } catch (error) {
       console.log(error);
@@ -58,5 +69,15 @@ export const usePersonalInfo = () => {
     handleGetPersonalInfo();
   }, [token]);
 
-  return { data: info };
+  useEffect(() => {
+    const windowFocusHandler = () => {
+      handleGetPersonalInfo();
+    };
+    addEventListener('focus', windowFocusHandler);
+    return () => {
+      removeEventListener('focus', windowFocusHandler);
+    };
+  }, []);
+
+  return { data: info, refetch: handleGetPersonalInfo };
 };

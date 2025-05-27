@@ -13,6 +13,7 @@ export type SubscriptionPlan = {
   status: PlanStatus;
   stripePriceId: string;
   features: string[];
+  isDiscounted?: boolean;
 };
 
 export type ActivePlan = {
@@ -46,9 +47,16 @@ export type BillingReceipt = {
 
 export const useBillingAndSubscription = () => {
   const { info } = useAuthStore();
+  const [listBasePlans, setListBasePlans] = useState<SubscriptionPlan[]>([]); // reserved for non-promotion code plans
   const [listCoachPlans, setListCoachPlans] = useState<SubscriptionPlan[]>([]);
   const [listAthletePlans, setListAthletePlans] = useState<SubscriptionPlan[]>([]);
   const [listBillings, setListBillings] = useState<BillingReceipt[]>([]);
+
+  // promo
+  const [discount, setDiscount] = useState(0);
+  const [promoCode, setPromoCode] = useState('');
+  const [isPromoCodeApplied, setIsPromoCodeApplied] = useState(false);
+
   const {
     page: billingPage,
     limit,
@@ -56,6 +64,27 @@ export const useBillingAndSubscription = () => {
     setPage: setBillingPage,
     setTotalPages: setTotalBillingPages,
   } = usePagination();
+
+  const currentPlan = useMemo<ActivePlan | null>(() => {
+    if (!info?.planId) return null;
+    console.log('info', info.planBasePrice);
+    return {
+      userPlanId: info.userPlanId,
+      stripeCustomerId: info.planStripeCustomerId,
+      stripePriceId: info.planStripePriceId,
+      stripeSubscriptionId: info.planStripeSubscriptionId,
+      nextBillingDate: info.planNextBillingDate,
+      startDate: info.planStartDate,
+      endDate: info.planEndDate,
+      status: info.planStatus,
+      planId: info.planId,
+      planType: info.planType,
+      billingCycle: info.planBillingCycle,
+      basePrice: info.planBasePrice,
+      actualPrice: info.planActualPrice,
+      promoCode: info.planPromo,
+    };
+  }, [info?.planId]);
 
   const handleGetListPlans = async () => {
     try {
@@ -65,7 +94,7 @@ export const useBillingAndSubscription = () => {
         throw response.data.error;
       }
 
-      const arrayPlans = data.map(item => {
+      const arrayPlans: SubscriptionPlan[] = data.map(item => {
         const { type, billing_cycle, base_price, actual_price, stripe_price_id } = item;
         return {
           name: $c.convertToPlanName(type, billing_cycle),
@@ -79,9 +108,11 @@ export const useBillingAndSubscription = () => {
           type: type,
           stripePriceId: stripe_price_id,
           features: item.features.map(({ name }) => name),
+          isDiscounted: false,
         };
       });
 
+      setListBasePlans(arrayPlans);
       setListCoachPlans(arrayPlans?.filter(item => item.type === PlanType.Coach));
       setListAthletePlans(arrayPlans?.filter(item => item.type === PlanType.Athlete));
     } catch (error) {
@@ -117,31 +148,50 @@ export const useBillingAndSubscription = () => {
     }
   };
 
-  const currentPlan = useMemo<ActivePlan | null>(() => {
-    if (!info?.planId) return null;
-    return {
-      userPlanId: info.userPlanId,
-      stripeCustomerId: info.planStripeCustomerId,
-      stripePriceId: info.planStripePriceId,
-      stripeSubscriptionId: info.planStripeSubscriptionId,
-      nextBillingDate: info.planNextBillingDate,
-      startDate: info.planStartDate,
-      endDate: info.planEndDate,
-      status: info.planStatus,
-      planId: info.planId,
-      planType: info.planType,
-      billingCycle: info.planBillingCycle,
-      basePrice: info.planBasePrice,
-      actualPrice: info.planActualPrice,
-      promoCode: info.planPromo,
-    };
-  }, [info?.planId]);
-
-  const onApplyPromotion = () => {};
-
-  const onCreateSubscriptionSession = async ({ priceId }: { priceId: string }) => {
+  const handleApplyPromotion = async (promotionCode: string) => {
     try {
-      const response = await BillingApi.createSubscriptionSession({ price_id: priceId });
+      const response = await BillingApi.applyPromotionCodeAndPreviewPrices({
+        code: promotionCode,
+      });
+      if (response.data.data?.discount && response.data.data.plans.length) {
+        const { plans: data } = response.data.data;
+        const arrayPlans = listBasePlans.map(item => {
+          const found = data.find(({ stripe_price_id }) => stripe_price_id === item.stripePriceId);
+          const actualPrice = found?.actual_price;
+          const isDiscounted = found?.is_discounted;
+          return {
+            ...item,
+            actualPrice: actualPrice ? Number(actualPrice) : item.basePrice,
+            isDiscounted,
+          };
+        });
+
+        setDiscount(response.data.data.discount);
+        setPromoCode(promotionCode);
+        setIsPromoCodeApplied(true);
+        setListCoachPlans(arrayPlans?.filter(item => item.type === PlanType.Coach));
+        setListAthletePlans(arrayPlans?.filter(item => item.type === PlanType.Athlete));
+      }
+    } catch (error) {
+      console.log(error);
+      setPromoCode('');
+      setIsPromoCodeApplied(false);
+      setListCoachPlans(listBasePlans.filter(item => item.type === PlanType.Coach));
+      setListAthletePlans(listBasePlans.filter(item => item.type === PlanType.Athlete));
+    }
+  };
+
+  const handleClearPromotion = () => {
+    setPromoCode('');
+    setIsPromoCodeApplied(false);
+  };
+
+  const handleSubscribePlan = async ({ priceId }: { priceId: string }) => {
+    try {
+      const response = await BillingApi.subscribeToAPlan({
+        price_id: priceId,
+        discounts: promoCode,
+      });
       console.log(response.data);
       if (!response.data.data?.url) {
         throw response.data.error;
@@ -152,29 +202,33 @@ export const useBillingAndSubscription = () => {
     }
   };
 
-  const onChangePlan = async ({
+  const handleChangePlan = async ({
     customerId,
-    priceId,
     subscriptionId,
   }: {
     customerId: string;
-    priceId: string;
     subscriptionId: string;
   }) => {
     try {
+      console.log('handleChangePlan', customerId, subscriptionId);
       const response = await BillingApi.changePlan({
         customer_id: customerId,
-        new_price_id: priceId,
+        promotion_code: [promoCode],
         subscription_id: subscriptionId,
       });
-      console.log('response', response);
+
+      console.log('response.data', response.data);
+      if (!response.data.data?.url) {
+        throw response.data.error;
+      }
+
+      window.open(response.data.data.url, '_blank');
     } catch (error) {
       console.log(error);
     }
   };
 
-  const onCancelPlan = async (activePlan: ActivePlan) => {
-    console.log('activePlan', activePlan);
+  const handleCancelPlan = async (activePlan: ActivePlan) => {
     if (!activePlan.stripeSubscriptionId) {
       throw new Error(`Subscription doesn't exist`);
     }
@@ -218,6 +272,10 @@ export const useBillingAndSubscription = () => {
     handleGetBillingHistory();
   }, []);
 
+  // useEffect(() => {
+  //   console.log({ promoCode, isPromoCodeApplied, listCoachPlans, listAthletePlans });
+  // });
+
   return {
     currentPlan,
     listBillings,
@@ -225,12 +283,16 @@ export const useBillingAndSubscription = () => {
     listAthletePlans,
     billingPage,
     totalBillingPages,
+    discount,
+    promoCode,
+    isPromoCodeApplied,
 
-    onCancelPlan,
-    onChangePlan,
+    handleCancelPlan,
+    handleChangePlan,
+    handleSubscribePlan,
+    handleApplyPromotion,
+    handleClearPromotion,
     loadMoreBills,
     setBillingPage,
-    onApplyPromotion,
-    onCreateSubscriptionSession,
   };
 };
