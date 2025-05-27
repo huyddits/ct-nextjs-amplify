@@ -1,11 +1,9 @@
 'use client';
-import { useEffect, type HTMLAttributes, forwardRef } from 'react';
+import { type HTMLAttributes, forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 import { PlanCard } from './PlanCard.client';
 import { type SubscriptionPlan } from '@/hooks';
 import { AccountType, BillingCycle } from '@/utils/types';
-import * as $c from '@/utils/converter';
-import { calculateSavePercentFromPrice } from '@/utils/helpers';
 import { useAuthStore } from '@/store';
 interface AvailablePlanBlockProps extends HTMLAttributes<HTMLDivElement> {
   className?: string;
@@ -13,6 +11,8 @@ interface AvailablePlanBlockProps extends HTMLAttributes<HTMLDivElement> {
   athletePlans: SubscriptionPlan[];
   currentPlan: Omit<SubscriptionPlan, 'features' | 'stripePriceId'>;
   selectedPlan: SubscriptionPlan;
+  promoCode?: string;
+  promoApplied?: boolean;
   onSwitch?: (plan: SubscriptionPlan) => void;
   onselect?: (plan: SubscriptionPlan) => void;
 }
@@ -25,6 +25,8 @@ export default forwardRef<HTMLDivElement, AvailablePlanBlockProps>(
       currentPlan,
       athletePlans,
       selectedPlan,
+      promoCode,
+      promoApplied,
       onSwitch,
       onselect,
       ...otherProps
@@ -32,6 +34,8 @@ export default forwardRef<HTMLDivElement, AvailablePlanBlockProps>(
     ref
   ) => {
     const { info } = useAuthStore();
+
+    // console.log({ coachPlans, athletePlans });
 
     const isCurrentPlan = (item: SubscriptionPlan) => {
       return currentPlan.type === item.type && currentPlan.billingCycle === item.billingCycle;
@@ -67,15 +71,16 @@ export default forwardRef<HTMLDivElement, AvailablePlanBlockProps>(
                     key={item.name}
                     planName={item.name}
                     planType={item.type}
-                    billingText={$c.convertToBillingText(item.billingCycle)}
                     salePrice={item.actualPrice}
                     basePrice={item.basePrice}
-                    savePercent={calculateSavePercentFromPrice(item.basePrice, item.actualPrice)}
-                    chargeInterval={item.billingCycle}
+                    billingCycle={item.billingCycle}
                     isCurrent={isCurrentPlan(item)}
                     isSelected={isSelectedPlan(item)}
+                    isDiscounted={item.isDiscounted}
                     onSwitch={() => onSwitch?.(item)}
                     onSelect={() => onselect?.(item)}
+                    promoApplied={promoApplied}
+                    promoCode={promoCode}
                   />
                 ))}
             </section>
@@ -99,15 +104,16 @@ export default forwardRef<HTMLDivElement, AvailablePlanBlockProps>(
                     key={item.name}
                     planName={item.name}
                     planType={item.type}
-                    billingText={$c.convertToBillingText(item.billingCycle)}
                     salePrice={item.actualPrice}
                     basePrice={item.basePrice}
-                    chargeInterval={item.billingCycle}
-                    savePercent={calculateSavePercentFromPrice(item.basePrice, item.actualPrice)}
+                    billingCycle={item.billingCycle}
                     isCurrent={isCurrentPlan(item)}
                     isSelected={isSelectedPlan(item)}
+                    isDiscounted={item.isDiscounted}
                     onSwitch={() => onSwitch?.(item)}
                     onSelect={() => onselect?.(item)}
+                    promoApplied={promoApplied}
+                    promoCode={promoCode}
                   />
                 ))}
             </section>

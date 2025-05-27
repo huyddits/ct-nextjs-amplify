@@ -41,6 +41,7 @@ export default function BillingHistory({
   listBillings,
   onLoadMore,
 }: BillingHistoryProps) {
+  if (listBillings.length === 0) return null;
   return (
     <div className={cn('bg-white p-4 rounded-lg shadow-sm mb-4', className)}>
       <h2 className="text-sm text-gray-600 mb-3">Billing History</h2>

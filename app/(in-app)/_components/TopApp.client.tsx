@@ -50,16 +50,16 @@ export default function TopApp({ className }: { className?: string }) {
 
   return (
     <div
-      className={cn(
-        'flex items-center justify-between bg-primary p-4 rounded-t-lg mb-4 text-white',
-        className
-      )}
+      className={cn('flex items-center justify-between bg-primary p-4 mb-4 text-white', className)}
     >
       {!pathname.includes(ROUTES.HOME) && (
         <Link href={ROUTES.HOME} className="flex items-center">
           <ArrowLeftIcon className="h-5 w-5 mr-2" />
           <span>Back</span>
         </Link>
+      )}
+      {pathname.includes(ROUTES.BILLING_AND_SUBSCRIPTION) && (
+        <h2 className="ml-10">Subscription & Billing</h2>
       )}
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>

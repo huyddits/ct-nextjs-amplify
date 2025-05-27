@@ -19,11 +19,10 @@ export const END_POINTS = {
   // billing and subscription
   SUBSCRIPTION_PLANS: 'plans',
   SUBSCRIPTION_CANCEL: 'stripe/cancel-subscription',
-  SUBSCRIPTION_CREATE_SESSION: 'stripe/create-subscription-session',
-  SUBSCRIPTION_CHANGE_PREVIEW: 'stripe/preview-plan-change',
+  SUBSCRIPTION_SUBSCRIBE_PLAN: 'stripe/create-subscription-session',
   SUBSCRIPTION_CHANGE: 'stripe/change-plan',
-  BILLING_HISTORY: 'users/billing-history', // need recheck
-  BILLING_ADD_PROMOTION_CODE: 'billing/promotion/add', // need recheck
+  BILLING_HISTORY: 'users/billing-history',
+  VALIDATE_PROMOTION_CODE: 'stripe/validate-promotion-code',
   WEEKLY_SUMMARY: 'cardio/past-training/weekly-summary',
   WEEKLY_WORKOUTS: 'cardio/past-training/weekly-workouts',
   PERFORMANCE_METRICS: 'cardio/past-training/performance-metrics',

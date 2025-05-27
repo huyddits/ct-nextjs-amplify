@@ -24,7 +24,9 @@ interface AppMultipleSelectProps {
   className?: string;
   placeholder?: string;
   errorMessage?: string;
+  labelCheckAll?: string;
   selectedValues: string[];
+  enableCheckAll?: boolean;
   onChangeSelected: (values: string[]) => void;
 }
 
@@ -35,7 +37,9 @@ export default function AppMultipleSelect({
   className,
   placeholder,
   errorMessage,
+  labelCheckAll,
   selectedValues,
+  enableCheckAll,
   onChangeSelected,
 }: Readonly<AppMultipleSelectProps>) {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,6 +58,14 @@ export default function AppMultipleSelect({
       onChangeSelected(selectedValues.filter(item => item !== value));
     } else {
       onChangeSelected([...selectedValues, value]);
+    }
+  };
+
+  const onCheckedAll = (isChecked: CheckedState) => {
+    if (isChecked === 'indeterminate' || !isChecked) {
+      onChangeSelected([]);
+    } else {
+      onChangeSelected(options.map(item => item.value));
     }
   };
 
@@ -78,6 +90,20 @@ export default function AppMultipleSelect({
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="space-y-3 max-h-56 overflow-y-auto w-[var(--radix-dropdown-menu-trigger-width)]">
+          {enableCheckAll && (
+            <div className="flex space-x-4 px-2">
+              <Label className="text-md font-light">
+                <Checkbox
+                  checked={options.every(item =>
+                    selectedValues.some(value => item.value === value)
+                  )}
+                  onCheckedChange={onCheckedAll}
+                />
+                {labelCheckAll ?? 'All Items'}
+              </Label>
+            </div>
+          )}
+
           {options.map(item => (
             <div key={item.value} className="flex space-x-4 px-2">
               <Label className="text-md font-light">
