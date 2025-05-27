@@ -43,7 +43,6 @@ export default function CurrentPlanCard({
   }, [billingCycle, price]);
 
   const billNote = useMemo(() => {
-    console.log('status', status);
     if (status === PlanStatus.Canceled) {
       return 'Subscription has been canceled';
     }

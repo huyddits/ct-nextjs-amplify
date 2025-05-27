@@ -3,6 +3,7 @@ import { ApiResponse, BillingCycle, PlanType } from '@/utils/types';
 type PlanFeature = { feature_id: number; name: string };
 
 type SubscriptionPlan = {
+  name: string;
   plan_id: string;
   actual_price: string; // "xx.yy"
   base_price: string; // "xx.yy"
@@ -11,9 +12,6 @@ type SubscriptionPlan = {
   features: PlanFeature[];
   stripe_payment_link: string | null;
   stripe_price_id: string;
-  promo_code: string | null; // need remove
-  created_at: string; // need remove
-  updated_at: string; // need remove
 };
 
 type BillingRecord = {
@@ -43,11 +41,17 @@ export type GetSubscriptionPlansParams = {};
 
 export type GetSubscriptionPlansResponse = ApiResponse<Array<SubscriptionPlan>, {}>;
 
-export type AddPromotionCodePayload = {
+export type AddPromotionCodeParams = {
   code: string;
 };
 
-export type AddPromotionCodeResponse = ApiResponse<{}, {}>;
+export type AddPromotionCodeResponse = ApiResponse<
+  {
+    discount: number;
+    plans: (SubscriptionPlan & { is_discounted: boolean })[];
+  },
+  {}
+>;
 
 export type GetBillingHistoryParams = {
   page?: number;
@@ -77,13 +81,13 @@ export type CancelSubscriptionPayload = {
 
 export type CancelSubscriptionResponse = ApiResponse<{}, {}>;
 
-export type PreviewSubscriptionChangePayload = {
-  customer_id: string;
-  subscription_id: string;
-  new_plan_id: string;
-};
+// export type PreviewSubscriptionChangePayload = {
+//   customer_id: string;
+//   subscription_id: string;
+//   new_plan_id: string;
+// };
 
-export type PreviewSubscriptionChangeResponse = ApiResponse<{}, {}>;
+// export type PreviewSubscriptionChangeResponse = ApiResponse<{}, {}>;
 
 export type ChangePlanPayload = {
   customer_id: string;
@@ -91,4 +95,16 @@ export type ChangePlanPayload = {
   new_price_id: string;
 };
 
-export type ChangePlanResponse = ApiResponse<{}, {}>;
+export type ChangePlanResponse = ApiResponse<{
+  configuration: string;
+  created: number;
+  customer: string;
+  flow: any;
+  id: string;
+  livemode: false;
+  locale: any;
+  object: string;
+  on_behalf_of: any;
+  return_url: string;
+  url: string;
+}>;

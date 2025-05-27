@@ -58,6 +58,9 @@ export default function TopApp({ className }: { className?: string }) {
           <span>Back</span>
         </Link>
       )}
+      {pathname.includes(ROUTES.BILLING_AND_SUBSCRIPTION) && (
+        <h2 className="ml-10">Subscription & Billing</h2>
+      )}
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
           <button className="w-8 h-8 flex ml-auto items-center justify-center focus:outline-none">
