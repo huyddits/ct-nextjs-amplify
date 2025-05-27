@@ -14,7 +14,7 @@ type UseCardioFormOptions = {
 };
 
 const schema = object().shape({
-  exercises: string(),
+  exercise: string(),
   notes: string().max(500),
   intervals: array(
     object().shape({
@@ -73,7 +73,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
 
   type FormType = InferType<typeof schema>;
   const DEFAULT_FORM: Required<FormType> = {
-    exercises: '1',
+    exercise: '1',
     notes: '',
     intervals: [
       {
@@ -102,11 +102,11 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     mode: 'onChange',
   });
 
-  const exercises = useWatch({ control, name: 'exercises' });
+  const exercise = useWatch({ control, name: 'exercise' });
 
   const selectedExercise = useMemo(() => {
-    return exercisesItems.find(item => item.value === String(exercises));
-  }, [exercisesItems, exercises]);
+    return exercisesItems.find(item => item.value === String(exercise));
+  }, [exercisesItems, exercise]);
 
   useEffect(() => {
     getExercises();
@@ -121,7 +121,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
       }
       await CardioTrainingSelectionApi.postExercises({
         workout_date: dayjs().format('YYYY-MM-DD'),
-        exercises: Number(formData.exercises),
+        exercise: Number(formData.exercise),
         notes: formData.notes ?? '',
         intervals: intervalsList.map(interval => ({
           duration: Number(interval.duration),
@@ -132,6 +132,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
           heart_rate_max: Number(interval.heartRateMax),
         })),
       });
+      toast.success('Successfully save the complete workout');
       clearIntervals();
       options?.onSuccess?.();
     } catch (error: unknown) {
@@ -144,7 +145,6 @@ export const useCardio = (options?: UseCardioFormOptions) => {
   return {
     control,
     isValid,
-    // onSubmit,
     trigger,
     setValue,
     getValues,

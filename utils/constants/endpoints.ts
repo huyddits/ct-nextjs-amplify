@@ -23,4 +23,7 @@ export const END_POINTS = {
   SUBSCRIPTION_CHANGE: 'stripe/change-plan',
   BILLING_HISTORY: 'users/billing-history',
   VALIDATE_PROMOTION_CODE: 'stripe/validate-promotion-code',
+  WEEKLY_SUMMARY: 'cardio/past-training/weekly-summary',
+  WEEKLY_WORKOUTS: 'cardio/past-training/weekly-workouts',
+  PERFORMANCE_METRICS: 'cardio/past-training/performance-metrics',
 };
