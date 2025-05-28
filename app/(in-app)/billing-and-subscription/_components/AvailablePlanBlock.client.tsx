@@ -35,8 +35,6 @@ export default forwardRef<HTMLDivElement, AvailablePlanBlockProps>(
   ) => {
     const { info } = useAuthStore();
 
-    // console.log({ coachPlans, athletePlans });
-
     const isCurrentPlan = (item: SubscriptionPlan) => {
       return currentPlan.type === item.type && currentPlan.billingCycle === item.billingCycle;
     };
@@ -71,16 +69,17 @@ export default forwardRef<HTMLDivElement, AvailablePlanBlockProps>(
                     key={item.name}
                     planName={item.name}
                     planType={item.type}
-                    salePrice={item.actualPrice}
+                    actualPrice={item.actualPrice}
                     basePrice={item.basePrice}
                     billingCycle={item.billingCycle}
                     isCurrent={isCurrentPlan(item)}
                     isSelected={isSelectedPlan(item)}
-                    isDiscounted={item.isDiscounted}
+                    isPromoApplied={item.isPromoApplied}
                     onSwitch={() => onSwitch?.(item)}
                     onSelect={() => onselect?.(item)}
                     promoApplied={promoApplied}
                     promoCode={promoCode}
+                    showRibbon={item.billingCycle === BillingCycle.Annual}
                   />
                 ))}
             </section>
@@ -104,16 +103,17 @@ export default forwardRef<HTMLDivElement, AvailablePlanBlockProps>(
                     key={item.name}
                     planName={item.name}
                     planType={item.type}
-                    salePrice={item.actualPrice}
+                    actualPrice={item.actualPrice}
                     basePrice={item.basePrice}
                     billingCycle={item.billingCycle}
                     isCurrent={isCurrentPlan(item)}
                     isSelected={isSelectedPlan(item)}
-                    isDiscounted={item.isDiscounted}
+                    isPromoApplied={item.isPromoApplied}
                     onSwitch={() => onSwitch?.(item)}
                     onSelect={() => onselect?.(item)}
                     promoApplied={promoApplied}
                     promoCode={promoCode}
+                    showRibbon={item.billingCycle === BillingCycle.Annual}
                   />
                 ))}
             </section>

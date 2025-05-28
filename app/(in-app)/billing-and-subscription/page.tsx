@@ -8,7 +8,6 @@ import {
   PlanFeatured,
   AvailablePlanBlock,
 } from './_components';
-import { convertToPlanName } from '@/utils/converter';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useConfirmStore } from '@/store';
 import { BillingCycle, PlanType } from '@/utils/types';
@@ -109,10 +108,10 @@ export default function BillingAndSubscriptionPage() {
 
   const listPlanApplied = useMemo(() => {
     if (currentPlan?.planType === PlanType.Coach) {
-      return listCoachPlans.filter(item => item.actualPrice < item.basePrice);
+      return listCoachPlans.filter(item => item.isPromoApplied);
     }
     if (currentPlan?.planType === PlanType.Athlete) {
-      return [...listAthletePlans.filter(item => item.actualPrice < item.basePrice)];
+      return [...listAthletePlans.filter(item => item.isPromoApplied)];
     }
   }, [listAthletePlans, listCoachPlans, currentPlan?.planType]);
 
@@ -120,9 +119,9 @@ export default function BillingAndSubscriptionPage() {
     <div className="p-6 grid grid-cols-1 gap-4 container">
       {currentPlan && (
         <CurrentPlanCard
+          name={currentPlan.name}
           price={currentPlan.basePrice}
           billingCycle={currentPlan.billingCycle}
-          name={convertToPlanName(currentPlan.planType, currentPlan.billingCycle)}
           status={currentPlan.status}
           className="col-span-1 row-span-1"
           nextBillingDate={currentPlan.nextBillingDate}
@@ -144,7 +143,7 @@ export default function BillingAndSubscriptionPage() {
           ref={availablePlansRef}
           className="row-span-3"
           currentPlan={{
-            name: convertToPlanName(currentPlan.planType, currentPlan.billingCycle),
+            name: currentPlan.name,
             actualPrice: currentPlan.actualPrice,
             basePrice: currentPlan.basePrice,
             billingCycle: currentPlan.billingCycle,
