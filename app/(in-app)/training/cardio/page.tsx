@@ -1,7 +1,7 @@
 'use client';
 import { AppInput, AppSelect, AppTextarea } from '@/components/compose';
 import { Button } from '@/components/ui/button';
-import { Controller, useFieldArray, useWatch } from 'react-hook-form';
+import { Controller, useWatch } from 'react-hook-form';
 import { useCardio } from './_hooks';
 import { useCallback, useEffect, useState } from 'react';
 import { useIntervalsCardioStore } from '@/store/useIntervalsList.store';
@@ -20,7 +20,7 @@ export default function CardioPage() {
     onCompleteWorkout,
   } = useCardio({ onSuccess: () => {}, onFailure: () => {} });
 
-  const { intervalsList, addInterval, clearIntervals } = useIntervalsCardioStore();
+  const { intervalsList, addInterval, clearCardioIntervals } = useIntervalsCardioStore();
 
   const [inputDisabled, setInputDisabled] = useState(false);
 
@@ -61,7 +61,7 @@ export default function CardioPage() {
     addInterval(currentInterval);
 
     await onCompleteWorkout(getValues());
-    clearIntervals();
+    clearCardioIntervals();
     setInputDisabled(false);
   };
 
