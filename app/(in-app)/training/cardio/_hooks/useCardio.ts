@@ -79,7 +79,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
       {
         duration: '',
         distance: '',
-        distance_unit: 'Kilometers',
+        distance_unit: '',
         rpe: '0',
         heartRateMin: '',
         heartRateMax: '',
@@ -93,6 +93,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     formState,
     getValues,
     trigger,
+    reset,
     formState: { isValid },
   } = useForm({
     resolver: yupResolver(schema),
@@ -107,6 +108,13 @@ export const useCardio = (options?: UseCardioFormOptions) => {
   const selectedExercise = useMemo(() => {
     return exercisesItems.find(item => item.value === String(exercise));
   }, [exercisesItems, exercise]);
+
+  useEffect(() => {
+    if (selectedExercise?.units?.length) {
+      const defaultUnit = selectedExercise.units[0].value;
+      setValue('intervals.0.distance_unit', defaultUnit);
+    }
+  }, [selectedExercise, setValue]);
 
   useEffect(() => {
     getExercises();
@@ -134,6 +142,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
       });
       toast.success('Successfully save the complete workout');
       clearIntervals();
+      reset(DEFAULT_FORM);
       options?.onSuccess?.();
     } catch (error: unknown) {
       console.error('Workout submission failed:', error);
