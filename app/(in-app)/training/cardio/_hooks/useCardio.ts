@@ -1,5 +1,5 @@
 import { useForm, useWatch } from 'react-hook-form';
-import { InferType, object, string, number, array } from 'yup';
+import { InferType, object, string, array } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useMemo, useState } from 'react';
 import { CardioTrainingSelectionApi } from '@/api';
@@ -33,12 +33,12 @@ const schema = object().shape({
 
 export const useCardio = (options?: UseCardioFormOptions) => {
   const [exercisesItems, setExercisesItems] = useState<
-    (SelectOption & { units: SelectOption[] })[]
+    Array<SelectOption & { units: SelectOption[] }>
   >([]);
 
   const [rpeItems, setRpeItems] = useState<SelectOption[]>([]);
 
-  const { intervalsList, clearIntervals } = useIntervalsCardioStore();
+  const { intervalsList, clearCardioIntervals } = useIntervalsCardioStore();
 
   const getExercises = async () => {
     try {
@@ -79,7 +79,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
       {
         duration: '',
         distance: '',
-        distance_unit: 'Kilometers',
+        distance_unit: '',
         rpe: '0',
         heartRateMin: '',
         heartRateMax: '',
@@ -93,6 +93,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     formState,
     getValues,
     trigger,
+    reset,
     formState: { isValid },
   } = useForm({
     resolver: yupResolver(schema),
@@ -105,8 +106,15 @@ export const useCardio = (options?: UseCardioFormOptions) => {
   const exercise = useWatch({ control, name: 'exercise' });
 
   const selectedExercise = useMemo(() => {
-    return exercisesItems.find(item => item.value === String(exercise));
+    return exercisesItems.find(item => item.value === exercise);
   }, [exercisesItems, exercise]);
+
+  useEffect(() => {
+    if (selectedExercise && selectedExercise?.units?.length) {
+      const defaultUnit = selectedExercise.units[0].value;
+      setValue('intervals.0.distance_unit', defaultUnit);
+    }
+  }, [selectedExercise, setValue]);
 
   useEffect(() => {
     getExercises();
@@ -123,19 +131,22 @@ export const useCardio = (options?: UseCardioFormOptions) => {
         workout_date: dayjs().format('YYYY-MM-DD'),
         exercise: Number(formData.exercise),
         notes: formData.notes ?? '',
-        intervals: intervalsList.map(interval => ({
-          duration: Number(interval.duration),
-          distance: Number(interval.distance),
-          distance_unit: interval.distance_unit ?? '',
-          rpe: interval.rpe ?? '',
-          heart_rate_min: Number(interval.heartRateMin),
-          heart_rate_max: Number(interval.heartRateMax),
+        intervals: intervalsList.map(data => ({
+          duration: Number(data.duration),
+          distance: Number(data.distance),
+          distance_unit: data.distance_unit ?? '',
+          rpe: data.rpe ?? '',
+          heart_rate_min: Number(data.heartRateMin),
+          heart_rate_max: Number(data.heartRateMax),
         })),
       });
       toast.success('Successfully save the complete workout');
-      clearIntervals();
+      clearCardioIntervals();
+      reset(DEFAULT_FORM);
       options?.onSuccess?.();
     } catch (error: unknown) {
+      clearCardioIntervals();
+      reset(DEFAULT_FORM);
       console.error('Workout submission failed:', error);
       toast.error('Failed to save workout');
       options?.onFailure?.('Failed to save workout');
@@ -151,7 +162,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     handleSubmit,
     formState,
     exercisesItems,
-    units: selectedExercise?.units,
+    units: selectedExercise?.units ?? [],
     rpeItems,
     selectedExercise,
     onCompleteWorkout,

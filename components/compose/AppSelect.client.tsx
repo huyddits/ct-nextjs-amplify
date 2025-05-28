@@ -64,7 +64,7 @@ export default function AppSelect({
         <SelectTrigger
           aria-labelledby={id}
           disabled={disabled}
-          className={fullWidth ? 'w-full' : ''}
+          className={cn('bg-white', fullWidth ? 'w-full' : '')}
         >
           {!isChanged ? (
             <Input
