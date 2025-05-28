@@ -55,6 +55,7 @@ export type PersonalInfo = {
   equipmentIds: number[];
   userPlanId: string;
   planId: string;
+  planName: string;
   planType: PlanType;
   planStatus: PlanStatus;
   planStartDate: string;
