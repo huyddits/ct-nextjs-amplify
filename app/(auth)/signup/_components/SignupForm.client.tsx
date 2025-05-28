@@ -293,7 +293,7 @@ export default function SignupForm() {
           <Label htmlFor="terms" className="text-sm gap-1">
             I agree to the
             <Link
-              href="/term-and-conditions"
+              href={`/${ROUTES.TERMS_AND_CONDITIONS}`}
               className="text-primary hover:underline"
               target="_blank"
             >
