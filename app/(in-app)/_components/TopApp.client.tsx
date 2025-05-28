@@ -53,7 +53,7 @@ export default function TopApp({ className }: { className?: string }) {
       className={cn('flex items-center justify-between bg-primary p-4 mb-4 text-white', className)}
     >
       {!pathname.includes(ROUTES.HOME) && (
-        <Link href={ROUTES.HOME} className="flex items-center">
+        <Link href={`/${ROUTES.HOME}`} className="flex items-center">
           <ArrowLeftIcon className="h-5 w-5 mr-2" />
           <span>Back</span>
         </Link>
