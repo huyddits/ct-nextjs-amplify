@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
       toast.success('Please check your email to reset your password.');
       setIsSuccess(true);
     } catch (error) {
-      setError('email', { message: 'Email is not valid!' });
+      setError('email', { message: `The email doesn't exist.` });
       console.log(error);
 
       setTimeout(() => {

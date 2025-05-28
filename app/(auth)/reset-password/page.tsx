@@ -5,14 +5,14 @@ import { ERROR_MESSAGES, ROUTES } from '@/utils/constants';
 import { useSearchParams } from 'next/navigation';
 import { UserApi } from '@/api';
 import { InferType, object, ref, string } from 'yup';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AppInput } from '@/components/compose';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
 import { CheckCircleIcon } from 'lucide-react';
 import Link from 'next/link';
-import { FooterSection, LogoSection } from '../_components';
+import { FooterSection, LogoSection, PasswordStrength } from '../_components';
 import * as $v from '@/utils/validators';
 
 const schema = object().shape({
@@ -47,6 +47,8 @@ export default function ResetPasswordPage() {
   });
 
   type FormPayload = InferType<typeof schema>;
+
+  const password = useWatch({ control, name: 'password' });
 
   const onValid = async (data: FormPayload) => {
     console.log(data);
@@ -96,7 +98,7 @@ export default function ResetPasswordPage() {
                     <AppInput
                       label="New Password"
                       inputProps={{ placeholder: 'Enter your new password' }}
-                      errorMessage={error?.message}
+                      errorMessage={error?.type === 'required' ? error.message : undefined}
                       password
                       {...field}
                       onBlur={() => trigger('password')}
@@ -104,6 +106,8 @@ export default function ResetPasswordPage() {
                   );
                 }}
               />
+
+              <PasswordStrength password={password} />
 
               <Controller
                 control={control}
