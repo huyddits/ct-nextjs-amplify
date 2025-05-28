@@ -1,9 +1,9 @@
 'use client';
 import { AppInput, AppSelect, AppTextarea } from '@/components/compose';
 import { Button } from '@/components/ui/button';
-import { Controller, useFieldArray } from 'react-hook-form';
+import { Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { useCardio } from './_hooks';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useIntervalsCardioStore } from '@/store/useIntervalsList.store';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
@@ -24,8 +24,6 @@ export default function CardioPage() {
 
   const [inputDisabled, setInputDisabled] = useState(false);
 
-  const { fields } = useFieldArray({ control, name: 'intervals' });
-
   useEffect(() => {
     if (intervalsList.length > 0) {
       setValue('intervals', intervalsList);
@@ -45,14 +43,15 @@ export default function CardioPage() {
     }
   }, [intervalsList, setValue]);
 
-  const handleCreateInterval = async () => {
+  const handleCreateInterval = useCallback(async () => {
     const valid = await trigger('intervals.0');
     if (!valid) return;
 
     const currentInterval = getValues('intervals.0');
     addInterval(currentInterval);
+    toast.success('Successfully added interval');
     setInputDisabled(true);
-  };
+  }, []);
 
   const handleCompleteWorkout = async () => {
     const valid = await trigger('intervals.0');
@@ -92,6 +91,14 @@ export default function CardioPage() {
       heartRateMax: undefined,
     });
   };
+
+  const distanceUnit = useWatch({
+    control,
+    name: 'intervals.0.distance_unit',
+  });
+
+  const distanceLabel =
+    distanceUnit === 'Stairs' || distanceUnit === 'Floors' ? 'Stairs' : 'Distance';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -172,7 +179,7 @@ export default function CardioPage() {
                     name="intervals.0.distance"
                     render={({ field, fieldState: { error } }) => (
                       <AppInput
-                        label="Distance"
+                        label={distanceLabel}
                         inputProps={{ placeholder: '0.0', type: 'number', disabled: inputDisabled }}
                         errorMessage={error?.message}
                         {...field}
@@ -202,8 +209,10 @@ export default function CardioPage() {
                   />
                 </div>
                 <div className="col-span-2 space-y-2">
-                  <label className="text-sm text-gray-600">Heart Rate Range (BPM)</label>
-                  <div className="flex gap-2">
+                  <label className="text-sm text-gray-600 font-medium ">
+                    Heart Rate Range (BPM)
+                  </label>
+                  <div className="flex gap-2 pt-1">
                     <Controller
                       control={control}
                       name="intervals.0.heartRateMin"
