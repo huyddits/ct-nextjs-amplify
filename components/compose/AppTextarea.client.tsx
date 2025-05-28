@@ -1,8 +1,8 @@
 'use client';
 import React, { JSX, TextareaHTMLAttributes } from 'react';
-import { twMerge } from 'tailwind-merge';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
+import { cn } from '@/lib/utils';
 
 interface AppTextareaProps {
   id?: string;
@@ -34,7 +34,7 @@ export default function AppTextarea({
   containerProps,
 }: Readonly<AppTextareaProps>) {
   return (
-    <div {...containerProps} className={twMerge('space-y-2', containerProps?.className)}>
+    <div {...containerProps} className={cn('space-y-2', containerProps?.className)}>
       {label && (
         <Label htmlFor={id} className=" text-gray-600">
           {label}
@@ -49,10 +49,16 @@ export default function AppTextarea({
         )}
         <Textarea
           id={id}
-          className={twMerge(icon ? 'pl-10' : 'pl-3', postfix ? 'pr-20' : '', 'w-full')}
           value={value}
           onChange={onChange}
           {...textareaProps}
+          className={cn(
+            'bg-white',
+            icon ? 'pl-10' : 'pl-3',
+            postfix ? 'pr-20' : '',
+            'w-full',
+            textareaProps?.className
+          )}
         />
         {postfix && typeof postfix === 'string' ? (
           <div className="absolute top-0 right-0 h-full bg-gray-100 border border-l-0 border-gray-300 rounded-r-md text-gray-500 flex items-center px-3">

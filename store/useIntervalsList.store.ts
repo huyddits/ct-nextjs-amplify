@@ -14,12 +14,12 @@ type CardioStore = {
   intervalsList: Interval[];
   setIntervalsList: (list: Interval[]) => void;
   addInterval: (interval: Interval) => void;
-  clearIntervals: () => void;
+  clearCardioIntervals: () => void;
 };
 
 export const useIntervalsCardioStore = create<CardioStore>(set => ({
   intervalsList: [],
   setIntervalsList: list => set({ intervalsList: list }),
   addInterval: interval => set(state => ({ intervalsList: [...state.intervalsList, interval] })),
-  clearIntervals: () => set({ intervalsList: [] }),
+  clearCardioIntervals: () => set({ intervalsList: [] }),
 }));
