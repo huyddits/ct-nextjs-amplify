@@ -33,7 +33,9 @@ axiosIns.interceptors.response.use(
       const errorMessage = dataResponse?.message ?? error?.message;
       useAuthStore.getState().removeToken();
       toast.error(errorMessage);
-      location.href = `/${ROUTES.LOGIN}`;
+      if (location.pathname !== `/${ROUTES.LOGIN}`) {
+        location.href = `/${ROUTES.LOGIN}`;
+      }
     } else if (error.response?.status === 500) {
       console.error('Server error occurred');
     } else if (error.request.status === 404) {
