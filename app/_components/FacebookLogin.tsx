@@ -20,7 +20,7 @@ export function FacebookLogin({ type }: { readonly type: 'signup' | 'login' }) {
   const router = useRouter();
   const { loginWithProvider } = useLogin({
     onSuccess: () => {
-      router.replace(ROUTES.HOME);
+      router.replace(`/${ROUTES.HOME}`);
     },
   });
   useEffect(() => {
