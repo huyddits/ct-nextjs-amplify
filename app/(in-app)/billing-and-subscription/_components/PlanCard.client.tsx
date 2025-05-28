@@ -11,11 +11,10 @@ interface PlanCardProps {
   planName: string;
   planType: PlanType;
   basePrice: number;
-  salePrice: number;
-  savePercent?: number;
+  actualPrice: number;
   billingCycle: BillingCycle;
   isCurrent: boolean;
-  isDiscounted?: boolean;
+  isPromoApplied?: boolean;
   isSelected: boolean;
   promoApplied?: boolean;
   promoCode?: string;
@@ -26,17 +25,17 @@ interface PlanCardProps {
 
 export const PriceHolder = ({
   basePrice,
-  salePrice,
+  actualPrice,
   savePercent,
   promoApplied,
-  isDiscounted,
+  isPromoApplied,
   billingCycle,
 }: {
   basePrice: number;
-  salePrice?: number;
+  actualPrice?: number;
   savePercent?: number;
   promoApplied?: boolean;
-  isDiscounted?: boolean;
+  isPromoApplied?: boolean;
   billingCycle: BillingCycle;
 }) => {
   const renderCycle = useMemo(() => {
@@ -50,26 +49,34 @@ export const PriceHolder = ({
       default:
         return '';
     }
-  }, [billingCycle, isDiscounted]);
+  }, [billingCycle, isPromoApplied]);
+
+  const hasNewPrice = !!actualPrice && actualPrice !== basePrice;
+
   return (
     <div className="flex items-center">
       {!basePrice ? (
         <div className="text-sm text-gray-600 mr-2">Free</div>
       ) : (
-        <div className={cn('text-sm text-gray-600 mr-2', isDiscounted && 'line-through')}>
+        <div className={cn('text-sm text-gray-600 mr-2', hasNewPrice && 'line-through')}>
           ${basePrice.toFixed(2)}
           {renderCycle}
         </div>
       )}
-      {!!salePrice && isDiscounted && (
+      {hasNewPrice && (
         <div
-          className={cn('text-sm font-medium', promoApplied ? 'text-green-600' : 'text-blue-600')}
+          className={cn(
+            'text-sm font-medium',
+            promoApplied && isPromoApplied ? 'text-green-600' : 'text-blue-600'
+          )}
         >
-          ${salePrice.toFixed(2)}
+          ${actualPrice.toFixed(2)}
         </div>
       )}
-      {!!savePercent && !!promoApplied && (
-        <Badge className={`ml-2 ${promoApplied ? 'bg-green-600' : 'bg-blue-600'}`}>
+      {!!savePercent && (
+        <Badge
+          className={`ml-2 ${promoApplied && isPromoApplied ? 'bg-green-600' : 'bg-blue-600'}`}
+        >
           Save {savePercent}%
         </Badge>
       )}
@@ -81,13 +88,11 @@ export function PlanCard({
   planName,
   planType,
   basePrice,
-  salePrice,
-  // savePercent,
-  // billingText,
+  actualPrice,
   billingCycle,
   isCurrent,
   isSelected,
-  isDiscounted,
+  isPromoApplied,
   promoApplied = false,
   promoCode,
   showRibbon = false,
@@ -95,15 +100,13 @@ export function PlanCard({
   onSwitch,
 }: PlanCardProps) {
   const borderClass = useMemo(() => {
-    console.log({ isDiscounted, isSelected, promoApplied });
     if (isSelected) return 'border-primary border-2';
-    if (promoApplied && isDiscounted) return 'border-green-300 bg-green-50';
+    if (promoApplied && isPromoApplied) return 'border-green-300 bg-green-50';
     return 'border-gray-200';
-  }, [promoApplied, isSelected, isDiscounted]);
+  }, [promoApplied, isSelected, isPromoApplied]);
 
   const billingText = $c.convertToBillingText(billingCycle);
-
-  const savePercent = calculateSavePercentFromPrice(basePrice, salePrice);
+  const savePercent = calculateSavePercentFromPrice(basePrice, actualPrice);
 
   return (
     <div
@@ -115,8 +118,13 @@ export function PlanCard({
     >
       <div className="flex justify-between items-center w-full">
         {showRibbon && (
-          <div className="absolute -top-1 -right-4">
-            <div className="bg-blue-600 text-white text-xs px-4 py-1 rotate-45 translate-x-2 translate-y-2">
+          <div className="absolute -top-2 -right-2">
+            <div
+              className={cn(
+                'text-white text-xs px-4 py-1 rotate-30 translate-x-2 translate-y-2',
+                isPromoApplied ? 'bg-green-600' : 'bg-blue-600'
+              )}
+            >
               Best Value
             </div>
           </div>
@@ -126,11 +134,11 @@ export function PlanCard({
           <div className="font-medium">{planName}</div>
           <PriceHolder
             basePrice={basePrice}
-            salePrice={salePrice}
+            actualPrice={actualPrice}
             savePercent={savePercent}
             billingCycle={billingCycle}
             promoApplied={promoApplied}
-            isDiscounted={isDiscounted}
+            isPromoApplied={isPromoApplied}
           />
 
           <div className="text-xs text-gray-600">{billingText}</div>
@@ -156,7 +164,7 @@ export function PlanCard({
         )}
       </div>
 
-      {promoApplied && promoCode && isDiscounted && (
+      {promoApplied && promoCode && isPromoApplied && (
         <div className="mt-2 text-xs text-green-600 flex items-center self-start">
           <CheckCircleIcon className="h-3 w-3 mr-1" />
           Promo code {promoCode} applied – {savePercent}% off
