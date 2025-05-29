@@ -1,4 +1,4 @@
-import { ApiResponse, BillingCycle, PlanType } from '@/utils/types';
+import { AccountType, ApiResponse, BillingCycle, PlanType } from '@/utils/types';
 
 type PlanFeature = { feature_id: number; name: string };
 
@@ -77,8 +77,10 @@ export type CancelSubscriptionResponse = ApiResponse<{}, {}>;
 
 export type ChangePlanPayload = {
   customer_id: string;
-  subscription_id: string;
-  promotion_code: string[];
+  account_type: AccountType;
+  discounts: string;
+  // subscription_id: string;
+  // promotion_code: string[];
 };
 
 export type ChangePlanResponse = ApiResponse<{
