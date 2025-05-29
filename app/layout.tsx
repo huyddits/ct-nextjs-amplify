@@ -1,4 +1,4 @@
-// import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono } from 'next/font/google';
 // import { ServiceWorkerRegister } from "./_components";
 import { ToastContainerClient } from './_components';
 import { AppConfirm } from '@/components/compose';
@@ -6,15 +6,15 @@ import { StripeProvider } from '@/context/StripeContext';
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
 
-// const geistSans = Geist({
-//   variable: '--font-geist-sans',
-//   subsets: ['latin'],
-// });
+const geistSans = Geist({
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+});
 
-// const geistMono = Geist_Mono({
-//   variable: '--font-geist-mono',
-//   subsets: ['latin'],
-// });
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+});
 
 export const metadata: Metadata = {
   title: 'My PWA App',

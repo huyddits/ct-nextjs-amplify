@@ -48,7 +48,7 @@ export type AddPromotionCodeParams = {
 export type AddPromotionCodeResponse = ApiResponse<
   {
     discount: number;
-    plans: (SubscriptionPlan & { is_discounted: boolean })[];
+    plans: (SubscriptionPlan & { is_applied_promo_code: boolean })[];
   },
   {}
 >;
@@ -56,13 +56,6 @@ export type AddPromotionCodeResponse = ApiResponse<
 export type GetBillingHistoryParams = {
   page?: number;
   limit?: number;
-  // sortBy?: string; // ?
-  // searchBy?: string;
-  // search?: string;
-  // filter?: string;
-  // select?: string;
-  // cursor?: string;
-  // path?: string;
 };
 
 export type GetBillingHistoryResponse = ApiResponse<BillingRecord[], {}>;
@@ -81,14 +74,6 @@ export type CancelSubscriptionPayload = {
 };
 
 export type CancelSubscriptionResponse = ApiResponse<{}, {}>;
-
-// export type PreviewSubscriptionChangePayload = {
-//   customer_id: string;
-//   subscription_id: string;
-//   new_plan_id: string;
-// };
-
-// export type PreviewSubscriptionChangeResponse = ApiResponse<{}, {}>;
 
 export type ChangePlanPayload = {
   customer_id: string;

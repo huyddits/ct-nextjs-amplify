@@ -11,8 +11,10 @@ export default function Home() {
 
   useEffect(() => {
     const token = localStorage.getItem(STORAGE_KEY.TOKEN);
-    router.push(token ? ROUTES.HOME : ROUTES.WELCOME);
-  });
+    router.push(token ? `/${ROUTES.HOME}` : `/${ROUTES.WELCOME}`);
+  }, [router]);
+
+  return null;
 
   useEffect(() => {
     // Check online status

@@ -89,7 +89,7 @@ export default function AppInput({
         <Input
           id={id}
           type={inputType}
-          className={cn(inputClasses, postfix && 'pr-20')}
+          className={cn('bg-white', inputClasses, postfix && 'pr-20')}
           value={value}
           onChange={onChange}
           {...inputProps}

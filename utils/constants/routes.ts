@@ -5,7 +5,7 @@ export const ROUTES = {
   LOGIN: 'login',
   PROFILE: 'profile',
   PRIVACY: 'privacy',
-  TERMS_AND_CONDITIONS: 'term-and-conditions',
+  TERMS_AND_CONDITIONS: 'terms-and-conditions',
   ABOUT_US: 'about-us',
   TRAINING: 'training',
   FORGOT_PASSWORD: 'forgot-password',
