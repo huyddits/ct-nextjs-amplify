@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { CardioTrainingSelectionApi } from '@/api';
 import { type SelectOption } from '@/components/compose';
 import dayjs from 'dayjs';
-import { useIntervalsCardioStore } from '@/store';
+import { useCardioStore } from '@/store';
 import { toast } from 'react-toastify';
 
 type UseCardioFormOptions = {
@@ -38,25 +38,41 @@ export const useCardio = (options?: UseCardioFormOptions) => {
 
   const [rpeItems, setRpeItems] = useState<SelectOption[]>([]);
 
-  const { intervalsList, clearCardioIntervals } = useIntervalsCardioStore();
+  const {
+    intervalsList,
+    exerciseOptions,
+    rpeOptions,
+    clearCardioIntervals,
+    setExerciseOptions,
+    setRpeOptions,
+  } = useCardioStore();
 
   const getExercises = async () => {
+    if (exerciseOptions.length > 0) {
+      setExercisesItems(exerciseOptions);
+      return;
+    }
     try {
       const response = await CardioTrainingSelectionApi.getExercises();
       const { data, error } = response.data;
       if (!data) throw error;
-      const ExercisesItems = data.map(({ name, cardio_exercises_id, units }) => ({
+      const exercisesItems = data.map(({ name, cardio_exercises_id, units }) => ({
         label: name,
         value: cardio_exercises_id.toString(),
         units: units.map(item => ({ label: item.name, value: item.name })),
       }));
-      setExercisesItems(ExercisesItems);
+      setExercisesItems(exercisesItems);
+      setExerciseOptions(exercisesItems);
     } catch (error) {
       console.log(error);
     }
   };
 
   const getRpe = async () => {
+    if (rpeOptions.length > 0) {
+      setRpeItems(rpeOptions);
+      return;
+    }
     try {
       const response = await CardioTrainingSelectionApi.getRpe();
       const { data, error } = response.data;
@@ -66,6 +82,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
         value: cardio_rpe_id.toString(),
       }));
       setRpeItems(RpeItems);
+      setRpeOptions(RpeItems);
     } catch (error) {
       console.log(error);
     }
@@ -134,7 +151,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
         intervals: intervalsList.map(data => ({
           duration: Number(data.duration),
           distance: Number(data.distance),
-          distance_unit: data.distance_unit ?? '',
+          distance_unit: data.distanceUnit ?? '',
           rpe: data.rpe ?? '',
           heart_rate_min: Number(data.heartRateMin),
           heart_rate_max: Number(data.heartRateMax),
@@ -166,5 +183,6 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     rpeItems,
     selectedExercise,
     onCompleteWorkout,
+    getExercises,
   };
 };
