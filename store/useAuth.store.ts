@@ -1,4 +1,5 @@
 import { STORAGE_KEY } from '@/utils/constants';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { create } from 'zustand';
 import { type PersonalInfo } from '@/utils/types';
 
@@ -10,22 +11,30 @@ type AuthStore = {
   removeToken: () => void;
 };
 
-export const useAuthStore = create<AuthStore>((set, _get) => {
-  return {
-    info: null,
-    token: null,
-    setInfo: value => {
-      if (!value) return;
-      set({ info: value });
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set, _get) => {
+      return {
+        info: null,
+        token: null,
+        setInfo: value => {
+          if (!value) return;
+          set({ info: value });
+        },
+        setToken: value => {
+          if (!value) return;
+          set({ token: value });
+          localStorage.setItem(STORAGE_KEY.TOKEN, value ?? '');
+        },
+        removeToken: () => {
+          set({ token: null });
+          localStorage.removeItem(STORAGE_KEY.TOKEN);
+        },
+      };
     },
-    setToken: value => {
-      if (!value) return;
-      set({ token: value });
-      localStorage.setItem(STORAGE_KEY.TOKEN, value ?? '');
-    },
-    removeToken: () => {
-      set({ token: null });
-      localStorage.removeItem(STORAGE_KEY.TOKEN);
-    },
-  };
-});
+    {
+      name: 'auth-store',
+      storage: createJSONStorage(() => sessionStorage),
+    }
+  )
+);

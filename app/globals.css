@@ -110,6 +110,9 @@
   --color-gray-900: oklch(21% 0.034 264.665);
 
   --stop-color-primary: oklch(0.52 0.1025 158.53);
+  --font-geist-sans: 'Geist Sans', sans-serif;
+  --font-geist-mono: 'Geist Mono', monospace;
+  --toastify-font-family: 'Geist Sans', sans-serif;
 }
 
 .dark {
@@ -146,6 +149,16 @@
   --sidebar-ring: oklch(0.55 0.18 145);
 
   /* TODO(ducnm): add green-800 as #1a5a3a */
+}
+
+html,
+body {
+  font-family: 'Geist', sans-serif;
+}
+
+code,
+pre {
+  font-family: 'Geist Mono', monospace;
 }
 
 @layer base {

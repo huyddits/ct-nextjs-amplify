@@ -66,7 +66,7 @@ export default function BillingAndSubscriptionPage() {
     confirm({
       title: 'Cancel Plan',
       description: 'Are you sure you want to cancel this plan?',
-      confirmTitle: 'Cancel',
+      confirmTitle: 'Confirm',
       onConfirm: () => {
         if (!currentPlan) {
           console.log('No current plan found');
