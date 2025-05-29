@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function TermsAndConditions() {
   return (
     <div className="min-h-screen bg-gray-50">
@@ -339,9 +341,9 @@ export default function TermsAndConditions() {
               <p className="text-gray-600 mt-2">9.1 Privacy Policy</p>
               <p className="text-gray-600 space-y-1">
                 Our{' '}
-                <a href="/privacy" className="text-blue-600 underline">
+                <Link href="/privacy" className="text-blue-600 underline">
                   Privacy Policy
-                </a>{' '}
+                </Link>{' '}
                 describes how we collect, use, and share your personal information. By using the
                 Service, you agree to our collection, use, and sharing of your information as
                 described in the Privacy Policy.

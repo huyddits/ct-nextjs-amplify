@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Controller, useWatch } from 'react-hook-form';
 import { useCardio } from './_hooks';
 import { useCallback, useEffect, useState } from 'react';
-import { useIntervalsCardioStore } from '@/store/useIntervalsList.store';
+import { useCardioStore } from '@/store/useCardio.store';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
 
@@ -20,7 +20,7 @@ export default function CardioPage() {
     onCompleteWorkout,
   } = useCardio({ onSuccess: () => {}, onFailure: () => {} });
 
-  const { intervalsList, addInterval, clearCardioIntervals } = useIntervalsCardioStore();
+  const { intervalsList, addInterval, clearCardioIntervals } = useCardioStore();
 
   const [inputDisabled, setInputDisabled] = useState(false);
 
