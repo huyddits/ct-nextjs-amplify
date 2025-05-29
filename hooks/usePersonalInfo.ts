@@ -14,17 +14,11 @@ export const usePersonalInfo = () => {
         throw response.data.error;
       }
 
-      // const foundPlan = data.plan.find(({ status }) =>
-      //   [PlanStatus.Active, PlanStatus.Canceled].includes(status)
-      // );
+      const foundPlan = data.plan.find(({ status }) =>
+        [PlanStatus.Active, PlanStatus.Canceled].includes(status)
+      );
 
-      // TODO(ducnm): need to remove after BE fix
-      // workaround for both active and canceled existed
-
-      const foundPlan =
-        data.plan.find(({ status }) => status === PlanStatus.Active) ??
-        data.plan.find(({ status }) => status === PlanStatus.Canceled);
-
+      console.log({ foundPlan });
       // TODO(ducnm): need to remove after BE fix
 
       setInfo({
@@ -46,6 +40,7 @@ export const usePersonalInfo = () => {
         cheerStyleName: data.profile?.cheer_styles?.[0]?.name ?? '',
         equipmentIds: data.equipments?.map(e => e.id) ?? [],
         userPlanId: foundPlan?.user_plan_id ?? '',
+        planName: foundPlan?.plan.name ?? '',
         planId: foundPlan?.plan.plan_id ?? '',
         planEndDate: foundPlan?.end_date ?? '',
         planStartDate: foundPlan?.start_date ?? '',

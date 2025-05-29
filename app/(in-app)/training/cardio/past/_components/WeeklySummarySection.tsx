@@ -19,17 +19,17 @@ export default function WeeklySummarySection({ selectedDate }: Readonly<{ select
 
   const listData = [
     {
-      label: 'Daily Average Distance',
-      value: weeklySummaryItems?.dailyAverageDistance,
-      unit: 'mins',
-    },
-    { label: 'Total Distance', value: weeklySummaryItems?.totalDistance, unit: 'mins' },
-    {
       label: 'Daily Average Duration',
       value: weeklySummaryItems?.dailyAverageDuration,
+      unit: 'mins',
+    },
+    { label: 'Total Duration', value: weeklySummaryItems?.totalDuration, unit: 'mins' },
+    {
+      label: 'Daily Average Distance',
+      value: weeklySummaryItems?.dailyAverageDistance,
       unit: 'miles',
     },
-    { label: 'Total Duration', value: weeklySummaryItems?.totalDuration, unit: 'miles' },
+    { label: 'Total Distance', value: weeklySummaryItems?.totalDistance, unit: 'miles' },
     {
       label: 'Daily Average Stairs',
       value: weeklySummaryItems?.dailyAverageStairs,

@@ -1,6 +1,5 @@
 import { BillingApi } from '@/api';
 import { useEffect, useMemo, useState } from 'react';
-import * as $c from '@/utils/converter';
 import { BillingCycle, PlanStatus, PlanType } from '@/utils/types';
 import { useAuthStore } from '@/store';
 import { usePagination } from './usePagination';
@@ -13,10 +12,11 @@ export type SubscriptionPlan = {
   status: PlanStatus;
   stripePriceId: string;
   features: string[];
-  isDiscounted?: boolean;
+  isPromoApplied?: boolean;
 };
 
 export type ActivePlan = {
+  name: string;
   userPlanId: string;
   stripeCustomerId: string | null;
   stripePriceId: string | null;
@@ -51,6 +51,7 @@ export const useBillingAndSubscription = () => {
   const [listCoachPlans, setListCoachPlans] = useState<SubscriptionPlan[]>([]);
   const [listAthletePlans, setListAthletePlans] = useState<SubscriptionPlan[]>([]);
   const [listBillings, setListBillings] = useState<BillingReceipt[]>([]);
+  const [listApplied, setListApplied] = useState<string[]>([]);
 
   // promo
   const [discount, setDiscount] = useState(0);
@@ -69,6 +70,7 @@ export const useBillingAndSubscription = () => {
     if (!info?.planId) return null;
     console.log('info', info.planBasePrice);
     return {
+      name: info.planName,
       userPlanId: info.userPlanId,
       stripeCustomerId: info.planStripeCustomerId,
       stripePriceId: info.planStripePriceId,
@@ -95,9 +97,9 @@ export const useBillingAndSubscription = () => {
       }
 
       const arrayPlans: SubscriptionPlan[] = data.map(item => {
-        const { type, billing_cycle, base_price, actual_price, stripe_price_id } = item;
+        const { type, billing_cycle, base_price, actual_price, stripe_price_id, name } = item;
         return {
-          name: $c.convertToPlanName(type, billing_cycle),
+          name,
           basePrice: Number(base_price),
           actualPrice: Number(actual_price),
           billingCycle: billing_cycle,
@@ -108,7 +110,7 @@ export const useBillingAndSubscription = () => {
           type: type,
           stripePriceId: stripe_price_id,
           features: item.features.map(({ name }) => name),
-          isDiscounted: false,
+          isPromoApplied: false,
         };
       });
 
@@ -158,14 +160,19 @@ export const useBillingAndSubscription = () => {
         const arrayPlans = listBasePlans.map(item => {
           const found = data.find(({ stripe_price_id }) => stripe_price_id === item.stripePriceId);
           const actualPrice = found?.actual_price;
-          const isDiscounted = found?.is_discounted;
+          const isPromoApplied = found?.is_applied_promo_code;
           return {
             ...item,
             actualPrice: actualPrice ? Number(actualPrice) : item.basePrice,
-            isDiscounted,
+            isPromoApplied,
           };
         });
 
+        setListApplied(
+          arrayPlans
+            .filter(({ isPromoApplied }) => isPromoApplied)
+            .map(({ stripePriceId }) => stripePriceId)
+        );
         setDiscount(response.data.data.discount);
         setPromoCode(promotionCode);
         setIsPromoCodeApplied(true);
@@ -187,10 +194,11 @@ export const useBillingAndSubscription = () => {
   };
 
   const handleSubscribePlan = async ({ priceId }: { priceId: string }) => {
+    const discounts = listApplied.includes(priceId) ? promoCode : '';
     try {
       const response = await BillingApi.subscribeToAPlan({
         price_id: priceId,
-        discounts: promoCode,
+        discounts,
       });
       console.log(response.data);
       if (!response.data.data?.url) {
@@ -210,10 +218,10 @@ export const useBillingAndSubscription = () => {
     subscriptionId: string;
   }) => {
     try {
-      console.log('handleChangePlan', customerId, subscriptionId);
+      const promotionCode = listApplied.includes(subscriptionId) ? [promoCode] : [];
       const response = await BillingApi.changePlan({
+        promotion_code: promotionCode,
         customer_id: customerId,
-        promotion_code: [promoCode],
         subscription_id: subscriptionId,
       });
 
@@ -271,10 +279,6 @@ export const useBillingAndSubscription = () => {
     handleGetListPlans();
     handleGetBillingHistory();
   }, []);
-
-  // useEffect(() => {
-  //   console.log({ promoCode, isPromoCodeApplied, listCoachPlans, listAthletePlans });
-  // });
 
   return {
     currentPlan,

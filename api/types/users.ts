@@ -8,6 +8,7 @@ import {
 } from '@/utils/types';
 
 type PlanInfo = {
+  name: string;
   plan_id: string;
   type: PlanType; // tighten if enum is known
   billing_cycle: BillingCycle; // adjust if more values exist
@@ -23,14 +24,13 @@ type PlanInfo = {
 
 type PlanSubscription = {
   user_plan_id: string;
-  // stripe_subscription_id: string | null;
-  next_billing_date: null;
   start_date: string;
-  end_date: null;
   status: PlanStatus;
   created_at: string;
   updated_at: string;
   plan: PlanInfo;
+  next_billing_date: string | null;
+  end_date: string | null;
 };
 
 export type CreateUserPayload = {

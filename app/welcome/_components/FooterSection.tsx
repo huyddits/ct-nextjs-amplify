@@ -1,3 +1,4 @@
+import { ROUTES } from '@/utils/constants';
 import Link from 'next/link';
 
 export default function FooterSection() {
@@ -11,13 +12,16 @@ export default function FooterSection() {
           © {new Date().getFullYear()} Cheer Trainer. All rights reserved.
         </p>
         <div className="flex justify-center space-x-6">
-          <Link href="/privacy" className="text-gray-600 hover:text-primary">
+          <Link href={`/${ROUTES.PRIVACY}`} className="text-gray-600 hover:text-primary">
             Privacy Policy
           </Link>
-          <Link href="/term-and-conditions" className="text-gray-600 hover:text-primary">
+          <Link
+            href={`/${ROUTES.TERMS_AND_CONDITIONS}`}
+            className="text-gray-600 hover:text-primary"
+          >
             Terms & Conditions
           </Link>
-          <Link href="/about-us" className="text-gray-600 hover:text-primary">
+          <Link href={`/${ROUTES.ABOUT_US}`} className="text-gray-600 hover:text-primary">
             About Us
           </Link>
         </div>
