@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Search } from 'lucide-react';
 import StrengthSection from './_components/StrengthSection';
 import { AppInput } from '@/components/compose';
+import Link from 'next/link';
 
 export default function StrengthPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,10 +23,12 @@ export default function StrengthPage() {
         </div>
       </div>
       <div className="max-w-3xl mb-4 mx-auto px-4 padding-top-section padding-bottom-section">
-        <Button className="w-full border-dashed border-2 " size="lg" variant="outline">
-          <Plus className="h-5 w-5 mr-2" />
-          Create New Program
-        </Button>
+        <Link href="/training/strength/new">
+          <Button className="w-full border-dashed border-2 " size="lg" variant="outline">
+            <Plus className="h-5 w-5 mr-2" />
+            Create New Program
+          </Button>
+        </Link>
         <div className="pt-4">
           <div className="relative mb-4">
             <AppInput
