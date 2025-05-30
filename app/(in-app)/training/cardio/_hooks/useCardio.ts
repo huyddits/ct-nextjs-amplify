@@ -7,6 +7,8 @@ import { type SelectOption } from '@/components/compose';
 import dayjs from 'dayjs';
 import { useCardioStore } from '@/store';
 import { toast } from 'react-toastify';
+import { mutate } from 'swr';
+import { Metric } from '../_types/index';
 
 type UseCardioFormOptions = {
   onSuccess?: () => void;
@@ -19,8 +21,8 @@ const schema = object().shape({
   intervals: array(
     object().shape({
       cardio_interval_id: string(),
-      duration: string(),
-      distance: string().min(0),
+      duration: string().required(),
+      distance: string().min(0).required(),
       distance_unit: string(),
       rpe: string().min(0).max(10),
       heartRateMin: string().min(0).max(250).optional(),
@@ -42,10 +44,30 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     intervalsList,
     exerciseOptions,
     rpeOptions,
-    clearCardioIntervals,
+    draft,
+    clearCardioSession,
     setExerciseOptions,
     setRpeOptions,
   } = useCardioStore();
+
+  type FormType = InferType<typeof schema>;
+
+  const {
+    control,
+    setValue,
+    handleSubmit,
+    formState,
+    getValues,
+    trigger,
+    watch,
+    formState: { isValid },
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      ...draft,
+    },
+    mode: 'onChange',
+  });
 
   const getExercises = async () => {
     if (exerciseOptions.length > 0) {
@@ -88,38 +110,6 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     }
   };
 
-  type FormType = InferType<typeof schema>;
-  const DEFAULT_FORM: Required<FormType> = {
-    exercise: '1',
-    notes: '',
-    intervals: [
-      {
-        duration: '',
-        distance: '',
-        distance_unit: '',
-        rpe: '0',
-        heartRateMin: '',
-        heartRateMax: '',
-      },
-    ],
-  };
-  const {
-    control,
-    setValue,
-    handleSubmit,
-    formState,
-    getValues,
-    trigger,
-    reset,
-    formState: { isValid },
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      ...DEFAULT_FORM,
-    },
-    mode: 'onChange',
-  });
-
   const exercise = useWatch({ control, name: 'exercise' });
 
   const selectedExercise = useMemo(() => {
@@ -136,6 +126,21 @@ export const useCardio = (options?: UseCardioFormOptions) => {
   useEffect(() => {
     getExercises();
     getRpe();
+
+    console.log('draft.intervals', draft.intervals);
+    if (draft.intervals) {
+      setValue(
+        'intervals',
+        draft.intervals.map(item => ({
+          distance_unit: item.distanceUnit?.toString() ?? '',
+          distance: item.distance?.toString() ?? '',
+          duration: item.duration?.toString() ?? '',
+          rpe: item.rpe?.toString() ?? '',
+        }))
+      );
+    }
+    setValue('notes', draft?.notes);
+    setValue('exercise', draft?.exercise);
   }, []);
 
   const onCompleteWorkout = async (formData: FormType) => {
@@ -153,23 +158,28 @@ export const useCardio = (options?: UseCardioFormOptions) => {
           distance: Number(data.distance),
           distance_unit: data.distanceUnit ?? '',
           rpe: data.rpe ?? '',
-          heart_rate_min: Number(data.heartRateMin),
-          heart_rate_max: Number(data.heartRateMax),
+          heart_rate_min: Number(data.heartRateMin || '140'),
+          heart_rate_max: Number(data.heartRateMax || '160'),
         })),
       });
       toast.success('Successfully save the complete workout');
-      clearCardioIntervals();
-      reset(DEFAULT_FORM);
+
+      const from = dayjs().startOf('isoWeek').format('YYYY-MM-DD');
+      const to = dayjs().endOf('isoWeek').format('YYYY-MM-DD');
+      const cacheKey = ['past-cardio', from, to, Metric.Duration];
+      mutate(cacheKey, null, { revalidate: true });
       options?.onSuccess?.();
     } catch (error: unknown) {
-      clearCardioIntervals();
-      reset(DEFAULT_FORM);
       console.error('Workout submission failed:', error);
       toast.error('Failed to save workout');
       options?.onFailure?.('Failed to save workout');
     }
   };
 
+  useEffect(() => {
+    console.log('store >> draft', draft);
+    console.log('values of form >>', getValues());
+  });
   return {
     control,
     isValid,
@@ -184,5 +194,6 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     selectedExercise,
     onCompleteWorkout,
     getExercises,
+    clearCardioSession,
   };
 };

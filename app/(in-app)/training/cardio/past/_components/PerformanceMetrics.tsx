@@ -2,7 +2,7 @@
 import { AppSelect } from '@/components/compose';
 import { Dispatch, SetStateAction } from 'react';
 import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area } from 'recharts';
-
+import { Metric } from '../../../cardio/_types/index';
 export default function PerformanceMetrics({
   metric,
   performanceMetricsItems,
@@ -13,9 +13,9 @@ export default function PerformanceMetrics({
   setMetric: Dispatch<SetStateAction<string>>;
 }>) {
   const metricOptions = [
-    { label: 'Duration', value: 'duration' },
-    { label: 'Distance', value: 'distance' },
-    { label: 'Stairs', value: 'stairs' },
+    { label: 'Duration', value: Metric.Duration },
+    { label: 'Distance', value: Metric.Distance },
+    { label: 'Stairs', value: Metric.Stairs },
   ];
 
   return (
