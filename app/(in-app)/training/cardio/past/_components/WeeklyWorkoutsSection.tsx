@@ -1,22 +1,7 @@
 'use client';
-import { useMemo } from 'react';
-import dayjs from 'dayjs';
-import isoWeek from 'dayjs/plugin/isoWeek';
-import { usePastCardioTraining } from '../_hooks';
-export default function WeeklyWorkoutsSection({ selectedDate }: Readonly<{ selectedDate: Date }>) {
-  dayjs.extend(isoWeek);
-  const dateFormat = 'YYYY-MM-DD';
-
-  const from = useMemo(() => {
-    return dayjs(selectedDate).startOf('isoWeek').format(dateFormat);
-  }, [selectedDate]);
-
-  const to = useMemo(() => {
-    return dayjs(selectedDate).endOf('isoWeek').format(dateFormat);
-  }, [selectedDate]);
-
-  const { weeklyWorkoutItems } = usePastCardioTraining({ from, to });
-
+export default function WeeklyWorkoutsSection({
+  weeklyWorkoutItems,
+}: Readonly<{ weeklyWorkoutItems: any }>) {
   const listItems = [
     {
       title: 'Weekly Workouts',
@@ -33,7 +18,7 @@ export default function WeeklyWorkoutsSection({ selectedDate }: Readonly<{ selec
           </div>
 
           <div className="space-y-4 text-sm">
-            {section.content.map(w => {
+            {section.content.map((w: any) => {
               return (
                 <div key={`${w.date} ${w.name}`} className={` 'border-b pb-4' : ''}`}>
                   <div className="mb-2">
