@@ -60,10 +60,16 @@ export default function ResetPasswordPage() {
       const response = await UserApi.resetPassword({ new_password: data.password, token });
       if (response.data.status === 'success') {
         setIsSuccess(true);
+      } else {
+        console.log(response.data?.error);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       setIsSuccess(false);
+      // TODO(ducnm): need to recheck when api is ready
+      if (error?.response?.data?.message === 'jwt expired') {
+        toast.error('Your reset password link has been expired. Please request a new one.');
+      }
     }
   };
 
