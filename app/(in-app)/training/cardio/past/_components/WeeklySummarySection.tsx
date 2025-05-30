@@ -1,22 +1,8 @@
 'use client';
-import { usePastCardioTraining } from '../_hooks';
-import { useMemo } from 'react';
-import dayjs from 'dayjs';
-import isoWeek from 'dayjs/plugin/isoWeek';
 
-export default function WeeklySummarySection({ selectedDate }: Readonly<{ selectedDate: Date }>) {
-  dayjs.extend(isoWeek);
-  const dateFormat = 'YYYY-MM-DD';
-  const from = useMemo(() => {
-    return dayjs(selectedDate).startOf('isoWeek').format(dateFormat);
-  }, [selectedDate]);
-
-  const to = useMemo(() => {
-    return dayjs(selectedDate).endOf('isoWeek').format(dateFormat);
-  }, [selectedDate]);
-
-  const { weeklySummaryItems } = usePastCardioTraining({ from, to });
-
+export default function WeeklySummarySection({
+  weeklySummaryItems,
+}: Readonly<{ weeklySummaryItems: any }>) {
   const listData = [
     {
       label: 'Daily Average Duration',
