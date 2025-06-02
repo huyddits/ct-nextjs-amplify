@@ -1,9 +1,12 @@
 import { UserApi } from '@/api';
 import { useAuthStore } from '@/store';
+import { WHITE_LIST } from '@/utils/constants';
 import { BillingCycle, PlanStatus, PlanType } from '@/utils/types';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export const usePersonalInfo = () => {
+  const pathname = usePathname();
   const { info, setInfo, token } = useAuthStore();
 
   const handleGetPersonalInfo = async () => {
@@ -66,13 +69,16 @@ export const usePersonalInfo = () => {
 
   useEffect(() => {
     const windowFocusHandler = () => {
+      if (WHITE_LIST.includes(pathname)) {
+        return;
+      }
       handleGetPersonalInfo();
     };
     addEventListener('focus', windowFocusHandler);
     return () => {
       removeEventListener('focus', windowFocusHandler);
     };
-  }, []);
+  }, [pathname]);
 
   return { data: info, refetch: handleGetPersonalInfo };
 };

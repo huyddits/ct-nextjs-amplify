@@ -33,7 +33,7 @@ export default function SignupForm() {
     equipments: equipmentOptions,
     measurementUnits: _measurementUnitOptions,
   } = useCategories();
-  const { control, isValid, userType, password, onSubmit, trigger } = useSignup({
+  const { control, isValid, userType, password, loading, onSubmit, trigger } = useSignup({
     onSuccess: () => {
       toast.success('Account create successfully');
       router.push(`/${ROUTES.LOGIN}`);
@@ -302,7 +302,7 @@ export default function SignupForm() {
           </Label>
         </div>
 
-        <Button type="submit" className="w-full" disabled={!isAgree || !isValid}>
+        <Button type="submit" className="w-full" disabled={!isAgree || !isValid} loading={loading}>
           Create Account
           <ChevronRightIcon className="ml-2 h-4 w-4" />
         </Button>
