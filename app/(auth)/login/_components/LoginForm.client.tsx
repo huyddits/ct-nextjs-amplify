@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 
 export default function LoginForm() {
   const router = useRouter();
-  const { control, onSubmit, trigger } = useLogin({
+  const { loading, control, onSubmit, trigger } = useLogin({
     onSuccess: () => {
       router.push(`/${ROUTES.HOME}`);
       toast.success('Login successfully');
@@ -63,7 +63,7 @@ export default function LoginForm() {
           {/* <PasswordStrength password={password} /> */}
         </div>
 
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" loading={loading}>
           Sign in
           <ChevronRightIcon className="ml-2 h-4 w-4" />
         </Button>
