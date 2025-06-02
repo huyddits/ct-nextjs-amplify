@@ -6,12 +6,14 @@ import { useAuthStore } from '@/store';
 import { SocialProvider } from '@/utils/types';
 import { END_POINTS, ERROR_MESSAGES } from '@/utils/constants';
 import * as $v from '@/utils/validators';
+import { useLoading } from '@/hooks';
 
 type UseLoginOptions = {
   onSuccess?: (result: { token: string }) => void;
   onFailure?: () => void;
 };
 export const useLogin = (options: UseLoginOptions) => {
+  const { loading, startLoading, stopLoading } = useLoading();
   const { setToken } = useAuthStore();
   const DEFAULT_FORM = {
     email: '',
@@ -39,6 +41,7 @@ export const useLogin = (options: UseLoginOptions) => {
   const password = useWatch({ control, name: 'password', defaultValue: '' });
 
   const onValid = async (data: FormPayload) => {
+    startLoading();
     try {
       const response = await AuthApi.login(data);
       if (response.data.data?.token) {
@@ -50,6 +53,8 @@ export const useLogin = (options: UseLoginOptions) => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      stopLoading();
     }
   };
   const onInvalid = () => {};
@@ -102,6 +107,7 @@ export const useLogin = (options: UseLoginOptions) => {
   };
 
   return {
+    loading,
     control,
     password,
     trigger,
