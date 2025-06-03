@@ -7,9 +7,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useCardioStore } from '@/store/useCardio.store';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
+import { useLoading } from '@/hooks';
 
 export default function CardioPage() {
   const { intervalsList, addInterval, clearCardioSession, setDraft, draft } = useCardioStore();
+  const { loading } = useLoading();
   const {
     control,
     setValue,
@@ -157,6 +159,7 @@ export default function CardioPage() {
                   type="button"
                   className="text-primary"
                   variant="outline"
+                  loading={loading}
                   onClick={handleAddNew}
                 >
                   + Add
@@ -295,12 +298,18 @@ export default function CardioPage() {
             </div>
 
             <div className="flex justify-center">
-              <Button type="button" size="lg" onClick={handleCreateInterval}>
+              <Button type="button" size="lg" onClick={handleCreateInterval} loading={loading}>
                 Create Interval
               </Button>
             </div>
 
-            <Button type="button" className="w-full mt-2" size="lg" onClick={handleCompleteWorkout}>
+            <Button
+              type="button"
+              className="w-full mt-2"
+              size="lg"
+              onClick={handleCompleteWorkout}
+              loading={loading}
+            >
               Complete Workout
             </Button>
 

@@ -35,13 +35,15 @@ export const usePastCardioTraining = (options: UsePastCardioTrainingOptions) => 
 
     return {
       summary: {
-        dailyAverageDistance: summary ? summary.dailyAverageDistance : 0,
-        totalDistance: summary ? summary.totalDistance : 0,
         dailyAverageDuration: summary ? summary.dailyAverageDuration : 0,
         totalDuration: summary ? summary.totalDuration : 0,
+        dailyAverageDistance: summary ? summary.dailyAverageDistance : 0,
+        totalDistance: summary ? summary.totalDistance : 0,
+        distanceUnit: summary ? summary.distance_unit : '',
         dailyAverageStairs: summary ? summary.dailyAverageStairs : 0,
         totalStairs: summary ? summary.totalStairs : 0,
         dailyAverageHeartRate: summary ? summary.dailyAverageHeartRate : 0,
+        unitType: summary ? summary.unit_type : '',
       } as WeeklySummary,
       workouts: Array.isArray(workouts)
         ? workouts?.map?.(data => ({

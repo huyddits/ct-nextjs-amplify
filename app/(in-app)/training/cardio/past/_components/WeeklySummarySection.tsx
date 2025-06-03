@@ -1,8 +1,10 @@
 'use client';
 
+import { WeeklySummary } from '../_types';
+
 export default function WeeklySummarySection({
   weeklySummaryItems,
-}: Readonly<{ weeklySummaryItems: any }>) {
+}: Readonly<{ weeklySummaryItems: WeeklySummary }>) {
   const listData = [
     {
       label: 'Daily Average Duration',
@@ -13,9 +15,13 @@ export default function WeeklySummarySection({
     {
       label: 'Daily Average Distance',
       value: weeklySummaryItems?.dailyAverageDistance,
-      unit: 'miles',
+      unit: weeklySummaryItems?.distanceUnit,
     },
-    { label: 'Total Distance', value: weeklySummaryItems?.totalDistance, unit: 'miles' },
+    {
+      label: 'Total Distance',
+      value: weeklySummaryItems?.totalDistance,
+      unit: weeklySummaryItems?.distanceUnit,
+    },
     {
       label: 'Daily Average Stairs',
       value: weeklySummaryItems?.dailyAverageStairs,

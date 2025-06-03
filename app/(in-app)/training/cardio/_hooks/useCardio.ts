@@ -9,6 +9,7 @@ import { useAuthStore, useCardioStore } from '@/store';
 import { toast } from 'react-toastify';
 import { mutate } from 'swr';
 import { Metric } from '../_types/index';
+import { useLoading } from '@/hooks';
 
 type UseCardioFormOptions = {
   onSuccess?: () => void;
@@ -37,9 +38,13 @@ export const useCardio = (options?: UseCardioFormOptions) => {
   const [exercisesItems, setExercisesItems] = useState<
     Array<SelectOption & { units: SelectOption[] }>
   >([]);
+
+  const [exercisesItemsTemp, setExercisesItemsTemp] = useState<any[]>();
   const { info } = useAuthStore();
 
   const [rpeItems, setRpeItems] = useState<SelectOption[]>([]);
+
+  const { loading, startLoading, stopLoading } = useLoading();
 
   const {
     intervalsList,
@@ -78,19 +83,39 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     try {
       const response = await CardioTrainingSelectionApi.getExercises();
       const { data, error } = response.data;
+      console.log('info?.measurementUnit', info?.measurementUnit);
       if (!data) throw error;
-      const exercisesItems = data.map(({ name, cardio_exercises_id, units }) => ({
-        label: name,
-        value: cardio_exercises_id.toString(),
-        // units: units.filter((item) => (item as any)?.measurementUnit === info?.measurementUnit).map(({ name }) => ({ label: name, value: name })),
-        units: units.map(({ name }) => ({ label: name, value: name })),
-      }));
-      setExercisesItems(exercisesItems);
-      setExerciseOptions(exercisesItems);
+      // const exercisesItems = data.map(({ name, cardio_exercises_id, units }) => ({
+      //   label: name,
+      //   value: cardio_exercises_id.toString(),
+      //   units: units
+      //     .filter(item => item?.unit_type?.toLowerCase() === info?.measurementUnit?.toLowerCase())
+      //     .map(({ name }) => ({ label: name, value: name })),
+      //   // units: units.map(({ name }) => ({ label: name, value: name })),
+      // }));
+      // setExercisesItems(exercisesItems);
+      // setExerciseOptions(exercisesItems);
+      setExercisesItemsTemp(data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (!exercisesItemsTemp) return;
+    const mapping = exercisesItemsTemp.map(({ name, cardio_exercises_id, units }) => ({
+      label: name,
+      value: cardio_exercises_id.toString(),
+      units: (units as { unit_type: string; name: string }[])
+        .filter(
+          ({ unit_type }) => unit_type?.toLowerCase() === info?.measurementUnit?.toLowerCase()
+        )
+        .map(({ name }: { name: string }) => ({ label: name, value: name })),
+      // units: units.map(({ name }) => ({ label: name, value: name })),
+    }));
+    setExercisesItems(mapping);
+    setExerciseOptions(mapping);
+  }, [exercisesItemsTemp, info?.measurementUnit]);
 
   const getRpe = async () => {
     if (rpeOptions.length > 0) {
@@ -150,6 +175,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
         toast.error('Please create at least one interval before completing the workout.');
         return;
       }
+      startLoading();
       await CardioTrainingSelectionApi.postExercises({
         workout_date: dayjs().format('YYYY-MM-DD'),
         exercise: Number(formData.exercise),
@@ -174,6 +200,8 @@ export const useCardio = (options?: UseCardioFormOptions) => {
       console.error('Workout submission failed:', error);
       toast.error('Failed to save workout');
       options?.onFailure?.('Failed to save workout');
+    } finally {
+      stopLoading();
     }
   };
 
@@ -193,5 +221,6 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     onCompleteWorkout,
     getExercises,
     clearCardioSession,
+    loading,
   };
 };
