@@ -91,22 +91,27 @@ export type PersonalInfoResponse = ApiResponse<
       profile_id: string;
       date_of_birth: string;
       measurement_unit: string;
-      role: {
-        id: number;
-        name: string;
-      };
-      cheer_types: [
-        {
-          id: number;
-          name: string;
-        },
-      ];
-      cheer_styles: [
-        {
-          id: number;
-          name: string;
-        },
-      ];
+      // TODO(ducnm): need to remove after BE fix
+      // role: {
+      //   id: number;
+      //   name: string;
+      // };
+      // cheer_types: [
+      //   {
+      //     id: number;
+      //     name: string;
+      //   },
+      // ];
+      // cheer_styles: [
+      //   {
+      //     id: number;
+      //     name: string;
+      //   },
+      // ];
+      // TODO(ducnm): need to remove after BE fix
+      cheer_styles: string;
+      cheer_types: string;
+      coach_code: string | null;
     };
     equipments: [
       {
