@@ -22,10 +22,10 @@ export default function DatePastTrainingSection({
     const end = endOfWeek(selectedDate, { weekStartsOn: 1 });
 
     if (start.getMonth() !== end.getMonth()) {
-      return `${format(start, 'MMM d')} - ${format(end, 'MMM d, yyyy')}`;
+      return `${format(start, 'MMMM d')} - ${format(end, 'MMMM d, yyyy')}`;
     }
 
-    return `${format(start, 'MMM d')} - ${format(end, 'd, yyyy')}`;
+    return `${format(start, 'MMMM d')} - ${format(end, 'd, yyyy')}`;
   };
 
   return (
