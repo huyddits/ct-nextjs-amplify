@@ -83,7 +83,7 @@ export default function CardioPage() {
   }, []);
 
   const handleCompleteWorkout = async () => {
-    const valid = await trigger('intervals.0');
+    const valid = await trigger(['intervals.0', 'notes']);
     if (!valid) return;
 
     const currentInterval = getValues('intervals.0');
@@ -170,7 +170,12 @@ export default function CardioPage() {
                   render={({ field, fieldState: { error } }) => (
                     <AppInput
                       label="Duration (min)"
-                      inputProps={{ placeholder: '5', type: 'number', disabled: inputDisabled }}
+                      inputProps={{
+                        placeholder: '5',
+                        type: 'number',
+                        disabled: inputDisabled,
+                        min: 0,
+                      }}
                       errorMessage={error?.message}
                       {...field}
                       className="text-sm text-gray-600"
@@ -200,7 +205,12 @@ export default function CardioPage() {
                   render={({ field, fieldState: { error } }) => (
                     <AppInput
                       label={distanceLabel}
-                      inputProps={{ placeholder: '0.0', type: 'number', disabled: inputDisabled }}
+                      inputProps={{
+                        placeholder: '0.0',
+                        type: 'number',
+                        disabled: inputDisabled,
+                        min: 0,
+                      }}
                       errorMessage={error?.message}
                       {...field}
                       className="text-sm text-gray-600"
@@ -213,7 +223,7 @@ export default function CardioPage() {
                   render={({ field, fieldState: { error } }) => (
                     <AppSelect
                       label="Unit"
-                      selectedValue={field.value}
+                      selectedValue={field.value ?? ''}
                       onChangeSelected={field.onChange}
                       options={selectedExercise?.units ?? []}
                       errorMessage={error?.message}
@@ -237,6 +247,7 @@ export default function CardioPage() {
                             placeholder: '140',
                             type: 'number',
                             disabled: inputDisabled,
+                            min: 0,
                           }}
                           errorMessage={error?.message}
                           {...field}
@@ -244,7 +255,7 @@ export default function CardioPage() {
                         />
                       )}
                     />
-                    <span className="text-gray-600">-</span>
+                    <span className="text-gray-600 flex items-center">-</span>
                     <Controller
                       control={control}
                       name="intervals.0.heartRateMax"
@@ -254,6 +265,7 @@ export default function CardioPage() {
                             placeholder: '160',
                             type: 'number',
                             disabled: inputDisabled,
+                            min: 0,
                           }}
                           errorMessage={error?.message}
                           {...field}

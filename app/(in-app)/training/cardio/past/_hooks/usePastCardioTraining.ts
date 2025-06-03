@@ -1,8 +1,6 @@
 import { PastCardioTrainingApi } from '@/api';
 import { useMemo } from 'react';
 import { type WeeklyWorkouts, type WeeklySummary, type PerformanceMetrics } from '../_types/index';
-// import { AxiosError } from 'axios';
-// import { useEffect, useState } from 'react';
 
 import useSWR, { useSWRConfig } from 'swr';
 

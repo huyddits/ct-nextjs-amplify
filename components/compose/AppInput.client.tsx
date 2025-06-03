@@ -92,6 +92,12 @@ export default function AppInput({
           className={cn('bg-white', inputClasses, postfix && 'pr-20')}
           value={value}
           onChange={onChange}
+          onKeyDown={e => {
+            if (inputType === 'number' && (e.key === '-' || e.key === 'e')) {
+              e.preventDefault();
+            }
+            inputProps?.onKeyDown?.(e);
+          }}
           {...inputProps}
         />
         {password && (
