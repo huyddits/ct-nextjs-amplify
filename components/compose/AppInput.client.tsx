@@ -90,9 +90,9 @@ export default function AppInput({
           id={id}
           type={inputType}
           className={cn('bg-white', inputClasses, postfix && 'pr-20')}
+          {...inputProps}
           value={value}
           onChange={onChange}
-          {...inputProps}
         />
         {password && (
           <button
