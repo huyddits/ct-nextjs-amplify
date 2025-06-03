@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { CardioTrainingSelectionApi } from '@/api';
 import { type SelectOption } from '@/components/compose';
 import dayjs from 'dayjs';
-import { useCardioStore } from '@/store';
+import { useAuthStore, useCardioStore } from '@/store';
 import { toast } from 'react-toastify';
 import { mutate } from 'swr';
 import { Metric } from '../_types/index';
@@ -17,7 +17,7 @@ type UseCardioFormOptions = {
 
 const schema = object().shape({
   exercise: string(),
-  notes: string().max(500),
+  notes: string().max(500).required('Please enter the data notes'),
   intervals: array(
     object().shape({
       cardio_interval_id: string(),
@@ -37,6 +37,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
   const [exercisesItems, setExercisesItems] = useState<
     Array<SelectOption & { units: SelectOption[] }>
   >([]);
+  const { info } = useAuthStore();
 
   const [rpeItems, setRpeItems] = useState<SelectOption[]>([]);
 
@@ -59,7 +60,6 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     formState,
     getValues,
     trigger,
-    watch,
     formState: { isValid },
     reset,
   } = useForm({
@@ -82,7 +82,8 @@ export const useCardio = (options?: UseCardioFormOptions) => {
       const exercisesItems = data.map(({ name, cardio_exercises_id, units }) => ({
         label: name,
         value: cardio_exercises_id.toString(),
-        units: units.map(item => ({ label: item.name, value: item.name })),
+        // units: units.filter((item) => (item as any)?.measurementUnit === info?.measurementUnit).map(({ name }) => ({ label: name, value: name })),
+        units: units.map(({ name }) => ({ label: name, value: name })),
       }));
       setExercisesItems(exercisesItems);
       setExerciseOptions(exercisesItems);
@@ -119,7 +120,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
 
   useEffect(() => {
     if (selectedExercise && selectedExercise.units.length) {
-      const defaultUnit = selectedExercise.units[0].value;
+      const defaultUnit = selectedExercise.units?.[0].value;
       setValue('intervals.0.distanceUnit', defaultUnit);
     }
   }, [selectedExercise, setValue]);
@@ -176,10 +177,6 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     }
   };
 
-  useEffect(() => {
-    console.log('store >> draft', draft);
-    console.log('values of form >>', getValues());
-  });
   return {
     control,
     isValid,

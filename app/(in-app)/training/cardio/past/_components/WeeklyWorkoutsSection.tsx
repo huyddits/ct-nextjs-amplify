@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { WeeklyWorkouts } from '../_types';
 
 export default function WeeklyWorkoutsSection({
   weeklyWorkoutItems,
-}: Readonly<{ weeklyWorkoutItems: any }>) {
-  const [list, setList] = useState<any>([]);
+}: Readonly<{ weeklyWorkoutItems: WeeklyWorkouts[] }>) {
   const listItems = [
     {
       title: 'Weekly Workouts',
@@ -23,15 +22,15 @@ export default function WeeklyWorkoutsSection({
 
           <div className="space-y-4 text-sm">
             {section.content.length &&
-              section.content.map((w: any, index: number) => {
+              section.content.map((item: WeeklyWorkouts, index: number) => {
                 return (
                   <div key={String(index)} className={` 'border-b pb-4' : ''}`}>
                     <div className="mb-2">
-                      <span className="text-gray-600">{w.date}</span>
-                      {w.name && (
+                      <span className="text-gray-600">{item.date}</span>
+                      {item.name && (
                         <>
                           <span className="mx-1">-</span>
-                          <span className="font-medium text-primary">{w.name}</span>
+                          <span className="font-medium text-primary">{item.name}</span>
                         </>
                       )}
                     </div>
@@ -39,28 +38,28 @@ export default function WeeklyWorkoutsSection({
                     <div className="space-y-1 mb-2">
                       <div className="flex justify-between">
                         <span className="text-gray-500">Duration:</span>
-                        <span>{w.duration != null ? `${w.duration} mins` : '-'}</span>
+                        <span>{item.duration != null ? `${item.duration} mins` : '-'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">
-                          {w.unit === 'Stairs' ? 'Stairs:' : 'Distance:'}
+                          {item.unit === 'Stairs' ? 'Stairs:' : 'Distance:'}
                         </span>
-                        <span>{w.distance != null ? `${w.distance} ${w.unit}` : '-'}</span>
+                        <span>{item.distance != null ? `${item.distance} ${item.unit}` : '-'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">RPE:</span>
-                        <span>{w.rpe != null ? `${w.rpe} RPE` : '-'}</span>
+                        <span>{item.rpe != null ? `${item.rpe} RPE` : '-'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Heart Rate:</span>
-                        {w.heartRate != null ? `${w.heartRate} bpm` : '-'}
+                        {item.heartRate != null ? `${item.heartRate} bpm` : '-'}
                       </div>
                     </div>
 
-                    {w.notes && (
+                    {item.notes && (
                       <div className="bg-gray-50 p-2 rounded">
                         <span className="text-gray-500">Note: </span>
-                        <span className="text-gray-700">{w.notes}</span>
+                        <span className="text-gray-700">{item.notes}</span>
                       </div>
                     )}
                   </div>

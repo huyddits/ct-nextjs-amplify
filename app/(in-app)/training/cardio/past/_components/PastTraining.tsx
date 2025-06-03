@@ -8,7 +8,7 @@ export default function PastTraining() {
           <ChevronLeft className="h-5 w-5" />
           <span>Back</span>
         </Link>
-        <h1 className="text-xl font-semibold text-">Past Training</h1>
+        <h1 className="text-xl font-semibold text-primary">Past Training</h1>
       </div>
     </div>
   );
