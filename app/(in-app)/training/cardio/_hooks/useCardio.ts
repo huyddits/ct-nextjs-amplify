@@ -21,9 +21,9 @@ const schema = object().shape({
   intervals: array(
     object().shape({
       cardio_interval_id: string(),
-      duration: string().required(),
-      distance: string().min(0).required(),
-      distance_unit: string(),
+      duration: string().required('Please enter the data duration'),
+      distance: string().min(0).required('Please enter the data distance'),
+      distanceUnit: string(),
       rpe: string().min(0).max(10),
       heartRateMin: string().min(0).max(250).optional(),
       heartRateMax: string().min(0).max(250).optional(),
@@ -61,6 +61,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     trigger,
     watch,
     formState: { isValid },
+    reset,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -117,9 +118,9 @@ export const useCardio = (options?: UseCardioFormOptions) => {
   }, [exercisesItems, exercise]);
 
   useEffect(() => {
-    if (selectedExercise && selectedExercise?.units?.length) {
+    if (selectedExercise && selectedExercise.units.length) {
       const defaultUnit = selectedExercise.units[0].value;
-      setValue('intervals.0.distance_unit', defaultUnit);
+      setValue('intervals.0.distanceUnit', defaultUnit);
     }
   }, [selectedExercise, setValue]);
 
@@ -127,7 +128,6 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     getExercises();
     getRpe();
 
-    console.log('draft.intervals', draft.intervals);
     if (draft.intervals) {
       setValue(
         'intervals',
@@ -162,8 +162,8 @@ export const useCardio = (options?: UseCardioFormOptions) => {
           heart_rate_max: Number(data.heartRateMax || '160'),
         })),
       });
+      clearCardioSession();
       toast.success('Successfully save the complete workout');
-
       const from = dayjs().startOf('isoWeek').format('YYYY-MM-DD');
       const to = dayjs().endOf('isoWeek').format('YYYY-MM-DD');
       const cacheKey = ['past-cardio', from, to, Metric.Duration];
@@ -192,6 +192,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     units: selectedExercise?.units ?? [],
     rpeItems,
     selectedExercise,
+    reset,
     onCompleteWorkout,
     getExercises,
     clearCardioSession,
