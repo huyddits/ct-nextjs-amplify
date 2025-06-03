@@ -93,6 +93,12 @@ export default function AppInput({
           {...inputProps}
           value={value}
           onChange={onChange}
+          onKeyDown={e => {
+            if (inputType === 'number' && (e.key === '-' || e.key === 'e')) {
+              e.preventDefault();
+            }
+            inputProps?.onKeyDown?.(e);
+          }}
         />
         {password && (
           <button

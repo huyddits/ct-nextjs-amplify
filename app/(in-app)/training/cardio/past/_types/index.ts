@@ -14,9 +14,11 @@ export type WeeklySummary = {
   totalDuration: number;
   dailyAverageDistance: number;
   totalDistance: number;
+  distanceUnit: string;
   dailyAverageStairs: number;
   totalStairs: number;
   dailyAverageHeartRate: number;
+  unitType: string;
 };
 
 export type PerformanceMetrics = {

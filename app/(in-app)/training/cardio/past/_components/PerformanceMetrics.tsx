@@ -1,31 +1,22 @@
 'use client';
 import { AppSelect } from '@/components/compose';
-import dayjs from 'dayjs';
-import { useMemo, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area } from 'recharts';
-import { usePastCardioTraining } from '../_hooks';
-import isoWeek from 'dayjs/plugin/isoWeek';
-
-export default function PerformanceMetrics({ selectedDate }: Readonly<{ selectedDate: Date }>) {
-  dayjs.extend(isoWeek);
-  const [metric, setMetric] = useState('duration');
-  const dateFormat = 'YYYY-MM-DD';
-
+import { Metric } from '../../../cardio/_types/index';
+export default function PerformanceMetrics({
+  metric,
+  performanceMetricsItems,
+  setMetric,
+}: Readonly<{
+  performanceMetricsItems: any;
+  metric: string;
+  setMetric: Dispatch<SetStateAction<string>>;
+}>) {
   const metricOptions = [
-    { label: 'Duration', value: 'duration' },
-    { label: 'Distance', value: 'distance' },
-    { label: 'Stairs', value: 'stairs' },
+    { label: 'Duration', value: Metric.Duration },
+    { label: 'Distance', value: Metric.Distance },
+    { label: 'Stairs', value: Metric.Stairs },
   ];
-
-  const from = useMemo(() => {
-    return dayjs(selectedDate).startOf('isoWeek').format(dateFormat);
-  }, [selectedDate]);
-
-  const to = useMemo(() => {
-    return dayjs(selectedDate).endOf('isoWeek').format(dateFormat);
-  }, [selectedDate]);
-
-  const { performanceMetricsItems } = usePastCardioTraining({ from, to, metric });
 
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-4 w-full">
