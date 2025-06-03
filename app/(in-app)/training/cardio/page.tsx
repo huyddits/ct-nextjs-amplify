@@ -19,9 +19,11 @@ export default function CardioPage() {
     exercisesItems: exercisesOptions,
     selectedExercise,
     onCompleteWorkout,
+    reset,
   } = useCardio({
     onSuccess: () => {
       clearCardioSession();
+      reset();
     },
     onFailure: () => {},
   });
@@ -47,6 +49,26 @@ export default function CardioPage() {
     }
   }, [intervalsList, setValue, getValues]);
 
+  const watchedInterval = useWatch({ control, name: 'intervals.0' });
+  const watchedNotes = useWatch({ control, name: 'notes' });
+  const watchedExercise = useWatch({ control, name: 'exercise' });
+
+  useEffect(() => {
+    const updatedDraft = {
+      ...draft,
+      exercise: watchedExercise ?? '',
+      notes: watchedNotes ?? '',
+      intervals: [
+        {
+          ...draft.intervals[0],
+          ...watchedInterval,
+          distanceUnit: watchedInterval?.distanceUnit || '',
+        },
+      ],
+    };
+    setDraft(updatedDraft);
+  }, [watchedInterval, watchedNotes, watchedExercise]);
+
   const handleCreateInterval = useCallback(async () => {
     const valid = await trigger('intervals.0');
     if (!valid) return;
@@ -68,7 +90,6 @@ export default function CardioPage() {
     addInterval(currentInterval);
 
     await onCompleteWorkout(getValues());
-    clearCardioSession();
     setInputDisabled(false);
   };
 
@@ -78,7 +99,7 @@ export default function CardioPage() {
     const isEmpty =
       !current.duration &&
       !current.distance &&
-      !current.distance_unit &&
+      !current.distanceUnit &&
       !current.heartRateMin &&
       current.heartRateMin &&
       !current.heartRateMax &&
@@ -93,7 +114,7 @@ export default function CardioPage() {
       duration: '',
       rpe: '0',
       distance: '',
-      distance_unit: '',
+      distanceUnit: '',
       heartRateMin: '',
       heartRateMax: '',
     });
@@ -101,11 +122,10 @@ export default function CardioPage() {
 
   const distanceUnit = useWatch({
     control,
-    name: 'intervals.0.distance_unit',
+    name: 'intervals.0.distanceUnit',
   });
 
-  const distanceLabel =
-    distanceUnit === 'Stairs' || distanceUnit === 'Floors' ? 'Stairs' : 'Distance';
+  const distanceLabel = distanceUnit === 'Stairs' ? 'Stairs' : 'Distance';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -117,18 +137,11 @@ export default function CardioPage() {
               <Controller
                 control={control}
                 name="exercise"
-                render={({ field: { value, onChange }, fieldState: { error } }) => (
+                render={({ field, fieldState: { error } }) => (
                   <AppSelect
                     placeholder="Select Type"
-                    selectedValue={value}
-                    onChangeSelected={selectedValue => {
-                      console.log('exercise', selectedValue);
-                      onChange(selectedValue);
-                      setDraft({
-                        ...draft,
-                        exercise: selectedValue,
-                      });
-                    }}
+                    selectedValue={field.value}
+                    onChangeSelected={field.onChange}
                     options={exercisesOptions ?? []}
                     errorMessage={error?.message}
                     fullWidth
@@ -151,126 +164,67 @@ export default function CardioPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Controller
-                    control={control}
-                    name="intervals.0.duration"
-                    render={({ field, fieldState: { error } }) => (
-                      <AppInput
-                        label="Duration (min)"
-                        inputProps={{ placeholder: '5', type: 'number', disabled: inputDisabled }}
-                        errorMessage={error?.message}
-                        {...field}
-                        onChange={event => {
-                          field.onChange(event.target.value);
-                          setDraft({
-                            ...draft,
-                            intervals: [
-                              {
-                                ...draft.intervals[0],
-                                duration: event.target.value,
-                              },
-                            ],
-                          });
-                        }}
-                        onBlur={() => trigger('intervals.0.duration')}
-                        className="text-sm text-gray-600 "
-                      />
-                    )}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Controller
-                    control={control}
-                    name="intervals.0.rpe"
-                    render={({ field: { value, onChange }, fieldState: { error } }) => (
-                      <AppSelect
-                        label="RPE (0-10)"
-                        placeholder="Select RPE"
-                        selectedValue={value?.toString()}
-                        onChangeSelected={selectedValue => {
-                          console.log('intervals.0.rpe');
-                          onChange(selectedValue);
-                          setDraft({
-                            ...draft,
-                            intervals: [
-                              {
-                                ...draft.intervals[0],
-                                rpe: selectedValue,
-                              },
-                            ],
-                          });
-                        }}
-                        options={rpeOptions ?? []}
-                        errorMessage={error?.message}
-                        className="text-sm text-gray-600"
-                        disabled={inputDisabled}
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Controller
-                    control={control}
-                    name="intervals.0.distance"
-                    render={({ field, fieldState: { error } }) => (
-                      <AppInput
-                        label={distanceLabel}
-                        inputProps={{ placeholder: '0.0', type: 'number', disabled: inputDisabled }}
-                        errorMessage={error?.message}
-                        {...field}
-                        onChange={event => {
-                          field.onChange(event.target.value);
-                          setDraft({
-                            ...draft,
-                            intervals: [
-                              {
-                                ...draft.intervals[0],
-                                distance: event.target.value,
-                              },
-                            ],
-                          });
-                        }}
-                        value={field.value?.toString() ?? ''}
-                        onBlur={() => trigger('intervals.0.distance')}
-                        className="text-sm text-gray-600"
-                      />
-                    )}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Controller
-                    control={control}
-                    name="intervals.0.distance_unit"
-                    render={({ field: { value, onChange }, fieldState: { error } }) => (
-                      <AppSelect
-                        label="Unit"
-                        selectedValue={value}
-                        onChangeSelected={selectedValue => {
-                          console.log('intervals.0.distance_unit', String(selectedValue));
-                          onChange(selectedValue);
-                          setDraft({
-                            ...draft,
-                            intervals: [
-                              {
-                                ...draft.intervals[0],
-                                distanceUnit: selectedValue,
-                              },
-                            ],
-                          });
-                        }}
-                        options={selectedExercise?.units ?? []}
-                        errorMessage={error?.message}
-                        className="text-sm text-gray-600"
-                        disabled={inputDisabled}
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
+                <Controller
+                  control={control}
+                  name="intervals.0.duration"
+                  render={({ field, fieldState: { error } }) => (
+                    <AppInput
+                      label="Duration (min)"
+                      inputProps={{ placeholder: '5', type: 'number', disabled: inputDisabled }}
+                      errorMessage={error?.message}
+                      {...field}
+                      className="text-sm text-gray-600"
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="intervals.0.rpe"
+                  render={({ field, fieldState: { error } }) => (
+                    <AppSelect
+                      label="RPE (0-10)"
+                      placeholder="Select RPE"
+                      selectedValue={field.value?.toString()}
+                      onChangeSelected={field.onChange}
+                      options={rpeOptions ?? []}
+                      errorMessage={error?.message}
+                      className="text-sm text-gray-600"
+                      disabled={inputDisabled}
+                      fullWidth
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="intervals.0.distance"
+                  render={({ field, fieldState: { error } }) => (
+                    <AppInput
+                      label={distanceLabel}
+                      inputProps={{ placeholder: '0.0', type: 'number', disabled: inputDisabled }}
+                      errorMessage={error?.message}
+                      {...field}
+                      className="text-sm text-gray-600"
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="intervals.0.distanceUnit"
+                  render={({ field, fieldState: { error } }) => (
+                    <AppSelect
+                      label="Unit"
+                      selectedValue={field.value}
+                      onChangeSelected={field.onChange}
+                      options={selectedExercise?.units ?? []}
+                      errorMessage={error?.message}
+                      className="text-sm text-gray-600"
+                      disabled={inputDisabled}
+                      fullWidth
+                    />
+                  )}
+                />
                 <div className="col-span-2 space-y-2">
-                  <label className="text-sm text-gray-600 font-medium ">
+                  <label className="text-sm text-gray-600 font-medium">
                     Heart Rate Range (BPM)
                   </label>
                   <div className="flex gap-2 pt-1">
@@ -286,20 +240,6 @@ export default function CardioPage() {
                           }}
                           errorMessage={error?.message}
                           {...field}
-                          onChange={event => {
-                            console.log('intervals.0.heartRateMin', event.target.value);
-                            field.onChange(event.target.value);
-                            setDraft({
-                              ...draft,
-                              intervals: [
-                                {
-                                  ...draft.intervals[0],
-                                  heartRateMin: event.target.value,
-                                },
-                              ],
-                            });
-                          }}
-                          onBlur={() => trigger('intervals.0.heartRateMin')}
                           className="text-sm text-gray-600 w-full"
                         />
                       )}
@@ -317,21 +257,6 @@ export default function CardioPage() {
                           }}
                           errorMessage={error?.message}
                           {...field}
-                          // value={field.value}
-                          onChange={event => {
-                            console.log('intervals.0.heartRateMax', event.target.value);
-                            field.onChange(event.target.value);
-                            setDraft({
-                              ...draft,
-                              intervals: [
-                                {
-                                  ...draft.intervals[0],
-                                  heartRateMax: event.target.value,
-                                },
-                              ],
-                            });
-                          }}
-                          onBlur={() => trigger('intervals.0.heartRateMax')}
                           className="text-sm text-gray-600 w-full"
                         />
                       )}
@@ -352,15 +277,6 @@ export default function CardioPage() {
                     }}
                     errorMessage={error?.message}
                     {...field}
-                    // value={field.value}
-                    onChange={event => {
-                      field.onChange(event.target.value);
-                      setDraft({
-                        ...draft,
-                        notes: event.target.value,
-                      });
-                    }}
-                    onBlur={() => trigger('notes')}
                   />
                 )}
               />
