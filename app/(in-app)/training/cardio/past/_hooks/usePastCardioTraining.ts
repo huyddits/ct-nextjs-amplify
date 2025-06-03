@@ -1,7 +1,8 @@
 import { PastCardioTrainingApi } from '@/api';
+import { useMemo } from 'react';
 import { type WeeklyWorkouts, type WeeklySummary, type PerformanceMetrics } from '../_types/index';
-import { AxiosError } from 'axios';
-import { useEffect, useState } from 'react';
+
+import useSWR, { useSWRConfig } from 'swr';
 
 type UsePastCardioTrainingOptions = {
   onSuccess?: () => void;
@@ -12,86 +13,72 @@ type UsePastCardioTrainingOptions = {
 };
 
 export const usePastCardioTraining = (options: UsePastCardioTrainingOptions) => {
-  const [weeklySummaryItems, setWeeklySummary] = useState<WeeklySummary | null>(null);
-
-  const [weeklyWorkoutItems, setWeeklyWorkouts] = useState<WeeklyWorkouts[]>([]);
-
-  const [performanceMetricsItems, setPerformanceMetrics] = useState<PerformanceMetrics[]>([]);
-
-  const getWeeklySummary = async (from: string, to: string) => {
-    console.log({ from, to }, 'getWeeklySummary');
-    try {
-      const response = await PastCardioTrainingApi.getWeeklySummary({ from, to });
-      const { data, error } = response.data;
-      if (!data) throw error;
-      setWeeklySummary({
-        dailyAverageDistance: data.dailyAverageDistance,
-        totalDistance: data.totalDistance,
-        dailyAverageDuration: data.dailyAverageDuration,
-        totalDuration: data.totalDuration,
-        dailyAverageStairs: data.dailyAverageStairs,
-        totalStairs: data.totalStairs,
-        dailyAverageHeartRate: data.dailyAverageHeartRate,
-      });
-      options?.onSuccess?.();
-    } catch (error) {
-      console.error(error);
-      return;
-    }
-  };
-
-  const getWeeklyWorkouts = async (from: string, to: string) => {
-    try {
-      const response = await PastCardioTrainingApi.getWeeklyWorkouts({ from, to });
-      const { data, error } = response.data;
-      if (!data) throw error;
-      const WeeklyWorkoutsItems: WeeklyWorkouts[] = data.map(data => ({
-        date: data.date,
-        name: data.name,
-        duration: data.duration,
-        distance: data.distance,
-        unit: data.unit,
-        rpe: data.rpe,
-        heartRate: data.heart_rate,
-        notes: data.notes,
-      }));
-      setWeeklyWorkouts(WeeklyWorkoutsItems);
-      options?.onSuccess?.();
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      if (axiosError?.response?.status === 404) {
-        setWeeklyWorkouts([]);
-      } else {
-        return;
-      }
-    }
-  };
-
-  const getPerformanceMetrics = async (from: string, to: string, metric: string) => {
-    console.log({ from, to, metric }, 'getPerformanceMetrics');
-    try {
-      const response = await PastCardioTrainingApi.getPerformanceMetrics({ from, to, metric });
-      const { data, error } = response.data;
-      if (!data) throw error;
-      const PerformanceMetricsItems: PerformanceMetrics[] = data.map(data => ({
-        date: data.date,
-        value: data.value,
-      }));
-      setPerformanceMetrics(PerformanceMetricsItems);
-    } catch (error) {
-      console.error(error);
-      return;
-    }
-  };
-  useEffect(() => {
-    getWeeklySummary(options.from, options.to);
-    getWeeklyWorkouts(options.from, options.to);
-    getPerformanceMetrics(options.from, options.to, options.metric ?? 'duration');
+  const { cache } = useSWRConfig();
+  console.log('cache', cache);
+  const swrKey = useMemo(() => {
+    return ['past-cardio', options.from, options.to, options.metric ?? 'duration'];
   }, [options.from, options.to, options.metric]);
+  console.log('SWR KEY STABLE?', JSON.stringify(swrKey));
+
+  const fetcher = async (key: [string, string, string, string]) => {
+    console.log('fetcher', key);
+    const [_url, from, to, metric] = key;
+    const [summaryRes, workoutsRes, metricsRes] = await Promise.allSettled([
+      PastCardioTrainingApi.getWeeklySummary({ from, to }),
+      PastCardioTrainingApi.getWeeklyWorkouts({ from, to }),
+      PastCardioTrainingApi.getPerformanceMetrics({ from, to, metric: metric ?? 'duration' }),
+    ]);
+
+    const summary = summaryRes.status === 'fulfilled' && summaryRes.value.data.data;
+    const workouts = workoutsRes.status === 'fulfilled' && workoutsRes.value.data.data;
+    const metrics = metricsRes.status === 'fulfilled' && metricsRes.value.data.data;
+
+    return {
+      summary: {
+        dailyAverageDuration: summary ? summary.dailyAverageDuration : 0,
+        totalDuration: summary ? summary.totalDuration : 0,
+        dailyAverageDistance: summary ? summary.dailyAverageDistance : 0,
+        totalDistance: summary ? summary.totalDistance : 0,
+        distanceUnit: summary ? summary.distance_unit : '',
+        dailyAverageStairs: summary ? summary.dailyAverageStairs : 0,
+        totalStairs: summary ? summary.totalStairs : 0,
+        dailyAverageHeartRate: summary ? summary.dailyAverageHeartRate : 0,
+        unitType: summary ? summary.unit_type : '',
+      } as WeeklySummary,
+      workouts: Array.isArray(workouts)
+        ? workouts?.map?.(data => ({
+            date: data.date,
+            name: data.name,
+            duration: data.duration,
+            distance: data.distance,
+            unit: data.unit,
+            rpe: data.rpe,
+            heartRate: data.heart_rate,
+            notes: data.notes,
+          }))
+        : ([] as WeeklyWorkouts[]),
+      metrics: Array.isArray(metrics)
+        ? metrics?.map(data => ({
+            date: data.date,
+            value: data.value,
+          }))
+        : ([] as PerformanceMetrics[]),
+    };
+  };
+
+  const { data, error } = useSWR(swrKey, fetcher, {
+    onErrorRetry: (error, key, config, revalidate, { retryCount }) => {},
+    revalidateIfStale: true,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 10 * 60 * 1000,
+  });
 
   return {
-    weeklySummaryItems,
-    weeklyWorkoutItems,
-    performanceMetricsItems,
+    weeklySummaryItems: data?.summary ?? null,
+    weeklyWorkoutItems: data?.workouts ?? [],
+    performanceMetricsItems: data?.metrics ?? [],
+    isLoading: !error && !data,
+    isError: !!error,
   };
 };
