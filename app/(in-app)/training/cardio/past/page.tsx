@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   PastTraining,
   DatePastTrainingSection,
@@ -43,7 +43,7 @@ export default function PastTrainingPage() {
           metric={metric}
           setMetric={setMetric}
         />
-        <WeeklySummarySection weeklySummaryItems={weeklySummaryItems} />
+        {weeklySummaryItems && <WeeklySummarySection weeklySummaryItems={weeklySummaryItems} />}
         <WeeklyWorkoutsSection weeklyWorkoutItems={weeklyWorkoutItems} />
       </main>
     </div>
