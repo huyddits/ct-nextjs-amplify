@@ -7,12 +7,14 @@ import dayjs from 'dayjs';
 import { AccountType, MeasurementUnit } from '@/utils/types';
 import * as $v from '@/utils/validators';
 import { ERROR_MESSAGES } from '@/utils/constants';
+import { useLoading } from '@/hooks';
 type UseSignupOptions = {
   onSuccess?: () => void;
   onFailure?: (message: string) => void;
 };
 
 export const useSignup = (options: UseSignupOptions) => {
+  const { loading, startLoading, stopLoading } = useLoading();
   const formSchema = useMemo(() => {
     return object().shape({
       userType: string()
@@ -22,14 +24,14 @@ export const useSignup = (options: UseSignupOptions) => {
         .required(ERROR_MESSAGES.INPUT)
         .matches(
           $v.PATTERN.NAME,
-          'Please avoid using special characters like [@, #, !, *, $, %, ^, &, +] in this field.'
+          `Users are allowed to input any characters except the special characters specified in the following list: '@, #, !, *, $, %, ^, &, +'`
         )
         .max(50, 'First name cannot exceed 50 characters'),
       lastName: string()
         .required(ERROR_MESSAGES.INPUT)
         .matches(
           $v.PATTERN.NAME,
-          'Please avoid using special characters like [@, #, !, *, $, %, ^, &, +] in this field.'
+          `Users are allowed to input any characters except the special characters specified in the following list: '@, #, !, *, $, %, ^, &, +'`
         )
         .max(50, 'Last name cannot exceed 50 characters'),
       email: string()
@@ -53,6 +55,10 @@ export const useSignup = (options: UseSignupOptions) => {
       dateOfBirth: string().required(ERROR_MESSAGES.INPUT),
       schoolName: string()
         .required(ERROR_MESSAGES.INPUT)
+        .matches(
+          $v.PATTERN.NAME,
+          `Users are allowed to input any characters except the special characters specified in the following list: '@, #, !, *, $, %, ^, &, +'`
+        )
         .max(100, 'School Name cannot exceed 100 characters'),
       cheerType: string().required(ERROR_MESSAGES.SELECT),
       cheerStyle: string().required(ERROR_MESSAGES.SELECT),
@@ -98,6 +104,7 @@ export const useSignup = (options: UseSignupOptions) => {
 
   const onValid = async (data: FormType) => {
     try {
+      startLoading();
       console.log(data);
       const response = await UserApi.registerUser({
         account_type: data.userType,
@@ -116,6 +123,8 @@ export const useSignup = (options: UseSignupOptions) => {
       options?.onSuccess?.();
     } catch (error) {
       console.log(error);
+    } finally {
+      stopLoading();
     }
   };
 
@@ -133,10 +142,12 @@ export const useSignup = (options: UseSignupOptions) => {
   }, [userType]);
 
   return {
+    loading,
     isValid,
     userType,
     password,
     control,
+
     trigger,
     onSubmit,
   };
