@@ -7,6 +7,7 @@ type ExerciseRecord = {
     {
       cardio_unit_id: number;
       name: string;
+      unit_type: string;
     },
   ];
 };

@@ -1,22 +1,10 @@
 'use client';
-import { usePastCardioTraining } from '../_hooks';
-import { useMemo } from 'react';
-import dayjs from 'dayjs';
-import isoWeek from 'dayjs/plugin/isoWeek';
 
-export default function WeeklySummarySection({ selectedDate }: Readonly<{ selectedDate: Date }>) {
-  dayjs.extend(isoWeek);
-  const dateFormat = 'YYYY-MM-DD';
-  const from = useMemo(() => {
-    return dayjs(selectedDate).startOf('isoWeek').format(dateFormat);
-  }, [selectedDate]);
+import { WeeklySummary } from '../_types';
 
-  const to = useMemo(() => {
-    return dayjs(selectedDate).endOf('isoWeek').format(dateFormat);
-  }, [selectedDate]);
-
-  const { weeklySummaryItems } = usePastCardioTraining({ from, to });
-
+export default function WeeklySummarySection({
+  weeklySummaryItems,
+}: Readonly<{ weeklySummaryItems: WeeklySummary }>) {
   const listData = [
     {
       label: 'Daily Average Duration',
@@ -27,9 +15,13 @@ export default function WeeklySummarySection({ selectedDate }: Readonly<{ select
     {
       label: 'Daily Average Distance',
       value: weeklySummaryItems?.dailyAverageDistance,
-      unit: 'miles',
+      unit: weeklySummaryItems?.distanceUnit,
     },
-    { label: 'Total Distance', value: weeklySummaryItems?.totalDistance, unit: 'miles' },
+    {
+      label: 'Total Distance',
+      value: weeklySummaryItems?.totalDistance,
+      unit: weeklySummaryItems?.distanceUnit,
+    },
     {
       label: 'Daily Average Stairs',
       value: weeklySummaryItems?.dailyAverageStairs,
