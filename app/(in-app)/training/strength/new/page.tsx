@@ -7,6 +7,7 @@ import {
   AddExerciseProgramSection,
   AvailableExerciseProgramSection,
 } from './_components';
+import { Button } from '@/components/ui/button';
 
 export default function CreateStrengthPage() {
   return (
@@ -17,6 +18,9 @@ export default function CreateStrengthPage() {
       <EquipmentFilterMockData />
       <AvailableExerciseProgramSection />
       <AddExerciseProgramSection />
+      <Button className="w-full" size="lg">
+        Go to Program Editor
+      </Button>
     </div>
   );
 }
