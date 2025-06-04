@@ -45,11 +45,14 @@ export default function StrengthPage() {
         </div>
       </div>
       <div className="fixed bottom-app left-0 right-0 px-4 py-2 bg-white border-t border-gray-200">
-        <div className="max-w-3xl mx-auto flex justify-center">
+        <Link
+          href="/training/strength/pastStrength"
+          className="max-w-3xl mx-auto flex justify-center"
+        >
           <Button className="w-4/5" size="lg">
             Past Strength Training
           </Button>
-        </div>
+        </Link>
       </div>
     </section>
   );
