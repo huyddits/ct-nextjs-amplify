@@ -1,5 +1,12 @@
 'use client';
-import { CreateProgram, ProgramStrength, SearchProgram, EquipmentFilter } from './_components';
+import {
+  CreateProgram,
+  ProgramStrength,
+  SearchProgram,
+  EquipmentFilterMockData,
+  AddExerciseProgramSection,
+  AvailableExerciseProgramSection,
+} from './_components';
 
 export default function CreateStrengthPage() {
   return (
@@ -7,7 +14,9 @@ export default function CreateStrengthPage() {
       <CreateProgram />
       <ProgramStrength />
       <SearchProgram />
-      {/* <EquipmentFilter/> */}
+      <EquipmentFilterMockData />
+      <AvailableExerciseProgramSection />
+      <AddExerciseProgramSection />
     </div>
   );
 }
