@@ -5,13 +5,13 @@
 
 /* https://tailwindcss.com/docs/theme */
 @theme {
-  --breakpoint-xs: 30rem;
-  --breakpoint-sm: 48rem;
-  --breakpoint-md: 64rem;
-  --breakpoint-lg: 80rem;
-  --breakpoint-xl: 90rem;
-  --breakpoint-2xl: 100rem;
-  --breakpoint-3xl: 120rem;
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+  --breakpoint-3xl: 1920px;
 }
 
 @theme inline {
@@ -43,7 +43,7 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
+  --color-primary: var(--ct-primary-green);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -55,6 +55,102 @@
 }
 
 :root {
+  /* theming requested colors converted by https://oklch.com/ */
+  --ct-primary-green: var(--ct-green-500);
+  --ct-white: oklch(1 0 0);
+  --ct-black: oklch(0 0 0);
+  --ct-error-red: oklch(0.5771 0.2152 27.33);
+  --ct-warning-yellow: oklch(0.7686 0.1647 70.08);
+
+  --ct-green-50: oklch(0.974 0.0115 162.05);
+  --ct-green-100: oklch(0.9408 0.0306 155.97);
+  --ct-green-200: oklch(0.8852 0.0555 158.91);
+  --ct-green-300: oklch(0.7972 0.0964 157.81);
+  --ct-green-400: oklch(0.6855 0.1278 155.36);
+  --ct-green-500: oklch(0.5152 0.1025 158.53); /* Main brand color */
+  --ct-green-600: oklch(0.4559 0.0923 157.39);
+  --ct-green-700: oklch(0.3961 0.0778 157.77);
+  --ct-green-800: oklch(0.3415 0.0625 158.56);
+  --ct-green-900: oklch(0.3042 0.0543 157.69);
+
+  /* ACTION COLORS */
+  --ct-color-primary: var(--ct-green-500);
+  --ct-color-primary-hover: var(--ct-green-600);
+  --ct-color-primary-active: var(--ct-green-700);
+
+  /* FEEDBACK COLORS */
+  --ct-color-success: var(--ct-green-500);
+  --ct-color-error: var(--ct-error-red);
+  --ct-color-warning: var(--ct-warning-yellow);
+
+  /* TEXT COLORS */
+  --ct-color-text-primary: var(--color-gray-600);
+  --ct-color-text-secondary: oklch(0.551 0.0234 264.36);
+  --ct-color-text-inverse: var(--ct-white);
+
+  /* SURFACE COLORS */
+  --ct-color-surface-primary: var(--ct-white);
+  --ct-color-surface-secondary: oklch(0.9846 0.0017 247.84);
+  --ct-color-surface-accent: var(--ct-green-50);
+
+  /* FONT STACK */
+  --ct-font-family-primary:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* HEADING HIERARCHY */
+  --ct-text-4xl: 36px; /* Page titles - "Team Dashboard" */
+  --ct-text-3xl: 30px; /* Section headers - "Recent Training Sessions" */
+  --ct-text-2xl: 24px; /* Card titles - "Tumbling Progress" */
+  --ct-text-xl: 20px; /* Sub-headers - "Skill Assessment" */
+  --ct-text-lg: 18px; /* Large body - Important descriptions */
+  --ct-text-base: 16px; /* Base body - Standard content */
+  --ct-text-sm: 14px; /* Small text - Secondary information */
+  --ct-text-xs: 12px; /* Captions - Timestamps, metadata */
+
+  /* FONT WEIGHTS */
+  --ct-font-bold: 700; /* Headers, CTAs */
+  --ct-font-semibold: 600; /* Sub-headers, important text */
+  --ct-font-medium: 500; /* Labels, navigation */
+  --ct-font-regular: 400; /* Body text, descriptions */
+
+  /* FOUNDATION TOKENS */
+  --ct-space-xs: 4px;
+  --ct-space-s: 8px;
+  --ct-space-m: 16px;
+  --ct-space-l: 24px;
+  --ct-space-xl: 32px;
+  --ct-space-xxl: 48px;
+
+  --ct-radius-sm: 4px;
+  --ct-radius-md: 8px;
+  --ct-radius-lg: 12px;
+  --ct-radius-xl: 16px;
+
+  --ct-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --ct-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --ct-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+  /* DURATION STANDARDS */
+  --ct-duration-instant: 100ms; /* Micro-interactions */
+  --ct-duration-fast: 200ms; /* Button hovers */
+  --ct-duration-standard: 300ms; /* Modal openings */
+  --ct-duration-slow: 400ms; /* Page transitions */
+  --ct-duration-celebration: 600ms; /* Achievement animations */
+
+  /* EASING FUNCTIONS */
+  --ct-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ct-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* RESPONSIVE BREAKPOINTS */
+  --ct-breakpoint-xs: 480px; /* Mobile portrait / small phones */
+  --ct-breakpoint-sm: 640px; /* Mobile landscape */
+  --ct-breakpoint-md: 768px; /* Tablet portrait */
+  --ct-breakpoint-lg: 1024px; /* Desktop small */
+  --ct-breakpoint-xl: 1280px; /* Desktop large */
+  --ct-breakpoint-2xl: 1536px; /* Large monitors */
+  --ct-breakpoint-3xl: 1920px; /* Ultra-wide screens / 1080p HD width */
+
+  /* OVERWRITE */
   --radius: 0.5rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
@@ -62,7 +158,7 @@
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.5152 0.1025 158.53);
+  --primary: var(--ct-green-500);
   --primary-foreground: oklch(0.98 0.02 155);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -70,10 +166,10 @@
   --muted-foreground: oklch(0.552 0.016 285.938);
   --accent: oklch(0.967 0.001 286.375);
   --accent-foreground: oklch(0.21 0.006 285.885);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(0.5771 0.2152 27.33);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.55 0.18 145);
+  --ring: var(--ct-green-500);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -90,10 +186,10 @@
 
   /* custom variables or preserved colors */
   --color-red-50: oklch(97.1% 0.013 17.38);
-  --color-red-500: oklch(63.7% 0.237 25.331);
+  --color-red-500: oklch(0.5771 0.2152 27.33);
 
-  --color-green-500: oklch(72.3% 0.219 149.579);
-  --color-green-50: oklch(98.2% 0.018 155.826);
+  --color-green-50: var(--ct-green-50);
+  --color-green-500: var(--ct-green-500);
   --color-blue-50: oklch(97% 0.014 254.604);
   --color-blue-500: oklch(62.3% 0.214 259.815);
   --color-blue-600: oklch(54.6% 0.245 262.881);
@@ -148,8 +244,6 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.55 0.18 145);
-
-  /* TODO(ducnm): add green-800 as #1a5a3a */
 }
 
 html,
@@ -171,12 +265,40 @@ pre {
   }
 }
 
+@layer utilities {
+  .text-4xl {
+    font-size: var(--ct-text-4xl);
+  }
+  .text-3xl {
+    font-size: var(--ct-text-3xl);
+  }
+  .text-2xl {
+    font-size: var(--ct-text-2xl);
+  }
+  .text-xl {
+    font-size: var(--ct-text-xl);
+  }
+  .text-lg {
+    font-size: var(--ct-text-lg);
+  }
+  .text-base {
+    font-size: var(--ct-text-base);
+  }
+  .text-sm {
+    font-size: var(--ct-text-sm);
+  }
+  .text-xs {
+    font-size: var(--ct-text-xs);
+  }
+}
+
 .icon-input {
   @apply h-5 w-5 text-gray-400;
 }
 
 .error-message {
-  @apply text-red-600 text-xs;
+  color: var(--ct-error-red);
+  @apply text-xs;
 }
 
 .container {
