@@ -90,9 +90,15 @@ export default function AppInput({
           id={id}
           type={inputType}
           className={cn('bg-white', inputClasses, postfix && 'pr-20')}
+          {...inputProps}
           value={value}
           onChange={onChange}
-          {...inputProps}
+          onKeyDown={e => {
+            if (inputType === 'number' && (e.key === '-' || e.key === 'e')) {
+              e.preventDefault();
+            }
+            inputProps?.onKeyDown?.(e);
+          }}
         />
         {password && (
           <button

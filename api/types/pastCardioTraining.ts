@@ -5,9 +5,11 @@ export type WeeklySummaryResponse = {
   totalDuration: number;
   dailyAverageDistance: number;
   totalDistance: number;
+  distance_unit: string;
   dailyAverageStairs: number;
   totalStairs: number;
   dailyAverageHeartRate: number;
+  unit_type: string;
 };
 
 export type WeeklyWorkoutsResponse = {
@@ -19,6 +21,7 @@ export type WeeklyWorkoutsResponse = {
   rpe: string;
   heart_rate: number;
   notes: string;
+  unit_type: string;
 };
 
 export type PerformanceMetricsResponse = {

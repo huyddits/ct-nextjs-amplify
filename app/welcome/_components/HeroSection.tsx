@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRightIcon } from 'lucide-react';
+import { Logo } from '@/app/_components';
 
 export default function HeroSection() {
   return (
@@ -9,10 +10,7 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-b from-(--primary)/90 to-(--primary)/70 z-10" />
         <div className="relative h-[50vh] min-h-[400px] bg-cover bg-center">
           <div className="absolute inset-0 flex flex-col items-center justify-center z-20 text-white p-6 text-center">
-            {/* Logo */}
-            <div className="h-20 w-20 bg-white rounded-full flex items-center justify-center mb-6">
-              <span className="text-primary text-3xl font-bold">CT</span>
-            </div>
+            <Logo className="rounded-xl overflow-hidden" />
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               Welcome to Cheer Trainer

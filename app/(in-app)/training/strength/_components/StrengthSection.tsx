@@ -16,19 +16,19 @@ const allPrograms = [
     lastCompleted: 'Friday, January 24, 2025',
   },
   {
-    id: '2',
+    id: '3',
     name: 'Leg Power',
     content: 'Box Jumps, Bulgarian Split Squats, Calf Raises',
     lastCompleted: 'Friday, January 24, 2025',
   },
   {
-    id: '3',
+    id: '4',
     name: 'Upper Body Strength',
     content: 'Push-ups, Pull-ups, Shoulder Press, Tricep Dips',
     lastCompleted: 'Tuesday, January 21, 2025',
   },
   {
-    id: '2',
+    id: '5',
     name: 'Core Stability',
     content: 'Planks, Russian Twists, Bicycle Crunches, Dead Bugs',
     lastCompleted: 'Monday, January 20, 2025',

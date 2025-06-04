@@ -7,8 +7,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useCardioStore } from '@/store/useCardio.store';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
+import { useLoading } from '@/hooks';
 
 export default function CardioPage() {
+  const { intervalsList, addInterval, clearCardioSession, setDraft, draft } = useCardioStore();
+  const { loading } = useLoading();
   const {
     control,
     setValue,
@@ -18,50 +21,77 @@ export default function CardioPage() {
     exercisesItems: exercisesOptions,
     selectedExercise,
     onCompleteWorkout,
-  } = useCardio({ onSuccess: () => {}, onFailure: () => {} });
-
-  const { intervalsList, addInterval, clearCardioIntervals } = useCardioStore();
+    reset,
+  } = useCardio({
+    onSuccess: () => {
+      clearCardioSession();
+      reset();
+    },
+    onFailure: () => {},
+  });
 
   const [inputDisabled, setInputDisabled] = useState(false);
 
   useEffect(() => {
-    if (intervalsList.length > 0) {
-      setValue('intervals', intervalsList);
+    if (intervalsList.length) {
+      intervalsList &&
+        setValue(
+          'intervals',
+          intervalsList.map(item => ({
+            ...item,
+            duration: item.duration ?? '',
+            distance: item.distance ?? '',
+            distance_unit: item.distanceUnit ?? '',
+            rpe: item.rpe ?? '',
+            heartRateMax: item.heartRateMax ?? '',
+            heartRateMin: item.heartRateMin ?? '',
+          }))
+        );
       setInputDisabled(true);
-    } else {
-      setInputDisabled(false);
-      setValue('intervals', [
-        {
-          duration: '',
-          rpe: '0',
-          distance: '',
-          distance_unit: '',
-          heartRateMin: '',
-          heartRateMax: '',
-        },
-      ]);
     }
-  }, [intervalsList, setValue]);
+  }, [intervalsList, setValue, getValues]);
+
+  const watchedInterval = useWatch({ control, name: 'intervals.0' });
+  const watchedNotes = useWatch({ control, name: 'notes' });
+  const watchedExercise = useWatch({ control, name: 'exercise' });
+
+  useEffect(() => {
+    const updatedDraft = {
+      ...draft,
+      exercise: watchedExercise ?? '',
+      notes: watchedNotes ?? '',
+      intervals: [
+        {
+          ...draft.intervals[0],
+          ...watchedInterval,
+          distanceUnit: watchedInterval?.distanceUnit || '',
+        },
+      ],
+    };
+    setDraft(updatedDraft);
+  }, [watchedInterval, watchedNotes, watchedExercise]);
 
   const handleCreateInterval = useCallback(async () => {
     const valid = await trigger('intervals.0');
     if (!valid) return;
-
     const currentInterval = getValues('intervals.0');
+    const existingIntervals = getValues('intervals') || [];
+
+    const newIntervals = [...existingIntervals, currentInterval];
+    setValue('intervals', newIntervals);
     addInterval(currentInterval);
     toast.success('Successfully added interval');
     setInputDisabled(true);
   }, []);
 
   const handleCompleteWorkout = async () => {
-    const valid = await trigger('intervals.0');
+    const valid = await trigger(['intervals.0', 'notes']);
     if (!valid) return;
 
     const currentInterval = getValues('intervals.0');
     addInterval(currentInterval);
 
     await onCompleteWorkout(getValues());
-    clearCardioIntervals();
     setInputDisabled(false);
   };
 
@@ -71,7 +101,7 @@ export default function CardioPage() {
     const isEmpty =
       !current.duration &&
       !current.distance &&
-      !current.distance_unit &&
+      !current.distanceUnit &&
       !current.heartRateMin &&
       current.heartRateMin &&
       !current.heartRateMax &&
@@ -83,22 +113,21 @@ export default function CardioPage() {
     }
     setInputDisabled(false);
     setValue('intervals.0', {
-      duration: undefined,
+      duration: '',
       rpe: '0',
-      distance: undefined,
-      distance_unit: '',
-      heartRateMin: undefined,
-      heartRateMax: undefined,
+      distance: '',
+      distanceUnit: '',
+      heartRateMin: '',
+      heartRateMax: '',
     });
   };
 
   const distanceUnit = useWatch({
     control,
-    name: 'intervals.0.distance_unit',
+    name: 'intervals.0.distanceUnit',
   });
 
-  const distanceLabel =
-    distanceUnit === 'Stairs' || distanceUnit === 'Floors' ? 'Stairs' : 'Distance';
+  const distanceLabel = distanceUnit === 'Stairs' ? 'Stairs' : 'Distance';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -110,11 +139,11 @@ export default function CardioPage() {
               <Controller
                 control={control}
                 name="exercise"
-                render={({ field: { value, onChange }, fieldState: { error } }) => (
+                render={({ field, fieldState: { error } }) => (
                   <AppSelect
                     placeholder="Select Type"
-                    selectedValue={value}
-                    onChangeSelected={onChange}
+                    selectedValue={field.value}
+                    onChangeSelected={field.onChange}
                     options={exercisesOptions ?? []}
                     errorMessage={error?.message}
                     fullWidth
@@ -130,6 +159,7 @@ export default function CardioPage() {
                   type="button"
                   className="text-primary"
                   variant="outline"
+                  loading={loading}
                   onClick={handleAddNew}
                 >
                   + Add
@@ -137,79 +167,77 @@ export default function CardioPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Controller
-                    control={control}
-                    name="intervals.0.duration"
-                    render={({ field, fieldState: { error } }) => (
-                      <AppInput
-                        label="Duration (min)"
-                        inputProps={{ placeholder: '5', type: 'number', disabled: inputDisabled }}
-                        errorMessage={error?.message}
-                        {...field}
-                        value={field.value?.toString() ?? ''}
-                        onBlur={() => trigger('intervals.0.duration')}
-                        className="text-sm text-gray-600 "
-                      />
-                    )}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Controller
-                    control={control}
-                    name="intervals.0.rpe"
-                    render={({ field: { value, onChange }, fieldState: { error } }) => (
-                      <AppSelect
-                        label="RPE (0-10)"
-                        placeholder="Select RPE"
-                        selectedValue={value?.toString()}
-                        onChangeSelected={onChange}
-                        options={rpeOptions ?? []}
-                        errorMessage={error?.message}
-                        className="text-sm text-gray-600"
-                        disabled={inputDisabled}
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Controller
-                    control={control}
-                    name="intervals.0.distance"
-                    render={({ field, fieldState: { error } }) => (
-                      <AppInput
-                        label={distanceLabel}
-                        inputProps={{ placeholder: '0.0', type: 'number', disabled: inputDisabled }}
-                        errorMessage={error?.message}
-                        {...field}
-                        value={field.value?.toString() ?? ''}
-                        onBlur={() => trigger('intervals.0.distance')}
-                        className="text-sm text-gray-600"
-                      />
-                    )}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Controller
-                    control={control}
-                    name="intervals.0.distance_unit"
-                    render={({ field: { value, onChange }, fieldState: { error } }) => (
-                      <AppSelect
-                        label="Unit"
-                        selectedValue={value}
-                        onChangeSelected={onChange}
-                        options={selectedExercise?.units ?? []}
-                        errorMessage={error?.message}
-                        className="text-sm text-gray-600"
-                        disabled={inputDisabled}
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
+                <Controller
+                  control={control}
+                  name="intervals.0.duration"
+                  render={({ field, fieldState: { error } }) => (
+                    <AppInput
+                      label="Duration (min)"
+                      inputProps={{
+                        placeholder: '5',
+                        type: 'number',
+                        disabled: inputDisabled,
+                        min: 0,
+                      }}
+                      errorMessage={error?.message}
+                      {...field}
+                      className="text-sm text-gray-600"
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="intervals.0.rpe"
+                  render={({ field, fieldState: { error } }) => (
+                    <AppSelect
+                      label="RPE (0-10)"
+                      placeholder="Select RPE"
+                      selectedValue={field.value?.toString()}
+                      onChangeSelected={field.onChange}
+                      options={rpeOptions ?? []}
+                      errorMessage={error?.message}
+                      className="text-sm text-gray-600"
+                      disabled={inputDisabled}
+                      fullWidth
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="intervals.0.distance"
+                  render={({ field, fieldState: { error } }) => (
+                    <AppInput
+                      label={distanceLabel}
+                      inputProps={{
+                        placeholder: '0.0',
+                        type: 'number',
+                        disabled: inputDisabled,
+                        min: 0,
+                      }}
+                      errorMessage={error?.message}
+                      {...field}
+                      className="text-sm text-gray-600"
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="intervals.0.distanceUnit"
+                  render={({ field, fieldState: { error } }) => (
+                    <AppSelect
+                      label="Unit"
+                      selectedValue={field.value ?? ''}
+                      onChangeSelected={field.onChange}
+                      options={selectedExercise?.units ?? []}
+                      errorMessage={error?.message}
+                      className="text-sm text-gray-600"
+                      disabled={inputDisabled}
+                      fullWidth
+                    />
+                  )}
+                />
                 <div className="col-span-2 space-y-2">
-                  <label className="text-sm text-gray-600 font-medium ">
+                  <label className="text-sm text-gray-600 font-medium">
                     Heart Rate Range (BPM)
                   </label>
                   <div className="flex gap-2 pt-1">
@@ -222,16 +250,15 @@ export default function CardioPage() {
                             placeholder: '140',
                             type: 'number',
                             disabled: inputDisabled,
+                            min: 0,
                           }}
                           errorMessage={error?.message}
                           {...field}
-                          value={field.value?.toString() ?? ''}
-                          onBlur={() => trigger('intervals.0.heartRateMin')}
                           className="text-sm text-gray-600 w-full"
                         />
                       )}
                     />
-                    <span className="text-gray-600">-</span>
+                    <span className="text-gray-600 flex items-center">-</span>
                     <Controller
                       control={control}
                       name="intervals.0.heartRateMax"
@@ -241,11 +268,10 @@ export default function CardioPage() {
                             placeholder: '160',
                             type: 'number',
                             disabled: inputDisabled,
+                            min: 0,
                           }}
                           errorMessage={error?.message}
                           {...field}
-                          value={field.value?.toString() ?? ''}
-                          onBlur={() => trigger('intervals.0.heartRateMax')}
                           className="text-sm text-gray-600 w-full"
                         />
                       )}
@@ -266,20 +292,24 @@ export default function CardioPage() {
                     }}
                     errorMessage={error?.message}
                     {...field}
-                    value={field.value?.toString() ?? ''}
-                    onBlur={() => trigger('notes')}
                   />
                 )}
               />
             </div>
 
             <div className="flex justify-center">
-              <Button type="button" size="lg" onClick={handleCreateInterval}>
+              <Button type="button" size="lg" onClick={handleCreateInterval} loading={loading}>
                 Create Interval
               </Button>
             </div>
 
-            <Button type="button" className="w-full mt-2" size="lg" onClick={handleCompleteWorkout}>
+            <Button
+              type="button"
+              className="w-full mt-2"
+              size="lg"
+              onClick={handleCompleteWorkout}
+              loading={loading}
+            >
               Complete Workout
             </Button>
 

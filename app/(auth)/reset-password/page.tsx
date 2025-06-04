@@ -14,6 +14,7 @@ import { CheckCircleIcon } from 'lucide-react';
 import Link from 'next/link';
 import { FooterSection, LogoSection, PasswordStrength } from '../_components';
 import * as $v from '@/utils/validators';
+import { useLoading } from '@/hooks';
 
 const schema = object().shape({
   password: string()
@@ -36,6 +37,7 @@ export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
   const [isSuccess, setIsSuccess] = useState(false);
+  const { loading, startLoading, stopLoading } = useLoading();
 
   const { control, handleSubmit, trigger } = useForm({
     resolver: yupResolver(schema),
@@ -57,13 +59,22 @@ export default function ResetPasswordPage() {
       return;
     }
     try {
+      startLoading();
       const response = await UserApi.resetPassword({ new_password: data.password, token });
       if (response.data.status === 'success') {
         setIsSuccess(true);
+      } else {
+        console.log(response.data?.error);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       setIsSuccess(false);
+      // TODO(ducnm): need to recheck when api is ready
+      if (error?.response?.data?.message === 'jwt expired') {
+        toast.error('Your reset password link has been expired. Please request a new one.');
+      }
+    } finally {
+      stopLoading();
     }
   };
 
@@ -127,7 +138,7 @@ export default function ResetPasswordPage() {
                   );
                 }}
               />
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" loading={loading}>
                 Reset Password
               </Button>
             </form>

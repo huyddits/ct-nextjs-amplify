@@ -217,15 +217,19 @@ export const useBillingAndSubscription = () => {
     customerId: string;
     subscriptionId: string;
   }) => {
+    if (!info) {
+      console.log('Cannot change plan without info');
+      return;
+    }
     try {
-      const promotionCode = listApplied.includes(subscriptionId) ? [promoCode] : [];
+      const promotionCode = listApplied.includes(subscriptionId) ? promoCode : '';
       const response = await BillingApi.changePlan({
-        promotion_code: promotionCode,
+        // promotion_code: promotionCode,
         customer_id: customerId,
-        subscription_id: subscriptionId,
+        account_type: info.accountType,
+        discounts: promotionCode,
       });
 
-      console.log('response.data', response.data);
       if (!response.data.data?.url) {
         throw response.data.error;
       }

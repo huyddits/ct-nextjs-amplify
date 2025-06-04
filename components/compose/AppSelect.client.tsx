@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 export type SelectOption = {
   label: string;
   value: string;
+  unitType?: string;
   [key: string]: any;
 };
 

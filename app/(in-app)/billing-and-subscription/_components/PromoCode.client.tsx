@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { type SubscriptionPlan } from '@/hooks';
 import { BillingCycle } from '@/utils/types';
 import { AppInput } from '@/components/compose';
+import { ERROR_MESSAGES } from '@/utils/constants';
 
 interface PromoCodeProps {
   discount?: number;
@@ -27,7 +28,13 @@ export default function PromoCode({
   onClear,
 }: PromoCodeProps) {
   const [value, setValue] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
   const handleApplyPromo = () => {
+    if (!value.trim()) {
+      setErrorMessage(ERROR_MESSAGES.INPUT);
+      return;
+    }
     onApply?.(value);
   };
 
@@ -50,13 +57,20 @@ export default function PromoCode({
 
   const showIcon = value.length;
 
+  const clearErrorMessage = () => {
+    setErrorMessage('');
+  };
+
   return (
     <div className={cn('bg-white p-4 rounded-lg shadow-sm mb-4', className)}>
       <h2 className="text-sm text-gray-600 mb-3">Promotional Code</h2>
       <div className="flex space-x-2">
         <AppInput
           value={value}
-          onChange={e => setValue(e.target.value)}
+          onChange={e => {
+            setValue(e.target.value);
+            clearErrorMessage();
+          }}
           className="text-sm"
           inputProps={{ placeholder: 'Enter promo code', className: 'text-sm' }}
           fullWidth
@@ -65,13 +79,15 @@ export default function PromoCode({
               <XIcon
                 className="w-3 h-3 cursor-pointer z-10"
                 onClick={() => {
-                  setValue('');
                   onClear?.();
+                  setValue('');
+                  clearErrorMessage();
                 }}
               />
             ) : undefined
           }
           iconPosition="end"
+          errorMessage={errorMessage}
         />
         <Button variant="outline" className="whitespace-nowrap" onClick={handleApplyPromo}>
           Apply Code
