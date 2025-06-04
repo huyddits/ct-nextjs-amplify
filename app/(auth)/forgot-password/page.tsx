@@ -13,6 +13,7 @@ import { ERROR_MESSAGES, ROUTES } from '@/utils/constants';
 import Link from 'next/link';
 import { FooterSection, LogoSection } from '../_components';
 import * as $v from '@/utils/validators';
+import { useLoading } from '@/hooks';
 const schema = object().shape({
   email: string()
     .required(ERROR_MESSAGES.INPUT)
@@ -24,6 +25,7 @@ export default function ForgotPasswordPage() {
   const recaptchaRef = createRef<ReCAPTCHA>();
   const [reCaptchaToken, setReCaptchaToken] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const { loading, startLoading, stopLoading } = useLoading();
   const {
     control,
     formState: { isValid },
@@ -31,6 +33,9 @@ export default function ForgotPasswordPage() {
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(schema),
+    defaultValues: {
+      email: '',
+    },
   });
 
   const email = useWatch({ control, name: 'email' });
@@ -41,9 +46,8 @@ export default function ForgotPasswordPage() {
       return;
     }
     try {
-      const response = await UserApi.forgotPassword({ email, captcha: reCaptchaToken });
-
-      console.log(response.data.data?.token, reCaptchaToken);
+      startLoading();
+      await UserApi.forgotPassword({ email, captcha: reCaptchaToken });
       toast.success('Please check your email to reset your password.');
       setIsSuccess(true);
     } catch (error) {
@@ -53,11 +57,12 @@ export default function ForgotPasswordPage() {
       setTimeout(() => {
         recaptchaRef.current?.reset();
       }, 1000);
+    } finally {
+      stopLoading();
     }
   };
 
   const onChange = (token: string | null) => {
-    console.log('onChange reCaptchaToken', token);
     if (token) {
       setReCaptchaToken(token);
     } else {
@@ -112,6 +117,7 @@ export default function ForgotPasswordPage() {
               <Button
                 onClick={onForgotPassword}
                 className="w-full"
+                loading={loading}
                 disabled={!isValid || !reCaptchaToken}
               >
                 Submit

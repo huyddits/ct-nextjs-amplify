@@ -1,3 +1,4 @@
+import { Logo } from '@/app/_components';
 import { Mail, Phone, Instagram, Twitter, Facebook } from 'lucide-react';
 
 export default function AboutUs() {
@@ -15,11 +16,7 @@ export default function AboutUs() {
                 Where Expertise Meets Passion
               </h2>
               <div className="relative h-48 rounded-lg overflow-hidden mb-4">
-                <img
-                  src="/placeholder.svg?height=192&width=576"
-                  alt="Cheerleading team in action"
-                  className="object-cover w-full h-full"
-                />
+                <Logo className="object-cover w-48 h-full" />
               </div>
               <p className="text-gray-600">
                 Cheer Trainer is a pioneering progressive web application created by Dr. Chaz

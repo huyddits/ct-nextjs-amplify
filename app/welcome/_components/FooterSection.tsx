@@ -1,13 +1,12 @@
 import { ROUTES } from '@/utils/constants';
 import Link from 'next/link';
+import { Logo } from '@/app/_components';
 
 export default function FooterSection() {
   return (
     <footer className="bg-white border-t border-gray-200 py-8 mt-12">
       <div className="max-w-5xl mx-auto px-4 text-center">
-        <div className="h-12 w-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-          <span className="text-white text-lg font-bold">CT</span>
-        </div>
+        <Logo className="w-12 h-12" />
         <p className="text-gray-600 mb-4">
           © {new Date().getFullYear()} Cheer Trainer. All rights reserved.
         </p>
