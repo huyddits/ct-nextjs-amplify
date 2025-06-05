@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { DumbbellIcon, Filter, ChevronUp, ChevronDown, X } from 'lucide-react';
+import { DumbbellIcon, FilterIcon, ChevronUpIcon, ChevronDownIcon, XIcon } from 'lucide-react';
 
-export function EquipmentFilter({ equipmentOptions }: { equipmentOptions: string[] }) {
+export function EquipmentFilter({ equipmentOptions }: Readonly<{ equipmentOptions: string[] }>) {
   const [equipmentFilterOpen, setEquipmentFilterOpen] = useState(false);
   const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
 
   return (
     <>
       <div className="bg-white rounded-lg shadow-sm mb-4 overflow-hidden">
-        <div className="bg-green-20 border-b p-4">
+        <div className="bg-green-50 border-b p-4">
           <h2 className="text-base font-medium text-primary flex items-center">
             <DumbbellIcon className="h-5 w-5 mr-2" />
             Equipment Filter
@@ -22,7 +22,7 @@ export function EquipmentFilter({ equipmentOptions }: { equipmentOptions: string
             onClick={() => setEquipmentFilterOpen(!equipmentFilterOpen)}
           >
             <div className="flex items-center">
-              <Filter className="h-4 w-4 mr-2 text-primary" />
+              <FilterIcon className="h-4 w-4 mr-2 text-primary" />
               <span className="text-sm">Select equipment types</span>
               {selectedEquipment.length > 0 && (
                 <span className="ml-2 px-2 py-0.5  text-primary rounded-full text-xs">
@@ -31,9 +31,9 @@ export function EquipmentFilter({ equipmentOptions }: { equipmentOptions: string
               )}
             </div>
             {equipmentFilterOpen ? (
-              <ChevronUp className="h-4 w-4" />
+              <ChevronUpIcon className="h-4 w-4" />
             ) : (
-              <ChevronDown className="h-4 w-4" />
+              <ChevronDownIcon className="h-4 w-4" />
             )}
           </button>
         </div>
@@ -51,22 +51,19 @@ export function EquipmentFilter({ equipmentOptions }: { equipmentOptions: string
             </button>
           </div>
 
-          {selectedEquipment.length > 0 && (
+          {selectedEquipment.length.toString() && (
             <div className="flex flex-wrap gap-2 mb-3">
               {selectedEquipment.map(item => (
                 <div
                   key={item}
                   className="flex items-center bg-green-20 text-primary px-2 py-1 rounded-full text-xs"
                 >
-                  <span>
-                    {item as string}.charAt(0).toUpperCase() + {item as string}
-                    .slice(1).replace(/-/g, " ")
-                  </span>
+                  <span>{item.charAt(0).toUpperCase() + item.slice(1).replace(/-/g, ' ')}</span>
                   <button
                     className="ml-1"
                     onClick={() => setSelectedEquipment(selectedEquipment.filter(i => i !== item))}
                   >
-                    <X className="h-3 w-3" />
+                    <XIcon className="h-3 w-3" />
                   </button>
                 </div>
               ))}

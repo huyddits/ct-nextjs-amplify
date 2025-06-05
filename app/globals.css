@@ -383,6 +383,14 @@ pre {
   @apply pl-[40%];
 }
 
+.padding-top-pagePast {
+  @apply pt-[56px];
+}
+
+.padding-bottom-pagePast {
+  @apply pb-[80px];
+}
+
 /* add bottom */
 .bottom-app {
   @apply bottom-[60px];

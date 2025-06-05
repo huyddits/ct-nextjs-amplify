@@ -9,7 +9,7 @@ import {
 export default function PastStrengthTrainingPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   return (
-    <div className="pt-[56px] pb-[80px] max-w-3xl mx-auto px-4">
+    <div className="padding-top-pagePast padding-bottom-pagePast w-3xl mx-auto px-4">
       <TitlePastStrength />
       <main>
         <DatePastStrengthSection selectedDate={selectedDate} onChangeDate={setSelectedDate} />
