@@ -21,9 +21,10 @@ export const useCategories = () => {
       const response = await CategoryApi.getRoles();
       const { data, error } = response.data;
       if (!data) throw error;
-      const roleItems = data.map(({ name, id }) => ({
-        label: name,
-        value: id.toString(),
+      const roleItems = data.map(item => ({
+        label: item.name,
+        value: item.id.toString(),
+        isCoach: item.is_coach,
       }));
       setRoles(roleItems);
     } catch (error) {
@@ -77,7 +78,22 @@ export const useCategories = () => {
     }
   };
 
-  const getMeasurementUnits = async () => {};
+  const getMeasurementUnits = async () => {
+    if (measurementUnits.length) return;
+    try {
+      const response = await CategoryApi.getMeasurementUnits();
+      const { data, error } = response.data;
+      if (!data) throw error;
+      const measurementUnitItems = data.map(({ name, id }) => ({
+        label: name,
+        value: id.toString(),
+      }));
+      console.log('measurementUnitItems', measurementUnitItems);
+      setMeasurementUnits(measurementUnitItems);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     getEquipments();
@@ -86,6 +102,8 @@ export const useCategories = () => {
     getCheerTypes();
     getMeasurementUnits();
   }, []);
+
+  useEffect(() => console.log(roles));
 
   return {
     roles,

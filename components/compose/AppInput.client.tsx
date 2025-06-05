@@ -7,15 +7,18 @@ import { cn } from '@/lib/utils';
 
 interface AppInputProps extends React.HTMLAttributes<HTMLDivElement> {
   id?: string;
-  label?: string;
+  label?: string | JSX.Element;
   icon?: JSX.Element;
   iconPosition?: 'start' | 'end';
+  size?: 'sm' | 'md' | 'lg';
   value?: string;
+  readonly?: boolean;
   required?: boolean;
+  disabled?: boolean;
   password?: boolean;
   inputProps?: Omit<
     InputHTMLAttributes<HTMLInputElement>,
-    'value' | 'onChange' | 'onBlur' | 'name' | 'ref'
+    'value' | 'onChange' | 'onBlur' | 'name' | 'ref' | 'disabled' | 'readonly'
   >;
   fullWidth?: boolean;
   errorMessage?: string;
@@ -26,11 +29,14 @@ interface AppInputProps extends React.HTMLAttributes<HTMLDivElement> {
 export default function AppInput({
   id,
   icon,
+  size = 'md',
   label,
   value,
   postfix,
   required,
+  disabled,
   password,
+  readonly,
   fullWidth,
   inputProps,
   errorMessage,
@@ -60,26 +66,41 @@ export default function AppInput({
   }, [iconPosition]);
 
   const inputClasses = useMemo(() => {
+    let classes = [];
+    if (!icon) {
+      classes.push('pl-3');
+    }
     if (icon && iconPos === 'start') {
-      return 'pl-10';
+      classes.push('pl-10');
     }
     if (icon && iconPos === 'end') {
-      return 'pr-10';
+      classes.push('pr-10');
     }
-    return 'pl-3';
-  }, [icon, iconPos]);
+    if (size === 'sm') {
+      classes.push('py-1');
+    }
+    if (size === 'md') {
+      classes.push('py-2');
+    }
+    if (size === 'lg') {
+      classes.push('py-5');
+    }
+
+    return classes.join(' ');
+  }, [icon, iconPos, size]);
 
   return (
     <div
       {...containerProps}
       className={cn('space-y-2', containerProps.className, fullWidth && 'w-full')}
     >
-      {label && (
-        <Label htmlFor={id}>
+      {label && typeof label === 'string' && (
+        <Label htmlFor={id} className="text-gray-600">
           {label}
           {required && <span className="text-red-600">*</span>}
         </Label>
       )}
+      {label && typeof label === 'object' && label}
       <div className="relative flex items-stretch">
         {icon && iconPos === 'start' && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -89,8 +110,10 @@ export default function AppInput({
         <Input
           id={id}
           type={inputType}
-          className={cn('bg-white', inputClasses, postfix && 'pr-20')}
           {...inputProps}
+          readOnly={readonly}
+          disabled={disabled}
+          className={cn('bg-white', inputClasses, postfix && 'pr-20', inputProps?.className)}
           value={value}
           onChange={onChange}
           onKeyDown={e => {

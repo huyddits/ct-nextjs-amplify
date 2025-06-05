@@ -34,7 +34,7 @@ export default function PastTrainingPage() {
     usePastCardioTraining(options);
 
   return (
-    <div className="pt-[56px] pb-[80px] max-w-3xl mx-auto px-4">
+    <div className="padding-bottom-pagePast padding-top-pagePast max-w-3xl mx-auto px-4">
       <PastTraining />
       <main>
         <DatePastTrainingSection selectedDate={selectedDate} onChangeDate={setSelectedDate} />

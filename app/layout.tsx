@@ -94,6 +94,7 @@ export default function RootLayout({
         {/* <ServiceWorkerRegister /> */}
         <ToastContainerClient />
         <AppConfirm />
+        <div className="hidden bg-gray-100/50 w-5 h-5" />
       </body>
     </html>
   );

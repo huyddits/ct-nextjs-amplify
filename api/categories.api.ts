@@ -22,3 +22,7 @@ export const getCheerTypes = () => {
 export const getEquipments = () => {
   return axiosIns.get<GetListEquipmentsResponse>(END_POINTS.EQUIPMENTS);
 };
+
+export const getMeasurementUnits = () => {
+  return axiosIns.get<GetListEquipmentsResponse>(END_POINTS.MEASUREMENT_UNITS);
+};
