@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { InferType, object, string, ref, array } from 'yup';
+import { type InferType, object, string, ref, array } from 'yup';
 import { UserApi } from '@/api';
 import dayjs from 'dayjs';
 import { AccountType, MeasurementUnit } from '@/utils/types';
@@ -22,21 +22,15 @@ export const useSignup = (options: UseSignupOptions) => {
         .required(ERROR_MESSAGES.SELECT),
       firstName: string()
         .required(ERROR_MESSAGES.INPUT)
-        .matches(
-          $v.PATTERN.NAME,
-          `Users are allowed to input any characters except the special characters specified in the following list: '@, #, !, *, $, %, ^, &, +'`
-        )
+        .matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME)
         .max(50, 'First name cannot exceed 50 characters'),
       lastName: string()
         .required(ERROR_MESSAGES.INPUT)
-        .matches(
-          $v.PATTERN.NAME,
-          `Users are allowed to input any characters except the special characters specified in the following list: '@, #, !, *, $, %, ^, &, +'`
-        )
+        .matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME)
         .max(50, 'Last name cannot exceed 50 characters'),
       email: string()
         .required(ERROR_MESSAGES.INPUT)
-        .matches($v.PATTERN.EMAIL, 'Please enter a valid email address (example: name@domain.com).')
+        .matches($v.PATTERN.EMAIL, ERROR_MESSAGES.EMAIL)
         .max(100, 'Email cannot exceed 100 characters'),
       password: string()
         .required(ERROR_MESSAGES.INPUT)
@@ -55,18 +49,13 @@ export const useSignup = (options: UseSignupOptions) => {
       dateOfBirth: string().required(ERROR_MESSAGES.INPUT),
       schoolName: string()
         .required(ERROR_MESSAGES.INPUT)
-        .matches(
-          $v.PATTERN.NAME,
-          `Users are allowed to input any characters except the special characters specified in the following list: '@, #, !, *, $, %, ^, &, +'`
-        )
+        .matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME)
         .max(100, 'School Name cannot exceed 100 characters'),
       cheerType: string().required(ERROR_MESSAGES.SELECT),
       cheerStyle: string().required(ERROR_MESSAGES.SELECT),
       role: string().required(ERROR_MESSAGES.SELECT),
       equipment: array(string().required()).required(),
-      measurementUnit: string()
-        .oneOf([MeasurementUnit.Imperial, MeasurementUnit.Metric, ''])
-        .required(ERROR_MESSAGES.SELECT),
+      measurementUnit: string().required(ERROR_MESSAGES.SELECT),
     });
   }, []);
 
@@ -103,10 +92,14 @@ export const useSignup = (options: UseSignupOptions) => {
   });
 
   const onValid = async (data: FormType) => {
+    if (!data.role || !data.measurementUnit) {
+      return console.log('invalid', data);
+    }
     try {
       startLoading();
-      console.log(data);
+      console.log({ data });
       const response = await UserApi.registerUser({
+        school_name: data.schoolName,
         account_type: data.userType,
         cheer_style_id: Number(data.cheerStyle),
         cheer_type_id: Number(data.cheerType),
@@ -116,8 +109,8 @@ export const useSignup = (options: UseSignupOptions) => {
         first_name: data.firstName,
         last_name: data.lastName,
         password: data.password,
-        role_id: +data.role,
-        measurement_unit: data.measurementUnit as MeasurementUnit,
+        role_id: +data.role, // for coach role is 3
+        measurement_unit_id: +data.measurementUnit,
       });
       console.log('🚀 ~ onValid ~ response:', response);
       options?.onSuccess?.();
@@ -136,10 +129,11 @@ export const useSignup = (options: UseSignupOptions) => {
 
   const userType = useWatch({ control, name: 'userType' });
   const password = useWatch({ control, name: 'password' });
+  const cheerType = useWatch({ control, name: 'cheerType' });
 
-  useEffect(() => {
-    setValue('role', userType === 'coach' ? 'coach' : '');
-  }, [userType]);
+  // useEffect(() => {
+  //   setValue('role', userType === AccountType.Coach ? AccountType.Coach : '');
+  // }, [userType, setValue]);
 
   return {
     loading,
@@ -149,6 +143,7 @@ export const useSignup = (options: UseSignupOptions) => {
     control,
 
     trigger,
+    setValue,
     onSubmit,
   };
 };

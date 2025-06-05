@@ -1,4 +1,4 @@
-import {
+import type {
   AccountType,
   ApiResponse,
   BillingCycle,
@@ -44,7 +44,9 @@ export type CreateUserPayload = {
   role_id: number;
   equipment_ids: number[];
   account_type: AccountType;
-  measurement_unit: MeasurementUnit;
+  school_name: string;
+  // measurement_unit: MeasurementUnit;
+  measurement_unit_id: number;
 };
 
 export type CreateUserResponse = ApiResponse<
@@ -76,43 +78,34 @@ export type ResetPasswordPayload = {
   new_password: string;
 };
 
-export type PersonalInfoResponse = ApiResponse<
+export type UserProfile = {
+  profile_id: string;
+  date_of_birth: string;
+  measurement_unit: MeasurementUnit;
+  coach_code: string;
+  first_name: string;
+  last_name: string;
+  role_id: number;
+  role_name: string;
+  cheer_style_id: number;
+  cheer_style_name: string;
+  cheer_type_id: number;
+  cheer_type_name: string;
+  measurement_unit_id: number;
+  measurement_unit_name: string;
+  school_name: string;
+};
+
+export type GetPersonalInfoResponse = ApiResponse<
   {
     user_id: string;
     account_type: AccountType;
-    first_name: string;
-    last_name: string;
     email: string;
     is_active: boolean;
     created_at: string;
     stripe_customer_id: string;
     stripe_subscription_id: string | null;
-    profile: {
-      profile_id: string;
-      date_of_birth: string;
-      measurement_unit: string;
-      // TODO(ducnm): need to remove after BE fix
-      // role: {
-      //   id: number;
-      //   name: string;
-      // };
-      // cheer_types: [
-      //   {
-      //     id: number;
-      //     name: string;
-      //   },
-      // ];
-      // cheer_styles: [
-      //   {
-      //     id: number;
-      //     name: string;
-      //   },
-      // ];
-      // TODO(ducnm): need to remove after BE fix
-      cheer_styles: string;
-      cheer_types: string;
-      coach_code: string | null;
-    };
+    profile: UserProfile;
     equipments: [
       {
         id: number;
@@ -120,6 +113,39 @@ export type PersonalInfoResponse = ApiResponse<
       },
     ];
     plan: PlanSubscription[];
+  },
+  {}
+>;
+
+export type UpdatePersonalInfoPayload = {
+  first_name: string;
+  last_name: string;
+  school_name: string;
+  email: string;
+  date_of_birth: string; // exp: "2025-06-03T09:40:39.093Z",
+  cheer_type_id: number;
+  cheer_style_id: number;
+  role: number;
+  coach_code?: string;
+  // measurement_unit_id: MeasurementUnit;
+  measurement_unit_id: number;
+  equipments: number[];
+};
+
+export type UpdatePersonalInfoResponse = ApiResponse<
+  {
+    email: string;
+    profile_id: string;
+    first_name: string;
+    last_name: string;
+    school_name: string;
+    date_of_birth: string; // ISO 8601 string
+    coach_code: string;
+    measurement_unit: { id: number; name: string; type: string };
+    cheer_types: { name: string; id: number };
+    cheer_styles: { name: string; id: number };
+    role: { name: string; id: number };
+    equipments: { name: string; id: number }[];
   },
   {}
 >;
