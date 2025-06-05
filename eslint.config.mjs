@@ -14,10 +14,18 @@ export default defineConfig([
   pluginReact.configs.flat.recommended,
   // custom
   {
-    plugins: [pluginImport, reactHooks],
+    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    plugins: {
+      import: pluginImport,
+      'react-hooks': reactHooks
+    },
     rules: {
+      'no-unused-vars': 'off',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': [
-        'warn',
+        'error',
         {
           args: 'all',
           argsIgnorePattern: '^_',
@@ -36,6 +44,16 @@ export default defineConfig([
           fixStyle: 'separate-type-imports'
         }
       ],
+      '@typescript-eslint/ban-types': [
+        'warn',
+        {
+          types: {
+            '{}': false
+          },
+          extendDefaults: true
+        }
+      ]
+
     }
   },
 

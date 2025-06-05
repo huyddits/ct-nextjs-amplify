@@ -5,13 +5,15 @@ type CategoryItem = {
   label: string;
   value: string;
 };
+
+type RoleItem = CategoryItem & { isCoach: boolean };
 type CategoryStore = {
-  roles: CategoryItem[];
+  roles: RoleItem[];
   equipments: CategoryItem[];
   cheerTypes: CategoryItem[];
   cheerStyles: CategoryItem[];
   measurementUnits: CategoryItem[];
-  setRoles: (value: CategoryItem[]) => void;
+  setRoles: (value: RoleItem[]) => void;
   setEquipments: (value: CategoryItem[]) => void;
   setCheerTypes: (value: CategoryItem[]) => void;
   setCheerStyles: (value: CategoryItem[]) => void;

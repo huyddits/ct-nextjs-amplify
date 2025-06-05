@@ -23,7 +23,7 @@ export const useLogin = (options: UseLoginOptions) => {
   const formSchema = object().shape({
     email: string()
       .required(ERROR_MESSAGES.INPUT)
-      .matches($v.PATTERN.EMAIL, 'Please enter a valid email address (example: name@domain.com).')
+      .matches($v.PATTERN.EMAIL, ERROR_MESSAGES.EMAIL)
       .max(100, 'Email cannot exceed 100 characters'),
     password: string()
       .required(ERROR_MESSAGES.INPUT)

@@ -2,9 +2,11 @@ export const END_POINTS = {
   EQUIPMENTS: 'equipments',
   CHEER_STYLES: 'cheer-styles',
   CHEER_TYPES: 'cheer-types',
+  MEASUREMENT_UNITS: 'measurement/measurement-unit',
   ROLES: 'roles',
   USERS: 'users',
   USERS_ME: 'users/me',
+  USERS_PROFILE: 'users/profile',
 
   USERS_FORGOT_PASSWORD: 'users/forgot-password',
   USERS_RESET_PASSWORD: 'users/reset-password',
