@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+@source "./src/**/*.{js,ts,jsx,tsx}";
+
 @custom-variant dark (&:is(.dark *));
 
 /* https://tailwindcss.com/docs/theme */
@@ -265,7 +267,7 @@ pre {
   }
 }
 
-@layer utilities {
+/* @layer utilities {
   .text-4xl {
     font-size: var(--ct-text-4xl);
   }
@@ -290,7 +292,7 @@ pre {
   .text-xs {
     font-size: var(--ct-text-xs);
   }
-}
+} */
 
 .icon-input {
   @apply h-5 w-5 text-gray-400;

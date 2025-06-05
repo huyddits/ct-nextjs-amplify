@@ -37,21 +37,24 @@ export enum MeasurementUnit {
 
 export type PersonalInfo = {
   id: string;
+  coachCode: string | null;
   accountType: AccountType;
   firstName: string;
   lastName: string;
   email: string;
+  schoolName: string;
   isActive: boolean;
   createdAt: string;
   profileId: string;
   dateOfBirth: string;
-  measurementUnit: string;
   roleId: number;
   roleName: string;
   cheerTypeId: number;
   cheerTypeName: string;
   cheerStyleId: number;
   cheerStyleName: string;
+  measurementUnitId: number;
+  measurementUnitName: string;
   equipmentIds: number[];
   userPlanId: string;
   planId: string;

@@ -32,17 +32,17 @@ export default function AppSelect({
   label,
   options,
   required,
+  disabled,
   className,
   fullWidth,
   placeholder,
   defaultLabel,
   errorMessage,
   selectedValue,
-  disabled,
   onChangeSelected,
 }: Readonly<AppSelectProps>) {
   const [isChanged, setIsChanged] = useState(false);
-  const selectedLabel = defaultLabel ?? options.find(o => o.value === selectedValue)?.label;
+  const selectedLabel = defaultLabel ?? options.find(o => o.value === selectedValue)?.label ?? '';
 
   const onValueChange = useCallback(
     (value: string) => {
@@ -57,7 +57,7 @@ export default function AppSelect({
         (label instanceof React.Component ? (
           label
         ) : (
-          <Label id={id}>
+          <Label id={id} className="text-gray-600">
             {label} {required && <span className="text-red-600">*</span>}
           </Label>
         ))}
@@ -76,7 +76,7 @@ export default function AppSelect({
               disabled={disabled}
             />
           ) : (
-            <SelectValue placeholder={placeholder} />
+            <SelectValue placeholder={placeholder} aria-disabled={disabled} />
           )}
         </SelectTrigger>
         <SelectContent>
