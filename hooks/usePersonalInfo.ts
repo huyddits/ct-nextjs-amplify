@@ -21,34 +21,26 @@ export const usePersonalInfo = () => {
         [PlanStatus.Active, PlanStatus.Canceled].includes(status)
       );
 
-      console.log({ foundPlan });
-      // TODO(ducnm): need to remove after BE fix
-
       setInfo({
         id: data.user_id,
+        coachCode: data.profile.coach_code,
         accountType: data.account_type,
-        firstName: data.first_name,
-        lastName: data.last_name,
+        firstName: data.profile.first_name,
+        lastName: data.profile.last_name,
         email: data.email,
+        schoolName: data.profile.school_name,
         isActive: data.is_active,
         createdAt: data.created_at,
         profileId: data.profile?.profile_id ?? '',
         dateOfBirth: data.profile?.date_of_birth ?? '',
-        measurementUnit: data.profile?.measurement_unit ?? '',
-        // TODO(ducnm): need to remove after BE fix
-        // roleId: data.profile?.role?.id ?? 0,
-        // roleName: data.profile?.role?.name ?? '',
-        // cheerTypeId: data.profile?.cheer_types?.[0]?.id ?? 0,
-        // cheerTypeName: data.profile?.cheer_types?.[0]?.name ?? '',
-        // cheerStyleId: data.profile?.cheer_styles?.[0]?.id ?? 0,
-        // cheerStyleName: data.profile?.cheer_styles?.[0]?.name ?? '',
-        cheerStyleId: 0,
-        cheerStyleName: '',
-        cheerTypeId: 0,
-        cheerTypeName: '',
-        roleId: 0,
-        roleName: '',
-        // TODO(ducnm): need to remove after BE fix
+        measurementUnitId: data.profile?.measurement_unit_id,
+        measurementUnitName: data.profile.measurement_unit_name,
+        roleId: data.profile?.role_id ?? 0,
+        roleName: data.profile?.role_name ?? '',
+        cheerTypeId: data.profile?.cheer_type_id,
+        cheerTypeName: data.profile?.cheer_type_name,
+        cheerStyleId: data.profile?.cheer_style_id,
+        cheerStyleName: data.profile?.cheer_style_name,
         equipmentIds: data.equipments?.map(e => e.id) ?? [],
         userPlanId: foundPlan?.user_plan_id ?? '',
         planName: foundPlan?.plan.name ?? '',

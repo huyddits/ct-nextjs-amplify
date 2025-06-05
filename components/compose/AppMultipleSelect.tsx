@@ -20,6 +20,7 @@ type MultipleSelectOption = {
 interface AppMultipleSelectProps {
   label: string;
   options: MultipleSelectOption[];
+  disabled?: boolean;
   required?: boolean;
   className?: string;
   placeholder?: string;
@@ -33,6 +34,7 @@ interface AppMultipleSelectProps {
 export default function AppMultipleSelect({
   label,
   options,
+  disabled,
   required,
   className,
   placeholder,
@@ -72,19 +74,23 @@ export default function AppMultipleSelect({
   return (
     <div className={cn('space-y-2 relative', className)}>
       {label && (
-        <Label>
+        <Label className="text-gray-600">
           {label}
           {required && <span className="text-red-600">*</span>}
         </Label>
       )}
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-        <DropdownMenuTrigger asChild>
-          <div className="relative shadow-xs">
+        <DropdownMenuTrigger asChild disabled={disabled}>
+          <div className={cn('relative', disabled && 'shadow-xs')}>
             <Input
               placeholder={placeholder}
               value={selectedLabels}
-              className="text-left cursor-pointer truncate overflow-hidden whitespace-nowrap"
+              className={cn(
+                'text-left truncate overflow-hidden whitespace-nowrap',
+                disabled ? 'bg-[#000]' : ''
+              )}
               readOnly
+              disabled={disabled}
             />
             <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none opacity-50" />
           </div>
