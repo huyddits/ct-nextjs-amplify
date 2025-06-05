@@ -193,6 +193,7 @@
   --color-blue-50: oklch(97% 0.014 254.604);
   --color-blue-500: oklch(62.3% 0.214 259.815);
   --color-blue-600: oklch(54.6% 0.245 262.881);
+  --color-green-20: oklch(0.9698 0.0091 161.35);
 
   --color-gray-50: oklch(98.5% 0.002 247.839);
   --color-gray-100: oklch(96.7% 0.003 264.542);
@@ -311,6 +312,9 @@ pre {
 .bg-blue-50 {
   @apply bg-[var(--color-blue-50)];
 }
+.bg-green-20 {
+  @apply bg-[var(--color-green-20)];
+}
 
 /* Add border */
 .border-red-500 {
@@ -377,6 +381,14 @@ pre {
 
 .padding-left-button {
   @apply pl-[40%];
+}
+
+.padding-top-pagePast {
+  @apply pt-[56px];
+}
+
+.padding-bottom-pagePast {
+  @apply pb-[80px];
 }
 
 /* add bottom */
