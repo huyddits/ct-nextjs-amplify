@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   MailIcon,
@@ -16,13 +16,14 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Controller } from 'react-hook-form';
 import { AppDatePicker, AppInput, AppRadioGroup, AppSelect } from '@/components/compose';
-import { MEASUREMENT_UNIT_OPTIONS, ROUTES, USER_TYPE_OPTIONS } from '@/utils/constants';
+import { ROUTES, USER_TYPE_OPTIONS } from '@/utils/constants';
 import { useCategories } from '@/hooks';
 import { useSignup } from '../_hooks';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import AppMultipleSelect from '@/components/compose/AppMultipleSelect';
 import { PasswordStrength } from '../../_components';
+import { AccountType } from '@/utils/types';
 
 export default function SignupForm() {
   const router = useRouter();
@@ -31,9 +32,9 @@ export default function SignupForm() {
     cheerStyles: cheerStyleOptions,
     cheerTypes: cheerTypeOptions,
     equipments: equipmentOptions,
-    measurementUnits: _measurementUnitOptions,
+    measurementUnits: measurementUnitOptions,
   } = useCategories();
-  const { control, isValid, userType, password, loading, onSubmit, trigger } = useSignup({
+  const { control, isValid, userType, password, loading, onSubmit, trigger, setValue } = useSignup({
     onSuccess: () => {
       toast.success('Account create successfully');
       router.push(`/${ROUTES.LOGIN}`);
@@ -45,13 +46,21 @@ export default function SignupForm() {
 
   const [isAgree, setIsAgree] = useState(false);
 
+  const roleOptionsByType = useMemo(() => {
+    return roleOptions.filter(item => item.isCoach === (userType === AccountType.Coach));
+  }, [roleOptions, userType]);
+
+  useEffect(() => {
+    setValue('role', roleOptionsByType.find(item => item.isCoach)?.value ?? '');
+  }, [userType]);
+
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
       <form onSubmit={onSubmit} className="space-y-4">
         <Controller
           control={control}
           name="userType"
-          render={({ field: { value, onChange }, fieldState }) => (
+          render={({ field: { value, onChange } }) => (
             <AppRadioGroup
               label="I am a:"
               options={USER_TYPE_OPTIONS}
@@ -230,7 +239,7 @@ export default function SignupForm() {
             render={({ field: { value, onChange }, fieldState: { error } }) => (
               <AppSelect
                 label="Role"
-                options={roleOptions}
+                options={roleOptionsByType}
                 selectedValue={value}
                 onChangeSelected={onChange}
                 placeholder="Select Role"
@@ -272,8 +281,7 @@ export default function SignupForm() {
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <AppSelect
               label="Measurement Unit"
-              // options={measurementUnitOptions}
-              options={MEASUREMENT_UNIT_OPTIONS}
+              options={measurementUnitOptions}
               selectedValue={value}
               onChangeSelected={onChange}
               placeholder="Select Unit"

@@ -1,12 +1,14 @@
 import axiosIns from '@/lib/axiosIns';
 import { END_POINTS } from '@/utils/constants';
-import {
+import type {
   CreateUserPayload,
   CreateUserResponse,
   ResetPasswordPayload,
   ForgotPasswordPayload,
   ForgotPasswordResponse,
-  PersonalInfoResponse,
+  GetPersonalInfoResponse,
+  UpdatePersonalInfoPayload,
+  UpdatePersonalInfoResponse,
 } from './types/users';
 
 export const registerUser = (payload: CreateUserPayload) => {
@@ -30,5 +32,9 @@ export const resetPassword = (payload: ResetPasswordPayload) => {
 };
 
 export const getPersonalInfo = () => {
-  return axiosIns.get<PersonalInfoResponse>(END_POINTS.USERS_ME);
+  return axiosIns.get<GetPersonalInfoResponse>(END_POINTS.USERS_ME);
+};
+
+export const updatePersonalInfo = (payload: UpdatePersonalInfoPayload) => {
+  return axiosIns.put<UpdatePersonalInfoResponse>(END_POINTS.USERS_PROFILE, payload);
 };
