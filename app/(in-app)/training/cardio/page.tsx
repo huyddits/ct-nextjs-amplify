@@ -176,10 +176,10 @@ export default function CardioPage() {
                       inputProps={{
                         placeholder: '5',
                         type: 'number',
-                        disabled: inputDisabled,
                         min: 0,
                       }}
                       errorMessage={error?.message}
+                      disabled={inputDisabled}
                       {...field}
                       className="text-sm text-gray-600"
                     />
@@ -211,10 +211,10 @@ export default function CardioPage() {
                       inputProps={{
                         placeholder: '0.0',
                         type: 'number',
-                        disabled: inputDisabled,
                         min: 0,
                       }}
                       errorMessage={error?.message}
+                      disabled={inputDisabled}
                       {...field}
                       className="text-sm text-gray-600"
                     />
@@ -249,10 +249,10 @@ export default function CardioPage() {
                           inputProps={{
                             placeholder: '140',
                             type: 'number',
-                            disabled: inputDisabled,
                             min: 0,
                           }}
                           errorMessage={error?.message}
+                          disabled={inputDisabled}
                           {...field}
                           className="text-sm text-gray-600 w-full"
                         />
@@ -267,10 +267,10 @@ export default function CardioPage() {
                           inputProps={{
                             placeholder: '160',
                             type: 'number',
-                            disabled: inputDisabled,
                             min: 0,
                           }}
                           errorMessage={error?.message}
+                          disabled={inputDisabled}
                           {...field}
                           className="text-sm text-gray-600 w-full"
                         />
