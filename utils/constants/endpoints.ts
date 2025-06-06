@@ -28,4 +28,8 @@ export const END_POINTS = {
   WEEKLY_SUMMARY: 'cardio/past-training/weekly-summary',
   WEEKLY_WORKOUTS: 'cardio/past-training/weekly-workouts',
   PERFORMANCE_METRICS: 'cardio/past-training/performance-metrics',
+
+  //Measurements
+  MEASUREMENTS: 'measurement/measurement-list',
+  ATHLETE_MEASUREMENTS: 'measurement/coach-student/get-all-student-by-coach-code',
 };
