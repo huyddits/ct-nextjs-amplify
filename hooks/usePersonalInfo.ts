@@ -35,6 +35,7 @@ export const usePersonalInfo = () => {
         dateOfBirth: data.profile?.date_of_birth ?? '',
         measurementUnitId: data.profile?.measurement_unit_id,
         measurementUnitName: data.profile.measurement_unit_name,
+        measurementUnitType: data.profile.measurement_unit_type,
         roleId: data.profile?.role_id ?? 0,
         roleName: data.profile?.role_name ?? '',
         cheerTypeId: data.profile?.cheer_type_id,

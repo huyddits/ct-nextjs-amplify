@@ -27,7 +27,7 @@ const DEFAULT_FORM: DraftType = {
   intervals: [
     {
       duration: '',
-      rpe: '0',
+      rpe: '1',
       distance: '',
       distanceUnit: '',
       heartRateMin: '',
