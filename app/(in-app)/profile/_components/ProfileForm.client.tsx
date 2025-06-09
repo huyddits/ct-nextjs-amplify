@@ -12,7 +12,7 @@ import ButtonEdit from './ButtonEdit.client';
 import { useMemo } from 'react';
 
 export default function ProfileForm() {
-  const { isCoach, isEditing, coachCode, control, trigger, onSaveInfo, onToggle } =
+  const { isCoach, isEditing, coachCode, control, trigger, onSaveInfo, onToggle, loading } =
     useProfileForm();
   const {
     roles: roleOptions,
@@ -33,7 +33,7 @@ export default function ProfileForm() {
           {!isCoach ? (
             <>
               <div className="flex justify-end">
-                <ButtonEdit isEditing={isEditing} onClick={onToggle} />
+                <ButtonEdit isEditing={isEditing} onClick={onToggle} loading={loading} />
               </div>
               <Controller
                 control={control}
@@ -117,7 +117,7 @@ export default function ProfileForm() {
                   <AppInput
                     label="Email Address"
                     icon={<UserIcon className="icon-input" />}
-                    disabled={!isEditing}
+                    disabled
                     inputProps={{ placeholder: 'email@example.com' }}
                     value={value}
                     onChange={event => onChange(event.target.value)}
