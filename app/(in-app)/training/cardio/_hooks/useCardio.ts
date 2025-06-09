@@ -83,18 +83,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     try {
       const response = await CardioTrainingSelectionApi.getExercises();
       const { data, error } = response.data;
-      console.log('info?.measurementUnit', info?.measurementUnit);
       if (!data) throw error;
-      // const exercisesItems = data.map(({ name, cardio_exercises_id, units }) => ({
-      //   label: name,
-      //   value: cardio_exercises_id.toString(),
-      //   units: units
-      //     .filter(item => item?.unit_type?.toLowerCase() === info?.measurementUnit?.toLowerCase())
-      //     .map(({ name }) => ({ label: name, value: name })),
-      //   // units: units.map(({ name }) => ({ label: name, value: name })),
-      // }));
-      // setExercisesItems(exercisesItems);
-      // setExerciseOptions(exercisesItems);
       setExercisesItemsTemp(data);
     } catch (error) {
       console.log(error);
@@ -108,14 +97,15 @@ export const useCardio = (options?: UseCardioFormOptions) => {
       value: cardio_exercises_id.toString(),
       units: (units as { unit_type: string; name: string }[])
         .filter(
-          ({ unit_type }) => unit_type?.toLowerCase() === info?.measurementUnit?.toLowerCase()
+          ({ unit_type }) =>
+            unit_type === null ||
+            unit_type?.toLowerCase() === info?.measurementUnitType?.toLowerCase()
         )
         .map(({ name }: { name: string }) => ({ label: name, value: name })),
-      // units: units.map(({ name }) => ({ label: name, value: name })),
     }));
     setExercisesItems(mapping);
     setExerciseOptions(mapping);
-  }, [exercisesItemsTemp, info?.measurementUnit]);
+  }, [exercisesItemsTemp, info?.measurementUnitType]);
 
   const getRpe = async () => {
     if (rpeOptions.length > 0) {

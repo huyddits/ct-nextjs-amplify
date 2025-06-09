@@ -93,6 +93,7 @@ export type UserProfile = {
   cheer_type_name: string;
   measurement_unit_id: number;
   measurement_unit_name: string;
+  measurement_unit_type: string;
   school_name: string;
 };
 
