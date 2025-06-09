@@ -272,6 +272,7 @@ export default function CardioPage() {
                           }}
                           disabled={inputDisabled}
                           errorMessage={error?.message}
+                          disabled={inputDisabled}
                           {...field}
                           className="text-sm text-gray-600 w-full"
                         />

@@ -55,6 +55,7 @@ export type PersonalInfo = {
   cheerStyleName: string;
   measurementUnitId: number;
   measurementUnitName: string;
+  measurementUnitType: string;
   equipmentIds: number[];
   userPlanId: string;
   planId: string;
