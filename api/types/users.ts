@@ -142,8 +142,8 @@ export type UpdatePersonalInfoResponse = ApiResponse<
     date_of_birth: string; // ISO 8601 string
     coach_code: string;
     measurement_unit: { id: number; name: string; type: string };
-    cheer_types: { name: string; id: number };
-    cheer_styles: { name: string; id: number };
+    cheer_types: { name: string; id: number }[];
+    cheer_styles: { name: string; id: number }[];
     role: { name: string; id: number };
     equipments: { name: string; id: number }[];
   },
