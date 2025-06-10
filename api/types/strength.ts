@@ -20,9 +20,17 @@ type TrainingTypeRecord = {
   rpe: number;
 };
 
+type ExerciseSet = { rep: number; rpe: number };
+
 type ExerciseProgramRecord = {
   exercise_id: number;
-  sets: { rep: number; rpe: number }[];
+  sets: ExerciseSet[];
+};
+
+type ExerciseProgramRecordInProgram = {
+  program_exercise_id: number;
+  sets: ExerciseSet[];
+  exercise: ExerciseRecord;
 };
 
 type ProgramRecord = {
@@ -37,16 +45,25 @@ type ProgramRecord = {
   exercises: ExerciseProgramRecord[];
 };
 
+type ProgramDetailRecord = {
+  program_id: number;
+  name: string;
+  type: string; // e.g. 'personal_program'
+  training_type: string; // e.g. 'general'
+  copied_at: string | null;
+  started_at: string | null;
+  finished_at: string | null;
+  created_at: string;
+  updated_at: string;
+  exercises: ExerciseProgramRecordInProgram[];
+};
+
 export type GetListStrengthProgramsParams = {
   type: string;
   name: string;
 };
 
 export type GetListStrengthProgramsResponse = ApiResponse<ProgramRecord[]>;
-
-export type GetListProgramTypesParams = {};
-
-export type GetListProgramTypesResponse = ApiResponse<{ name: string; id: number }[]>;
 
 export type GetListSkillTypesParams = {};
 
@@ -82,3 +99,13 @@ export type CreateProgramPayload = {
 };
 
 export type CreateProgramResponse = ApiResponse<{}, {}>;
+
+export type UpdateProgramPayload = Partial<CreateProgramPayload & { program_id: number }>;
+
+export type UpdateProgramResponse = ApiResponse<{}, {}>;
+
+export type DuplicateProgramPayload = { id: number };
+
+export type DuplicateProgramResponse = ApiResponse<{}>;
+
+export type GetProgramDetailResponse = ApiResponse<ProgramDetailRecord>;

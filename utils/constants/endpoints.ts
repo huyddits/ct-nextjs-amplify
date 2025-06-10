@@ -30,7 +30,9 @@ export const END_POINTS = {
   PERFORMANCE_METRICS: 'cardio/past-training/performance-metrics',
 
   STRENGTH_PROGRAMS: 'strength/program',
+  STRENGTH_PROGRAMS_ALL: 'strength/program/all',
   STRENGTH_PROGRAMS_TRAINING_TYPES: 'strength/program/training-types',
+  STRENGTH_PROGRAMS_COPY: 'strength/program/copy',
   STRENGTH_SKILLS: 'stunt',
   PROBLEMS: 'problem',
   EXERCISES_FILTER: 'strength/exercise/filter',

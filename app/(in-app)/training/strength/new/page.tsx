@@ -31,7 +31,7 @@ export default function CreateStrengthPage() {
     setProgramType,
     setListExercisesFromStore,
     fetchListExcersises,
-  } = useProgramForm();
+  } = useProgramForm({});
 
   // const [programType, setProgramType] = useState('');
   const [selectedEquipments, setSelectedEquipment] = useState<string[]>([]);
