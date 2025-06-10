@@ -4,7 +4,8 @@ import { PencilIcon, SaveIcon } from 'lucide-react';
 export default function ButtonEdit({
   isEditing,
   onClick,
-}: Readonly<{ isEditing?: boolean; onClick?: () => void }>) {
+  loading = false,
+}: Readonly<{ isEditing?: boolean; onClick?: () => void; loading?: boolean }>) {
   return (
     <div className="flex justify-end">
       <Button
@@ -13,8 +14,13 @@ export default function ButtonEdit({
         size="icon"
         aria-label={isEditing ? 'Save changes' : 'Edit profile'}
         onClick={onClick}
+        loading={loading}
       >
-        {isEditing ? <SaveIcon className="h-5! w-5!" /> : <PencilIcon className="h-5! w-5!" />}
+        {!loading && (
+          <>
+            {isEditing ? <SaveIcon className="h-5! w-5!" /> : <PencilIcon className="h-5! w-5!" />}
+          </>
+        )}
       </Button>
     </div>
   );
