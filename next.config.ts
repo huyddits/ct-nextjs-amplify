@@ -1,4 +1,4 @@
-// next.config.js
+// next.config.js cho Next.js PWA với SSR trên Amplify Gen 2
 /** @type {import('next').NextConfig} */
 
 const withPWA = require('next-pwa')({
@@ -21,25 +21,61 @@ const withPWA = require('next-pwa')({
 });
 
 const nextConfig = withPWA({
-  output: 'export',
-  distDir: 'dist',
   reactStrictMode: true,
   swcMinify: true,
+
   experimental: {
     forceSwcTransforms: true,
-    useLightningcss: false,
+    // useLightningcss: false, // Có thể bỏ dòng này
   },
+
   typescript: {
     ignoreBuildErrors: true,
   },
+
   eslint: {
     ignoreDuringBuilds: true,
   },
+
   compiler: {
     styledComponents: true,
   },
+
+  // PWA config cho SSR
+  images: {
+    domains: [], // Thêm external domains nếu cần
+  },
+
+  // Headers cho PWA
+  async headers() {
+    return [
+      {
+        source: '/manifest.json',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/sw.js',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=0, must-revalidate',
+          },
+        ],
+      },
+    ];
+  },
+
   webpack: (config: any) => {
-    config.resolve.fallback = { fs: false, net: false, tls: false };
+    config.resolve.fallback = {
+      fs: false,
+      net: false,
+      tls: false,
+    };
     return config;
   },
 });
