@@ -1,12 +1,104 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DumbbellIcon, FilterIcon, ChevronUpIcon, ChevronDownIcon, XIcon } from 'lucide-react';
+import { set } from 'date-fns';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
-export function EquipmentFilter({ equipmentOptions }: Readonly<{ equipmentOptions: string[] }>) {
-  const [equipmentFilterOpen, setEquipmentFilterOpen] = useState(false);
-  const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
+type Option = {
+  label: string;
+  value: string;
+};
+
+interface FilterTriggerProps {
+  isOpen: boolean;
+  selectedEquipments: Option[];
+  onOpenChange: (isOpen: boolean) => void;
+}
+
+const FilterTrigger = ({ isOpen, selectedEquipments, onOpenChange }: FilterTriggerProps) => {
+  return (
+    <button
+      className="flex items-center justify-between w-full p-2 border border-gray-200 rounded-md bg-white text-left"
+      onClick={() => onOpenChange(!isOpen)}
+    >
+      <div className="flex items-center">
+        <FilterIcon className="h-4 w-4 mr-2 text-primary" />
+        <span className="text-sm">Select equipment types</span>
+        {selectedEquipments.length > 0 && (
+          <span className="ml-2 px-2 py-0.5 text-foreground rounded-full text-xs bg-green-50">
+            {selectedEquipments.length}
+          </span>
+        )}
+      </div>
+      {isOpen ? <ChevronUpIcon className="h-4 w-4" /> : <ChevronDownIcon className="h-4 w-4" />}
+    </button>
+  );
+};
+
+const EquipmentOption = ({
+  label,
+  checked,
+  onCheckedChange,
+}: Readonly<{
+  label: string;
+  checked: boolean;
+  onCheckedChange: (isChecked: boolean) => void;
+}>) => {
+  return (
+    <label className="flex items-center space-x-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
+      <input
+        type="checkbox"
+        className="rounded text-primary focus:ring-primary"
+        checked={checked}
+        onChange={() => onCheckedChange(!checked)}
+      />
+      <span className="text-sm">{label}</span>
+    </label>
+  );
+};
+
+export default function EquipmentFilter({
+  className,
+  equipmentOptions,
+  onApplyFilter,
+  onChangeEquipments,
+}: Readonly<{
+  className?: string;
+  equipmentOptions: Option[];
+  onApplyFilter?: () => void;
+  onChangeEquipments: (value: Option[]) => void;
+}>) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedEquipment, setSelectedEquipment] = useState<Option[]>([]);
+
+  const isSelected = (item: Option) => {
+    return selectedEquipment.some(selectedItem => selectedItem.value === item.value);
+  };
+
+  const onToggleSelection = (item: Option, isChecked: boolean) => {
+    if (isChecked) {
+      setSelectedEquipment(prevItems => [...prevItems, item]);
+    } else {
+      setSelectedEquipment(prevItems =>
+        prevItems.filter(selectedItem => selectedItem.value !== item.value)
+      );
+    }
+  };
+
+  const onClearAll = () => {
+    setSelectedEquipment([]);
+  };
+
+  const onCheckAll = () => {
+    setSelectedEquipment(equipmentOptions);
+  };
+
+  useEffect(() => {
+    onChangeEquipments(selectedEquipment);
+  }, [selectedEquipment]);
 
   return (
-    <>
+    <div className={cn('bg-gray-50', className)}>
       <div className="bg-white rounded-lg shadow-sm mb-4 overflow-hidden">
         <div className="bg-green-50 border-b p-4">
           <h2 className="text-base font-medium text-primary flex items-center">
@@ -17,48 +109,36 @@ export function EquipmentFilter({ equipmentOptions }: Readonly<{ equipmentOption
         </div>
 
         <div className="p-4">
-          <button
-            className="flex items-center justify-between w-full p-2 border border-gray-200 rounded-md bg-white text-left"
-            onClick={() => setEquipmentFilterOpen(!equipmentFilterOpen)}
-          >
-            <div className="flex items-center">
-              <FilterIcon className="h-4 w-4 mr-2 text-primary" />
-              <span className="text-sm">Select equipment types</span>
-              {selectedEquipment.length > 0 && (
-                <span className="ml-2 px-2 py-0.5  text-primary rounded-full text-xs">
-                  {selectedEquipment.length}
-                </span>
-              )}
-            </div>
-            {equipmentFilterOpen ? (
-              <ChevronUpIcon className="h-4 w-4" />
-            ) : (
-              <ChevronDownIcon className="h-4 w-4" />
-            )}
-          </button>
+          <FilterTrigger
+            isOpen={isOpen}
+            selectedEquipments={selectedEquipment}
+            onOpenChange={open => setIsOpen(open)}
+          />
         </div>
       </div>
 
-      {equipmentFilterOpen && (
+      {isOpen && (
         <div className="bg-white rounded-lg p-4 shadow-sm mb-4 border-l-4 border-primary">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-medium text-primary">Select Equipment</h3>
-            <button
-              className="text-xs text-gray-600 hover:text-gray-700"
-              onClick={() => setSelectedEquipment([])}
-            >
-              Clear All
-            </button>
+            <div className="space-x-2">
+              <Button variant="ghost" size="sm" onClick={onCheckAll}>
+                Check All
+              </Button>
+              <Button variant="ghost" size="sm" onClick={onClearAll}>
+                Clear All
+              </Button>
+            </div>
           </div>
 
           {selectedEquipment.length.toString() && (
             <div className="flex flex-wrap gap-2 mb-3">
               {selectedEquipment.map(item => (
                 <div
-                  key={item}
+                  key={item.value}
                   className="flex items-center bg-green-20 text-primary px-2 py-1 rounded-full text-xs"
                 >
-                  <span>{item.charAt(0).toUpperCase() + item.slice(1).replace(/-/g, ' ')}</span>
+                  <span>{item.label}</span>
                   <button
                     className="ml-1"
                     onClick={() => setSelectedEquipment(selectedEquipment.filter(i => i !== item))}
@@ -71,45 +151,21 @@ export function EquipmentFilter({ equipmentOptions }: Readonly<{ equipmentOption
           )}
 
           <div className="grid grid-cols-2 gap-2">
-            {equipmentOptions.map(equipment => {
-              const value = equipment.toLowerCase().replace(/[&\s-]+/g, '-');
-              const isSelected = selectedEquipment.includes(value);
-
-              const toggleSelection = () => {
-                if (isSelected) {
-                  setSelectedEquipment(selectedEquipment.filter(item => item !== value));
-                } else {
-                  setSelectedEquipment([...selectedEquipment, value]);
-                }
-              };
-
-              return (
-                <label
-                  key={value}
-                  className="flex items-center space-x-2 p-2 rounded hover:bg-gray-50 cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    className="rounded text-primary focus:ring-primary"
-                    checked={isSelected}
-                    onChange={toggleSelection}
-                  />
-                  <span className="text-sm">{equipment}</span>
-                </label>
-              );
-            })}
-          </div>
-
-          <div className="mt-4 flex justify-end">
-            <button
-              className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary"
-              onClick={() => setEquipmentFilterOpen(false)}
-            >
-              Apply Filter
-            </button>
+            {equipmentOptions.map(item => (
+              <EquipmentOption
+                key={item.value}
+                checked={isSelected(item)}
+                label={item.label}
+                onCheckedChange={isChecked => onToggleSelection(item, isChecked)}
+              />
+            ))}
           </div>
         </div>
       )}
-    </>
+
+      <Button className="w-full" onClick={onApplyFilter}>
+        Apply Filter
+      </Button>
+    </div>
   );
 }

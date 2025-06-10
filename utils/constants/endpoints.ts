@@ -28,4 +28,10 @@ export const END_POINTS = {
   WEEKLY_SUMMARY: 'cardio/past-training/weekly-summary',
   WEEKLY_WORKOUTS: 'cardio/past-training/weekly-workouts',
   PERFORMANCE_METRICS: 'cardio/past-training/performance-metrics',
+
+  STRENGTH_PROGRAMS: 'strength/program',
+  STRENGTH_PROGRAMS_TRAINING_TYPES: 'strength/program/training-types',
+  STRENGTH_SKILLS: 'stunt',
+  PROBLEMS: 'problem',
+  EXERCISES_FILTER: 'strength/exercise/filter',
 };

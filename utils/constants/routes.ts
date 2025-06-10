@@ -11,6 +11,8 @@ export const ROUTES = {
   FORGOT_PASSWORD: 'forgot-password',
   RESET_PASSWORD: 'reset-password',
   TRAINING_STRENGTH: 'training/strength',
+  TRAINING_STRENGTH_NEW: 'training/strength/new',
+  TRAINING_STRENGTH_PROGRAM: 'training/strength/program',
   TRAINING_CARDIO: 'training/cardio',
   TRAINING_TEAM_TRAINING_LOG: 'training/team-training-log',
   MEASUREMENT: 'measurement',

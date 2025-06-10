@@ -1,0 +1,84 @@
+import { ApiResponse, Pagination } from '@/utils/types';
+
+type ExerciseRecord = {
+  exercise_id: number;
+  name: string;
+  cues: string;
+  description: string;
+  target_muscles: string;
+  difficulty: number;
+  video_url: string;
+  image_url: string;
+  equipment: any[];
+  filterExercise: any[];
+};
+
+type TrainingTypeRecord = {
+  type: string;
+  sets: number;
+  rep: number;
+  rpe: number;
+};
+
+type ExerciseProgramRecord = {
+  exercise_id: number;
+  sets: { rep: number; rpe: number }[];
+};
+
+type ProgramRecord = {
+  copied_at: string;
+  created_at: string;
+  finished_at: string;
+  name: string;
+  program_id: number;
+  started_at: string;
+  training_type: string;
+  type: string;
+  exercises: ExerciseProgramRecord[];
+};
+
+export type GetListStrengthProgramsParams = {
+  type: string;
+  name: string;
+};
+
+export type GetListStrengthProgramsResponse = ApiResponse<ProgramRecord[]>;
+
+export type GetListProgramTypesParams = {};
+
+export type GetListProgramTypesResponse = ApiResponse<{ name: string; id: number }[]>;
+
+export type GetListSkillTypesParams = {};
+
+export type GetListSkillTypesResponse = ApiResponse<{ name: string; stunt_id: number }[]>;
+
+export type GetListProblemsParams = {};
+
+export type GetListProblemsResponse = ApiResponse<{ name: string; problem_id: number }[]>;
+
+export type GetListExercisesParams = {
+  page: number;
+  limit: number;
+};
+
+export type GetListExercisesPayload = {
+  role_id: number[];
+  stunt_id: number[];
+  cheer_type_id: number[];
+  problem_id: number[];
+  equipments: number[];
+};
+
+export type GetListExercisesResponse = ApiResponse<ExerciseRecord[]>;
+
+export type GetListTrainingTypesResponse = ApiResponse<TrainingTypeRecord[]>;
+
+export type CreateProgramPayload = {
+  name: string;
+  type: string;
+  training_type: string;
+  copied_at?: string;
+  exercises: ExerciseProgramRecord[];
+};
+
+export type CreateProgramResponse = ApiResponse<{}, {}>;
