@@ -10,7 +10,7 @@ import { AppInput, AppSelect } from '@/components/compose';
 import { PageHeader } from '@/app/(in-app)/_components';
 import { Controller } from 'react-hook-form';
 
-export default function ProgramDetail() {
+export default function ProgramDetail({ programId }: { programId?: string }) {
   const {
     control,
     template,
@@ -23,7 +23,8 @@ export default function ProgramDetail() {
     onRemoveSetFromExercise,
     onUpdateSetFromExercise,
     onSubmitCreate,
-  } = useProgramForm();
+    onSubmitUpdate,
+  } = useProgramForm({ id: programId });
 
   const templateInfo = useMemo(() => {
     return `${template?.sets} sets x ${template?.reps} reps x ${template?.rpe} RPE`;
@@ -74,9 +75,6 @@ export default function ProgramDetail() {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-medium text-primary">Selected Exercises</h3>
-                {/* <button className="flex items-center text-primary font-medium">
-                  <PlusIcon /> Add Exercise
-                </button> */}
                 <Button
                   variant="ghost"
                   disabled
@@ -176,9 +174,11 @@ export default function ProgramDetail() {
             <Button
               className="w-full shadow mt-6"
               disabled={!listSelectedExercises.length || !programName.trim()}
-              onClick={onSubmitCreate}
+              onClick={() => {
+                programId ? onSubmitUpdate() : onSubmitCreate();
+              }}
             >
-              Save Program
+              {programId ? 'Update Program' : 'Save Program'}
             </Button>
           </div>
         </div>

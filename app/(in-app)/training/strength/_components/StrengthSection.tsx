@@ -8,6 +8,7 @@ export default function ProgramGroupSection({ listPrograms }: { listPrograms: Pr
         {listPrograms.map(item => (
           <StrengthCard
             key={item.id}
+            id={item.id}
             content={item.name}
             name={item.name}
             lastCompleted={item.finishedAt}
