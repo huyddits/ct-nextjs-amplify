@@ -85,7 +85,6 @@ export const useProfileForm = () => {
         cheer_style_id: Number(data.cheerStyle),
         cheer_type_id: Number(data.cheerType),
         date_of_birth: dayjs(data.dateOfBirth).toISOString(),
-        email: data.email,
         first_name: data.firstName,
         last_name: data.lastName,
         measurement_unit_id: +data.measurementUnit,

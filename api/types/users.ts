@@ -122,7 +122,6 @@ export type UpdatePersonalInfoPayload = {
   first_name: string;
   last_name: string;
   school_name: string;
-  email: string;
   date_of_birth: string; // exp: "2025-06-03T09:40:39.093Z",
   cheer_type_id: number;
   cheer_style_id: number;
