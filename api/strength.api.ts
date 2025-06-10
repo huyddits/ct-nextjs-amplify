@@ -2,42 +2,26 @@ import axiosIns from '@/lib/axiosIns';
 import type {
   CreateProgramPayload,
   CreateProgramResponse,
+  DuplicateProgramPayload,
+  DuplicateProgramResponse,
   GetListExercisesParams,
   GetListExercisesPayload,
   GetListExercisesResponse,
   GetListProblemsParams,
   GetListProblemsResponse,
-  GetListProgramTypesParams,
-  GetListProgramTypesResponse,
   GetListSkillTypesParams,
   GetListSkillTypesResponse,
   GetListStrengthProgramsParams,
   GetListStrengthProgramsResponse,
   GetListTrainingTypesResponse,
+  GetProgramDetailResponse,
+  UpdateProgramPayload,
 } from './types/strength';
 import { END_POINTS } from '@/utils/constants';
 
 export const getListStrengthPrograms = async (params: GetListStrengthProgramsParams) => {
   return axiosIns.get<GetListStrengthProgramsResponse>(END_POINTS.STRENGTH_PROGRAMS, { params });
 };
-
-// export const getListProgramTypes = async (params: GetListProgramTypesParams) => {
-//   return new Promise<{ data: GetListProgramTypesResponse }>(resolve => {
-//     return setTimeout(() => {
-//       return resolve({
-//         data: {
-//           data: [
-//             { name: 'Team Program', id: 1 },
-//             { name: 'Individual Program', id: 2 },
-//             { name: 'Custom Program', id: 3 },
-//           ],
-//           message: 'success',
-//           status: 'ok',
-//         },
-//       });
-//     });
-//   });
-// };
 
 export const getListSkillTypes = async (params: GetListSkillTypesParams) => {
   return axiosIns.get<GetListSkillTypesResponse>(END_POINTS.STRENGTH_SKILLS, { params });
@@ -51,20 +35,9 @@ export const getListExercises = (
   params: GetListExercisesParams,
   payload: GetListExercisesPayload
 ) => {
-  return axiosIns.post<GetListExercisesResponse>(
-    END_POINTS.EXERCISES_FILTER,
-    // {
-    //   role_id: payload.role_id[0],
-    //   stunt_id: payload.stunt_id[0],
-    //   cheer_type_id: [],
-    //   problem_id: payload.problem_id[0],
-    //   equipments: payload.equipments,
-    // },
-    payload,
-    {
-      params,
-    }
-  );
+  return axiosIns.post<GetListExercisesResponse>(END_POINTS.EXERCISES_FILTER, payload, {
+    params,
+  });
 };
 
 export const getListTrainingTypes = () => {
@@ -73,4 +46,16 @@ export const getListTrainingTypes = () => {
 
 export const createProgram = (payload: CreateProgramPayload) => {
   return axiosIns.post<CreateProgramResponse>(END_POINTS.STRENGTH_PROGRAMS, payload);
+};
+
+export const updateProgram = (payload: UpdateProgramPayload) => {
+  return axiosIns.put(END_POINTS.STRENGTH_PROGRAMS, payload);
+};
+
+export const duplicateProgram = (payload: DuplicateProgramPayload) => {
+  return axiosIns.post<DuplicateProgramResponse>(END_POINTS.STRENGTH_PROGRAMS_COPY, payload);
+};
+
+export const getProgramDetail = (id: number) => {
+  return axiosIns.get<GetProgramDetailResponse>(END_POINTS.STRENGTH_PROGRAMS + `/${id}`);
 };
