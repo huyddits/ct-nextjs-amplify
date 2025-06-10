@@ -4,16 +4,16 @@ import { useEffect, useState } from 'react';
 
 export const useCategories = () => {
   const {
-    cheerStyles,
-    cheerTypes,
-    equipments,
-    measurementUnits,
     roles,
-    setCheerStyles,
-    setCheerTypes,
-    setEquipments,
-    setMeasurementUnits,
+    equipments,
+    cheerTypes,
+    cheerStyles,
+    measurementUnits,
     setRoles,
+    setEquipments,
+    setCheerTypes,
+    setCheerStyles,
+    setMeasurementUnits,
   } = useCategoriesStore();
   const getRoles = async () => {
     if (roles.length) return;
@@ -102,8 +102,6 @@ export const useCategories = () => {
     getCheerTypes();
     getMeasurementUnits();
   }, []);
-
-  useEffect(() => console.log(roles));
 
   return {
     roles,
