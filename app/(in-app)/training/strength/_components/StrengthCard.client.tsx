@@ -3,13 +3,17 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CopyIcon, PencilIcon, Trash2Icon, PlayIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useProgramItem } from '../_hooks';
 
 interface StrengthCardProps {
+  id: string;
   name: string;
   content: string;
   lastCompleted: string;
 }
-export default function StrengthCard({ name, content, lastCompleted }: StrengthCardProps) {
+export default function StrengthCard({ id, name, content, lastCompleted }: StrengthCardProps) {
+  const { onCopy, onDelete, onEdit } = useProgramItem(+id);
   return (
     <Card className="p-4 rounded-xl shadow-sm">
       <div className="flex justify-between items-start">
@@ -22,13 +26,13 @@ export default function StrengthCard({ name, content, lastCompleted }: StrengthC
         </div>
 
         <div className="flex space-x-2">
-          <button className="p-2 text-gray-400 hover:text-gray-600">
+          <button className="p-2 text-gray-400 hover:text-gray-600" onClick={onCopy}>
             <CopyIcon className="h-5 w-5 stroke-[1.5]" />
           </button>
-          <button className="p-2 text-gray-400 hover:text-gray-600">
+          <button className="p-2 text-gray-400 hover:text-gray-600" onClick={onEdit}>
             <PencilIcon className="h-5 w-5" />
           </button>
-          <button className="p-2 text-gray-400 hover:text-red-600">
+          <button className="p-2 text-gray-400 hover:text-red-600" onClick={onDelete}>
             <Trash2Icon className="h-5 w-5" />
           </button>
         </div>

@@ -64,7 +64,11 @@ const schema = object().shape({
   ),
 });
 
-export const useProgramForm = () => {
+type UseProgramFormOptions = {
+  id?: string;
+};
+
+export const useProgramForm = (options: UseProgramFormOptions) => {
   useCategories();
   const router = useRouter();
   const { info } = useAuthStore();
@@ -75,6 +79,7 @@ export const useProgramForm = () => {
     tabs: strengthProgramTypes,
     setListExercises: setListExercisesFromStore,
   } = useStrengthStore();
+
   const {
     roles,
     equipments,
@@ -107,17 +112,11 @@ export const useProgramForm = () => {
   });
 
   const [listExercises, setListExercises] = useState<Exercise[]>([]); // base
-  const [listSelectedExercises, setListSelectedExercises] = useState<Exercise[]>([]);
+  const [listSelectedExercises, setListSelectedExercises] = useState<
+    Pick<Exercise, 'id' | 'name' | 'sets' | 'targetMuscles'>[]
+  >([]);
 
-  useEffect(() => {
-    console.log('listExercises', listExercises);
-  }, [listExercises]);
-
-  useEffect(() => {
-    console.log('listSelectedExercises', listSelectedExercises);
-  }, [listSelectedExercises]);
-
-  const { control, handleSubmit } = useForm({
+  const { control, setValue, handleSubmit } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       programName: '',
@@ -253,8 +252,42 @@ export const useProgramForm = () => {
     filterForm.cheerTypeId,
   ]);
 
+  const fetchDetailProgram = async (programId: number) => {
+    try {
+      const response = await StrengthApi.getProgramDetail(programId);
+      console.log('response', response.data);
+      const { data, error } = response.data;
+      if (!data) throw error;
+
+      // program meta
+      setValue('programName', data.name);
+      setValue('trainingType', data.training_type);
+      setValue(
+        'exercises',
+        data.exercises.map(item => ({
+          exerciseId: item.program_exercise_id.toString(),
+          sets: item.sets.map(o => ({ reps: o.rep.toString(), rpe: o.rpe.toString() })),
+        }))
+      );
+
+      // exercise
+      setListSelectedExercises(
+        data.exercises.map(item => {
+          return {
+            id: item.exercise.exercise_id,
+            sets: item.sets.map(set => ({ reps: set.rep, rpe: set.rpe })),
+            targetMuscles: item.exercise?.target_muscles,
+            name: item.exercise?.name,
+          };
+        })
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   type FormType = InferType<typeof schema>;
-  const onValid = async (data: FormType) => {
+  const handleCreateProgram = async (data: FormType) => {
     console.log(data);
     try {
       await StrengthApi.createProgram({
@@ -275,11 +308,38 @@ export const useProgramForm = () => {
       console.log(error);
     }
   };
+
+  const handleUpdateProgram = async (data: FormType) => {
+    if (!options.id) {
+      return console.log('Program id not found');
+    }
+    try {
+      await StrengthApi.updateProgram({
+        program_id: +options.id,
+        name: data.programName,
+        training_type: data.trainingType,
+        type: programType,
+        exercises: listSelectedExercises.map(({ id, sets }) => {
+          return {
+            exercise_id: id,
+            sets: sets?.map(set => ({ rep: set.reps, rpe: set.rpe })) ?? [],
+          };
+        }),
+      });
+      toast.success('Program updated successfully');
+      router.push('/training/strength');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onError = (err: any) => {
     console.log(err);
   };
 
-  const onSubmitCreate = handleSubmit(onValid, onError);
+  const onSubmitCreate = handleSubmit(handleCreateProgram, onError);
+
+  const onSubmitUpdate = handleSubmit(handleUpdateProgram, onError);
 
   const onRemoveSetFromExercise = (exerciseId: number, setIndex: number) => {
     setListSelectedExercises(prevExercises => {
@@ -349,7 +409,8 @@ export const useProgramForm = () => {
   }, [strengthTrainingTypes, trainingType]);
 
   useEffect(() => {
-    if (!template) return;
+    if (!template || options.id) return;
+    console.log('fill template values');
     const appliedTemplate = listExercisesFromStore.map(item => {
       const sets = [];
       for (let i = 0; i < template.sets; i++) {
@@ -368,13 +429,21 @@ export const useProgramForm = () => {
   }, [template, listExercisesFromStore, setListSelectedExercises]);
 
   useEffect(() => {
+    if (!options.id) return;
+    fetchDetailProgram(+options.id);
+  }, [options.id]);
+
+  useEffect(() => {
     fetchEquipments();
     fetchProblemOptions();
     fetchListExcersises();
     fetchSkillTypeOptions();
     fetchListTrainingTypes();
-    // fetchProgramTypeOptions();
   }, []);
+
+  useEffect(() => {
+    console.log({ listExercisesFromStore, listExercises, listSelectedExercises });
+  }, [listExercisesFromStore, listExercises, listSelectedExercises]);
 
   return {
     control,
@@ -391,12 +460,13 @@ export const useProgramForm = () => {
     skillTypeOptions: strengthSkillTypes,
     programTypeOptions: strengthProgramTypes,
     trainingTypeOptions: strengthTrainingTypes,
-    onSubmitCreate,
     setFilterForm,
     setProgramType,
     setListExercises,
     setListExercisesFromStore,
     fetchListExcersises,
+    onSubmitCreate,
+    onSubmitUpdate,
     onAddSetToExercise,
     onAddExercise,
     onRemoveExercise,
