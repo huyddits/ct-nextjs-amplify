@@ -1,0 +1,26 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+        # Cài next-pwa nếu chưa có trong package.json
+        - npm list next-pwa || npm install next-pwa
+    build:
+      commands:
+        - npm run build
+        # Đảm bảo service worker được generate
+        - ls -la public/sw.js || echo "Service worker not found"
+  artifacts:
+    # Quan trọng: .next cho SSR (không phải dist)
+    baseDirectory: .next
+    files:
+      - '**/*'
+    # Include PWA files
+    name: nextjs-pwa-ssr-build
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*
+      - public/workbox-*.js
+      - public/sw.js
