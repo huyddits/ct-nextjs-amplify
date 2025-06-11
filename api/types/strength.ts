@@ -100,6 +100,23 @@ export type CreateProgramPayload = {
 
 export type CreateProgramResponse = ApiResponse<{}, {}>;
 
+export type TrainingLogAthlete = {
+  name: string;
+  cardioTrainingDays: number;
+  strengthTrainingDays: number;
+  cardioTotalDuration: number;
+};
+
+export type TrainingLogTeamAverage = {
+  averageCardioTrainingDays: number;
+  averageStrengthTrainingDays: number;
+  averageCardioDuration: number;
+};
+
+export type TrainingLogResponse = {
+  athletes: TrainingLogAthlete[];
+  teamAverages: TrainingLogTeamAverage;
+};
 export type UpdateProgramPayload = Partial<CreateProgramPayload & { program_id: number }>;
 
 export type UpdateProgramResponse = ApiResponse<{}, {}>;
