@@ -9,6 +9,8 @@ variables:
 
 mirror_to_github:
   stage: mirror
+  tags:
+    - trainer
   before_script:
     - git config --global user.email "huydd@iceteasoftware.com"
     - git config --global user.name "huyddits"
