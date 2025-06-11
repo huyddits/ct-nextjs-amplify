@@ -1,6 +1,6 @@
 interface SimpleTableProps {
   title: string;
-  listItems: { id: string; name: string; value: string }[];
+  listItems: { id: string; name: string; value?: string }[];
 }
 export default function SimpleTable({ title, listItems }: SimpleTableProps) {
   return (

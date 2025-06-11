@@ -18,10 +18,8 @@ export const usePastCardioTraining = (options: UsePastCardioTrainingOptions) => 
   const swrKey = useMemo(() => {
     return ['past-cardio', options.from, options.to, options.metric ?? 'duration'];
   }, [options.from, options.to, options.metric]);
-  console.log('SWR KEY STABLE?', JSON.stringify(swrKey));
 
   const fetcher = async (key: [string, string, string, string]) => {
-    console.log('fetcher', key);
     const [_url, from, to, metric] = key;
     const [summaryRes, workoutsRes, metricsRes] = await Promise.allSettled([
       PastCardioTrainingApi.getWeeklySummary({ from, to }),

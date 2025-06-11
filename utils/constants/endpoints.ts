@@ -32,4 +32,12 @@ export const END_POINTS = {
   //Measurements
   MEASUREMENTS: 'measurement/measurement-list',
   ATHLETE_MEASUREMENTS: 'measurement/coach-student/get-all-student-by-coach-code',
+  CREATE_MEASUREMENTS: 'measurement/measurement-session',
+  BASES_SPOTTER: 'measurement/bases',
+  FLYER: 'measurement/flyers',
+  LATEST_RESULT: 'measurement/athlete-latest-result',
+  IMPROVEMENT: 'measurement/athlete-improved-result',
+  LAST_THREE_MONTHS: 'measurement/athlete-last-3-months',
+  THREE_LATEST_RESULTS: 'measurement/athlete-three-latest-results',
+  RESULT_FOR_ALL_MEASUREMENTS: 'measurement/athlete-latest-result-for-all-measurements',
 };

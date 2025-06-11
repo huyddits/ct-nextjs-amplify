@@ -270,7 +270,6 @@ export default function CardioPage() {
                             type: 'number',
                             min: 0,
                           }}
-                          disabled={inputDisabled}
                           errorMessage={error?.message}
                           disabled={inputDisabled}
                           {...field}

@@ -6,9 +6,20 @@ import { useMeasurement } from './_hook';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { useMeasurementStore } from '@/store/useMeasurement.store';
+import { useAuthStore } from '@/store';
+import { CoachStudentPayload } from '@/api/types/measurement';
 export default function MeasurementNewPage() {
   const { measurementListOptions } = useMeasurementStore();
-  const { control, measurementList, getMeasurementList } = useMeasurement({
+  const { info } = useAuthStore();
+  const {
+    control,
+    measurementList,
+    getMeasurementList,
+    coachStudentList,
+    getCoachStudentList,
+    onSaveResult,
+    getValues,
+  } = useMeasurement({
     onSuccess: () => {},
     onFailure: () => {},
   });
@@ -16,6 +27,21 @@ export default function MeasurementNewPage() {
   useEffect(() => {
     getMeasurementList();
   }, []);
+  useEffect(() => {
+    if (!info?.coachCode) {
+      console.log('coachCode is missing!');
+      return;
+    }
+    const payload: CoachStudentPayload = {
+      coach_code: info.coachCode,
+    };
+
+    getCoachStudentList(payload);
+  }, [info?.coachCode]);
+
+  const handleSaveResult = async () => {
+    await onSaveResult(getValues());
+  };
 
   return (
     <div className="pt-[56px] pb-[80px] max-w-3xl mx-auto px-4">
@@ -53,29 +79,45 @@ export default function MeasurementNewPage() {
           )}
 
           <div>
-            <AppSelect
-              label="Select Athlete"
-              selectedValue="john-smith"
-              options={[
-                { label: 'John Smith', value: 'john-smith' },
-                { label: 'Sarah Johnson', value: 'sarah-johnson' },
-                { label: 'Michael Williams', value: 'michael-williams' },
-              ]}
-              onChangeSelected={value => console.log(value)}
-              fullWidth
+            <Controller
+              control={control}
+              name="athleteList"
+              render={({ field, fieldState: { error } }) => (
+                <AppSelect
+                  label="Select Athlete"
+                  options={coachStudentList.map(item => ({
+                    label: `${item.athlete.profile.firstName} ${item.athlete.profile.lastName}`,
+                    value: item.athleteId,
+                  }))}
+                  selectedValue={field.value}
+                  onChangeSelected={field.onChange}
+                  errorMessage={error?.message}
+                  fullWidth
+                />
+              )}
             />
           </div>
 
           <div>
-            <AppInput
-              label="Record Result"
-              inputProps={{ placeholder: 'Enter measurement', type: 'number' }}
-              onChange={value => console.log(value)}
-              postfix={measurementList[0]?.imperialUnit}
+            <Controller
+              control={control}
+              name="result"
+              render={({ field, fieldState: { error } }) => (
+                <AppInput
+                  label="Record Result"
+                  inputProps={{
+                    placeholder: 'Enter measurement',
+                    type: 'number',
+                  }}
+                  errorMessage={error?.message}
+                  {...field}
+                  postfix={measurementList[0]?.imperialUnit}
+                />
+              )}
             />
           </div>
 
-          <Button size="lg" className="w-full">
+          <Button type="button" onClick={handleSaveResult} size="lg" className="w-full">
             Save Result
           </Button>
         </div>

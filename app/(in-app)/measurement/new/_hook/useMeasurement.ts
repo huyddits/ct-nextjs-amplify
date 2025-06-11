@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { MeasurementApi } from '@/api';
-import { AthleteItem, MeasurementItem } from '../_types';
+import { CoachStudentItem, MeasurementItem } from '../_types';
 import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMeasurementStore } from '@/store/useMeasurement.store';
-import { array, object, string } from 'yup';
+import { InferType, number, object, string } from 'yup';
+import { CoachStudentPayload } from '@/api/types/measurement';
+import { useAuthStore } from '@/store';
 
 type UseMeasurementFormOptions = {
   onSuccess?: () => void;
@@ -14,26 +16,41 @@ type UseMeasurementFormOptions = {
 
 const schema = object().shape({
   measurement: string().required(),
+  athleteList: string(),
+  result: string().required(),
 });
 
 export const useMeasurement = (options?: UseMeasurementFormOptions) => {
+  const { info } = useAuthStore();
   const [measurementList, setMeasurementList] = useState<MeasurementItem[]>([]);
-  const [athleteList, setAthleteList] = useState<AthleteItem[]>([]);
-  const { setMeasurementListOptions } = useMeasurementStore();
-  const { control, setValue } = useForm({
+  const [coachStudentList, setCoachStudentList] = useState<CoachStudentItem[]>([]);
+  const {
+    rawMeasurementList,
+    coachStudent: coachStudentListFromStore,
+    setRawMeasurementList,
+    setCoachStudent,
+  } = useMeasurementStore();
+  const { control, setValue, getValues } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       measurement: '',
+      athleteList: '',
+      result: '',
     },
     mode: 'onChange',
   });
 
+  type FormType = InferType<typeof schema>;
+
   const getMeasurementList = async () => {
+    if (rawMeasurementList.length > 0) {
+      setMeasurementList(rawMeasurementList);
+      return;
+    }
     try {
       const response = await MeasurementApi.getMeasurementList();
       const { data, error } = response.data;
       if (!data) throw error;
-
       const dataResponse = data.map(data => ({
         measurementsId: data.measurement_id,
         name: data.name,
@@ -43,36 +60,68 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
         thumbnailLink: data.thumbnail_link,
         videoLink: data.video_link,
       }));
-
+      setRawMeasurementList(dataResponse);
       setMeasurementList(dataResponse);
       options?.onSuccess?.();
-    } catch (error: any) {
-      toast.error('Failed to load measurement');
-      options?.onFailure?.(error?.message ?? 'Unknown error');
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  // const getAthleteList = async () => {
-  //   try {
-  //     const response = await MeasurementApi.getAthleteList();
-  //     const { data, error } = response.data;
-  //     if (!data) throw error;
-  //     const athleteResponse = data.map(data => ({
-  //       athleteId: data.athlete_id,
-  //       firstName: data.name,
-  //       lastName: data.instruction,
-  //       email: data.imperial_unit,
-  //       avatarLink: data.metric_unit,
-  //       measurementUnit: data.thumbnail_link,
-  //     }));
-  //     setAthleteList(dataResponse);
-  //   } catch (error: any) {
-  //     toast.error('Failed to load athletes');
-  //     options?.onFailure?.(error?.message ?? 'Unknown error');
-  //   }
-  // };
-
   const measurement = useWatch({ control, name: 'measurement' });
+
+  const getCoachStudentList = async (payload: CoachStudentPayload) => {
+    if (coachStudentListFromStore.length > 0) {
+      setCoachStudentList(coachStudentListFromStore);
+      return;
+    }
+    try {
+      const response = await MeasurementApi.getCoachStudentList(payload);
+      const { data, error } = response.data;
+      if (!data) throw error;
+
+      const dataResponse = data.map(data => ({
+        coachStudentId: data.coach_student_id,
+        status: data.status,
+        athleteId: data.athlete_id,
+        athlete: {
+          accountType: data.athlete.account_type,
+          email: data.athlete.email,
+          stripeCustomerId: data.athlete.stripe_customer_id,
+          stripeSubscriptionId: data.athlete.stripe_subscription_id,
+          isActive: data.athlete.is_active,
+          profile: {
+            profileId: data.athlete.profile.profile_id,
+            firstName: data.athlete.profile.first_name,
+            lastName: data.athlete.profile.last_name,
+            schoolName: data.athlete.profile.school_name,
+            dateOfBirth: data.athlete.profile.date_of_birth,
+            coachCode: data.athlete.profile.coach_code,
+          },
+        },
+      }));
+      setCoachStudent(dataResponse);
+      setCoachStudentList(dataResponse);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onSaveResult = async (formData: FormType) => {
+    try {
+      await MeasurementApi.postMeasurement({
+        measurement_id: Number(formData.measurement),
+        athlete_id: formData.athleteList ?? '',
+        result: Number(formData.result),
+      });
+      toast.success('Successfully saved the measurement');
+      options?.onSuccess?.();
+    } catch (error: unknown) {
+      console.error('Measurement submission failed:', error);
+      toast.error('Failed to save measurement');
+      options?.onFailure?.('Failed to save measurement');
+    }
+  };
 
   useEffect(() => {
     getMeasurementList();
@@ -89,9 +138,31 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     // set
   }, [measurement]);
 
+  useEffect(() => {
+    if (!info?.coachCode) {
+      console.log('coachCode is missing!');
+      return;
+    }
+    const payload: CoachStudentPayload = {
+      coach_code: info.coachCode,
+    };
+
+    getCoachStudentList(payload);
+  }, [info?.coachCode]);
+
+  useEffect(() => {
+    if (coachStudentList[0]) {
+      setValue('athleteList', coachStudentList[0].athleteId);
+    }
+  }, [coachStudentList, setValue]);
+
   return {
     measurementList,
     getMeasurementList,
     control,
+    coachStudentList,
+    getCoachStudentList,
+    onSaveResult,
+    getValues,
   };
 };
