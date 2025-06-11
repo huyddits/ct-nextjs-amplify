@@ -17,6 +17,7 @@ export default function MeasurementNewPage() {
     getMeasurementList,
     coachStudentList,
     getCoachStudentList,
+    selectedMeasurement,
     onSaveResult,
     getValues,
   } = useMeasurement({
@@ -67,13 +68,16 @@ export default function MeasurementNewPage() {
             />
           </div>
 
-          {measurementList[0] && (
+          {measurementList && (
             <>
-              <VideoPlayer source={measurementList[0].videoLink ?? ''} />
+              <VideoPlayer
+                source={selectedMeasurement?.videoLink ?? ''}
+                title={selectedMeasurement?.name ?? 'Measurement Video'}
+              />
 
               <div>
                 <h3 className="text-gray-700 font-medium mb-2">Instructions:</h3>
-                <p className="text-gray-600">{measurementList[0].instruction}</p>
+                <p className="text-gray-600">{selectedMeasurement?.instruction}</p>
               </div>
             </>
           )}
@@ -111,7 +115,7 @@ export default function MeasurementNewPage() {
                   }}
                   errorMessage={error?.message}
                   {...field}
-                  postfix={measurementList[0]?.imperialUnit}
+                  postfix={selectedMeasurement?.imperialUnit}
                 />
               )}
             />

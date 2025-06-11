@@ -5,7 +5,7 @@ import { CoachStudentItem, MeasurementItem } from '../_types';
 import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMeasurementStore } from '@/store/useMeasurement.store';
-import { InferType, number, object, string } from 'yup';
+import { InferType, object, string } from 'yup';
 import { CoachStudentPayload } from '@/api/types/measurement';
 import { useAuthStore } from '@/store';
 
@@ -69,6 +69,9 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   };
 
   const measurement = useWatch({ control, name: 'measurement' });
+  const selectedMeasurement = measurementList.find(
+    m => m.measurementsId.toString() === measurement
+  );
 
   const getCoachStudentList = async (payload: CoachStudentPayload) => {
     if (coachStudentListFromStore.length > 0) {
@@ -128,15 +131,10 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   }, []);
 
   useEffect(() => {
-    if (measurementList[0]) {
+    if (measurementList[0] && !getValues('measurement')) {
       setValue('measurement', measurementList[0].measurementsId.toString());
     }
   }, [measurementList, setValue]);
-
-  useEffect(() => {
-    // set title video
-    // set
-  }, [measurement]);
 
   useEffect(() => {
     if (!info?.coachCode) {
@@ -164,5 +162,6 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     getCoachStudentList,
     onSaveResult,
     getValues,
+    selectedMeasurement,
   };
 };
