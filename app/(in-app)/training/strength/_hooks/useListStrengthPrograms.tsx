@@ -7,6 +7,7 @@ export type ProgramItem = {
   id: string;
   name: string;
   copiedAt: string;
+  exercises: string;
   startedAt: string;
   finishedAt: string;
   trainingType: string;
@@ -37,6 +38,7 @@ export const useListStrengthPrograms = () => {
           startedAt: item.started_at,
           trainingType: item.training_type,
           type: item.type,
+          exercises: item.exercises,
         }))
       );
     } catch (error) {

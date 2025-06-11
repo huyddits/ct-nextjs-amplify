@@ -2,124 +2,56 @@
 
 import type React from 'react';
 
-import Link from 'next/link';
 import {
-  ClipboardCheck,
-  UserCircle2,
-  Target,
-  Dumbbell,
-  Ruler,
-  ArrowLeft,
   Play,
   Plus,
-  X,
-  Check,
-  Minus,
-  ChevronDown,
-  ChevronUp,
-  ChevronRight,
   ChevronLeft,
   ArrowRightIcon,
   ArrowLeftIcon,
-  ChevronUpIcon,
-  ChevronDownIcon,
+  ChevronRightIcon,
+  PlusIcon,
+  MinusIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useExercise } from '../_hooks/useExercise';
+import { useExercise, ExerciseSet as ExerciseSetType } from '../_hooks/useExercise';
 import ExerciseHeader from './ExerciseHeader';
-
-interface Set {
-  weight: number;
-  reps: number;
-  rpe: number;
-  completed: boolean;
-}
+import ExercisePastWorkouts from './ExercisePastWorkouts.client';
+import ExerciseSet from './ExerciseSet';
+import ExerciseNote from './ExerciseNote.client';
+import ExerciseNavigator from './ExerciseNavigator.client';
+import ExerciseInstructionAndCues from './ExerciseInstructionAndCues';
 
 interface PastWorkout {
   date: string;
-  sets: Set[];
+  sets: ExerciseSetType[];
   note: string;
 }
 
-interface ExerciseData {
-  sets: Set[];
-  notes: string;
-}
-
-// Mock global workout data store (in a real app, this would be context/redux/localStorage)
-const globalWorkoutData: Record<string, ExerciseData> = {
-  'barbell-squat': {
-    sets: [
-      { weight: 135, reps: 12, rpe: 7, completed: false },
-      { weight: 155, reps: 10, rpe: 8, completed: false },
-      { weight: 175, reps: 8, rpe: 8, completed: false },
-    ],
-    notes: '',
-  },
-  'leg-press': {
-    sets: [
-      { weight: 200, reps: 15, rpe: 6, completed: false },
-      { weight: 220, reps: 12, rpe: 7, completed: false },
-      { weight: 240, reps: 10, rpe: 8, completed: false },
-    ],
-    notes: '',
-  },
-  'leg-extension': {
-    sets: [
-      { weight: 80, reps: 15, rpe: 6, completed: false },
-      { weight: 90, reps: 12, rpe: 7, completed: false },
-      { weight: 100, reps: 10, rpe: 9, completed: false },
-    ],
-    notes: '',
-  },
-};
-
 export default function StrengthExercise({ programId }: { programId: number }) {
-  const {} = useExercise({ programId });
+  const {
+    history,
+    template,
+    indicator,
+    exerciseName,
+    currentExercise,
+    nextExerciseName,
+    previousExerciseName,
+    listExerciseInProgram,
+    setIndicator,
+    onCompleteWorkout,
+    setListExerciseInProgram,
+  } = useExercise({
+    programId,
+  });
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
   const [swipeDirection, setSwipeDirection] = useState<string | null>(null);
   const [swipeProgress, setSwipeProgress] = useState(0);
-  const [showAllPastWorkouts, setShowAllPastWorkouts] = useState(false);
   const [showSwipeHint, setShowSwipeHint] = useState(true);
-
-  // Current exercise identifier
-  const [currentExercise, setCurrentExercise] = useState('barbell-squat');
-
-  interface ExerciseNavigation {
-    [key: string]: {
-      prev: string;
-      next: string;
-      name: string;
-    };
-  }
-
-  // Exercise navigation mapping
-  const exerciseNavigation = useMemo<ExerciseNavigation>(
-    () => ({
-      'barbell-squat': {
-        prev: 'leg-press',
-        next: 'leg-extension',
-        name: 'Barbell Squat',
-      },
-      'leg-press': {
-        prev: 'leg-extension',
-        next: 'barbell-squat',
-        name: 'Leg Press',
-      },
-      'leg-extension': {
-        prev: 'barbell-squat',
-        next: 'leg-press',
-        name: 'Leg Extension',
-      },
-    }),
-    []
-  );
 
   // Timer states
   const [timerDuration, setTimerDuration] = useState(30); // in seconds
@@ -172,88 +104,95 @@ export default function StrengthExercise({ programId }: { programId: number }) {
     },
   ];
 
-  // Get past workouts based on current view state
-  const pastWorkouts = showAllPastWorkouts ? allPastWorkouts : allPastWorkouts.slice(0, 2);
-
   // Initialize sets and notes from global data
-  const [sets, setSets] = useState<Set[]>(globalWorkoutData[currentExercise].sets);
-  const [notes, setNotes] = useState(globalWorkoutData[currentExercise].notes);
+  // const [sets, setSets] = useState<Set[]>(globalWorkoutData[currentExercise].sets);
+  // const [notes, setNotes] = useState(globalWorkoutData[currentExercise].notes);
 
   // Save current exercise data to global store
-  const saveExerciseData = useCallback(() => {
-    globalWorkoutData[currentExercise] = {
-      sets: [...sets],
-      notes: notes,
-    };
-  }, [currentExercise, sets, notes]);
+  // const saveExerciseData = useCallback(() => {
+  //   // globalWorkoutData[currentExercise] = {
+  //   //   sets: [...sets],
+  //   //   notes: notes,
+  //   // };
+  // }, [currentExercise, sets, notes]);
 
-  // Load exercise data when changing exercises
-  const loadExerciseData = (exerciseId: string) => {
-    if (globalWorkoutData[exerciseId]) {
-      setSets(globalWorkoutData[exerciseId].sets);
-      setNotes(globalWorkoutData[exerciseId].notes);
-    }
-  };
-
-  // Update current exercise when it changes
-  useEffect(() => {
-    loadExerciseData(currentExercise);
-  }, [currentExercise]);
-
-  const toggleSetCompletion = (index: number) => {
-    const newSets = [...sets];
-    newSets[index].completed = !newSets[index].completed;
-    setSets(newSets);
-
-    // Automatically save when a set is completed
-    globalWorkoutData[currentExercise].sets = newSets;
+  const toggleSetCompletion = (setIndex: number) => {
+    setListExerciseInProgram(prev => {
+      return prev.map((item, exerciseIndex) => {
+        if (exerciseIndex !== indicator) return item;
+        return {
+          ...item,
+          sets: item.sets.map((set, setIdx) => {
+            if (setIdx !== setIndex) return set;
+            return {
+              ...set,
+              completed: !set.completed,
+            };
+          }),
+        };
+      });
+    });
   };
 
   const addSet = () => {
-    // Copy the last set's values for convenience
-    const lastSet = sets[sets.length - 1];
-    const newSets = [
-      ...sets,
-      {
-        ...lastSet,
-        completed: false,
-        rpe: Math.round(lastSet.rpe), // Ensure RPE is a whole number
-      },
-    ];
-    setSets(newSets);
-
-    // Automatically save when a set is added
-    globalWorkoutData[currentExercise].sets = newSets;
+    setListExerciseInProgram(prev => {
+      return prev.map((item, index) => {
+        if (index !== indicator) return item;
+        return {
+          ...item,
+          sets: [
+            ...item.sets,
+            { weight: 0, reps: template?.reps ?? 0, rpe: template?.rpe ?? 0, completed: false },
+          ],
+        };
+      });
+    });
   };
 
-  const removeSet = (index: number) => {
-    const newSets = sets.filter((_, i) => i !== index);
-    setSets(newSets);
-
-    // Automatically save when a set is removed
-    globalWorkoutData[currentExercise].sets = newSets;
+  const removeSet = (setIndex: number) => {
+    setListExerciseInProgram(prev => {
+      return prev.map((item, index) => {
+        if (index !== indicator) return item;
+        return {
+          ...item,
+          sets: item.sets.filter((_, i) => i !== setIndex),
+        };
+      });
+    });
   };
 
-  const updateSet = (index: number, field: keyof Set, value: number) => {
-    const newSets = [...sets];
-    if (field === 'rpe') {
-      // Ensure RPE is between 1-10 and a whole number
-      newSets[index][field] = Math.min(10, Math.max(1, Math.round(value)));
-    } else if (field === 'weight' || field === 'reps') {
-      newSets[index][field] = value;
-    }
-    setSets(newSets);
-
-    // Automatically save when a set is updated
-    globalWorkoutData[currentExercise].sets = newSets;
+  const updateSet = (setIndex: number, field: keyof ExerciseSetType, value: number) => {
+    setListExerciseInProgram(prev => {
+      return prev.map((item, exerciseIndex) => {
+        if (exerciseIndex !== indicator) return item;
+        return {
+          ...item,
+          sets: item.sets.map((set, index) => {
+            if (index !== setIndex) return set;
+            return {
+              ...set,
+              [field]: value,
+            };
+          }),
+        };
+      });
+    });
   };
 
-  const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newNotes = e.target.value;
-    setNotes(newNotes);
+  useEffect(() => {
+    console.log(listExerciseInProgram[indicator]?.sets);
+  }, [listExerciseInProgram, indicator]);
 
-    // Automatically save when notes are updated
-    globalWorkoutData[currentExercise].notes = newNotes;
+  const handleNotesChange = (value: string) => {
+    setListExerciseInProgram(prev =>
+      prev.map((item, index) => {
+        if (index !== indicator) return item;
+        return {
+          ...item,
+          notes: value,
+        };
+      })
+    );
   };
 
   const handleTimerStart = () => {
@@ -297,52 +236,31 @@ export default function StrengthExercise({ programId }: { programId: number }) {
     setTimeRemaining(newTime);
   };
 
-  function handleCompleteWorkout() {
-    // Save all exercise data before navigating
-    Object.keys(globalWorkoutData).forEach(exerciseId => {
-      // For each exercise, mark all sets as completed
-      if (globalWorkoutData[exerciseId]) {
-        globalWorkoutData[exerciseId].sets = globalWorkoutData[exerciseId].sets.map(set => ({
-          ...set,
-          completed: true, // Mark all sets as completed
-        }));
-      }
-    });
+  // function handleCompleteWorkout() {
+  //   // Save all exercise data before navigating
+  //   // Object.keys(globalWorkoutData).forEach(exerciseId => {
+  //   //   // For each exercise, mark all sets as completed
+  //   //   if (globalWorkoutData[exerciseId]) {
+  //   //     globalWorkoutData[exerciseId].sets = globalWorkoutData[exerciseId].sets.map(set => ({
+  //   //       ...set,
+  //   //       completed: true, // Mark all sets as completed
+  //   //     }));
+  //   //   }
+  //   // });
 
-    // Here you would typically send the data to a server
-    console.log('Saving all workout data:', globalWorkoutData);
+  //   // Here you would typically send the data to a server
+  //   // console.log('Saving all workout data:', globalWorkoutData);
+  //   onCompleteWorkout();
+  //   // Navigate back to the program selector screen
+  //   router.push('/program-selector');
+  // }
 
-    // Navigate back to the program selector screen
-    router.push('/program-selector');
-  }
-
-  const togglePastWorkoutsView = () => {
-    setShowAllPastWorkouts(!showAllPastWorkouts);
+  const navigateToPreviousExercise = () => {
+    setIndicator(prev => prev - 1);
   };
-
-  const navigateToPreviousExercise = useCallback(() => {
-    // Save current exercise data before navigating
-    saveExerciseData();
-
-    // Navigate to previous exercise
-    const prevExercise = exerciseNavigation[currentExercise].prev;
-    setCurrentExercise(prevExercise);
-
-    // In a real app, you would use router.push but for this demo we're simulating navigation
-    // router.push(`/${prevExercise}`)
-  }, [currentExercise, exerciseNavigation, saveExerciseData]);
-
-  const navigateToNextExercise = useCallback(() => {
-    // Save current exercise data before navigating
-    saveExerciseData();
-
-    // Navigate to next exercise
-    const nextExercise = exerciseNavigation[currentExercise].next;
-    setCurrentExercise(nextExercise);
-
-    // In a real app, you would use router.push but for this demo we're simulating navigation
-    // router.push(`/${nextExercise}`)
-  }, [currentExercise, exerciseNavigation, saveExerciseData]);
+  const navigateToNextExercise = () => {
+    setIndicator(prev => prev + 1);
+  };
 
   // Hide swipe hint after user has interacted with it
   useEffect(() => {
@@ -443,15 +361,12 @@ export default function StrengthExercise({ programId }: { programId: number }) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Get current exercise navigation info
-  const currentNav = exerciseNavigation[currentExercise];
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Main Content with Swipe Container */}
       <div
         ref={containerRef}
-        className="pt-[56px] pb-[80px] px-4 max-w-3xl mx-auto relative"
+        className="pt-[56px] pb-[80px] px-4 container relative"
         style={getSwipeStyle()}
       >
         {/* Swipe Indicators */}
@@ -466,34 +381,14 @@ export default function StrengthExercise({ programId }: { programId: number }) {
           </div>
         )}
 
-        <ExerciseHeader programId={programId} title={currentNav.name} />
-
-        {/* Exercise Navigation with Swipe Indicators */}
-        <div className="flex justify-between text-primary text-base font-medium mb-4 relative">
-          <button
-            onClick={navigateToPreviousExercise}
-            className="flex items-center hover:underline"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            {exerciseNavigation[currentNav.prev].name}
-          </button>
-
-          {/* Swipe Hint */}
-          {showSwipeHint && (
-            <div className="absolute left-0 right-0 top-0 bottom-0 flex items-center justify-center pointer-events-none">
-              <div className="bg-gray-100/90 px-3 py-1 rounded-full text-xs text-gray-600 flex items-center animate-pulse">
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Swipe to navigate
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </div>
-            </div>
-          )}
-
-          <button onClick={navigateToNextExercise} className="flex items-center hover:underline">
-            {exerciseNavigation[currentNav.next].name}
-            <ArrowLeft className="h-4 w-4 ml-1 rotate-180" />
-          </button>
-        </div>
+        <ExerciseHeader programId={programId} title={exerciseName} />
+        <ExerciseNavigator
+          showSwipeHint={showSwipeHint}
+          nextExerciseName={nextExerciseName}
+          previousExerciseName={previousExerciseName}
+          onBack={navigateToPreviousExercise}
+          onNext={navigateToNextExercise}
+        />
 
         {/* Swipe Indicators on Sides */}
         <div className="fixed left-0 top-1/2 -translate-y-1/2 z-10 opacity-30 hover:opacity-80 transition-opacity">
@@ -510,7 +405,7 @@ export default function StrengthExercise({ programId }: { programId: number }) {
             onClick={navigateToNextExercise}
             className="bg-gray-200 p-3 rounded-l-full shadow-md"
           >
-            <ChevronRight className="h-6 w-6 text-primary" />
+            <ChevronRightIcon className="h-6 w-6 text-primary" />
           </button>
         </div>
 
@@ -523,84 +418,24 @@ export default function StrengthExercise({ programId }: { programId: number }) {
           </button>
         </div>
 
-        {/* Instructions and Cues - Now stacked vertically */}
-        <div className="space-y-4 mb-6">
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <h2 className="font-medium mb-2">Instructions</h2>
-            <p className="text-sm text-gray-600">
-              Stand with feet shoulder-width apart. Keep your back straight and core engaged
-              throughout the movement.
-            </p>
-          </div>
-          <div className="bg-white p-3 rounded-lg shadow-sm">
-            <h2 className="font-medium mb-1 text-sm">Cues</h2>
-            <ul className="text-sm text-gray-600 space-y-0.5">
-              <li>• Chest up, proud</li>
-              <li>• Break at hips and knees together</li>
-              <li>• Push knees out</li>
-            </ul>
-          </div>
-        </div>
+        {currentExercise && (
+          <ExerciseInstructionAndCues
+            instructions={currentExercise.exerciseDescription}
+            cues={currentExercise.exerciseCues}
+          />
+        )}
 
         {/* Sets - Now with completion toggle */}
         <div className="space-y-4 mb-6">
-          {sets.map((set, index) => (
-            <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
-              <div className="flex justify-between items-center mb-3">
-                <div className="flex items-center gap-2">
-                  <button onClick={() => removeSet(index)} className="text-red-500">
-                    <X className="h-5 w-5" />
-                  </button>
-                  <span className="font-medium">Set {index + 1}</span>
-                </div>
-                <button
-                  onClick={() => toggleSetCompletion(index)}
-                  className={`p-1.5 rounded-full transition-colors ${
-                    set.completed ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400'
-                  }`}
-                >
-                  <Check className="h-4 w-4" />
-                </button>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">Weight</label>
-                  <input
-                    type="number"
-                    value={set.weight}
-                    onChange={e => updateSet(index, 'weight', Number(e.target.value))}
-                    className="w-full border rounded p-2 text-center"
-                    placeholder="0"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">Reps</label>
-                  <input
-                    type="number"
-                    value={set.reps}
-                    onChange={e => updateSet(index, 'reps', Number(e.target.value))}
-                    className="w-full border rounded p-2 text-center"
-                    placeholder="0"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">RPE</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="10"
-                    step="1"
-                    value={set.rpe}
-                    onChange={e => {
-                      const value = Math.min(10, Math.max(1, Math.round(Number(e.target.value))));
-                      updateSet(index, 'rpe', value);
-                    }}
-                    className="w-full border rounded p-2 text-center"
-                    placeholder="1-10"
-                  />
-                </div>
-              </div>
-            </div>
+          {listExerciseInProgram[indicator]?.sets.map((set, index) => (
+            <ExerciseSet
+              key={index}
+              index={index}
+              set={set}
+              removeSet={removeSet}
+              toggleSetCompletion={toggleSetCompletion}
+              updateSet={updateSet}
+            />
           ))}
         </div>
 
@@ -621,7 +456,7 @@ export default function StrengthExercise({ programId }: { programId: number }) {
                   className="text-gray-500 p-1.5 rounded-full hover:bg-gray-100"
                   disabled={timerDuration <= MIN_TIME}
                 >
-                  <Minus className="h-4 w-4" />
+                  <MinusIcon className="h-4 w-4" />
                 </button>
               )}
 
@@ -637,86 +472,41 @@ export default function StrengthExercise({ programId }: { programId: number }) {
                   className="text-gray-500 p-1.5 rounded-full hover:bg-gray-100"
                   disabled={timerDuration >= MAX_TIME}
                 >
-                  <Plus className="h-4 w-4" />
+                  <PlusIcon className="h-4 w-4" />
                 </button>
               )}
             </div>
           </div>
         </div>
 
-        {/* Add Set Button */}
-        <button
-          onClick={addSet}
-          className="flex items-center justify-center w-full text-primary font-medium py-2 mb-6"
-        >
-          <Plus className="h-5 w-5 mr-2" />
-          Add Set
-        </button>
-
-        {/* Notes */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">Notes</label>
-          <Textarea
-            placeholder="Add any notes about this workout..."
-            className="min-h-[100px]"
-            value={notes}
-            onChange={handleNotesChange}
-          />
-        </div>
-
-        {/* Complete Workout Button */}
         <Button
-          onClick={handleCompleteWorkout}
-          className="w-full bg-primary hover:bg-primary/90 text-white mb-6"
+          variant="ghost"
+          onClick={addSet}
+          size="lg"
+          className="w-full text-primary font-medium mb-6"
         >
-          Complete Workout
+          <Plus className="h-5 w-5" />
+          Add Set
         </Button>
 
-        {/* Past Workouts */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <h2 className="font-medium mb-4">Past Workouts</h2>
+        {listExerciseInProgram[indicator] && (
+          <ExerciseNote
+            value={listExerciseInProgram[indicator].notes}
+            onTextChange={handleNotesChange}
+          />
+        )}
 
-          <div className="space-y-6">
-            {pastWorkouts.map((workout, workoutIndex) => (
-              <div key={workoutIndex}>
-                <div className="flex items-center text-sm text-gray-500 mb-3">
-                  <span>{workout.date}</span>
-                </div>
-                <div className="space-y-2">
-                  {workout.sets.map((set, setIndex) => (
-                    <div key={setIndex} className="grid grid-cols-3 text-sm">
-                      <div>Set {setIndex + 1}</div>
-                      <div className="text-center">
-                        {set.weight} lb × {set.reps}
-                      </div>
-                      <div className="text-right">RPE {Math.round(set.rpe)}</div>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-sm text-gray-600 mt-2 border-l-2 border-gray-200 pl-3 italic">
-                  Note: {workout.note}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <button
-            onClick={togglePastWorkoutsView}
-            className="w-full text-primary font-medium mt-4 flex items-center justify-center"
+        <div className="mb-6">
+          <Button
+            onClick={onCompleteWorkout}
+            className="w-full bg-primary hover:bg-primary/90 text-white "
           >
-            {showAllPastWorkouts ? (
-              <>
-                <ChevronUpIcon className="h-4 w-4 mr-1" />
-                Show less
-              </>
-            ) : (
-              <>
-                <ChevronDownIcon className="h-4 w-4 mr-1" />
-                More past workouts
-              </>
-            )}
-          </button>
+            Complete Workout
+          </Button>
         </div>
+
+        {/* Past Workouts */}
+        {!!history?.length && <ExercisePastWorkouts pastWorkouts={history} />}
       </div>
     </div>
   );

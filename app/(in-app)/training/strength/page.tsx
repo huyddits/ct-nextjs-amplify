@@ -22,7 +22,7 @@ const CustomTabTrigger = ({ value, children }: { value: TabsValue; children: Rea
 };
 
 export default function StrengthPage() {
-  const { setProgramType, tabs } = useStrengthStore();
+  const { setProgramType, programType, tabs } = useStrengthStore();
   const { listStrengthPrograms, setType, debounceSearch, fetchListStrengthPrograms } =
     useListStrengthPrograms();
 
@@ -31,13 +31,10 @@ export default function StrengthPage() {
     setType(tabValue);
   };
 
-  // useEffect(() => {
-  //   setListExercisesFromStore([]);
-  // }, []);
   return (
     <section>
       <Tabs
-        defaultValue={TabsValue.MyPrograms}
+        defaultValue={programType}
         className="border-b sticky top-9 z-50 bg-white border-t"
         onValueChange={value => onTabChange(value as TabsValue)}
       >
