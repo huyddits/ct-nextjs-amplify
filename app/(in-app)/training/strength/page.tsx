@@ -2,7 +2,7 @@
 import React, { ReactNode, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, SearchIcon } from 'lucide-react';
-import StrengthSection from './_components/StrengthSection';
+import ProgramSection from './_components/ProgramSection';
 import { AppInput } from '@/components/compose';
 import Link from 'next/link';
 import { useListStrengthPrograms } from './_hooks';
@@ -23,16 +23,17 @@ const CustomTabTrigger = ({ value, children }: { value: TabsValue; children: Rea
 
 export default function StrengthPage() {
   const { setProgramType, tabs } = useStrengthStore();
-  const { listStrengthPrograms, setType, debounceSearch } = useListStrengthPrograms();
+  const { listStrengthPrograms, setType, debounceSearch, fetchListStrengthPrograms } =
+    useListStrengthPrograms();
 
   const onTabChange = (tabValue: TabsValue) => {
     setProgramType(tabValue);
     setType(tabValue);
   };
 
-  useEffect(() => {
-    console.log('listStrengthPrograms', listStrengthPrograms);
-  }, [listStrengthPrograms]);
+  // useEffect(() => {
+  //   setListExercisesFromStore([]);
+  // }, []);
   return (
     <section>
       <Tabs
@@ -67,7 +68,10 @@ export default function StrengthPage() {
             />
           </div>
           <div className="space-y-4">
-            <StrengthSection listPrograms={listStrengthPrograms} />
+            <ProgramSection
+              listPrograms={listStrengthPrograms}
+              onRefetch={fetchListStrengthPrograms}
+            />
           </div>
         </div>
       </div>

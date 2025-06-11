@@ -13,6 +13,7 @@ export const ROUTES = {
   TRAINING_STRENGTH: 'training/strength',
   TRAINING_STRENGTH_NEW: 'training/strength/new',
   TRAINING_STRENGTH_PROGRAM: 'training/strength/program',
+  TRAINING_STRENGTH_EXERCISE: 'training/strength/program/:id/exercise',
   TRAINING_CARDIO: 'training/cardio',
   TRAINING_TEAM_TRAINING_LOG: 'training/team-training-log',
   MEASUREMENT: 'measurement',

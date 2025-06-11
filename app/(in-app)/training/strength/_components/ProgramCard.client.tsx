@@ -3,17 +3,37 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CopyIcon, PencilIcon, Trash2Icon, PlayIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useProgramItem } from '../_hooks';
+import { useConfirmStore } from '@/store';
 
-interface StrengthCardProps {
+interface ProgramCardProps {
   id: string;
   name: string;
   content: string;
   lastCompleted: string;
+  onRefetch?: () => void;
 }
-export default function StrengthCard({ id, name, content, lastCompleted }: StrengthCardProps) {
-  const { onCopy, onDelete, onEdit } = useProgramItem(+id);
+export default function ProgramCard({
+  id,
+  name,
+  content,
+  lastCompleted,
+  onRefetch,
+}: ProgramCardProps) {
+  const { onCopy, onDelete, onEdit, onPlay } = useProgramItem(+id);
+  const { confirm } = useConfirmStore();
+
+  const onConfirmDelete = () => {
+    confirm({
+      title: 'Delete Program',
+      description: 'Are you sure you want to delete this program?',
+      onConfirm: async () => {
+        await onDelete();
+        onRefetch?.();
+      },
+      confirmClass: 'bg-red-500 hover:bg-red-600',
+    });
+  };
   return (
     <Card className="p-4 rounded-xl shadow-sm">
       <div className="flex justify-between items-start">
@@ -32,7 +52,7 @@ export default function StrengthCard({ id, name, content, lastCompleted }: Stren
           <button className="p-2 text-gray-400 hover:text-gray-600" onClick={onEdit}>
             <PencilIcon className="h-5 w-5" />
           </button>
-          <button className="p-2 text-gray-400 hover:text-red-600" onClick={onDelete}>
+          <button className="p-2 text-gray-400 hover:text-red-600" onClick={onConfirmDelete}>
             <Trash2Icon className="h-5 w-5" />
           </button>
         </div>
@@ -43,6 +63,7 @@ export default function StrengthCard({ id, name, content, lastCompleted }: Stren
           variant="outline"
           size="sm"
           className="text-xs border-primary text-primary hover:bg-green-50 hover:text-primary"
+          onClick={onPlay}
         >
           <PlayIcon className="h-3 w-3 mr-1" />
           Start

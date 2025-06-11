@@ -2,7 +2,7 @@
 import ExerciseItem from './ExerciseItem';
 import { type Exercise } from '@/app/(in-app)/training/strength/_hooks';
 import { useStrengthStore } from '@/store';
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 type ExercisesProgramListProps = {
   listExcercises: Exercise[];
   onUpdate?: () => void;
@@ -10,48 +10,57 @@ type ExercisesProgramListProps = {
 
 const ExerciseProgramSection = forwardRef(
   ({ listExcercises, onUpdate }: ExercisesProgramListProps, ref) => {
-    const [listAllExcercises, setListAllExcercises] = useState<Exercise[]>([]);
+    const { listExercises: listExercisesFromStore, setListExercises: setListExercisesFromStore } =
+      useStrengthStore();
+    const [listAvailableExercises, setListAvailableExercises] = useState<Exercise[]>([]);
+    const [listAddedExercises, setListAddedExercises] = useState<Exercise[]>([]);
+
+    const storeRef = useRef(listExercisesFromStore);
 
     useImperativeHandle(ref, () => ({
-      getValue: () => listAllExcercises.filter(item => item.isAdded),
+      getValue: () => listAddedExercises,
     }));
 
     useEffect(() => {
-      setListAllExcercises(listExcercises);
+      console.log('storeRef.current', listExercisesFromStore);
+      setListAddedExercises(listExercisesFromStore);
+      setListAvailableExercises(
+        listExcercises.filter(item => !listExercisesFromStore.some(({ id }) => item.id === id))
+      );
     }, [listExcercises]);
 
-    const onToggle = (id: number, isAdded: boolean) => {
+    const onToggle = (item: Exercise, isAdded: boolean) => {
       onUpdate?.();
-      const foundIndex = listExcercises.findIndex(item => item.id === id);
-      if (foundIndex > -1) {
-        setListAllExcercises(prev => {
-          prev[foundIndex].isAdded = isAdded;
-          return [...prev];
-        });
+
+      if (isAdded) {
+        setListAddedExercises(prev => [...prev, item]);
+        setListAvailableExercises(prev => prev.filter(obj => obj.id !== item.id));
+      } else {
+        setListAddedExercises(prev => prev.filter(({ id }) => id !== item.id));
+        if (listExcercises.some(obj => obj.id === item.id)) {
+          setListAvailableExercises(prev => [...prev, item]);
+        }
       }
     };
 
-    const listAddedExcercises = useMemo(() => {
-      return listAllExcercises.filter(item => item.isAdded);
-    }, [listAllExcercises]);
-
-    const listAvailableExcercises = useMemo(() => {
-      return listAllExcercises.filter(item => !item.isAdded);
-    }, [listAllExcercises]);
+    useEffect(() => {
+      console.log('listAddedExercises', listAddedExercises);
+      setListExercisesFromStore(listAddedExercises);
+    }, [listAddedExercises]);
 
     return (
       <div>
         <div className="mb-6">
           <h2 className="text-primary font-medium mb-2">
-            Available Exercises ({listAvailableExcercises.length})
+            Available Exercises ({listAvailableExercises.length})
           </h2>
           <div className="bg-white rounded-lg shadow-sm">
-            {listAvailableExcercises.map(({ id, name, description }) => (
+            {listAvailableExercises.map(item => (
               <ExerciseItem
-                key={id}
-                name={name}
-                description={description}
-                onToggle={() => onToggle(id, true)}
+                key={item.id}
+                name={item.name}
+                description={item.description}
+                onToggle={() => onToggle(item, true)}
                 isAdded={true}
               />
             ))}
@@ -59,15 +68,15 @@ const ExerciseProgramSection = forwardRef(
         </div>
         <div className="mb-6">
           <h2 className="text-primary font-medium mb-2">
-            Added Exercises ({listAddedExcercises.length})
+            Added Exercises ({listAddedExercises.length})
           </h2>
           <div className="bg-white rounded-lg shadow-sm">
-            {listAddedExcercises.map(({ id, name, description }) => (
+            {listAddedExercises.map(item => (
               <ExerciseItem
-                key={id}
-                name={name}
-                description={description}
-                onToggle={() => onToggle(id, false)}
+                key={item.id}
+                name={item.name}
+                description={item.description}
+                onToggle={() => onToggle(item, false)}
                 isAdded={false}
               />
             ))}
