@@ -36,7 +36,7 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
 
       <div className="pb-[80px]">
         <div className="container mx-auto px-4">
-          <div className="bg-white rounded-lg shadow p-4 mb-4 space-y-6">
+          <div className="bg-white rounded-lg shadow p-4 mb-4">
             <Controller
               control={control}
               name="programName"
@@ -45,6 +45,7 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
                   label="Program Name"
                   inputProps={{ placeholder: 'Enter the program name' }}
                   errorMessage={error?.message}
+                  className="mb-6"
                   {...field}
                 />
               )}
@@ -72,6 +73,8 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
               )}
             />
 
+            <div className="h-6" />
+
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-medium text-primary">Selected Exercises</h3>
@@ -90,7 +93,15 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
                 <div key={item.id} className="border border-gray-200 rounded-lg mb-4">
                   <div className="flex justify-between items-center p-4 bg-gray-50 rounded-t-lg">
                     <div className="flex items-center">
-                      <div className="w-10 h-10 bg-gray-200 rounded mr-3"></div>
+                      <div className="w-10 h-10 bg-gray-200 rounded mr-3">
+                        {!!item.imageUrl && (
+                          <img
+                            src={item.imageUrl}
+                            alt="illustration"
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                      </div>
                       <div>
                         <h4 className="font-medium">{item.name}</h4>
                         <p className="text-sm text-gray-500">{item.targetMuscles}</p>
