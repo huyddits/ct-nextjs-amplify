@@ -4,23 +4,19 @@ frontend:
     preBuild:
       commands:
         - npm ci
-        # Cài next-pwa nếu chưa có trong package.json
-        - npm list next-pwa || npm install next-pwa
+        - echo "Building Next.js SSR app"
     build:
       commands:
         - npm run build
-        # Đảm bảo service worker được generate
-        - ls -la public/sw.js || echo "Service worker not found"
+    postBuild:
+      commands:
+        - echo "✅ Next.js SSR build completed"
   artifacts:
-    # Quan trọng: .next cho SSR (không phải dist)
+    # Quan trọng: baseDirectory phải là .next cho SSR
     baseDirectory: .next
     files:
       - '**/*'
-    # Include PWA files
-    name: nextjs-pwa-ssr-build
   cache:
     paths:
       - node_modules/**/*
       - .next/cache/**/*
-      - public/workbox-*.js
-      - public/sw.js
