@@ -15,12 +15,10 @@ mirror_to_github:
     - git config --global user.email "huydd@iceteasoftware.com"
     - git config --global user.name "huyddits"
   script:
-    - echo "🔄 Mirroring to GitHub for Amplify..."
-    - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@${GITHUB_REPO_URL#https://}
-    - git push github HEAD:$CI_COMMIT_REF_NAME --force
-    - git push github --tags --force
-    - echo "✅ Successfully mirrored to GitHub"
-    - echo "🌐 GitHub URL $GITHUB_REPO_URL"
+    - echo "Mirroring to GitHub..."
+    - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com/$GITHUB_USERNAME/nextjs-pwa-amplify.git
+    - git push github $CI_COMMIT_REF_NAME --force
+    - echo "Mirror completed successfully"
   only:
     - uat
     - staging
