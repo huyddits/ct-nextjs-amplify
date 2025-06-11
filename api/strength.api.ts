@@ -15,10 +15,12 @@ import type {
   GetListStrengthProgramsParams,
   GetListStrengthProgramsResponse,
   GetListTrainingTypesResponse,
+  TrainingLogResponse,
   GetProgramDetailResponse,
   UpdateProgramPayload,
 } from './types/strength';
 import { END_POINTS } from '@/utils/constants';
+import { ApiResponse } from '@/utils/types';
 
 export const getListStrengthPrograms = async (params: GetListStrengthProgramsParams) => {
   return axiosIns.get<GetListStrengthProgramsResponse>(END_POINTS.STRENGTH_PROGRAMS, { params });
@@ -47,6 +49,10 @@ export const getListTrainingTypes = () => {
 
 export const createProgram = (payload: CreateProgramPayload) => {
   return axiosIns.post<CreateProgramResponse>(END_POINTS.STRENGTH_PROGRAMS, payload);
+};
+
+export const getTraningLog = () => {
+  return axiosIns.get<ApiResponse<TrainingLogResponse>>(END_POINTS.TEAM_TRAINING_DATA);
 };
 
 export const updateProgram = (payload: UpdateProgramPayload) => {
