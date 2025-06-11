@@ -1,4 +1,5 @@
-image: alpine/git
+# .gitlab-ci.yml - Fixed for your GitLab setup
+image: alpine:latest
 
 test_job:
   tags:
