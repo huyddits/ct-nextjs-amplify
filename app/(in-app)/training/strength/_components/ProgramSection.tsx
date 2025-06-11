@@ -1,5 +1,7 @@
 import { type ProgramItem } from '../_hooks';
 import { ProgramCard } from '.';
+import dayjs from 'dayjs';
+import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
 
 export default function ProgramSectionSection({
   listPrograms,
@@ -15,9 +17,11 @@ export default function ProgramSectionSection({
           <ProgramCard
             key={item.id}
             id={item.id}
-            content={item.name}
+            content={item.exercises}
             name={item.name}
-            lastCompleted={item.finishedAt}
+            lastCompleted={
+              item.finishedAt ? dayjs(item.finishedAt).format(DEFAULT_DATE_FORMAT + ', h:mm A') : ''
+            }
             onRefetch={onRefetch}
           />
         ))}

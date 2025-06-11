@@ -410,7 +410,6 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
 
   useEffect(() => {
     if (!template || options.id) return;
-    console.log('fill template values');
     const appliedTemplate = listExercisesFromStore.map(item => {
       const sets = [];
       for (let i = 0; i < template.sets; i++) {
@@ -419,7 +418,6 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
       item.sets = sets;
       return item;
     });
-    console.log('template', { template, appliedTemplate, listExercisesFromStore });
     setListSelectedExercises(
       appliedTemplate.map(item => ({
         ...item,
