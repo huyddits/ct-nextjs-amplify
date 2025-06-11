@@ -1,4 +1,4 @@
-# .gitlab-ci.yml - Mirror to GitHub for Amplify
+# .gitlab-ci.yml - Fixed YAML syntax
 image: alpine/git
 
 stages:
@@ -14,17 +14,12 @@ mirror_to_github:
     - git config --global user.name "huyddits"
   script:
     - echo "🔄 Mirroring to GitHub for Amplify..."
-    
-    # Add GitHub remote
     - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@${GITHUB_REPO_URL#https://}
-    
-    # Push to GitHub
     - git push github HEAD:$CI_COMMIT_REF_NAME --force
     - git push github --tags --force
-    
     - echo "✅ Successfully mirrored to GitHub"
-    - echo "🌐 GitHub URL: $GITHUB_REPO_URL"
-    
+    - echo "🌐 GitHub URL $GITHUB_REPO_URL"
   only:
-    - staging
     - uat
+    - staging
+    - /^feature\/.*$/
