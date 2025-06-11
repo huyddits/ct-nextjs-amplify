@@ -37,4 +37,5 @@ export const END_POINTS = {
   STRENGTH_SKILLS: 'stunt',
   PROBLEMS: 'problem',
   EXERCISES_FILTER: 'strength/exercise/filter',
+  TEAM_TRAINING_DATA: 'users/team-training-data',
 };
