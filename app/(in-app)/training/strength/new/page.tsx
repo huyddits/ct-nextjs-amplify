@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   ProgramTypeSelect,
   ProgramFilter,
@@ -22,13 +22,16 @@ export default function CreateStrengthPage() {
     filterForm,
     programType,
     roleOptions,
+    pageExercise,
     listExercises,
     problemOptions,
     skillTypeOptions,
     equipmentOptions,
     programTypeOptions,
+    totalPagesExercise,
     setFilterForm,
     setProgramType,
+    loadMoreExercises,
     fetchListExcersises,
   } = useProgramForm({});
 
@@ -54,7 +57,6 @@ export default function CreateStrengthPage() {
         className="mb-4"
       />
       <ProgramFilter
-        searchText={filterForm.exerciseName}
         role={filterForm.roleId}
         problem={filterForm.problemId}
         skillType={filterForm.skillId}
@@ -92,7 +94,10 @@ export default function CreateStrengthPage() {
       <ExerciseProgramSection
         ref={listExercisesRef}
         listExcercises={listExercises}
+        page={pageExercise}
+        totalPages={totalPagesExercise}
         onUpdate={() => setErrorMessage('')}
+        onLoadMore={loadMoreExercises}
       />
 
       <Button className="w-full" size="lg" onClick={onGoToProgramEditor}>

@@ -1,12 +1,11 @@
-import { AppInput, SelectOption } from '@/components/compose';
+import { AppInput, SelectOption, AppMultipleSelect } from '@/components/compose';
 import { SearchIcon } from 'lucide-react';
-import AppMultipleSelect from '@/components/compose/AppMultipleSelect';
+import { debounce } from '@/utils/helpers';
 
 interface ProgramFilterProps {
   role: string[];
   problem: string[];
   skillType: string[];
-  searchText: string;
   roleOptions: SelectOption[];
   skillOptions: SelectOption[];
   problemOptions: SelectOption[];
@@ -18,7 +17,6 @@ export default function ProgramFilter({
   role,
   problem,
   skillType,
-  searchText,
   roleOptions,
   skillOptions,
   problemOptions,
@@ -29,8 +27,7 @@ export default function ProgramFilter({
     <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
       <div className="mb-4">
         <AppInput
-          value={searchText}
-          onChange={e => onChangeSearchText(e.target.value)}
+          onChange={debounce(e => onChangeSearchText(e.target.value), 500)}
           iconPosition="start"
           inputProps={{ placeholder: 'Search exercises...' }}
           icon={<SearchIcon className="w-5 h-5 text-gray-400" />}

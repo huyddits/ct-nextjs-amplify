@@ -103,6 +103,7 @@ export type GetListExercisesParams = {
 };
 
 export type GetListExercisesPayload = {
+  name: string;
   role_id: number[];
   stunt_id: number[];
   cheer_type_id: number[];
