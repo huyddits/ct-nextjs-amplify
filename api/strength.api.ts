@@ -17,6 +17,8 @@ import type {
   GetListTrainingTypesResponse,
   GetProgramDetailResponse,
   UpdateProgramPayload,
+  GetStrengthPastTrainingDataPayload,
+  GetStrengthPastTrainingDataResponse,
 } from './types/strength';
 import { END_POINTS } from '@/utils/constants';
 
@@ -76,4 +78,10 @@ export const getListExercisesInProgram = (programId: number) => {
       params: { program_id: programId },
     }
   );
+};
+
+export const getStrengthPastTrainingData = async (payload: GetStrengthPastTrainingDataPayload) => {
+  return axiosIns.get<GetStrengthPastTrainingDataResponse>(END_POINTS.STRENGTH_PAST_TRAINING_DATA, {
+    params: payload,
+  });
 };

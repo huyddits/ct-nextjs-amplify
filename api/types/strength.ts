@@ -111,3 +111,42 @@ export type DuplicateProgramResponse = ApiResponse<{}>;
 export type GetProgramDetailResponse = ApiResponse<ProgramDetailRecord>;
 
 export type DeleteProgramResponse = ApiResponse<{}, {}>;
+export type GetStrengthPastTrainingDataPayload = {
+  page?: number;
+  limit?: number;
+  start_date: string;
+  end_date: string;
+};
+
+export type StrengthPastTrainingDataSet = {
+  weight: number;
+  set: number;
+  rpe: number;
+};
+
+export type StrengthPastTrainingDataTraining = {
+  training_data_id: number;
+  sets: StrengthPastTrainingDataSet[];
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type StrengthPastTrainingDataExercise = {
+  program_exercise_id: number;
+  exercise_name: string;
+  training_data: StrengthPastTrainingDataTraining;
+};
+
+export type StrengthPastTrainingDataProgram = {
+  program_id: number;
+  program_name: string;
+  exercises: StrengthPastTrainingDataExercise[];
+};
+
+export type StrengthPastTrainingDataDateGroup = {
+  date: string;
+  programs: StrengthPastTrainingDataProgram[];
+};
+
+export type GetStrengthPastTrainingDataResponse = ApiResponse<StrengthPastTrainingDataDateGroup[]>;
