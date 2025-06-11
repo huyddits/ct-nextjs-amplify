@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { StrengthApi } from '@/api';
-import { useStrengthStore, TabsValue } from '@/store';
+import { useStrengthStore } from '@/store';
 import { debounce } from '@/utils/helpers';
 
 export type ProgramItem = {
@@ -13,8 +13,7 @@ export type ProgramItem = {
   type: string;
 };
 export const useListStrengthPrograms = () => {
-  const { programType } = useStrengthStore();
-  const [type, setType] = useState(TabsValue.MyPrograms);
+  const { programType, setProgramType } = useStrengthStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [listStrengthPrograms, setListStrengthPrograms] = useState<ProgramItem[]>([]);
 
@@ -24,9 +23,8 @@ export const useListStrengthPrograms = () => {
     try {
       const response = await StrengthApi.getListStrengthPrograms({
         name: searchQuery,
-        type: type,
+        type: programType,
       });
-      console.log(response);
       const { data, error } = response.data;
       if (!data) throw error;
 
@@ -44,17 +42,17 @@ export const useListStrengthPrograms = () => {
     } catch (error) {
       console.log(error);
     }
-  }, [type, searchQuery]);
+  }, [searchQuery, programType]);
 
   useEffect(() => {
     fetchListStrengthPrograms();
   }, [fetchListStrengthPrograms]);
 
   return {
-    type,
+    type: programType,
     searchQuery,
     listStrengthPrograms,
-    setType,
+    setType: setProgramType,
     debounceSearch,
     fetchListStrengthPrograms,
   };
