@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import { useExercise, ExerciseSet as ExerciseSetType } from '../_hooks/useExercise';
 import ExerciseHeader from './ExerciseHeader';
 import ExercisePastWorkouts from './ExercisePastWorkouts.client';
@@ -22,12 +21,7 @@ import ExerciseSet from './ExerciseSet';
 import ExerciseNote from './ExerciseNote.client';
 import ExerciseNavigator from './ExerciseNavigator.client';
 import ExerciseInstructionAndCues from './ExerciseInstructionAndCues';
-
-interface PastWorkout {
-  date: string;
-  sets: ExerciseSetType[];
-  note: string;
-}
+import { cn } from '@/lib/utils';
 
 export default function StrengthExercise({ programId }: { programId: number }) {
   const {
@@ -39,13 +33,16 @@ export default function StrengthExercise({ programId }: { programId: number }) {
     nextExerciseName,
     previousExerciseName,
     listExerciseInProgram,
+    onAddSet,
+    onRemoveSet,
+    onUpdateSet,
     setIndicator,
     onCompleteWorkout,
     setListExerciseInProgram,
   } = useExercise({
     programId,
   });
-  const router = useRouter();
+
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
@@ -64,58 +61,6 @@ export default function StrengthExercise({ programId }: { programId: number }) {
   const MAX_TIME = 300; // 5 minutes
   const TIME_INCREMENT = 15; // 15 seconds
 
-  // Update the mock data to include completed status and ensure whole number RPEs
-  const allPastWorkouts: PastWorkout[] = [
-    {
-      date: 'Jan 24, 2023',
-      sets: [
-        { weight: 135, reps: 12, rpe: 7, completed: false },
-        { weight: 155, reps: 10, rpe: 8, completed: false },
-        { weight: 175, reps: 8, rpe: 8, completed: false },
-      ],
-      note: 'This felt easy today. Able to progress heavier weights.',
-    },
-    {
-      date: 'Jan 17, 2023',
-      sets: [
-        { weight: 135, reps: 12, rpe: 7, completed: false },
-        { weight: 145, reps: 12, rpe: 7, completed: false },
-        { weight: 165, reps: 8, rpe: 8, completed: false },
-      ],
-      note: 'I was able to lift more than last session.',
-    },
-    {
-      date: 'Jan 10, 2023',
-      sets: [
-        { weight: 135, reps: 12, rpe: 6, completed: false },
-        { weight: 145, reps: 10, rpe: 7, completed: false },
-        { weight: 155, reps: 8, rpe: 9, completed: false },
-      ],
-      note: 'Felt strong today. Focusing on form.',
-    },
-    {
-      date: 'Jan 3, 2023',
-      sets: [
-        { weight: 125, reps: 12, rpe: 6, completed: false },
-        { weight: 135, reps: 12, rpe: 7, completed: false },
-        { weight: 145, reps: 10, rpe: 8, completed: false },
-      ],
-      note: 'First session of the year. Taking it easy to build back up.',
-    },
-  ];
-
-  // Initialize sets and notes from global data
-  // const [sets, setSets] = useState<Set[]>(globalWorkoutData[currentExercise].sets);
-  // const [notes, setNotes] = useState(globalWorkoutData[currentExercise].notes);
-
-  // Save current exercise data to global store
-  // const saveExerciseData = useCallback(() => {
-  //   // globalWorkoutData[currentExercise] = {
-  //   //   sets: [...sets],
-  //   //   notes: notes,
-  //   // };
-  // }, [currentExercise, sets, notes]);
-
   const toggleSetCompletion = (setIndex: number) => {
     setListExerciseInProgram(prev => {
       return prev.map((item, exerciseIndex) => {
@@ -127,51 +72,6 @@ export default function StrengthExercise({ programId }: { programId: number }) {
             return {
               ...set,
               completed: !set.completed,
-            };
-          }),
-        };
-      });
-    });
-  };
-
-  const addSet = () => {
-    setListExerciseInProgram(prev => {
-      return prev.map((item, index) => {
-        if (index !== indicator) return item;
-        return {
-          ...item,
-          sets: [
-            ...item.sets,
-            { weight: 0, reps: template?.reps ?? 0, rpe: template?.rpe ?? 0, completed: false },
-          ],
-        };
-      });
-    });
-  };
-
-  const removeSet = (setIndex: number) => {
-    setListExerciseInProgram(prev => {
-      return prev.map((item, index) => {
-        if (index !== indicator) return item;
-        return {
-          ...item,
-          sets: item.sets.filter((_, i) => i !== setIndex),
-        };
-      });
-    });
-  };
-
-  const updateSet = (setIndex: number, field: keyof ExerciseSetType, value: number) => {
-    setListExerciseInProgram(prev => {
-      return prev.map((item, exerciseIndex) => {
-        if (exerciseIndex !== indicator) return item;
-        return {
-          ...item,
-          sets: item.sets.map((set, index) => {
-            if (index !== setIndex) return set;
-            return {
-              ...set,
-              [field]: value,
             };
           }),
         };
@@ -235,25 +135,6 @@ export default function StrengthExercise({ programId }: { programId: number }) {
     setTimerDuration(newTime);
     setTimeRemaining(newTime);
   };
-
-  // function handleCompleteWorkout() {
-  //   // Save all exercise data before navigating
-  //   // Object.keys(globalWorkoutData).forEach(exerciseId => {
-  //   //   // For each exercise, mark all sets as completed
-  //   //   if (globalWorkoutData[exerciseId]) {
-  //   //     globalWorkoutData[exerciseId].sets = globalWorkoutData[exerciseId].sets.map(set => ({
-  //   //       ...set,
-  //   //       completed: true, // Mark all sets as completed
-  //   //     }));
-  //   //   }
-  //   // });
-
-  //   // Here you would typically send the data to a server
-  //   // console.log('Saving all workout data:', globalWorkoutData);
-  //   onCompleteWorkout();
-  //   // Navigate back to the program selector screen
-  //   router.push('/program-selector');
-  // }
 
   const navigateToPreviousExercise = () => {
     setIndicator(prev => prev - 1);
@@ -391,19 +272,31 @@ export default function StrengthExercise({ programId }: { programId: number }) {
         />
 
         {/* Swipe Indicators on Sides */}
-        <div className="fixed left-0 top-1/2 -translate-y-1/2 z-10 opacity-30 hover:opacity-80 transition-opacity">
+        <div
+          className={cn(
+            'fixed left-0 top-1/2 -translate-y-1/2 z-10 opacity-30 transition-opacity',
+            !previousExerciseName && 'hover:opacity-80'
+          )}
+        >
           <button
             onClick={navigateToPreviousExercise}
             className="bg-gray-200 p-3 rounded-r-full shadow-md"
+            disabled={!previousExerciseName}
           >
             <ChevronLeft className="h-6 w-6 text-primary" />
           </button>
         </div>
 
-        <div className="fixed right-0 top-1/2 -translate-y-1/2 z-10 opacity-30 hover:opacity-80 transition-opacity">
+        <div
+          className={cn(
+            'fixed right-0 top-1/2 -translate-y-1/2 z-10 opacity-30 transition-opacity',
+            !nextExerciseName && 'hover:opacity-80'
+          )}
+        >
           <button
             onClick={navigateToNextExercise}
             className="bg-gray-200 p-3 rounded-l-full shadow-md"
+            disabled={!nextExerciseName}
           >
             <ChevronRightIcon className="h-6 w-6 text-primary" />
           </button>
@@ -432,9 +325,9 @@ export default function StrengthExercise({ programId }: { programId: number }) {
               key={index}
               index={index}
               set={set}
-              removeSet={removeSet}
+              removeSet={onRemoveSet}
               toggleSetCompletion={toggleSetCompletion}
-              updateSet={updateSet}
+              updateSet={onUpdateSet}
             />
           ))}
         </div>
@@ -481,9 +374,9 @@ export default function StrengthExercise({ programId }: { programId: number }) {
 
         <Button
           variant="ghost"
-          onClick={addSet}
           size="lg"
-          className="w-full text-primary font-medium mb-6"
+          className="w-full text-primary hover:text-primary hover:bg-primary/10 font-medium mb-6"
+          onClick={onAddSet}
         >
           <Plus className="h-5 w-5" />
           Add Set
@@ -497,10 +390,7 @@ export default function StrengthExercise({ programId }: { programId: number }) {
         )}
 
         <div className="mb-6">
-          <Button
-            onClick={onCompleteWorkout}
-            className="w-full bg-primary hover:bg-primary/90 text-white "
-          >
+          <Button className="w-full" size="lg" onClick={onCompleteWorkout}>
             Complete Workout
           </Button>
         </div>

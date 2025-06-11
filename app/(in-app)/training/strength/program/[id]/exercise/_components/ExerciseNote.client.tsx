@@ -12,7 +12,7 @@ export default function ExerciseNote({
       <label className="block text-sm font-medium mb-2">Notes</label>
       <Textarea
         placeholder="Add any notes about this workout..."
-        className="min-h-[100px]"
+        className="min-h-[100px] bg-white"
         value={value}
         onChange={event => onTextChange?.(event.target.value)}
       />

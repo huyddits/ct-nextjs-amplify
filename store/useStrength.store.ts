@@ -1,18 +1,12 @@
 import { Exercise } from '@/app/(in-app)/training/strength/_hooks';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-
-export enum TabsValue {
-  CheerTrainer = 'cheer_trainer',
-  TeamPrograms = 'team_program',
-  MyPrograms = 'personal_program',
-}
-
+import { ProgramType } from '@/utils/types';
 export type StrengthStore = {
-  tabs: { label: string; value: TabsValue }[];
-  programType: string;
+  tabs: { label: string; value: ProgramType }[];
+  programType: ProgramType;
   listExercises: Exercise[];
-  setProgramType: (value: string) => void;
+  setProgramType: (value: ProgramType) => void;
   setListExercises: (value: Exercise[]) => void;
 };
 
@@ -21,11 +15,11 @@ export const useStrengthStore = create<StrengthStore>()(
     (set, get) => {
       return {
         tabs: [
-          { value: TabsValue.CheerTrainer, label: 'Cheer Trainer' },
-          { value: TabsValue.TeamPrograms, label: 'Team Programs' },
-          { value: TabsValue.MyPrograms, label: 'My Programs' },
+          { value: ProgramType.CheerTrainer, label: 'Cheer Trainer' },
+          { value: ProgramType.TeamPrograms, label: 'Team Programs' },
+          { value: ProgramType.MyPrograms, label: 'My Programs' },
         ],
-        programType: TabsValue.TeamPrograms,
+        programType: ProgramType.TeamPrograms,
         listExercises: [],
         setProgramType: value => set({ programType: value }),
         setListExercises: value => set({ listExercises: value }),
