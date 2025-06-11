@@ -1,4 +1,4 @@
-# .gitlab-ci.yml - Fixed YAML syntax
+# .gitlab-ci.yml - Fixed for your GitLab setup
 image: alpine/git
 
 stages:
@@ -14,12 +14,18 @@ mirror_to_github:
   before_script:
     - git config --global user.email "huydd@iceteasoftware.com"
     - git config --global user.name "huyddits"
+    - git config --global push.default simple
   script:
-    - echo "Mirroring to GitHub..."
-    - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com/$GITHUB_USERNAME/nextjs-pwa-amplify.git
+    - echo "Starting GitHub mirror process..."
+    - echo "Current branch $CI_COMMIT_REF_NAME"
+    - echo "Setting up GitHub remote..."
+    - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com/$GITHUB_USERNAME/nextjs-pwa-amplify.git || echo "Remote already exists"
+    - echo "Pushing to GitHub..."
     - git push github $CI_COMMIT_REF_NAME --force
-    - echo "Mirror completed successfully"
+    - echo "GitHub mirror completed successfully"
+    - echo "Check GitHub repository for updated code"
   only:
     - uat
     - staging
     - /^feature\/.*$/
+  when: on_success
