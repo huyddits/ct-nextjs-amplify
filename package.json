@@ -15,7 +15,12 @@
     "build:mobile": "BUILD_TARGET=mobile next build",
     "build:ios": "npm run build:mobile && npx cap sync ios"
   },
+  "engines": {
+    "node": "20.x",
+    "npm": ">=10.0.0"
+  },
   "dependencies": {
+    "@aws-amplify/adapter-nextjs": "^1.6.3",
     "@capacitor/cli": "^7.3.0",
     "@capacitor/core": "^7.3.0",
     "@capacitor/ios": "^7.3.0",
@@ -34,6 +39,7 @@
     "@radix-ui/react-tabs": "^1.1.11",
     "@stripe/react-stripe-js": "^3.7.0",
     "@stripe/stripe-js": "^7.3.0",
+    "aws-amplify": "^6.15.0",
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

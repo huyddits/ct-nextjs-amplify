@@ -1,235 +1,31 @@
+# .gitlab-ci.yml - Mirror to GitHub for Amplify
+image: alpine/git
+
 stages:
-  - build
-  - deploy
+  - mirror
 
-build:
-  stage: build
-  image: node:20-bullseye
-  tags:
-    - trainer
+variables:
+  GIT_DEPTH: 0
+
+mirror_to_github:
+  stage: mirror
+  before_script:
+    - git config --global user.email "huydd@iceteasoftware.com"
+    - git config --global user.name "huyddits"
   script:
-    - echo "🚀 Starting build process..."
-    - apt-get update -qq && apt-get install -y -qq zip
+    - echo "🔄 Mirroring to GitHub for Amplify..."
     
-    # Tạo file .env từ biến môi trường
-    - echo "🔧 Configuring environment..."
-    - echo "$STAGING_ENV" > .env
-    - cat .env
+    # Add GitHub remote
+    - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@${GITHUB_REPO_URL#https://}
     
-    # Cài đặt dependencies và vá lightningcss
-    - echo "📦 Installing dependencies và vá lightningcss..."
-    - |
-      # Tạo .npmrc để bỏ qua kiểm tra peer dependencies
-      echo "legacy-peer-deps=true" > .npmrc
-      
-      # Cài đặt dependencies
-      npm install --force --ignore-scripts
-      
-      # Vá react-day-picker để chấp nhận React 19
-      echo "Vá file node_modules/react-day-picker/package.json"
-      node -e "
-        const fs = require('fs');
-        try {
-          const packagePath = './node_modules/react-day-picker/package.json';
-          if (fs.existsSync(packagePath)) {
-            let pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-            if (pkg.peerDependencies && pkg.peerDependencies.react) {
-              pkg.peerDependencies.react = '^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0';
-              fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
-              console.log('Đã vá thành công react-day-picker');
-            }
-          }
-        } catch (error) {
-          console.error('Lỗi khi vá file:', error);
-        }
-      "
-      
-      # Tắt hoàn toàn lightningcss để tránh lỗi
-      echo "Tắt hoàn toàn lightningcss..."
-      
-      # 1. Vô hiệu hóa thư viện lightningcss
-      node -e "
-        const fs = require('fs');
-        // Tạo module lightningcss giả
-        const lightningcssPath = './node_modules/lightningcss';
-        if (fs.existsSync(lightningcssPath)) {
-          if (!fs.existsSync(lightningcssPath + '/node')) {
-            fs.mkdirSync(lightningcssPath + '/node', { recursive: true });
-          }
-          
-          // Tạo file index.js trống trong thư mục node
-          fs.writeFileSync(lightningcssPath + '/node/index.js', 'module.exports = { transform: () => ({ code: \"\", exports: [], warnings: [] }) };');
-          console.log('Đã vô hiệu hóa lightningcss');
-        } else {
-          console.log('Không tìm thấy thư mục lightningcss');
-        }
-      "
-      
-      # 2. Đảm bảo postcss-loader không cố sử dụng lightningcss
-      find ./node_modules -name "postcss.config.js" -exec rm -f {} \;
-      echo "module.exports = {
-        plugins: {
-          'postcss-flexbugs-fixes': {},
-          'postcss-preset-env': {
-            autoprefixer: {
-              flexbox: 'no-2009',
-            },
-            stage: 3,
-          },
-        },
-      };" > postcss.config.js
+    # Push to GitHub
+    - git push github HEAD:$CI_COMMIT_REF_NAME --force
+    - git push github --tags --force
     
-    # Tạo custom next.config.js để tắt hoàn toàn lightningcss
-    - |
-      echo "📝 Tạo next.config.mjs (ES Module) tùy chỉnh..."
-      
-      # Kiểm tra package.json để xác định loại module
-      IS_ESM=$(node -e "try { const pkg = require('./package.json'); console.log(pkg.type === 'module' ? 'true' : 'false'); } catch (e) { console.log('false'); }")
-      
-      if [ "$IS_ESM" == "true" ]; then
-        echo "Dự án sử dụng ES Modules, tạo next.config.mjs..."
-        cat > next.config.mjs << 'EOL'
-        /** @type {import('next').NextConfig} */
-        const nextConfig = {
-          output: 'export',
-          distDir: 'dist',
-          experimental: {
-            forceSwcTransforms: true,
-            useLightningcss: false,
-          },
-          typescript: {
-            ignoreBuildErrors: true,
-          },
-          eslint: {
-            ignoreDuringBuilds: true,
-          },
-          webpack: (config) => {
-            // Đảm bảo fallback cho các module Node.js
-            config.resolve.fallback = { 
-              fs: false, 
-              net: false, 
-              tls: false 
-            };
-            
-            // Lọc ra các loader liên quan đến lightningcss
-            const cssRule = config.module.rules.find(rule => rule.oneOf);
-            if (cssRule && cssRule.oneOf) {
-              cssRule.oneOf.forEach(rule => {
-                if (rule.use && Array.isArray(rule.use)) {
-                  rule.use = rule.use.filter(u => 
-                    !u.loader || !u.loader.includes('lightningcss')
-                  );
-                }
-              });
-            }
-            
-            return config;
-          },
-        };
-
-        export default nextConfig;
-        EOL
-        
-        # Xóa next.config.js nếu tồn tại để tránh xung đột
-        rm -f next.config.js
-        cat next.config.mjs
-      else
-        echo "Dự án sử dụng CommonJS, tạo next.config.js..."
-        cat > next.config.js << 'EOL'
-        /** @type {import('next').NextConfig} */
-        const nextConfig = {
-          output: 'export',
-          distDir: 'dist',
-          experimental: {
-            forceSwcTransforms: true,
-            useLightningcss: false,
-          },
-          typescript: {
-            ignoreBuildErrors: true,
-          },
-          eslint: {
-            ignoreDuringBuilds: true,
-          },
-          webpack: (config) => {
-            // Đảm bảo fallback cho các module Node.js
-            config.resolve.fallback = { 
-              fs: false, 
-              net: false, 
-              tls: false 
-            };
-            
-            // Lọc ra các loader liên quan đến lightningcss
-            const cssRule = config.module.rules.find(rule => rule.oneOf);
-            if (cssRule && cssRule.oneOf) {
-              cssRule.oneOf.forEach(rule => {
-                if (rule.use && Array.isArray(rule.use)) {
-                  rule.use = rule.use.filter(u => 
-                    !u.loader || !u.loader.includes('lightningcss')
-                  );
-                }
-              });
-            }
-            
-            return config;
-          },
-        };
-
-        module.exports = nextConfig;
-        EOL
-        
-        cat next.config.js
-      fi
+    - echo "✅ Successfully mirrored to GitHub"
+    - echo "🌐 GitHub URL: $GITHUB_REPO_URL"
     
-    # Build ứng dụng với các biến môi trường đặc biệt
-    - |
-      echo "🏗️ Building application..."
-      NEXT_DISABLE_LIGHTNINGCSS=1 \
-      NEXT_TELEMETRY_DISABLED=1 \
-      NODE_ENV=production \
-      NODE_OPTIONS="--max-old-space-size=4096" \
-      npm run build
-    
-    # Tạo file zip
-    - |
-      if [ -d "dist" ]; then
-        echo "📦 Đóng gói thư mục dist..."
-        cd dist
-        zip -r ../deploy.zip .
-        cd ..
-      else
-        echo "⚠️ Không tìm thấy thư mục dist! Kiểm tra output..."
-        ls -la
-        exit 1
-      fi
-  artifacts:
-    paths:
-      - deploy.zip
   only:
-    - staging
-
-deploy:
-  stage: deploy
-  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
-  tags:
-    - trainer
-  script:
-    - echo "🌐 Starting deployment to AWS Amplify..."
-    
-    # Cấu hình AWS
-    - aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID"
-    - aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY"
-    - aws configure set region "$STAGING_AWS_REGION"
-    
-    # Kiểm tra xác thực
-    - aws sts get-caller-identity
-    
-    # Deploy lên Amplify
-    - aws amplify start-deployment --app-id "$STAGING_AMPLIFY_APP_ID" --branch-name "$STAGING_BRANCH" --zip-file fileb://deploy.zip
-    
-    # Kiểm tra trạng thái
-    - sleep 5
-    - aws amplify list-jobs --app-id "$STAGING_AMPLIFY_APP_ID" --branch-name "$STAGING_BRANCH" --max-results 1
-  only:
-    - staging
-  dependencies:
-    - build
+    - main
+    - develop
+    - /^feature\/.*$/
