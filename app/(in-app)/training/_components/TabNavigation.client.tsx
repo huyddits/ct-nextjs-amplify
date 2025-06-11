@@ -16,7 +16,7 @@ export default function TabNavigationClient() {
         { title: 'Team Training Log', value: 'team-training-log' },
       ]}
       prefixPath={`/${ROUTES.TRAINING}`}
-      className="fixed top-0 left-0 right-0 z-50 bg-white"
+      className="fixed w-full z-20 shadow top-0"
     />
   );
 }

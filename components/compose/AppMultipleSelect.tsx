@@ -18,7 +18,7 @@ type MultipleSelectOption = {
 };
 
 interface AppMultipleSelectProps {
-  label: string;
+  label?: string;
   options: MultipleSelectOption[];
   disabled?: boolean;
   required?: boolean;
@@ -98,7 +98,7 @@ export default function AppMultipleSelect({
         <DropdownMenuContent className="space-y-3 max-h-56 overflow-y-auto w-[var(--radix-dropdown-menu-trigger-width)]">
           {enableCheckAll && (
             <div className="flex space-x-4 px-2">
-              <Label className="text-md font-light">
+              <Label className="text-sm font-light">
                 <Checkbox
                   checked={options.every(item =>
                     selectedValues.some(value => item.value === value)
@@ -112,7 +112,7 @@ export default function AppMultipleSelect({
 
           {options.map(item => (
             <div key={item.value} className="flex space-x-4 px-2">
-              <Label className="text-md font-light">
+              <Label className="text-sm font-light">
                 <Checkbox
                   checked={selectedValues.includes(item.value)}
                   onCheckedChange={checked => onCheckedChange(checked, item.value)}

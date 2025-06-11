@@ -14,8 +14,18 @@ interface AppConfirmProps {
   className?: string;
 }
 export default function AppConfirm({ className }: Readonly<AppConfirmProps>) {
-  const { isOpen, title, description, confirmTitle, cancelTitle, setIsOpen, onConfirm, onCancel } =
-    usePrivateConfirmStore();
+  const {
+    isOpen,
+    title,
+    description,
+    confirmTitle,
+    cancelTitle,
+    confirmClass,
+    cancelClass,
+    setIsOpen,
+    onConfirm,
+    onCancel,
+  } = usePrivateConfirmStore();
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
@@ -24,8 +34,12 @@ export default function AppConfirm({ className }: Readonly<AppConfirmProps>) {
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onCancel}>{cancelTitle}</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>{confirmTitle}</AlertDialogAction>
+          <AlertDialogCancel onClick={onCancel} className={cancelClass}>
+            {cancelTitle}
+          </AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm} className={confirmClass}>
+            {confirmTitle}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
