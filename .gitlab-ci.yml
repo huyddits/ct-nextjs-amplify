@@ -1,31 +1,11 @@
-# .gitlab-ci.yml - Fixed for your GitLab setup
 image: alpine/git
 
-stages:
-  - mirror
-
-variables:
-  GIT_DEPTH: 0
-
-mirror_to_github:
-  stage: mirror
+test_job:
   tags:
     - trainer
-  before_script:
-    - git config --global user.email "huydd@iceteasoftware.com"
-    - git config --global user.name "huyddits"
-    - git config --global push.default simple
   script:
-    - echo "Starting GitHub mirror process..."
+    - echo "Hello from GitLab CI"
+    - git --version
     - echo "Current branch $CI_COMMIT_REF_NAME"
-    - echo "Setting up GitHub remote..."
-    - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com/$GITHUB_USERNAME/nextjs-pwa-amplify.git || echo "Remote already exists"
-    - echo "Pushing to GitHub..."
-    - git push github $CI_COMMIT_REF_NAME --force
-    - echo "GitHub mirror completed successfully"
-    - echo "Check GitHub repository for updated code"
   only:
-    - uat
     - staging
-    - /^feature\/.*$/
-  when: on_success
