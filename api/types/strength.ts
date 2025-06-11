@@ -22,27 +22,41 @@ type TrainingTypeRecord = {
 
 type ExerciseSet = { rep: number; rpe: number };
 
+type WorkoutSet = ExerciseSet & { weight: number };
+
 type ExerciseProgramRecord = {
   exercise_id: number;
   sets: ExerciseSet[];
+};
+
+type PastWorkoutRecord = {
+  note: string;
+  sets: WorkoutSet[];
+  training_data_id: number;
+  created_at: string;
+  updated_at: string;
 };
 
 type ExerciseProgramRecordInProgram = {
   program_exercise_id: number;
   sets: ExerciseSet[];
   exercise: ExerciseRecord;
+  status: boolean;
+  training_data: PastWorkoutRecord[];
+  type: string;
 };
 
 type ProgramRecord = {
+  name: string;
+  type: string;
   copied_at: string;
   created_at: string;
   finished_at: string;
-  name: string;
   program_id: number;
   started_at: string;
   training_type: string;
-  type: string;
-  exercises: ExerciseProgramRecord[];
+  // exercises: ExerciseProgramRecord[];
+  exercises: string;
 };
 
 type ProgramDetailRecord = {
@@ -56,6 +70,16 @@ type ProgramDetailRecord = {
   created_at: string;
   updated_at: string;
   exercises: ExerciseProgramRecordInProgram[];
+};
+
+type ProgramStart = Omit<ProgramRecord, 'exercises'> & {
+  exercises: ExerciseProgramRecordInProgram[];
+};
+
+type WorkoutRecord = {
+  program_exercise_id: number;
+  note: string;
+  sets: WorkoutSet[];
 };
 
 export type GetListStrengthProgramsParams = {
@@ -121,7 +145,7 @@ export type UpdateProgramPayload = Partial<CreateProgramPayload & { program_id: 
 
 export type UpdateProgramResponse = ApiResponse<{}, {}>;
 
-export type DuplicateProgramPayload = { id: number };
+export type DuplicateProgramParams = { id: number };
 
 export type DuplicateProgramResponse = ApiResponse<{}>;
 
@@ -167,3 +191,9 @@ export type StrengthPastTrainingDataDateGroup = {
 };
 
 export type GetStrengthPastTrainingDataResponse = ApiResponse<StrengthPastTrainingDataDateGroup[]>;
+
+export type GetListExercisesInProgramResponse = ApiResponse<ProgramStart, {}>;
+
+export type CompleteWorkoutPayload = WorkoutRecord[];
+
+export type CompleteWorkoutResponse = ApiResponse<{}, {}>;

@@ -14,15 +14,13 @@ const ExerciseProgramSection = forwardRef(
       useStrengthStore();
     const [listAvailableExercises, setListAvailableExercises] = useState<Exercise[]>([]);
     const [listAddedExercises, setListAddedExercises] = useState<Exercise[]>([]);
-
-    const storeRef = useRef(listExercisesFromStore);
+    const [isMounted, setIsMounted] = useState(false);
 
     useImperativeHandle(ref, () => ({
       getValue: () => listAddedExercises,
     }));
 
     useEffect(() => {
-      console.log('storeRef.current', listExercisesFromStore);
       setListAddedExercises(listExercisesFromStore);
       setListAvailableExercises(
         listExcercises.filter(item => !listExercisesFromStore.some(({ id }) => item.id === id))
@@ -32,21 +30,32 @@ const ExerciseProgramSection = forwardRef(
     const onToggle = (item: Exercise, isAdded: boolean) => {
       onUpdate?.();
 
+      let supposed: Exercise[] = [];
+
       if (isAdded) {
-        setListAddedExercises(prev => [...prev, item]);
+        setListAddedExercises(prev => {
+          supposed = [...prev, item];
+          // return [...prev, item];
+          return supposed;
+        });
         setListAvailableExercises(prev => prev.filter(obj => obj.id !== item.id));
+        setListExercisesFromStore(supposed);
       } else {
-        setListAddedExercises(prev => prev.filter(({ id }) => id !== item.id));
+        setListAddedExercises(prev => {
+          supposed = prev.filter(({ id }) => id !== item.id);
+          // return prev.filter(({ id }) => id !== item.id);
+          return supposed;
+        });
+        setListExercisesFromStore(supposed);
         if (listExcercises.some(obj => obj.id === item.id)) {
           setListAvailableExercises(prev => [...prev, item]);
         }
       }
     };
 
-    useEffect(() => {
-      console.log('listAddedExercises', listAddedExercises);
-      setListExercisesFromStore(listAddedExercises);
-    }, [listAddedExercises]);
+    // useEffect(() => {
+    //   setListExercisesFromStore(listAddedExercises);
+    // }, [listAddedExercises]);
 
     return (
       <div>
