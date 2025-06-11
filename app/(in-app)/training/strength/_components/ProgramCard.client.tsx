@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { CopyIcon, PencilIcon, Trash2Icon, PlayIcon } from 'lucide-react';
+import { CopyIcon, PencilIcon, Trash2Icon, PlayIcon, CheckIcon } from 'lucide-react';
 import { useProgramItem } from '../_hooks';
 import { useConfirmStore } from '@/store';
 
@@ -34,6 +34,7 @@ export default function ProgramCard({
       confirmClass: 'bg-red-500 hover:bg-red-600',
     });
   };
+
   return (
     <Card className="p-4 rounded-xl shadow-sm">
       <div className="flex justify-between items-start">
@@ -42,11 +43,16 @@ export default function ProgramCard({
           <p className="text-sm text-gray-600 mt-1">
             <span className="text-gray-500 font-medium">Exercises:</span> {content}
           </p>
-          <p className="text-sm text-gray-500 mt-2">Completed Last on: {lastCompleted}</p>
+          {lastCompleted && (
+            <p className="text-sm text-gray-500 mt-2">Completed Last on: {lastCompleted}</p>
+          )}
         </div>
 
         <div className="flex space-x-2">
-          <button className="p-2 text-gray-400 hover:text-gray-600" onClick={onCopy}>
+          <button
+            className="p-2 text-gray-400 hover:text-gray-600"
+            onClick={() => onCopy(onRefetch)}
+          >
             <CopyIcon className="h-5 w-5 stroke-[1.5]" />
           </button>
           <button className="p-2 text-gray-400 hover:text-gray-600" onClick={onEdit}>
@@ -59,15 +65,23 @@ export default function ProgramCard({
       </div>
 
       <div className="mt-3 pt-2 text-right">
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-xs border-primary text-primary hover:bg-green-50 hover:text-primary"
-          onClick={onPlay}
-        >
-          <PlayIcon className="h-3 w-3 mr-1" />
-          Start
-        </Button>
+        {lastCompleted ? (
+          <div className="ml-auto flex w-fit items-center gap-2 text-sm text-primary">
+            <CheckIcon className="w-4 h-4" />
+            Finished
+          </div>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-xs border-primary text-primary hover:bg-green-50 hover:text-primary"
+            onClick={onPlay}
+            disabled={!!lastCompleted}
+          >
+            <PlayIcon className="h-3 w-3 mr-1" />
+            Start
+          </Button>
+        )}
       </div>
     </Card>
   );

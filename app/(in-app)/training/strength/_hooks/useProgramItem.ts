@@ -5,7 +5,15 @@ import { toast } from 'react-toastify';
 
 export const useProgramItem = (id: number) => {
   const router = useRouter();
-  const onCopy = () => {};
+  const onCopy = async (onSuccess?: () => void) => {
+    try {
+      await StrengthApi.duplicateProgram({ id });
+      toast.success('Program duplicated successfully');
+      onSuccess?.();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const onEdit = () => {
     router.push(`/${ROUTES.TRAINING_STRENGTH_PROGRAM}/${id}`);
