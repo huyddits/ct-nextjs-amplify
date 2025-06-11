@@ -1,6 +1,8 @@
 import { StrengthApi } from '@/api';
 import { useCategoriesStore } from '@/store';
+import { ROUTES } from '@/utils/constants';
 import { set } from 'date-fns';
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -47,6 +49,7 @@ export type ExerciseSet = {
 
 type UseExerciseOptions = { programId: number };
 export const useExercise = (options: UseExerciseOptions) => {
+  const router = useRouter();
   const [programDetail, setProgramDetail] = useState<ProgramDetail | null>(null);
   const [listExerciseInProgram, setListExerciseInProgram] = useState<ExerciseDetailInProgram[]>([]);
   const { strengthTrainingTypes } = useCategoriesStore();
@@ -138,9 +141,55 @@ export const useExercise = (options: UseExerciseOptions) => {
       );
 
       toast.success('Workout completed successfully');
+      router.push(`/${ROUTES.TRAINING_STRENGTH}`);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const onAddSet = () => {
+    setListExerciseInProgram(prev => {
+      return prev.map((item, index) => {
+        if (index !== indicator) return item;
+        return {
+          ...item,
+          sets: [
+            ...item.sets,
+            { weight: 0, reps: template?.reps ?? 0, rpe: template?.rpe ?? 0, completed: false },
+          ],
+        };
+      });
+    });
+  };
+
+  const onRemoveSet = (setIndex: number) => {
+    setListExerciseInProgram(prev => {
+      return prev.map((item, index) => {
+        if (index !== indicator) return item;
+        return {
+          ...item,
+          sets: item.sets.filter((_, i) => i !== setIndex),
+        };
+      });
+    });
+  };
+
+  const onUpdateSet = (setIndex: number, field: keyof ExerciseSet, value: number) => {
+    setListExerciseInProgram(prev => {
+      return prev.map((item, exerciseIndex) => {
+        if (exerciseIndex !== indicator) return item;
+        return {
+          ...item,
+          sets: item.sets.map((set, index) => {
+            if (index !== setIndex) return set;
+            return {
+              ...set,
+              [field]: value,
+            };
+          }),
+        };
+      });
+    });
   };
 
   const exerciseName = useMemo(() => {
@@ -182,6 +231,9 @@ export const useExercise = (options: UseExerciseOptions) => {
     previousExerciseName,
     listExerciseInProgram,
     setIndicator,
+    onAddSet,
+    onRemoveSet,
+    onUpdateSet,
     onCompleteWorkout,
     setListExerciseInProgram,
     fetchListExerciseInProgram,

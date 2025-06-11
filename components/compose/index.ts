@@ -5,3 +5,4 @@ export { default as AppLoadingFullScreen } from './AppLoadingFullScreen';
 export { default as AppDatePicker } from './AppDatePicker.client';
 export { default as AppTextarea } from './AppTextarea.client';
 export { default as AppConfirm } from './AppConfirm';
+export { default as AppMultipleSelect } from './AppMultipleSelect';
