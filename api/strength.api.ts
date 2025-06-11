@@ -2,6 +2,7 @@ import axiosIns from '@/lib/axiosIns';
 import type {
   CreateProgramPayload,
   CreateProgramResponse,
+  DeleteProgramResponse,
   DuplicateProgramPayload,
   DuplicateProgramResponse,
   GetListExercisesParams,
@@ -58,4 +59,21 @@ export const duplicateProgram = (payload: DuplicateProgramPayload) => {
 
 export const getProgramDetail = (id: number) => {
   return axiosIns.get<GetProgramDetailResponse>(END_POINTS.STRENGTH_PROGRAMS + `/${id}`);
+};
+
+export const deleteProgram = (id: number) => {
+  return axiosIns.delete<DeleteProgramResponse>(END_POINTS.STRENGTH_PROGRAMS, {
+    params: { id },
+  });
+};
+
+export const getListExercisesInProgram = (programId: number) => {
+  console.log({ programId });
+  return axiosIns.post(
+    END_POINTS.STRENGTH_PROGRAMS_START,
+    {},
+    {
+      params: { program_id: programId },
+    }
+  );
 };

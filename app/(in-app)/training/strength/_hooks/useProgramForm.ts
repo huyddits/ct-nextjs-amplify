@@ -301,7 +301,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
           };
         }),
       });
-      setListExercisesFromStore(listExercisesFromStore.map(item => ({ ...item, isAdded: false })));
+      setListExercisesFromStore([]);
       toast.success('Program created successfully');
       router.push('/training/strength');
     } catch (error) {
@@ -455,6 +455,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     listExercises,
     equipmentOptions,
     listSelectedExercises,
+    listExercisesFromStore,
     roleOptions: roles.filter(item => !item.isCoach),
     problemOptions: strengthProblemTypes,
     skillTypeOptions: strengthSkillTypes,
