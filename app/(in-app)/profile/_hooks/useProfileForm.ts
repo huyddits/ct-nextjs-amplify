@@ -3,7 +3,7 @@ import { ERROR_MESSAGES } from '@/utils/constants';
 import * as $v from '@/utils/validators';
 import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { AccountType, MeasurementUnit } from '@/utils/types';
+import { AccountType } from '@/utils/types';
 import { useAuthStore } from '@/store';
 import { useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
@@ -56,6 +56,7 @@ export const useProfileForm = () => {
       return;
     }
 
+    console.log(info, info.cheerStyleId);
     setValue('firstName', info.firstName);
     setValue('lastName', info.lastName);
     setValue('email', info.email);
@@ -95,23 +96,23 @@ export const useProfileForm = () => {
       });
       const { data: dataResponse, error } = response.data;
       if (!data) throw error;
-      console.log('dataResponse', dataResponse);
-      // updateInfo({
-      //   dateOfBirth: dataResponse?.date_of_birth,
-      //   email: dataResponse?.email,
-      //   firstName: dataResponse?.first_name,
-      //   lastName: dataResponse?.last_name,
-      //   measurementUnitId: dataResponse?.measurement_unit.id,
-      //   measurementUnitName: dataResponse?.measurement_unit.name,
-      //   schoolName: dataResponse?.school_name,
-      //   cheerStyleId: dataResponse?.cheer_styles.id,
-      //   cheerStyleName: dataResponse?.cheer_styles.name,
-      //   cheerTypeId: dataResponse?.cheer_types.id,
-      //   cheerTypeName: dataResponse?.cheer_types.name,
-      //   roleId: dataResponse?.role.id,
-      //   roleName: dataResponse?.role.name,
-      //   equipmentIds: dataResponse?.equipments.map(item => item.id),
-      // });
+
+      updateInfo({
+        dateOfBirth: dataResponse?.date_of_birth,
+        email: dataResponse?.email,
+        firstName: dataResponse?.first_name,
+        lastName: dataResponse?.last_name,
+        measurementUnitId: dataResponse?.measurement_unit.id,
+        measurementUnitName: dataResponse?.measurement_unit.name,
+        schoolName: dataResponse?.school_name,
+        cheerStyleId: dataResponse?.cheer_styles?.[0].id,
+        cheerStyleName: dataResponse?.cheer_styles?.[0]?.name,
+        cheerTypeId: dataResponse?.cheer_types?.[0]?.id,
+        cheerTypeName: dataResponse?.cheer_types?.[0]?.name,
+        roleId: dataResponse?.role.id,
+        roleName: dataResponse?.role.name,
+        equipmentIds: dataResponse?.equipments.map(item => item.id),
+      });
 
       toast.success('Update profile successfully');
       setIsEditing(false);
