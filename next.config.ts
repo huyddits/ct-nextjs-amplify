@@ -9,7 +9,10 @@ const withPWA = require('next-pwa')({
 const nextConfig = withPWA({
   reactStrictMode: true,
   swcMinify: true,
-
+  experimental: {
+    // Tắt lightningcss
+    lightningcss: false,
+  },
   // Image optimization
   images: {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
