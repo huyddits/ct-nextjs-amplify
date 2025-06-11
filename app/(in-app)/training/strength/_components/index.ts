@@ -1,2 +1,2 @@
-export { default as strengthSection } from './StrengthSection';
-export { default as StrengthCard } from './StrengthCard.client';
+export { default as ProgramSection } from './ProgramSection';
+export { default as ProgramCard } from './ProgramCard.client';

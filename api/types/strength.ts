@@ -109,3 +109,5 @@ export type DuplicateProgramPayload = { id: number };
 export type DuplicateProgramResponse = ApiResponse<{}>;
 
 export type GetProgramDetailResponse = ApiResponse<ProgramDetailRecord>;
+
+export type DeleteProgramResponse = ApiResponse<{}, {}>;

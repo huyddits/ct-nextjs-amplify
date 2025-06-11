@@ -1,4 +1,3 @@
-export { default as NewProgramTitle } from './NewProgramTitle';
 export { default as ProgramTypeSelect } from './ProgramTypeSelect';
 export { default as ProgramFilter } from './ProgramFilter';
 export { default as ExerciseProgramSection } from './ExerciseProgramSection';

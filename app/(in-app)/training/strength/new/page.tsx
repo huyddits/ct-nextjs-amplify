@@ -29,27 +29,21 @@ export default function CreateStrengthPage() {
     programTypeOptions,
     setFilterForm,
     setProgramType,
-    setListExercisesFromStore,
     fetchListExcersises,
   } = useProgramForm({});
 
-  // const [programType, setProgramType] = useState('');
-  const [selectedEquipments, setSelectedEquipment] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
   const onGoToProgramEditor = () => {
-    const listUpdatedExercises = listExercisesRef.current?.getValue?.();
-    if (!listUpdatedExercises) return;
-    if (!listUpdatedExercises.length) {
+    const listSelectedExercises = listExercisesRef.current?.getValue?.();
+    if (!listSelectedExercises) return;
+    if (!listSelectedExercises.length) {
       setErrorMessage('Please select at least one exercise');
       return;
     }
-    setListExercisesFromStore(listUpdatedExercises);
+
     router.push(`/${ROUTES.TRAINING_STRENGTH_PROGRAM}`);
   };
 
-  useEffect(() => {
-    console.log('selectedEquipments', selectedEquipments);
-  }, [selectedEquipments]);
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast container">
       <PageHeader title="Create Program" allowBack />
@@ -91,7 +85,7 @@ export default function CreateStrengthPage() {
         className="mb-8"
         equipmentOptions={equipmentOptions}
         onChangeEquipments={value => {
-          setSelectedEquipment(value.map(item => item.value));
+          setFilterForm(prev => ({ ...prev, equipmentIds: value.map(item => item.value) }));
         }}
         onApplyFilter={fetchListExcersises}
       />
