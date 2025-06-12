@@ -3,6 +3,7 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { ByAthleteContent, ByBaseSpotterContent, ByFlyerContent } from './_components';
+import { useTeamData } from './_hook';
 
 const TAB_VALUES = ['flyer', 'base-spotter', 'athlete'];
 export default function MeasurementTeamDataPage() {
@@ -12,9 +13,9 @@ export default function MeasurementTeamDataPage() {
   };
   return (
     <Tabs defaultValue={tab} onValueChange={onValueChange}>
-      <TabsList className="flex w-full top-[36px] fixed shadow-sm">
+      <TabsList className="flex w-full top-[36px] fixed shadow-sm z-50">
         <TabsTrigger value={TAB_VALUES[0]} className="tab-navigation-item">
-          By flyer
+          By Flyer
         </TabsTrigger>
         <TabsTrigger value={TAB_VALUES[1]} className="tab-navigation-item">
           By Base/Spotter
