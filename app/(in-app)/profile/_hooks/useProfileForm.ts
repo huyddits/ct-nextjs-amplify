@@ -11,6 +11,7 @@ import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
 import { UserApi } from '@/api';
 import { toast } from 'react-toastify';
 import { useLoading } from '@/hooks';
+import { UpdatePersonalInfoPayload } from '@/api/types/users';
 
 const schema = object().shape({
   coachCode: string().default(''),
@@ -82,7 +83,7 @@ export const useProfileForm = () => {
     }
     startLoading();
     try {
-      const response = await UserApi.updatePersonalInfo({
+      const payload = {
         cheer_style_id: Number(data.cheerStyle),
         cheer_type_id: Number(data.cheerType),
         date_of_birth: dayjs(data.dateOfBirth).toISOString(),
@@ -93,7 +94,11 @@ export const useProfileForm = () => {
         role: Number(data.role),
         equipments: data.equipment.map(item => Number(item)),
         coach_code: data.coachCode,
-      });
+      } as UpdatePersonalInfoPayload;
+      if (isCoach) {
+        delete payload.coach_code;
+      }
+      const response = await UserApi.updatePersonalInfo(payload);
       const { data: dataResponse, error } = response.data;
       if (!data) throw error;
 

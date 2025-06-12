@@ -28,7 +28,7 @@ export default function PageHeader({
             className="absolute left-0 hover:no-underline"
             onClick={() => router.back()}
           >
-            <ChevronLeftIcon className="h-5 w-5 mr-2" />
+            <ChevronLeftIcon className="h-5 w-5" />
             <span>Back</span>
           </Button>
         )}

@@ -8,8 +8,7 @@ export default function ExerciseHeader({ programId, title }: { programId: number
       <Link href={`/${ROUTES.TRAINING_STRENGTH}`} className="text-gray-600">
         <ArrowLeftIcon className="h-6 w-6" />
       </Link>
-      <h1 className="text-xl font-semibold text-center flex-1">
-        {/* {currentNav.name} */}
+      <h1 className="text-xl font-semibold text-center flex-1 absolute left-1/2 transform -translate-x-1/2">
         {title}
       </h1>
       <Link href={`/${ROUTES.TRAINING_STRENGTH_PROGRAM}/${programId}`}>

@@ -31,6 +31,7 @@ export default function CreateStrengthPage() {
     totalPagesExercise,
     setFilterForm,
     setProgramType,
+    setPageExercise,
     loadMoreExercises,
     fetchListExcersises,
   } = useProgramForm({});
@@ -64,6 +65,7 @@ export default function CreateStrengthPage() {
         skillOptions={skillTypeOptions}
         problemOptions={problemOptions}
         onChangeSearchText={value => {
+          setPageExercise(1);
           setFilterForm(prev => ({ ...prev, exerciseName: value }));
         }}
         onChangeSelected={(field, value) => {
@@ -89,7 +91,10 @@ export default function CreateStrengthPage() {
         onChangeEquipments={value => {
           setFilterForm(prev => ({ ...prev, equipmentIds: value.map(item => item.value) }));
         }}
-        onApplyFilter={fetchListExcersises}
+        onApplyFilter={() => {
+          setPageExercise(1);
+          fetchListExcersises(1);
+        }}
       />
       <ExerciseProgramSection
         ref={listExercisesRef}
