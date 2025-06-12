@@ -1,12 +1,16 @@
 # .gitlab-ci.yml - Fixed for your GitLab setup
 image: alpine:latest
 
-test_job:
+mirror_to_github:
+  stage: mirror
   tags:
     - trainer
+  before_script:
+    - git config --global user.email "huydd@iceteasoftware.com"
+    - git config --global user.name "huyddits"
   script:
-    - echo "Hello from GitLab CI"
-    - git --version
-    - echo "Current branch $CI_COMMIT_REF_NAME"
+    - echo "Mirror processing"
+    - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com/$GITHUB_USERNAME/ct-nextjs-amplify.git
+    - git push github $CI_COMMIT_REF_NAME --force
   only:
     - staging
