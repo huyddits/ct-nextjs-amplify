@@ -11,7 +11,7 @@ import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { athletePayload, CoachStudentPayload, FlyerAndBasesPayLoad } from '@/api/types/measurement';
-import { useAuthStore } from '@/store';
+import { useAuthStore, useMeasurementStore } from '@/store';
 import { create } from 'domain';
 
 type UseMeasurementFormOptions = {
@@ -37,6 +37,12 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
     ResultForAllMeasurementsItem[]
   >([]);
   const { info } = useAuthStore();
+  const {
+    baseMeasurementList,
+    coachStudent: coachStudentListFromStore,
+    setRawMeasurementList,
+    setCoachStudent,
+  } = useMeasurementStore();
   const { control, setValue, getValues, watch } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -89,6 +95,10 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
   };
 
   const getMeasurementList = async () => {
+    if (baseMeasurementList.length > 0) {
+      setMeasurementList(baseMeasurementList);
+      return;
+    }
     try {
       const response = await MeasurementApi.getMeasurementList();
       const { data, error } = response.data;
@@ -103,6 +113,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
         videoLink: data.video_link,
       }));
       setMeasurementList(dataResponse);
+      setRawMeasurementList(dataResponse);
       options?.onSuccess?.();
     } catch (error) {
       console.log(error);
@@ -110,6 +121,10 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
   };
 
   const getCoachStudentList = async (payload: CoachStudentPayload) => {
+    if (coachStudentListFromStore.length > 0) {
+      setCoachStudentList(coachStudentListFromStore);
+      return;
+    }
     try {
       const response = await MeasurementApi.getCoachStudentList(payload);
       const { data, error } = response.data;
@@ -136,6 +151,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
         },
       }));
       setCoachStudentList(dataResponse);
+      setCoachStudent(dataResponse);
     } catch (error) {
       console.log(error);
     }

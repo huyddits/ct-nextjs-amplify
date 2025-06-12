@@ -138,7 +138,7 @@ export default function AppInput({
           </button>
         )}
         {postfix && typeof postfix === 'string' ? (
-          <div className="absolute top-0 right-0 h-full bg-gray-100 border border-l-0 border-gray-300 rounded-r-md text-gray-500 flex items-center px-3">
+          <div className="absolute top-0 right-0 h-full bg-gray-100 border border-l-0 border-gray-300 rounded-r-md text-gray-500 flex items-center px-2">
             {postfix}
           </div>
         ) : (

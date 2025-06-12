@@ -38,20 +38,33 @@ export type CoachStudentItem = {
   athlete: AthleteItem;
 };
 
+export type BaseFlyerAndBases = {
+  measurementName: string;
+  items: {
+    name: string;
+    result: number;
+    unit: string;
+  }[];
+};
+
 type MeasurementStore = {
   measurementListOptions: SelectOption[];
   baseMeasurementList: MeasurementItem[];
   coachStudent: CoachStudentItem[];
+  flyerAndBases: BaseFlyerAndBases;
   setMeasurementListOptions: (options: SelectOption[]) => void;
   setRawMeasurementList: (list: MeasurementItem[]) => void;
   setCoachStudent: (list: CoachStudentItem[]) => void;
+  setFlyerAndBases: (list: BaseFlyerAndBases) => void;
 };
 
 export const useMeasurementStore = create<MeasurementStore>(set => ({
   measurementListOptions: [],
   baseMeasurementList: [],
   coachStudent: [],
+  flyerAndBases: { measurementName: '', items: [] },
   setMeasurementListOptions: options => set({ measurementListOptions: options }),
   setRawMeasurementList: list => set({ baseMeasurementList: list }),
   setCoachStudent: list => set({ coachStudent: list }),
+  setFlyerAndBases: list => set({ flyerAndBases: list }),
 }));
