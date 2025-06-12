@@ -1,5 +1,5 @@
 'use client';
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, SearchIcon } from 'lucide-react';
 import ProgramSection from './_components/ProgramSection';
@@ -8,9 +8,10 @@ import Link from 'next/link';
 import { useListStrengthPrograms } from './_hooks';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ROUTES } from '@/utils/constants';
-import { useStrengthStore, TabsValue } from '@/store';
+import { useStrengthStore } from '@/store';
+import { ProgramType } from '@/utils/types';
 
-const CustomTabTrigger = ({ value, children }: { value: TabsValue; children: ReactNode }) => {
+const CustomTabTrigger = ({ value, children }: { value: ProgramType; children: ReactNode }) => {
   return (
     <TabsTrigger
       value={value}
@@ -22,24 +23,27 @@ const CustomTabTrigger = ({ value, children }: { value: TabsValue; children: Rea
 };
 
 export default function StrengthPage() {
-  const { setProgramType, tabs } = useStrengthStore();
-  const { listStrengthPrograms, setType, debounceSearch, fetchListStrengthPrograms } =
+  const { setProgramType, programType, tabs } = useStrengthStore();
+  const { isCoach, listStrengthPrograms, setType, debounceSearch, fetchListStrengthPrograms } =
     useListStrengthPrograms();
 
-  const onTabChange = (tabValue: TabsValue) => {
+  const onTabChange = (tabValue: ProgramType) => {
     setProgramType(tabValue);
     setType(tabValue);
   };
 
-  // useEffect(() => {
-  //   setListExercisesFromStore([]);
-  // }, []);
+  const isAllowCreate = useMemo(() => {
+    if (programType === ProgramType.TeamPrograms) return isCoach;
+    if (programType === ProgramType.MyPrograms) return true;
+    return false;
+  }, [programType, isCoach]);
+
   return (
     <section>
       <Tabs
-        defaultValue={TabsValue.MyPrograms}
+        value={programType}
         className="border-b sticky top-9 z-50 bg-white border-t"
-        onValueChange={value => onTabChange(value as TabsValue)}
+        onValueChange={value => onTabChange(value as ProgramType)}
       >
         <TabsList className="w-full mx-auto px-4 bg-white items-center">
           {tabs.map(({ value, label }) => (
@@ -50,12 +54,14 @@ export default function StrengthPage() {
         </TabsList>
       </Tabs>
       <div className="max-w-3xl mb-4 mx-auto px-4 padding-top-section padding-bottom-section">
-        <Link href={`/${ROUTES.TRAINING_STRENGTH_NEW}`}>
-          <Button className="w-full border-dashed border-2 " size="lg" variant="outline">
-            <PlusIcon className="h-5 w-5 mr-2" />
-            Create New Program
-          </Button>
-        </Link>
+        {isAllowCreate && (
+          <Link href={`/${ROUTES.TRAINING_STRENGTH_NEW}`}>
+            <Button className="w-full border-dashed border-2 " size="lg" variant="outline">
+              <PlusIcon className="h-5 w-5 mr-2" />
+              Create New Program
+            </Button>
+          </Link>
+        )}
         <div className="pt-4">
           <div className="relative mb-4">
             <AppInput

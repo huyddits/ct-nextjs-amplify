@@ -93,3 +93,9 @@ export enum PlanStatus {
   Pending = 'PENDING',
   Inactive = 'INACTIVE', // fe self-declare type to markup which plan can be switched
 }
+
+export enum ProgramType {
+  CheerTrainer = 'cheer_trainer',
+  TeamPrograms = 'team_program',
+  MyPrograms = 'personal_program',
+}

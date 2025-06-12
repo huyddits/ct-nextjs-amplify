@@ -1,4 +1,4 @@
-import { TrainingLogResponse } from '@/api/types/trainingLog';
+import { TrainingLogResponse } from '@/api/types/strength';
 
 type Props = Partial<TrainingLogResponse>;
 

@@ -4,7 +4,7 @@ import {
   CreateCardioResponse,
   GetListExerciseResponse,
   GetListRpeResponse,
-} from './types/cardioTrainingSelection.api';
+} from './types/cardioTrainingSelection';
 import { END_POINTS } from '@/utils/constants';
 
 export const postExercises = (payload: CreateCardioPayload) => {

@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { StrengthApi } from '@/api';
-import { useStrengthStore } from '@/store';
+import { useAuthStore, useStrengthStore } from '@/store';
 import { debounce } from '@/utils/helpers';
+import { AccountType } from '@/utils/types';
 
 export type ProgramItem = {
   id: string;
   name: string;
   copiedAt: string;
+  exercises: string;
   startedAt: string;
   finishedAt: string;
   trainingType: string;
@@ -14,8 +16,10 @@ export type ProgramItem = {
 };
 export const useListStrengthPrograms = () => {
   const { programType, setProgramType } = useStrengthStore();
+  const { info } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [listStrengthPrograms, setListStrengthPrograms] = useState<ProgramItem[]>([]);
+  const isCoach = useMemo(() => info?.accountType === AccountType.Coach, [info?.accountType]);
 
   const debounceSearch = useMemo(() => debounce(setSearchQuery, 500), []);
 
@@ -37,6 +41,7 @@ export const useListStrengthPrograms = () => {
           startedAt: item.started_at,
           trainingType: item.training_type,
           type: item.type,
+          exercises: item.exercises,
         }))
       );
     } catch (error) {
@@ -50,6 +55,7 @@ export const useListStrengthPrograms = () => {
 
   return {
     type: programType,
+    isCoach,
     searchQuery,
     listStrengthPrograms,
     setType: setProgramType,

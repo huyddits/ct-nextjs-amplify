@@ -22,27 +22,41 @@ type TrainingTypeRecord = {
 
 type ExerciseSet = { rep: number; rpe: number };
 
+type WorkoutSet = ExerciseSet & { weight: number };
+
 type ExerciseProgramRecord = {
   exercise_id: number;
   sets: ExerciseSet[];
+};
+
+type PastWorkoutRecord = {
+  note: string;
+  sets: WorkoutSet[];
+  training_data_id: number;
+  created_at: string;
+  updated_at: string;
 };
 
 type ExerciseProgramRecordInProgram = {
   program_exercise_id: number;
   sets: ExerciseSet[];
   exercise: ExerciseRecord;
+  status: boolean;
+  training_data: PastWorkoutRecord[];
+  type: string;
 };
 
 type ProgramRecord = {
+  name: string;
+  type: string;
   copied_at: string;
   created_at: string;
   finished_at: string;
-  name: string;
   program_id: number;
   started_at: string;
   training_type: string;
-  type: string;
-  exercises: ExerciseProgramRecord[];
+  // exercises: ExerciseProgramRecord[];
+  exercises: string;
 };
 
 type ProgramDetailRecord = {
@@ -56,6 +70,16 @@ type ProgramDetailRecord = {
   created_at: string;
   updated_at: string;
   exercises: ExerciseProgramRecordInProgram[];
+};
+
+type ProgramStart = Omit<ProgramRecord, 'exercises'> & {
+  exercises: ExerciseProgramRecordInProgram[];
+};
+
+type WorkoutRecord = {
+  program_exercise_id: number;
+  note: string;
+  sets: WorkoutSet[];
 };
 
 export type GetListStrengthProgramsParams = {
@@ -79,6 +103,7 @@ export type GetListExercisesParams = {
 };
 
 export type GetListExercisesPayload = {
+  name: string;
   role_id: number[];
   stunt_id: number[];
   cheer_type_id: number[];
@@ -121,10 +146,55 @@ export type UpdateProgramPayload = Partial<CreateProgramPayload & { program_id: 
 
 export type UpdateProgramResponse = ApiResponse<{}, {}>;
 
-export type DuplicateProgramPayload = { id: number };
+export type DuplicateProgramParams = { id: number };
 
 export type DuplicateProgramResponse = ApiResponse<{}>;
 
 export type GetProgramDetailResponse = ApiResponse<ProgramDetailRecord>;
 
 export type DeleteProgramResponse = ApiResponse<{}, {}>;
+export type GetStrengthPastTrainingDataPayload = {
+  page?: number;
+  limit?: number;
+  start_date: string;
+  end_date: string;
+};
+
+export type StrengthPastTrainingDataSet = {
+  weight: number;
+  set: number;
+  rpe: number;
+};
+
+export type StrengthPastTrainingDataTraining = {
+  training_data_id: number;
+  sets: StrengthPastTrainingDataSet[];
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type StrengthPastTrainingDataExercise = {
+  program_exercise_id: number;
+  exercise_name: string;
+  training_data: StrengthPastTrainingDataTraining;
+};
+
+export type StrengthPastTrainingDataProgram = {
+  program_id: number;
+  program_name: string;
+  exercises: StrengthPastTrainingDataExercise[];
+};
+
+export type StrengthPastTrainingDataDateGroup = {
+  date: string;
+  programs: StrengthPastTrainingDataProgram[];
+};
+
+export type GetStrengthPastTrainingDataResponse = ApiResponse<StrengthPastTrainingDataDateGroup[]>;
+
+export type GetListExercisesInProgramResponse = ApiResponse<ProgramStart, {}>;
+
+export type CompleteWorkoutPayload = WorkoutRecord[];
+
+export type CompleteWorkoutResponse = ApiResponse<{}, {}>;
