@@ -1,4 +1,4 @@
-export type FlyerAndBasesItem = {
+export type BaseFlyerAndBases = {
   measurementName: string;
   items: {
     name: string;

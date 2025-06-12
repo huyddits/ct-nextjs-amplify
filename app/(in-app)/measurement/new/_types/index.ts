@@ -8,25 +8,29 @@ export type MeasurementItem = {
   videoLink: string;
 };
 
+export type AthleteItem = {
+  accountType: string;
+  email: string;
+  stripeCustomerId: string;
+  stripeSubscriptionId: string;
+  isActive: boolean;
+  profile: AthleteProfileItem;
+};
+
+export type AthleteProfileItem = {
+  profileId: number;
+  firstName: string;
+  lastName: string;
+  schoolName: string;
+  dateOfBirth: string;
+  coachCode: string;
+};
+
 export type CoachStudentItem = {
   coachStudentId: number;
   status: string;
   athleteId: string;
-  athlete: {
-    accountType: string;
-    email: string;
-    stripeCustomerId: string;
-    stripeSubscriptionId: string;
-    isActive: boolean;
-    profile: {
-      profileId: number;
-      firstName: string;
-      lastName: string;
-      schoolName: string;
-      dateOfBirth: string;
-      coachCode: string;
-    };
-  };
+  athlete: AthleteItem;
 };
 
 export type CreateMeasurementItem = {

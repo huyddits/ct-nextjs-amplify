@@ -8,7 +8,6 @@ import { useTeamData } from './_hook';
 const TAB_VALUES = ['flyer', 'base-spotter', 'athlete'];
 export default function MeasurementTeamDataPage() {
   const [tab, setTab] = useState(TAB_VALUES[0]);
-  const { basesSpotter, flyer, latestResult } = useTeamData();
   const onValueChange = (value: string) => {
     setTab(value);
   };
@@ -27,10 +26,10 @@ export default function MeasurementTeamDataPage() {
       </TabsList>
       <div className="max-w-3xl mx-auto mt-24 mb-4">
         <TabsContent value={TAB_VALUES[0]}>
-          <ByFlyerContent flyerItem={flyer} />
+          <ByFlyerContent />
         </TabsContent>
         <TabsContent value={TAB_VALUES[1]}>
-          <ByBaseSpotterContent basesSpotterItem={basesSpotter} />
+          <ByBaseSpotterContent />
         </TabsContent>
         <TabsContent value={TAB_VALUES[2]}>
           <ByAthleteContent />

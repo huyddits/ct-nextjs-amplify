@@ -13,30 +13,34 @@ type MeasurementItem = {
   videoLink: string;
 };
 
-type CoachStudentItem = {
+export type AthleteItem = {
+  accountType: string;
+  email: string;
+  stripeCustomerId: string;
+  stripeSubscriptionId: string;
+  isActive: boolean;
+  profile: AthleteProfileItem;
+};
+
+export type AthleteProfileItem = {
+  profileId: number;
+  firstName: string;
+  lastName: string;
+  schoolName: string;
+  dateOfBirth: string;
+  coachCode: string;
+};
+
+export type CoachStudentItem = {
   coachStudentId: number;
-  athleteId: string;
   status: string;
-  athlete: {
-    accountType: string;
-    email: string;
-    stripeCustomerId: string;
-    stripeSubscriptionId: string;
-    isActive: boolean;
-    profile: {
-      profileId: number;
-      firstName: string;
-      lastName: string;
-      schoolName: string;
-      dateOfBirth: string;
-      coachCode: string;
-    };
-  };
+  athleteId: string;
+  athlete: AthleteItem;
 };
 
 type MeasurementStore = {
   measurementListOptions: SelectOption[];
-  rawMeasurementList: MeasurementItem[];
+  baseMeasurementList: MeasurementItem[];
   coachStudent: CoachStudentItem[];
   setMeasurementListOptions: (options: SelectOption[]) => void;
   setRawMeasurementList: (list: MeasurementItem[]) => void;
@@ -45,9 +49,9 @@ type MeasurementStore = {
 
 export const useMeasurementStore = create<MeasurementStore>(set => ({
   measurementListOptions: [],
-  rawMeasurementList: [],
+  baseMeasurementList: [],
   coachStudent: [],
   setMeasurementListOptions: options => set({ measurementListOptions: options }),
-  setRawMeasurementList: list => set({ rawMeasurementList: list }),
+  setRawMeasurementList: list => set({ baseMeasurementList: list }),
   setCoachStudent: list => set({ coachStudent: list }),
 }));

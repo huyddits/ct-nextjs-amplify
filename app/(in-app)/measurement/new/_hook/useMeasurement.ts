@@ -25,12 +25,12 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   const [measurementList, setMeasurementList] = useState<MeasurementItem[]>([]);
   const [coachStudentList, setCoachStudentList] = useState<CoachStudentItem[]>([]);
   const {
-    rawMeasurementList,
+    baseMeasurementList,
     coachStudent: coachStudentListFromStore,
     setRawMeasurementList,
     setCoachStudent,
   } = useMeasurementStore();
-  const { control, setValue, getValues } = useForm({
+  const { control, setValue, getValues, handleSubmit } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       measurement: '',
@@ -43,8 +43,8 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   type FormType = InferType<typeof schema>;
 
   const getMeasurementList = async () => {
-    if (rawMeasurementList.length > 0) {
-      setMeasurementList(rawMeasurementList);
+    if (baseMeasurementList.length > 0) {
+      setMeasurementList(baseMeasurementList);
       return;
     }
     try {
@@ -121,10 +121,11 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
       options?.onSuccess?.();
     } catch (error: unknown) {
       console.error('Measurement submission failed:', error);
-      toast.error('Failed to save measurement');
       options?.onFailure?.('Failed to save measurement');
     }
   };
+
+  const onSubmit = handleSubmit(onSaveResult);
 
   useEffect(() => {
     getMeasurementList();
@@ -160,7 +161,7 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     control,
     coachStudentList,
     getCoachStudentList,
-    onSaveResult,
+    onSubmit,
     getValues,
     selectedMeasurement,
   };

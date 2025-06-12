@@ -3,7 +3,7 @@ import { AppInput, AppSelect } from '@/components/compose';
 import { VideoPlayer } from '../_components';
 import { Button } from '@/components/ui/button';
 import { useMeasurement } from './_hook';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 import { useMeasurementStore } from '@/store/useMeasurement.store';
 import { useAuthStore } from '@/store';
@@ -18,7 +18,7 @@ export default function MeasurementNewPage() {
     coachStudentList,
     getCoachStudentList,
     selectedMeasurement,
-    onSaveResult,
+    onSubmit,
     getValues,
   } = useMeasurement({
     onSuccess: () => {},
@@ -40,12 +40,22 @@ export default function MeasurementNewPage() {
     getCoachStudentList(payload);
   }, [info?.coachCode]);
 
-  const handleSaveResult = async () => {
-    await onSaveResult(getValues());
-  };
+  const measurementOptions = useMemo(() => {
+    return measurementList.map(item => ({
+      label: item.name,
+      value: item.measurementsId.toString(),
+    }));
+  }, [measurementList]);
+
+  const athleteOptions = useMemo(() => {
+    return coachStudentList.map(item => ({
+      label: `${item.athlete.profile.firstName} ${item.athlete.profile.lastName}`,
+      value: item.athleteId,
+    }));
+  }, [coachStudentList]);
 
   return (
-    <div className="pt-[56px] pb-[80px] max-w-3xl mx-auto px-4">
+    <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">
       <div className="py-4">
         <div className="space-y-6">
           <div>
@@ -55,10 +65,7 @@ export default function MeasurementNewPage() {
               render={({ field, fieldState: { error } }) => (
                 <AppSelect
                   label="Select Measurement"
-                  options={measurementList.map(item => ({
-                    label: item.name,
-                    value: item.measurementsId.toString(),
-                  }))}
+                  options={measurementOptions}
                   selectedValue={field.value}
                   onChangeSelected={field.onChange}
                   errorMessage={error?.message}
@@ -68,7 +75,7 @@ export default function MeasurementNewPage() {
             />
           </div>
 
-          {measurementList && (
+          {selectedMeasurement && (
             <>
               <VideoPlayer
                 source={selectedMeasurement?.videoLink ?? ''}
@@ -89,10 +96,7 @@ export default function MeasurementNewPage() {
               render={({ field, fieldState: { error } }) => (
                 <AppSelect
                   label="Select Athlete"
-                  options={coachStudentList.map(item => ({
-                    label: `${item.athlete.profile.firstName} ${item.athlete.profile.lastName}`,
-                    value: item.athleteId,
-                  }))}
+                  options={athleteOptions}
                   selectedValue={field.value}
                   onChangeSelected={field.onChange}
                   errorMessage={error?.message}
@@ -121,7 +125,7 @@ export default function MeasurementNewPage() {
             />
           </div>
 
-          <Button type="button" onClick={handleSaveResult} size="lg" className="w-full">
+          <Button type="button" onClick={onSubmit} size="lg" className="w-full">
             Save Result
           </Button>
         </div>

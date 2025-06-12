@@ -10,25 +10,29 @@ export type MeasurementListResponse = {
   video_link: string;
 };
 
+export type Athlete = {
+  account_type: string;
+  email: string;
+  stripe_customer_id: string;
+  stripe_subscription_id: string;
+  is_active: boolean;
+  profile: AthleteProfile;
+};
+
+export type AthleteProfile = {
+  profile_id: number;
+  first_name: string;
+  last_name: string;
+  school_name: string;
+  date_of_birth: string;
+  coach_code: string;
+};
+
 export type CoachStudentResponse = {
   coach_student_id: number;
   athlete_id: string;
   status: string;
-  athlete: {
-    account_type: string;
-    email: string;
-    stripe_customer_id: string;
-    stripe_subscription_id: string;
-    is_active: boolean;
-    profile: {
-      profile_id: number;
-      first_name: string;
-      last_name: string;
-      school_name: string;
-      date_of_birth: string;
-      coach_code: string;
-    };
-  };
+  athlete: Athlete;
 };
 
 export type FlyerAndBasesResponse = {
@@ -73,6 +77,11 @@ export type CreateMeasurementPayload = {
 export type athletePayload = {
   measurement_id?: number;
   athlete_id?: string;
+};
+
+export type FlyerAndBasesPayLoad = {
+  page: number;
+  limit: number;
 };
 
 export type CreateMeasurementResponse = ApiResponse<{}, {}>;

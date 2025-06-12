@@ -1,34 +1,41 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { Info, ArrowUpRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import { useTeamData } from '../_hook';
-import { Controller, useForm, useWatch } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { AppSelect } from '@/components/compose';
 
 export default function ByAthleteContent() {
   const {
     control,
     measurementList,
-    getMeasurementList,
     coachStudentList,
-    getCoachStudentList,
     latestResult,
-    getLatestResult,
     improvement,
-    getImprovement,
     lastThreeMonths,
-    getLastThreeMonths,
     threeLatestResults,
-    getThreeLatestResults,
     resultForAllMeasurements,
-    getResultForAllMeasurements,
   } = useTeamData({
     onSuccess: () => {},
     onFailure: () => {},
   });
+
+  const measurementOptions = useMemo(() => {
+    return measurementList.map(item => ({
+      label: item.name,
+      value: item.measurementsId.toString(),
+    }));
+  }, [measurementList]);
+
+  const athleteOptions = useMemo(() => {
+    return coachStudentList.map(item => ({
+      label: `${item.athlete.profile.firstName} ${item.athlete.profile.lastName}`,
+      value: item.athleteId,
+    }));
+  }, [coachStudentList]);
 
   return (
     <div className="mt-8 max-w-3xl mx-auto">
@@ -39,10 +46,7 @@ export default function ByAthleteContent() {
           render={({ field, fieldState: { error } }) => (
             <AppSelect
               label="Select Athlete"
-              options={coachStudentList.map(item => ({
-                label: `${item.athlete.profile.firstName} ${item.athlete.profile.lastName}`,
-                value: item.athleteId,
-              }))}
+              options={athleteOptions}
               placeholder="Select Athlete"
               selectedValue={field.value}
               onChangeSelected={field.onChange}
@@ -58,10 +62,7 @@ export default function ByAthleteContent() {
           render={({ field, fieldState: { error } }) => (
             <AppSelect
               label="Select Measurement"
-              options={measurementList.map(item => ({
-                label: item.name,
-                value: item.measurementsId.toString(),
-              }))}
+              options={measurementOptions}
               selectedValue={field.value}
               onChangeSelected={field.onChange}
               errorMessage={error?.message}
@@ -97,9 +98,9 @@ export default function ByAthleteContent() {
                   <Line
                     type="monotone"
                     dataKey="result"
-                    stroke="#257951"
+                    stroke="var(--ct-green-500)"
                     strokeWidth={2}
-                    dot={{ fill: '#257951', strokeWidth: 0 }}
+                    dot={{ fill: 'var(--ct-green-500)', strokeWidth: 0 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -150,9 +151,12 @@ export default function ByAthleteContent() {
         <div className="space-y-4">
           <h2 className="text-sm font-medium">Recent Tests</h2>
           <div className="bg-white rounded-lg">
-            {threeLatestResults.map((item, i) => {
+            {threeLatestResults.map((item, measurementSessionId) => {
               return (
-                <div key={i} className="flex justify-between py-3 px-4 border-b last:border-b-0">
+                <div
+                  key={measurementSessionId}
+                  className="flex justify-between py-3 px-4 border-b last:border-b-0"
+                >
                   <span className="text-gray-600">{item.createdAt}</span>
                   <span className="font-medium">
                     {item.result ?? 0} {item.measurementUnit ?? ''}
@@ -168,8 +172,8 @@ export default function ByAthleteContent() {
             Current Measurements
           </div>
           <div className="bg-white rounded-b-lg divide-y">
-            {resultForAllMeasurements.map((item, i) => (
-              <div key={i} className="flex justify-between py-3 px-4">
+            {resultForAllMeasurements.map((item, measurementId) => (
+              <div key={measurementId} className="flex justify-between py-3 px-4">
                 <div>{item.measurementName}</div>
                 <div className="text-right space-x-4">
                   <span>{item.result}</span>

@@ -1,16 +1,16 @@
 import { MeasurementApi } from '@/api';
 import {
-  FlyerAndBasesItem,
+  BaseFlyerAndBases,
   ImprovedItem,
   LatestResultItem,
   ResultForAllMeasurementsItem,
 } from '../_types';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { CoachStudentItem, MeasurementItem } from '../../new/_types';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { athletePayload, CoachStudentPayload } from '@/api/types/measurement';
+import { athletePayload, CoachStudentPayload, FlyerAndBasesPayLoad } from '@/api/types/measurement';
 import { useAuthStore } from '@/store';
 import { create } from 'domain';
 
@@ -25,8 +25,8 @@ const schema = object().shape({
 });
 
 export const useTeamData = (options?: UseMeasurementFormOptions) => {
-  const [basesSpotter, setbasesSpotter] = useState<FlyerAndBasesItem[]>([]);
-  const [flyer, setflyer] = useState<FlyerAndBasesItem[]>([]);
+  const [basesSpotter, setbasesSpotter] = useState<BaseFlyerAndBases[]>([]);
+  const [flyer, setflyer] = useState<BaseFlyerAndBases[]>([]);
   const [measurementList, setMeasurementList] = useState<MeasurementItem[]>([]);
   const [coachStudentList, setCoachStudentList] = useState<CoachStudentItem[]>([]);
   const [latestResult, setLatestResult] = useState<LatestResultItem>();
@@ -48,9 +48,9 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
   const athleteId = watch('athleteList');
   const measurementId = watch('measurement');
 
-  const getBasesSpotter = async () => {
+  const getBasesSpotter = async (payload: FlyerAndBasesPayLoad) => {
     try {
-      const response = await MeasurementApi.getBasesSpotter();
+      const response = await MeasurementApi.getBasesSpotter(payload);
       const { data, error } = response.data;
       if (!data) throw error;
       const dataResponse = data.map(data => ({
@@ -68,9 +68,9 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
     }
   };
 
-  const getFlyer = async () => {
+  const getFlyer = async (payload: FlyerAndBasesPayLoad) => {
     try {
-      const response = await MeasurementApi.getFlyer();
+      const response = await MeasurementApi.getFlyer(payload);
       const { data, error } = response.data;
       if (!data) throw error;
       const dataResponse = data.map(data => ({
@@ -230,9 +230,16 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
   };
 
   useEffect(() => {
-    getBasesSpotter();
-    getFlyer();
     getMeasurementList();
+  }, []);
+
+  useEffect(() => {
+    const payload: FlyerAndBasesPayLoad = {
+      page: 1,
+      limit: 10,
+    };
+    getBasesSpotter(payload);
+    getFlyer(payload);
   }, []);
 
   useEffect(() => {
