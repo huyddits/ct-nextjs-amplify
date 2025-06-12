@@ -226,6 +226,7 @@ export default function CardioPage() {
                   render={({ field, fieldState: { error } }) => (
                     <AppSelect
                       label="Unit"
+                      placeholder="Select Unit"
                       selectedValue={field.value ?? ''}
                       onChangeSelected={field.onChange}
                       options={selectedExercise?.units ?? []}
