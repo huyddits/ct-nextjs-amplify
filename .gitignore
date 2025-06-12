@@ -33,6 +33,8 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+sync-github.sh
+
 # env files (can opt-in for committing if needed)
 .env*
 
