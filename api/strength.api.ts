@@ -1,10 +1,13 @@
 import axiosIns from '@/lib/axiosIns';
 import type {
+  CompleteWorkoutPayload,
+  CompleteWorkoutResponse,
   CreateProgramPayload,
   CreateProgramResponse,
   DeleteProgramResponse,
-  DuplicateProgramPayload,
+  DuplicateProgramParams,
   DuplicateProgramResponse,
+  GetListExercisesInProgramResponse,
   GetListExercisesParams,
   GetListExercisesPayload,
   GetListExercisesResponse,
@@ -18,6 +21,8 @@ import type {
   TrainingLogResponse,
   GetProgramDetailResponse,
   UpdateProgramPayload,
+  GetStrengthPastTrainingDataPayload,
+  GetStrengthPastTrainingDataResponse,
 } from './types/strength';
 import { END_POINTS } from '@/utils/constants';
 import { ApiResponse } from '@/utils/types';
@@ -59,8 +64,8 @@ export const updateProgram = (payload: UpdateProgramPayload) => {
   return axiosIns.put(END_POINTS.STRENGTH_PROGRAMS, payload);
 };
 
-export const duplicateProgram = (payload: DuplicateProgramPayload) => {
-  return axiosIns.post<DuplicateProgramResponse>(END_POINTS.STRENGTH_PROGRAMS_COPY, payload);
+export const duplicateProgram = (params: DuplicateProgramParams) => {
+  return axiosIns.post<DuplicateProgramResponse>(END_POINTS.STRENGTH_PROGRAMS_COPY, {}, { params });
 };
 
 export const getProgramDetail = (id: number) => {
@@ -75,11 +80,21 @@ export const deleteProgram = (id: number) => {
 
 export const getListExercisesInProgram = (programId: number) => {
   console.log({ programId });
-  return axiosIns.post(
+  return axiosIns.post<GetListExercisesInProgramResponse>(
     END_POINTS.STRENGTH_PROGRAMS_START,
     {},
     {
       params: { program_id: programId },
     }
   );
+};
+
+export const getStrengthPastTrainingData = async (payload: GetStrengthPastTrainingDataPayload) => {
+  return axiosIns.get<GetStrengthPastTrainingDataResponse>(END_POINTS.STRENGTH_PAST_TRAINING_DATA, {
+    params: payload,
+  });
+};
+
+export const completeWorkout = (payload: CompleteWorkoutPayload) => {
+  return axiosIns.post<CompleteWorkoutResponse>(END_POINTS.STRENGTH_COMPLETE_WORKOUT, payload);
 };

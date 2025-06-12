@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { array, InferType, object, string } from 'yup';
 import { ERROR_MESSAGES } from '@/utils/constants';
 import { useRouter } from 'next/navigation';
+import { AccountType, ProgramType } from '@/utils/types';
 
 export type Exercise = {
   id: number;
@@ -99,7 +100,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     setLimit: setLimitExercise,
     setPage: setPageExercise,
     setTotalPages: setTotalPagesExercise,
-  } = usePagination(100);
+  } = usePagination();
 
   const [filterForm, setFilterForm] = useState<FilterForm>({
     exerciseName: '',
@@ -113,7 +114,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
 
   const [listExercises, setListExercises] = useState<Exercise[]>([]); // base
   const [listSelectedExercises, setListSelectedExercises] = useState<
-    Pick<Exercise, 'id' | 'name' | 'sets' | 'targetMuscles'>[]
+    Pick<Exercise, 'id' | 'name' | 'sets' | 'targetMuscles' | 'imageUrl'>[]
   >([]);
 
   const { control, setValue, handleSubmit } = useForm({
@@ -210,6 +211,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
           limit: limitExercise,
         },
         {
+          name: filterForm.exerciseName,
           cheer_type_id: filterForm.cheerTypeId.map(id => +id),
           equipments: filterForm.equipmentIds.map(id => +id),
           problem_id: filterForm.problemId.map(id => +id),
@@ -250,7 +252,61 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     filterForm.roleId,
     filterForm.skillId,
     filterForm.cheerTypeId,
+    filterForm.exerciseName,
   ]);
+
+  const loadMoreExercises = useCallback(async () => {
+    try {
+      const response = await StrengthApi.getListExercises(
+        {
+          page: pageExercise + 1,
+          limit: limitExercise,
+        },
+        {
+          name: filterForm.exerciseName,
+          cheer_type_id: filterForm.cheerTypeId.map(id => +id),
+          equipments: filterForm.equipmentIds.map(id => +id),
+          problem_id: filterForm.problemId.map(id => +id),
+          role_id: filterForm.roleId.map(id => +id),
+          stunt_id: filterForm.skillId.map(id => +id),
+        }
+      );
+
+      const { data, error, meta } = response.data;
+      if (!data) throw error;
+      const newList = data.map(item => ({
+        cues: item.cues,
+        description: item.description,
+        difficulty: item.difficulty,
+        exerciseId: item.exercise_id,
+        filterExercise: item.filterExercise,
+        id: item.exercise_id,
+        imageUrl: item.image_url,
+        name: item.name,
+        targetMuscles: item.target_muscles,
+        videoUrl: item.video_url,
+        equipments: item.equipment,
+        isAdded: listExercisesFromStore.some(storedItem => storedItem.id === item.exercise_id),
+      }));
+      setPageExercise(prev => prev + 1);
+      setListExercises(prev => [...prev, ...newList]);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [
+    pageExercise,
+    limitExercise,
+    filterForm.equipmentIds,
+    filterForm.problemId,
+    filterForm.roleId,
+    filterForm.skillId,
+    filterForm.cheerTypeId,
+    filterForm.exerciseName,
+  ]);
+
+  useEffect(() => {
+    fetchListExcersises();
+  }, [filterForm.exerciseName]);
 
   const fetchDetailProgram = async (programId: number) => {
     try {
@@ -278,6 +334,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
             sets: item.sets.map(set => ({ reps: set.rep, rpe: set.rpe })),
             targetMuscles: item.exercise?.target_muscles,
             name: item.exercise?.name,
+            imageUrl: item.exercise?.image_url,
           };
         })
       );
@@ -408,9 +465,19 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     return strengthTrainingTypes.find(item => item.value === trainingType);
   }, [strengthTrainingTypes, trainingType]);
 
+  const isCoach = useMemo(() => {
+    return info?.accountType === AccountType.Coach;
+  }, [info?.accountType]);
+
+  const programTypeOptions = useMemo(() => {
+    return strengthProgramTypes.filter(item => {
+      if (isCoach) return [ProgramType.MyPrograms, ProgramType.TeamPrograms].includes(item.value);
+      return item.value === ProgramType.MyPrograms;
+    });
+  }, [strengthProgramTypes, isCoach]);
+
   useEffect(() => {
     if (!template || options.id) return;
-    console.log('fill template values');
     const appliedTemplate = listExercisesFromStore.map(item => {
       const sets = [];
       for (let i = 0; i < template.sets; i++) {
@@ -419,7 +486,6 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
       item.sets = sets;
       return item;
     });
-    console.log('template', { template, appliedTemplate, listExercisesFromStore });
     setListSelectedExercises(
       appliedTemplate.map(item => ({
         ...item,
@@ -452,6 +518,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     programName,
     programType,
     trainingType,
+    pageExercise,
     listExercises,
     equipmentOptions,
     listSelectedExercises,
@@ -459,12 +526,15 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     roleOptions: roles.filter(item => !item.isCoach),
     problemOptions: strengthProblemTypes,
     skillTypeOptions: strengthSkillTypes,
-    programTypeOptions: strengthProgramTypes,
+    programTypeOptions,
+    totalPagesExercise,
     trainingTypeOptions: strengthTrainingTypes,
     setFilterForm,
     setProgramType,
+    setPageExercise,
     setListExercises,
     setListExercisesFromStore,
+    loadMoreExercises,
     fetchListExcersises,
     onSubmitCreate,
     onSubmitUpdate,

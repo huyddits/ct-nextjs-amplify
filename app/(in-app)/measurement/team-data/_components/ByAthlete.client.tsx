@@ -1,77 +1,75 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import {
-  ClipboardCheck,
-  UserCircle2,
-  Target,
-  Dumbbell,
-  Ruler,
-  Info,
-  ArrowUpRight,
-} from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { useMemo } from 'react';
+import { Info, ArrowUpRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts';
-
-const chartData = [
-  { date: '1/1', value: 150 },
-  { date: '1/15', value: 155 },
-  { date: '2/1', value: 160 },
-  { date: '2/15', value: 165 },
-  { date: '3/1', value: 170 },
-];
-
-const performanceData = [
-  { test: 'Broad Jump', value: 0, date: '7/15/23' },
-  { test: 'Left Single Leg Triple Jump', value: 0, date: '7/15/23' },
-  { test: 'Right Single Leg Triple Jump', value: 0, date: '7/15/23' },
-  { test: 'Vertical Jump', value: 0, date: '7/15/23' },
-  { test: 'Max Squat', value: 0, date: '7/15/23' },
-  { test: 'Max Bench Press', value: 0, date: '7/15/23' },
-  { test: 'Max Shoulder Press', value: 0, date: '7/15/23' },
-  { test: 'Max Dead Lift', value: 0, date: '7/15/23' },
-  { test: '40 Yard Dash', value: 0, date: '7/15/23' },
-  { test: 'Mile Time', value: 0, date: '7/15/23' },
-  { test: 'Two Mile Time', value: 0, date: '7/15/23' },
-];
+import { useTeamData } from '../_hook';
+import { Controller } from 'react-hook-form';
+import { AppSelect } from '@/components/compose';
 
 export default function ByAthleteContent() {
-  const [selectedAthlete, setSelectedAthlete] = useState('');
+  const {
+    control,
+    measurementList,
+    coachStudentList,
+    latestResult,
+    improvement,
+    lastThreeMonths,
+    threeLatestResults,
+    resultForAllMeasurements,
+  } = useTeamData({
+    onSuccess: () => {},
+    onFailure: () => {},
+  });
+
+  const measurementOptions = useMemo(() => {
+    return measurementList.map(item => ({
+      label: item.name,
+      value: item.measurementsId.toString(),
+    }));
+  }, [measurementList]);
+
+  const athleteOptions = useMemo(() => {
+    return coachStudentList.map(item => ({
+      label: `${item.athlete.profile.firstName} ${item.athlete.profile.lastName}`,
+      value: item.athleteId,
+    }));
+  }, [coachStudentList]);
+
   return (
     <div className="mt-8 max-w-3xl mx-auto">
       <div className="space-y-6">
-        {/* Athlete Selector */}
-        <Select>
-          <SelectTrigger className="w-full bg-white border-2">
-            <SelectValue placeholder="Select Athlete" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="athlete1">Athlete 1</SelectItem>
-            <SelectItem value="athlete2">Athlete 2</SelectItem>
-            <SelectItem value="athlete3">Athlete 3</SelectItem>
-          </SelectContent>
-        </Select>
+        <Controller
+          control={control}
+          name="athleteList"
+          render={({ field, fieldState: { error } }) => (
+            <AppSelect
+              label="Select Athlete"
+              options={athleteOptions}
+              placeholder="Select Athlete"
+              selectedValue={field.value}
+              onChangeSelected={field.onChange}
+              errorMessage={error?.message}
+              fullWidth
+            />
+          )}
+        />
 
-        {/* Measurement Type Selector - Moved here */}
-        <Select defaultValue="maxBench">
-          <SelectTrigger className="w-full bg-white border-2">
-            <SelectValue>Max Bench</SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="maxBench">Max Bench</SelectItem>
-            <SelectItem value="maxSquat">Max Squat</SelectItem>
-            <SelectItem value="maxDeadlift">Max Dead Lift</SelectItem>
-            <SelectItem value="maxShoulderPress">Max Shoulder Press</SelectItem>
-          </SelectContent>
-        </Select>
+        <Controller
+          control={control}
+          name="measurement"
+          render={({ field, fieldState: { error } }) => (
+            <AppSelect
+              label="Select Measurement"
+              options={measurementOptions}
+              selectedValue={field.value}
+              onChangeSelected={field.onChange}
+              errorMessage={error?.message}
+              fullWidth
+            />
+          )}
+        />
 
         {/* Progress Chart Section */}
         <div className="space-y-4">
@@ -83,9 +81,9 @@ export default function ByAthleteContent() {
           <div className="bg-white p-4 rounded-lg space-y-4">
             <div className="h-[200px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData}>
+                <LineChart data={lastThreeMonths}>
                   <XAxis
-                    dataKey="date"
+                    dataKey="createdAt"
                     axisLine={false}
                     tickLine={false}
                     tick={{ fontSize: 12, fill: '#666' }}
@@ -99,10 +97,10 @@ export default function ByAthleteContent() {
                   />
                   <Line
                     type="monotone"
-                    dataKey="value"
-                    stroke="#257951"
+                    dataKey="result"
+                    stroke="var(--ct-green-500)"
                     strokeWidth={2}
-                    dot={{ fill: '#257951', strokeWidth: 0 }}
+                    dot={{ fill: 'var(--ct-green-500)', strokeWidth: 0 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -115,7 +113,16 @@ export default function ByAthleteContent() {
                   Latest Result
                 </div>
                 <div className="text-2xl font-semibold">
-                  170 <span className="text-sm font-normal text-gray-500">lbs</span>
+                  {latestResult ? (
+                    <div className="text-2xl font-semibold">
+                      {latestResult.result}
+                      <span className=" ml-1 text-sm font-normal text-gray-500">
+                        {latestResult.measurementUnit}
+                      </span>
+                    </div>
+                  ) : (
+                    '0'
+                  )}
                 </div>
               </Card>
               <Card className="p-4">
@@ -124,7 +131,16 @@ export default function ByAthleteContent() {
                   Improvement
                 </div>
                 <div className="text-2xl font-semibold">
-                  20.00 <span className="text-sm font-normal text-gray-500">lbs</span>
+                  {improvement ? (
+                    <div className="text-2xl font-semibold">
+                      {improvement.improvement}
+                      <span className=" ml-1 text-sm font-normal text-gray-500">
+                        {improvement.unit}
+                      </span>
+                    </div>
+                  ) : (
+                    '0'
+                  )}
                 </div>
               </Card>
             </div>
@@ -135,31 +151,33 @@ export default function ByAthleteContent() {
         <div className="space-y-4">
           <h2 className="text-sm font-medium">Recent Tests</h2>
           <div className="bg-white rounded-lg">
-            {[
-              { date: '3/1', value: '170 lbs' },
-              { date: '2/15', value: '165 lbs' },
-              { date: '2/1', value: '160 lbs' },
-            ].map((test, i) => (
-              <div key={i} className="flex justify-between py-3 px-4 border-b last:border-b-0">
-                <span className="text-gray-600">{test.date}</span>
-                <span className="font-medium">{test.value}</span>
-              </div>
-            ))}
+            {threeLatestResults.map((item, measurementSessionId) => {
+              return (
+                <div
+                  key={measurementSessionId}
+                  className="flex justify-between py-3 px-4 border-b last:border-b-0"
+                >
+                  <span className="text-gray-600">{item.createdAt}</span>
+                  <span className="font-medium">
+                    {item.result ?? 0} {item.measurementUnit ?? ''}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* Current Measurements (renamed from Performance Measurements) */}
         <div>
           <div className="bg-primary text-white py-2 px-4 font-medium rounded-t-lg">
             Current Measurements
           </div>
           <div className="bg-white rounded-b-lg divide-y">
-            {performanceData.map((item, i) => (
-              <div key={i} className="flex justify-between py-3 px-4">
-                <div>{item.test}</div>
+            {resultForAllMeasurements.map((item, measurementId) => (
+              <div key={measurementId} className="flex justify-between py-3 px-4">
+                <div>{item.measurementName}</div>
                 <div className="text-right space-x-4">
-                  <span>{item.value}</span>
-                  <span className="text-gray-400">{item.date}</span>
+                  <span>{item.result}</span>
+                  <span className="text-gray-400">{item.createdAt}</span>
                 </div>
               </div>
             ))}

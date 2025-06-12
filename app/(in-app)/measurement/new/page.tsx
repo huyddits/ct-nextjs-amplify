@@ -2,60 +2,130 @@
 import { AppInput, AppSelect } from '@/components/compose';
 import { VideoPlayer } from '../_components';
 import { Button } from '@/components/ui/button';
+import { useMeasurement } from './_hook';
+import { useEffect, useMemo } from 'react';
+import { Controller } from 'react-hook-form';
+import { useMeasurementStore } from '@/store/useMeasurement.store';
+import { useAuthStore } from '@/store';
+import { CoachStudentPayload } from '@/api/types/measurement';
 export default function MeasurementNewPage() {
+  const { measurementListOptions } = useMeasurementStore();
+  const { info } = useAuthStore();
+  const {
+    control,
+    measurementList,
+    getMeasurementList,
+    coachStudentList,
+    getCoachStudentList,
+    selectedMeasurement,
+    onSubmit,
+    getValues,
+  } = useMeasurement({
+    onSuccess: () => {},
+    onFailure: () => {},
+  });
+
+  useEffect(() => {
+    getMeasurementList();
+  }, []);
+  useEffect(() => {
+    if (!info?.coachCode) {
+      console.log('coachCode is missing!');
+      return;
+    }
+    const payload: CoachStudentPayload = {
+      coach_code: info.coachCode,
+    };
+
+    getCoachStudentList(payload);
+  }, [info?.coachCode]);
+
+  const measurementOptions = useMemo(() => {
+    return measurementList.map(item => ({
+      label: item.name,
+      value: item.measurementsId.toString(),
+    }));
+  }, [measurementList]);
+
+  const athleteOptions = useMemo(() => {
+    return coachStudentList.map(item => ({
+      label: `${item.athlete.profile.firstName} ${item.athlete.profile.lastName}`,
+      value: item.athleteId,
+    }));
+  }, [coachStudentList]);
+
   return (
-    <div className="pt-[56px] pb-[80px] max-w-3xl mx-auto px-4">
+    <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">
       <div className="py-4">
         <div className="space-y-6">
           <div>
-            <AppSelect
-              label="Select Measurement"
-              options={[
-                { label: 'Vertical Jump', value: 'vertical-jump' },
-                { label: 'Broad Jump', value: 'broad-jump' },
-                { label: 'Sprint', value: 'sprint' },
-                { label: 'Agility', value: 'agility' },
-              ]}
-              selectedValue="vertical-jump"
-              onChangeSelected={value => console.log(value)}
-              fullWidth
+            <Controller
+              control={control}
+              name="measurement"
+              render={({ field, fieldState: { error } }) => (
+                <AppSelect
+                  label="Select Measurement"
+                  options={measurementOptions}
+                  selectedValue={field.value}
+                  onChangeSelected={field.onChange}
+                  errorMessage={error?.message}
+                  fullWidth
+                />
+              )}
             />
           </div>
 
-          <VideoPlayer source="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0" />
+          {selectedMeasurement && (
+            <>
+              <VideoPlayer
+                source={selectedMeasurement?.videoLink ?? ''}
+                title={selectedMeasurement?.name ?? 'Measurement Video'}
+              />
+
+              <div>
+                <h3 className="text-gray-700 font-medium mb-2">Instructions:</h3>
+                <p className="text-gray-600">{selectedMeasurement?.instruction}</p>
+              </div>
+            </>
+          )}
 
           <div>
-            <h3 className="text-gray-700 font-medium mb-2">Instructions:</h3>
-            <p className="text-gray-600">
-              Stand next to the measurement board. Jump as high as possible and touch the highest
-              point you can reach. Measure the distance between your standing reach and jump reach.
-            </p>
-          </div>
-
-          <div>
-            <AppSelect
-              label="Select Athlete"
-              selectedValue="john-smith"
-              options={[
-                { label: 'John Smith', value: 'john-smith' },
-                { label: 'Sarah Johnson', value: 'sarah-johnson' },
-                { label: 'Michael Williams', value: 'michael-williams' },
-              ]}
-              onChangeSelected={value => console.log(value)}
-              fullWidth
+            <Controller
+              control={control}
+              name="athleteList"
+              render={({ field, fieldState: { error } }) => (
+                <AppSelect
+                  label="Select Athlete"
+                  options={athleteOptions}
+                  selectedValue={field.value}
+                  onChangeSelected={field.onChange}
+                  errorMessage={error?.message}
+                  fullWidth
+                />
+              )}
             />
           </div>
 
           <div>
-            <AppInput
-              label="Record Result"
-              inputProps={{ placeholder: 'Enter measurement', type: 'number' }}
-              onChange={value => console.log(value)}
-              postfix="Unit"
+            <Controller
+              control={control}
+              name="result"
+              render={({ field, fieldState: { error } }) => (
+                <AppInput
+                  label="Record Result"
+                  inputProps={{
+                    placeholder: 'Enter measurement',
+                    type: 'number',
+                  }}
+                  errorMessage={error?.message}
+                  {...field}
+                  postfix={selectedMeasurement?.imperialUnit}
+                />
+              )}
             />
           </div>
 
-          <Button size="lg" className="w-full">
+          <Button type="button" onClick={onSubmit} size="lg" className="w-full">
             Save Result
           </Button>
         </div>

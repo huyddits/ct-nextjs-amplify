@@ -1,12 +1,11 @@
-import { useState } from 'react';
 import { AppSelect, type SelectOption } from '@/components/compose';
 import { cn } from '@/lib/utils';
-
+import { type ProgramType } from '@/utils/types';
 interface ProgramTypeSelectProps {
   value: string;
   options: SelectOption[];
   className?: string;
-  onChangeSelected: (value: string) => void;
+  onChangeSelected: (value: ProgramType) => void;
 }
 export default function ProgramTypeSelect({
   value,
@@ -20,7 +19,7 @@ export default function ProgramTypeSelect({
         label="Program Type"
         placeholder="Select Program Type"
         selectedValue={value}
-        onChangeSelected={onChangeSelected}
+        onChangeSelected={value => onChangeSelected(value as ProgramType)}
         options={options}
         fullWidth
       />

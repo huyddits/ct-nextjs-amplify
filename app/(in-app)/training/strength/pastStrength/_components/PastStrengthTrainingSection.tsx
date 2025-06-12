@@ -1,125 +1,60 @@
 'use client';
 
-const mockLegDayData = [
-  {
-    title: 'Leg Day',
-    date: 'January 24, 2025',
-    exercises: [
-      {
-        name: 'Squat',
-        sets: [
-          { reps: 15, weight: 135, rpe: 7 },
-          { reps: 15, weight: 225, rpe: 7 },
-          { reps: 8, weight: 275, rpe: 7 },
-          { reps: 8, weight: 275, rpe: 7 },
-        ],
-        note: 'Focus on depth and keeping chest up throughout movement',
-      },
-      {
-        name: 'Leg Press',
-        sets: [
-          { reps: 15, weight: 135, rpe: 7 },
-          { reps: 15, weight: 275, rpe: 7 },
-          { reps: 15, weight: 275, rpe: 7 },
-          { reps: 15, weight: 575, rpe: 9 },
-        ],
-        note: 'Last set push to failure with good form',
-      },
-      {
-        name: 'Leg Extensions',
-        sets: [
-          { reps: 12, weight: 90, rpe: 6 },
-          { reps: 12, weight: 110, rpe: 7 },
-          { reps: 10, weight: 130, rpe: 8 },
-        ],
-        note: 'Pause at top of each rep for 1 second',
-      },
-      {
-        name: 'Hamstring Curl',
-        sets: [
-          { reps: 12, weight: 70, rpe: 6 },
-          { reps: 12, weight: 85, rpe: 7 },
-          { reps: 10, weight: 100, rpe: 8 },
-        ],
-        note: 'Slow eccentric (3 seconds down) on each rep',
-      },
-    ],
-  },
+import { StrengthPastTrainingDataDateGroup } from '@/api/types/strength';
+import React from 'react';
 
-  {
-    title: 'Leg Chest and Arms',
-    date: 'January 22, 2025',
-    exercises: [
-      {
-        name: 'Bench Press',
-        sets: [
-          { reps: 15, weight: 135, rpe: 7 },
-          { reps: 15, weight: 225, rpe: 7 },
-          { reps: 8, weight: 275, rpe: 7 },
-          { reps: 8, weight: 275, rpe: 7 },
-        ],
-        note: 'Focus on depth and keeping chest up throughout movement',
-      },
-      {
-        name: 'Leg Press',
-        sets: [
-          { reps: 15, weight: 135, rpe: 7 },
-          { reps: 15, weight: 275, rpe: 7 },
-          { reps: 15, weight: 275, rpe: 7 },
-          { reps: 15, weight: 575, rpe: 9 },
-        ],
-        note: 'Last set push to failure with good form',
-      },
-      {
-        name: 'Leg Extensions',
-        sets: [
-          { reps: 12, weight: 90, rpe: 6 },
-          { reps: 12, weight: 110, rpe: 7 },
-          { reps: 10, weight: 130, rpe: 8 },
-        ],
-        note: 'Pause at top of each rep for 1 second',
-      },
-      {
-        name: 'Hamstring Curl',
-        sets: [
-          { reps: 12, weight: 70, rpe: 6 },
-          { reps: 12, weight: 85, rpe: 7 },
-          { reps: 10, weight: 100, rpe: 8 },
-        ],
-        note: 'Slow eccentric (3 seconds down) on each rep',
-      },
-    ],
-  },
-];
-
-export default function LegDaySection() {
+type Props = {
+  data?: StrengthPastTrainingDataDateGroup[];
+};
+export default function LegDaySection({ data }: Props) {
+  if (!data?.length) {
+    return (
+      <div className="text-center text-gray-500 py-10">No past strength training data found.</div>
+    );
+  }
   return (
     <div>
-      {mockLegDayData.map(item => (
-        <div key={`${item.title}-${item.date}`} className="bg-white rounded-lg shadow p-4 mb-6">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="text-xl font-bold">{item.title}</h2>
-            <span className="text-sm text-gray-600">{item.date}</span>
-          </div>
-
-          {item.exercises.map(exercise => (
-            <div key={`${exercise.name}`} className="mb-6">
-              <h3 className="font-semibold mb-2">{exercise.name}</h3>
-              {exercise.sets.map((set, setIndex) => (
-                <div key={setIndex} className="grid grid-cols-3 gap-2 mb-1">
-                  <div className="text-sm text-gray-600">Set {setIndex + 1}:</div>
-                  <div>
-                    {set.reps} x {set.weight} lbs
+      {data?.map(day => (
+        <React.Fragment key={day.date}>
+          {day.programs.map(program => (
+            <div
+              key={day.date + program.program_id}
+              className="bg-white rounded-lg shadow p-4 mb-6"
+            >
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-xl font-bold">{program.program_name}</h2>
+                <span className="text-sm text-gray-600">
+                  {new Date(day.date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </span>
+              </div>
+              <div>
+                {program.exercises.map(exercise => (
+                  <div key={exercise.program_exercise_id} className="pb-2 pt-6 border-b">
+                    <h3 className="font-semibold mb-2">{exercise.exercise_name}</h3>
+                    {exercise.training_data.sets?.map((set, setIndex) => (
+                      <div key={setIndex} className="grid grid-cols-3 gap-2 mb-1">
+                        <div className="text-sm text-gray-600">Set {setIndex + 1}:</div>
+                        <div>
+                          {set.set} x {set.weight} lbs
+                        </div>
+                        <div className="text-right">RPE: {set.rpe}</div>
+                      </div>
+                    ))}
+                    {!!exercise.training_data.note && (
+                      <div className="text-sm text-gray-600 italic">
+                        Note: {exercise.training_data.note}
+                      </div>
+                    )}
                   </div>
-                  <div className="text-right">RPE: {set.rpe}</div>
-                </div>
-              ))}
-              <div className="text-sm text-gray-600 italic pb-2 border-b">
-                Note: {exercise.note}
+                ))}
               </div>
             </div>
           ))}
-        </div>
+        </React.Fragment>
       ))}
     </div>
   );
