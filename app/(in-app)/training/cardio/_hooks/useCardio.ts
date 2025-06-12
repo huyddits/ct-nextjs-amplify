@@ -161,16 +161,12 @@ export const useCardio = (options?: UseCardioFormOptions) => {
 
   const onCompleteWorkout = async (formData: FormType) => {
     try {
-      if (intervalsList.length === 0) {
-        toast.error('Please create at least one interval before completing the workout.');
-        return;
-      }
       startLoading();
       await CardioTrainingSelectionApi.postExercises({
         workout_date: dayjs().format('YYYY-MM-DD'),
         exercise: Number(formData.exercise),
         notes: formData.notes ?? '',
-        intervals: intervalsList.map(data => ({
+        intervals: formData.intervals.map(data => ({
           duration: Number(data.duration),
           distance: Number(data.distance),
           distance_unit: data.distanceUnit ?? '',
