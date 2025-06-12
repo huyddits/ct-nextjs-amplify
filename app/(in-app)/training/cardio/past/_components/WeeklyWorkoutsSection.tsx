@@ -21,7 +21,7 @@ export default function WeeklyWorkoutsSection({
           </div>
 
           <div className="space-y-4 text-sm">
-            {section.content.length &&
+            {section.content.length > 0 &&
               section.content.map((item: WeeklyWorkouts, index: number) => {
                 return (
                   <div key={String(index)} className={` 'border-b pb-4' : ''}`}>

@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { PlayIcon, Volume2Icon, Maximize2Icon } from 'lucide-react';
 interface VideoPlayerProps {
   source: string;
+  title: string;
 }
-export default function VideoPlayer({ source }: VideoPlayerProps) {
+export default function VideoPlayer({ source, title }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
@@ -23,7 +24,7 @@ export default function VideoPlayer({ source }: VideoPlayerProps) {
             </div>
 
             <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/70 to-transparent">
-              <h3 className="text-white font-medium text-sm">Vertical Jump Technique</h3>
+              <h3 className="text-white font-medium text-sm">{title}</h3>
             </div>
           </>
         ) : (
