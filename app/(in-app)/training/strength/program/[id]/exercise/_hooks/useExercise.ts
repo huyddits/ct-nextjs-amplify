@@ -181,10 +181,11 @@ export const useExercise = (options: UseExerciseOptions) => {
         return {
           ...item,
           sets: item.sets.map((set, index) => {
+            console.log('value', value);
             if (index !== setIndex) return set;
             return {
               ...set,
-              [field]: value,
+              [field]: String(value),
             };
           }),
         };

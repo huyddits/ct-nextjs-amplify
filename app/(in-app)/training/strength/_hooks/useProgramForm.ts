@@ -204,57 +204,60 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     }
   };
 
-  const fetchListExcersises = useCallback(async () => {
-    try {
-      const response = await StrengthApi.getListExercises(
-        {
-          page: pageExercise,
-          limit: limitExercise,
-        },
-        {
-          name: filterForm.exerciseName,
-          cheer_type_id: filterForm.cheerTypeId.map(id => +id),
-          equipments: filterForm.equipmentIds.map(id => +id),
-          problem_id: filterForm.problemId.map(id => +id),
-          role_id: filterForm.roleId.map(id => +id),
-          stunt_id: filterForm.skillId.map(id => +id),
-        }
-      );
+  const fetchListExcersises = useCallback(
+    async (pageNumber?: number) => {
+      try {
+        const response = await StrengthApi.getListExercises(
+          {
+            page: pageNumber ?? pageExercise,
+            limit: limitExercise,
+          },
+          {
+            name: filterForm.exerciseName,
+            cheer_type_id: filterForm.cheerTypeId.map(id => +id),
+            equipments: filterForm.equipmentIds.map(id => +id),
+            problem_id: filterForm.problemId.map(id => +id),
+            role_id: filterForm.roleId.map(id => +id),
+            stunt_id: filterForm.skillId.map(id => +id),
+          }
+        );
 
-      const { data, error, meta } = response.data;
-      if (!data) throw error;
+        const { data, error, meta } = response.data;
+        if (!data) throw error;
 
-      setListExercises(
-        data.map(item => ({
-          cues: item.cues,
-          description: item.description,
-          difficulty: item.difficulty,
-          exerciseId: item.exercise_id,
-          filterExercise: item.filterExercise,
-          id: item.exercise_id,
-          imageUrl: item.image_url,
-          name: item.name,
-          targetMuscles: item.target_muscles,
-          videoUrl: item.video_url,
-          equipments: item.equipment,
-          isAdded: listExercisesFromStore.some(storedItem => storedItem.id === item.exercise_id),
-        }))
-      );
+        setListExercises(
+          data.map(item => ({
+            cues: item.cues,
+            description: item.description,
+            difficulty: item.difficulty,
+            exerciseId: item.exercise_id,
+            filterExercise: item.filterExercise,
+            id: item.exercise_id,
+            imageUrl: item.image_url,
+            name: item.name,
+            targetMuscles: item.target_muscles,
+            videoUrl: item.video_url,
+            equipments: item.equipment,
+            isAdded: listExercisesFromStore.some(storedItem => storedItem.id === item.exercise_id),
+          }))
+        );
 
-      setTotalPagesExercise(meta?.totalPages || 0);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [
-    pageExercise,
-    limitExercise,
-    filterForm.equipmentIds,
-    filterForm.problemId,
-    filterForm.roleId,
-    filterForm.skillId,
-    filterForm.cheerTypeId,
-    filterForm.exerciseName,
-  ]);
+        setTotalPagesExercise(meta?.totalPages || 0);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [
+      pageExercise,
+      limitExercise,
+      filterForm.equipmentIds,
+      filterForm.problemId,
+      filterForm.roleId,
+      filterForm.skillId,
+      filterForm.cheerTypeId,
+      filterForm.exerciseName,
+    ]
+  );
 
   const loadMoreExercises = useCallback(async () => {
     try {
@@ -307,7 +310,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
 
   useEffect(() => {
     if (pathname === `/${ROUTES.TRAINING_STRENGTH_NEW}`) {
-      fetchListExcersises();
+      fetchListExcersises(1);
     }
   }, [filterForm.exerciseName, pathname]);
 
