@@ -4,7 +4,6 @@ import DatePicker from 'react-datepicker';
 import { Label } from '@/components/ui/label';
 import dayjs from 'dayjs';
 import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
-import 'react-datepicker/dist/react-datepicker.css';
 import { cn } from '@/lib/utils';
 
 interface AppDatePickerProps {
