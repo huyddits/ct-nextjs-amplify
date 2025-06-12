@@ -6,8 +6,8 @@ import { toast } from 'react-toastify';
 import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { array, InferType, object, string } from 'yup';
-import { ERROR_MESSAGES } from '@/utils/constants';
-import { useRouter } from 'next/navigation';
+import { ERROR_MESSAGES, ROUTES } from '@/utils/constants';
+import { usePathname, useRouter } from 'next/navigation';
 import { AccountType, ProgramType } from '@/utils/types';
 
 export type Exercise = {
@@ -72,6 +72,7 @@ type UseProgramFormOptions = {
 export const useProgramForm = (options: UseProgramFormOptions) => {
   useCategories();
   const router = useRouter();
+  const pathname = usePathname();
   const { info } = useAuthStore();
   const {
     programType,
@@ -305,8 +306,10 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
   ]);
 
   useEffect(() => {
-    fetchListExcersises();
-  }, [filterForm.exerciseName]);
+    if (pathname === `/${ROUTES.TRAINING_STRENGTH_NEW}`) {
+      fetchListExcersises();
+    }
+  }, [filterForm.exerciseName, pathname]);
 
   const fetchDetailProgram = async (programId: number) => {
     try {
@@ -502,7 +505,6 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
   useEffect(() => {
     fetchEquipments();
     fetchProblemOptions();
-    fetchListExcersises();
     fetchSkillTypeOptions();
     fetchListTrainingTypes();
   }, []);
