@@ -33,21 +33,13 @@ const ExerciseProgramSection = forwardRef(
     const onToggle = (item: Exercise, isAdded: boolean) => {
       onUpdate?.();
 
-      let supposed: Exercise[] = [];
-
       if (isAdded) {
-        setListAddedExercises(prev => {
-          supposed = [...prev, item];
-          return supposed;
-        });
+        setListAddedExercises(prev => [...prev, item]);
+        setListExercisesFromStore(prev => [...prev, item]);
         setListAvailableExercises(prev => prev.filter(obj => obj.id !== item.id));
-        setListExercisesFromStore(supposed);
       } else {
-        setListAddedExercises(prev => {
-          supposed = prev.filter(({ id }) => id !== item.id);
-          return supposed;
-        });
-        setListExercisesFromStore(supposed);
+        setListAddedExercises(prev => prev.filter(({ id }) => id !== item.id));
+        setListExercisesFromStore(prev => prev.filter(({ id }) => id !== item.id));
         if (listExcercises.some(obj => obj.id === item.id)) {
           setListAvailableExercises(prev => [...prev, item]);
         }
