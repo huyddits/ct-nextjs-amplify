@@ -86,7 +86,7 @@ export const useBillingAndSubscription = () => {
       actualPrice: info.planActualPrice,
       promoCode: info.planPromo,
     };
-  }, [info?.planId]);
+  }, [info?.planId, info?.planStatus]);
 
   const handleGetListPlans = async () => {
     try {
