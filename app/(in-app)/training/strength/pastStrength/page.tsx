@@ -19,7 +19,7 @@ export default function PastStrengthTrainingPage() {
   }, [selectedDate]);
   const { data } = useGetPastStrengthTraining(queryParams);
   return (
-    <div className="padding-top-pagePast padding-bottom-pagePast w-3xl mx-auto px-4">
+    <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">
       <TitlePastStrength />
       <main>
         <DatePastStrengthSection selectedDate={selectedDate} onChangeDate={setSelectedDate} />

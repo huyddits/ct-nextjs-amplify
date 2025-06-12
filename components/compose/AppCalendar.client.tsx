@@ -47,12 +47,11 @@ export default function AppCalendarPicker({
             className={cn(
               'w-full font-normal h-9 flex items-center',
               !value && 'text-muted-foreground',
-              icon && 'pl-10',
               fullWidth && 'w-full',
               disabled && 'pointer-events-none opacity-100 cursor-default'
             )}
           >
-            {icon && <span className="mr-2">{icon}</span>}
+            {icon && <span>{icon}</span>}
             {triggerLabel ?? dayjs(value).format(format)}
           </Button>
         </PopoverTrigger>

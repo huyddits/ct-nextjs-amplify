@@ -120,7 +120,7 @@ export type GetStrengthPastTrainingDataPayload = {
 
 export type StrengthPastTrainingDataSet = {
   weight: number;
-  set: number;
+  rep: number;
   rpe: number;
 };
 
