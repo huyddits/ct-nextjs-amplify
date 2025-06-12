@@ -4,4 +4,5 @@ export * as AuthApi from './auth.api';
 export * as PastCardioTrainingApi from './pastCardioTraining.api';
 export * as CardioTrainingSelectionApi from './cardioTrainingSelection.api';
 export * as BillingApi from './billing.api';
+export * as StrengthApi from './strength.api';
 export * as MeasurementApi from './measurement.api';

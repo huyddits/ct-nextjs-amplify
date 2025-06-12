@@ -29,6 +29,18 @@ export const END_POINTS = {
   WEEKLY_WORKOUTS: 'cardio/past-training/weekly-workouts',
   PERFORMANCE_METRICS: 'cardio/past-training/performance-metrics',
 
+  STRENGTH_PROGRAMS: 'strength/program',
+  STRENGTH_PROGRAMS_ALL: 'strength/program/all',
+  STRENGTH_PROGRAMS_START: 'strength/program/start',
+  STRENGTH_PROGRAMS_TRAINING_TYPES: 'strength/program/training-types',
+  STRENGTH_PROGRAMS_COPY: 'strength/program/copy',
+  STRENGTH_PAST_TRAINING_DATA: 'strength/program/past-training-data',
+  STRENGTH_COMPLETE_WORKOUT: 'strength/complete-workout',
+  STRENGTH_SKILLS: 'stunt',
+  PROBLEMS: 'problem',
+  EXERCISES_FILTER: 'strength/exercise/filter',
+  TEAM_TRAINING_DATA: 'users/team-training-data',
+
   //Measurements
   MEASUREMENTS: 'measurement/measurement-list',
   ATHLETE_MEASUREMENTS: 'measurement/coach-student/get-all-student-by-coach-code',

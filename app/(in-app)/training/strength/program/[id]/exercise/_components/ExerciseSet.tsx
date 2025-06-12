@@ -1,0 +1,83 @@
+import { CheckIcon, XIcon } from 'lucide-react';
+
+type ExerciseSet = {
+  reps: number;
+  rpe: number;
+  weight: number;
+  completed: boolean;
+};
+
+type ExerciseSetProps = {
+  index: number;
+  set: ExerciseSet;
+  removeSet: (index: number) => void;
+  toggleSetCompletion: (index: number) => void;
+  updateSet: (index: number, field: keyof ExerciseSet, value: number) => void;
+};
+
+export default function ExerciseSet({
+  set,
+  index,
+  removeSet,
+  toggleSetCompletion,
+  updateSet,
+}: ExerciseSetProps) {
+  return (
+    <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
+      <div className="flex justify-between items-center mb-3">
+        <div className="flex items-center gap-2">
+          <button onClick={() => removeSet(index)} className="text-red-500">
+            <XIcon className="h-5 w-5" />
+          </button>
+          <span className="font-medium">Set {index + 1}</span>
+        </div>
+        <button
+          onClick={() => toggleSetCompletion(index)}
+          className={`p-1.5 rounded-full transition-colors ${
+            set.completed ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400'
+          }`}
+        >
+          <CheckIcon className="h-4 w-4" />
+        </button>
+      </div>
+      <div className="grid grid-cols-3 gap-4">
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">Weight</label>
+          <input
+            type="number"
+            value={set.weight}
+            onChange={e => updateSet(index, 'weight', Number(e.target.value))}
+            className="w-full border rounded p-2 text-center"
+            placeholder="0"
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">Reps</label>
+          <input
+            type="number"
+            value={set.reps}
+            onChange={e => updateSet(index, 'reps', Number(e.target.value))}
+            className="w-full border rounded p-2 text-center"
+            placeholder="0"
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">RPE</label>
+          <input
+            type="number"
+            min="1"
+            max="10"
+            step="1"
+            value={set.rpe}
+            onChange={e => {
+              const value = Math.min(10, Math.max(1, Math.round(Number(e.target.value))));
+              updateSet(index, 'rpe', value);
+            }}
+            className="w-full border rounded p-2 text-center"
+            placeholder="1-10"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}

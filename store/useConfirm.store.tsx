@@ -5,6 +5,8 @@ type ConfirmOptions = {
   description: string;
   cancelTitle?: string;
   confirmTitle?: string;
+  confirmClass?: string;
+  cancelClass?: string;
 
   onConfirm?: () => void;
   onCancel?: () => void;
@@ -14,7 +16,9 @@ type ConfirmPrivateStore = {
   title: string;
   description: string;
   confirmTitle: string;
+  confirmClass: string;
   cancelTitle: string;
+  cancelClass: string;
   onConfirm: () => void;
   onCancel: () => void;
   setIsOpen: (value: boolean) => void;
@@ -28,6 +32,8 @@ export const usePrivateConfirmStore = create<ConfirmPrivateStore>((set, get) => 
     description: 'Confirm Description',
     confirmTitle: '',
     cancelTitle: '',
+    confirmClass: '',
+    cancelClass: '',
     onConfirm: () => {},
     onCancel: () => {},
     setIsOpen: value => set({ isOpen: value }),
@@ -38,6 +44,8 @@ export const usePrivateConfirmStore = create<ConfirmPrivateStore>((set, get) => 
         description: options?.description ?? 'Confirm Description',
         cancelTitle: options?.cancelTitle ?? 'Cancel',
         confirmTitle: options?.confirmTitle ?? 'Confirm',
+        confirmClass: options?.confirmClass ?? '',
+        cancelClass: options?.cancelClass ?? '',
 
         onCancel: () => {
           options?.onCancel?.();
@@ -51,8 +59,6 @@ export const usePrivateConfirmStore = create<ConfirmPrivateStore>((set, get) => 
     },
   };
 });
-
-type ConfirmStore = Pick<ConfirmPrivateStore, 'confirm'>;
 
 export const useConfirmStore = () => {
   const state = usePrivateConfirmStore();

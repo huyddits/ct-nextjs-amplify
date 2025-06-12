@@ -122,7 +122,6 @@ export type UpdatePersonalInfoPayload = {
   first_name: string;
   last_name: string;
   school_name: string;
-  email: string;
   date_of_birth: string; // exp: "2025-06-03T09:40:39.093Z",
   cheer_type_id: number;
   cheer_style_id: number;
@@ -143,8 +142,8 @@ export type UpdatePersonalInfoResponse = ApiResponse<
     date_of_birth: string; // ISO 8601 string
     coach_code: string;
     measurement_unit: { id: number; name: string; type: string };
-    cheer_types: { name: string; id: number };
-    cheer_styles: { name: string; id: number };
+    cheer_types: { name: string; id: number }[];
+    cheer_styles: { name: string; id: number }[];
     role: { name: string; id: number };
     equipments: { name: string; id: number }[];
   },
