@@ -82,7 +82,7 @@ export const useProfileForm = () => {
       'equipment',
       info.equipmentIds.map(item => item.toString())
     );
-  }, [info]);
+  }, [info?.id, info?.coachCode]);
 
   const coachCode = useWatch({ control, name: 'coachCode' });
 
