@@ -15,11 +15,20 @@ import { UpdatePersonalInfoPayload } from '@/api/types/users';
 
 const schema = object().shape({
   coachCode: string().default(''),
-  firstName: string().required(ERROR_MESSAGES.INPUT).matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
-  lastName: string().required(ERROR_MESSAGES.INPUT).matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
+  firstName: string()
+    .required(ERROR_MESSAGES.INPUT)
+    .max(50, ERROR_MESSAGES.MAX_LENGTH(50))
+    .matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
+  lastName: string()
+    .required(ERROR_MESSAGES.INPUT)
+    .max(50, ERROR_MESSAGES.MAX_LENGTH(50))
+    .matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
   email: string().required(ERROR_MESSAGES.INPUT).matches($v.PATTERN.EMAIL, ERROR_MESSAGES.EMAIL),
   dateOfBirth: string().required(ERROR_MESSAGES.INPUT),
-  schoolName: string().required(ERROR_MESSAGES.INPUT).matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
+  schoolName: string()
+    .required(ERROR_MESSAGES.INPUT)
+    .max(100, ERROR_MESSAGES.MAX_LENGTH(100))
+    .matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
   cheerType: string().required(),
   cheerStyle: string().required(),
   role: string().required(),
@@ -33,6 +42,7 @@ export const useProfileForm = () => {
   const { info, updateInfo } = useAuthStore();
   const { control, handleSubmit, trigger, setValue, getValues } = useForm<FormType>({
     resolver: yupResolver(schema),
+    mode: 'onChange',
     defaultValues: {
       coachCode: '',
       firstName: '',
