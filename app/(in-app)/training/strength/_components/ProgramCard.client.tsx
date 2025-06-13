@@ -40,7 +40,6 @@ export default function ProgramCard({
   };
 
   const isWorkoutSessionFinished = useMemo(() => {
-    console.log('lastCompleted', lastCompleted.slice(0, DEFAULT_DATE_FORMAT.length));
     const today = lastCompleted.slice(0, DEFAULT_DATE_FORMAT.length); /** MM-DD-YYYY */
     const isToday = dayjs(today, DEFAULT_DATE_FORMAT).isSame(dayjs(), 'date');
     return isToday;

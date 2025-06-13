@@ -151,7 +151,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
         label: name,
         value: problem_id.toString(),
       }));
-      console.log('result', result);
+
       setStrengthProblemTypes(result);
     } catch (error) {
       console.log(error);
@@ -159,10 +159,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
   };
 
   const fetchEquipments = async () => {
-    if (equipments.length) {
-      console.log('equipments', equipments);
-      return;
-    }
+    if (equipments.length) return;
     try {
       const response = await CategoryApi.getEquipments();
       const { data, error } = response.data;
@@ -311,7 +308,6 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
   const fetchDetailProgram = async (programId: number) => {
     try {
       const response = await StrengthApi.getProgramDetail(programId);
-      console.log('response', response.data);
       const { data, error } = response.data;
       if (!data) throw error;
 
