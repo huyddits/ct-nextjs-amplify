@@ -12,11 +12,13 @@ import { ROUTES } from '@/utils/constants';
 import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/app/(in-app)/_components';
 import { type Exercise } from '../_hooks';
+import { useStrengthStore } from '@/store';
 
 type ExposedHandle = { getValue: () => Exercise[] };
 
 export default function CreateStrengthPage() {
   const router = useRouter();
+  const { listExercises: listExercisesFromStore } = useStrengthStore();
   const listExercisesRef = useRef<ExposedHandle | null>(null);
   const {
     filterForm,
@@ -38,9 +40,8 @@ export default function CreateStrengthPage() {
 
   const [errorMessage, setErrorMessage] = useState('');
   const onGoToProgramEditor = () => {
-    const listSelectedExercises = listExercisesRef.current?.getValue?.();
-    if (!listSelectedExercises) return;
-    if (!listSelectedExercises.length) {
+    if (!listExercisesFromStore) return;
+    if (!listExercisesFromStore.length) {
       setErrorMessage('Please select at least one exercise');
       return;
     }
@@ -97,7 +98,6 @@ export default function CreateStrengthPage() {
         }}
       />
       <ExerciseProgramSection
-        ref={listExercisesRef}
         listExcercises={listExercises}
         page={pageExercise}
         totalPages={totalPagesExercise}

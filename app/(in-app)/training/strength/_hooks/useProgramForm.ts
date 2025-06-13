@@ -23,7 +23,6 @@ export type Exercise = {
   targetMuscles: string;
   videoUrl: string;
   sets?: { reps: number; rpe: number }[];
-  isAdded?: boolean;
 };
 
 export type FilterForm = {
@@ -114,9 +113,6 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
   });
 
   const [listExercises, setListExercises] = useState<Exercise[]>([]); // base
-  const [listSelectedExercises, setListSelectedExercises] = useState<
-    Pick<Exercise, 'id' | 'name' | 'sets' | 'targetMuscles' | 'imageUrl'>[]
-  >([]);
 
   const { control, setValue, handleSubmit } = useForm({
     resolver: yupResolver(schema),
@@ -238,7 +234,6 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
             targetMuscles: item.target_muscles,
             videoUrl: item.video_url,
             equipments: item.equipment,
-            isAdded: listExercisesFromStore.some(storedItem => storedItem.id === item.exercise_id),
           }))
         );
 
@@ -290,7 +285,6 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
         targetMuscles: item.target_muscles,
         videoUrl: item.video_url,
         equipments: item.equipment,
-        isAdded: listExercisesFromStore.some(storedItem => storedItem.id === item.exercise_id),
       }));
       setPageExercise(prev => prev + 1);
       setListExercises(prev => [...prev, ...newList]);
@@ -332,18 +326,33 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
         }))
       );
 
-      // exercise
-      setListSelectedExercises(
-        data.exercises.map(item => {
+      if (!options.id) {
+        const newList = listExercisesFromStore.map(item => {
+          const exercise = data.exercises.find(o => o.program_exercise_id === item.id);
           return {
-            id: item.exercise.exercise_id,
-            sets: item.sets.map(set => ({ reps: set.rep, rpe: set.rpe })),
-            targetMuscles: item.exercise?.target_muscles,
-            name: item.exercise?.name,
-            imageUrl: item.exercise?.image_url,
+            ...item,
+            sets: exercise?.sets.map(set => ({ reps: set.rep, rpe: set.rpe })),
           };
-        })
-      );
+        });
+        setListExercisesFromStore(newList);
+      } else {
+        setListExercisesFromStore(
+          data.exercises.map(item => ({
+            cues: item.exercise.cues,
+            description: item.exercise.description,
+            difficulty: item.exercise.difficulty,
+            equipments: item.exercise.equipment,
+            exerciseId: item.exercise.exercise_id,
+            filterExercise: item.exercise.filterExercise,
+            imageUrl: item.exercise.image_url,
+            name: item.exercise.name,
+            targetMuscles: item.exercise.target_muscles,
+            videoUrl: item.exercise.video_url,
+            id: item.exercise.exercise_id,
+            sets: item.sets.map(o => ({ reps: o.rep, rpe: o.rpe })),
+          }))
+        );
+      }
     } catch (error) {
       console.log(error);
     }
@@ -357,7 +366,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
         name: data.programName,
         training_type: data.trainingType,
         type: programType,
-        exercises: listSelectedExercises.map(({ id, sets }) => {
+        exercises: listExercisesFromStore.map(({ id, sets }) => {
           return {
             exercise_id: id,
             sets: sets?.map(set => ({ rep: set.reps, rpe: set.rpe })) ?? [],
@@ -382,7 +391,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
         name: data.programName,
         training_type: data.trainingType,
         type: programType,
-        exercises: listSelectedExercises.map(({ id, sets }) => {
+        exercises: listExercisesFromStore.map(({ id, sets }) => {
           return {
             exercise_id: id,
             sets: sets?.map(set => ({ rep: set.reps, rpe: set.rpe })) ?? [],
@@ -405,7 +414,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
   const onSubmitUpdate = handleSubmit(handleUpdateProgram, onError);
 
   const onRemoveSetFromExercise = (exerciseId: number, setIndex: number) => {
-    setListSelectedExercises(prevExercises => {
+    setListExercisesFromStore(prevExercises => {
       const newExercises = prevExercises.map(ex => {
         if (ex.id !== exerciseId) return ex;
         return {
@@ -413,13 +422,20 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
           sets: ex.sets?.filter((_, index) => index !== setIndex) ?? [],
         };
       });
-
       return newExercises;
     });
   };
 
+  useEffect(() => {
+    if (listExercisesFromStore.some(item => item.sets?.length === 0)) {
+      setListExercisesFromStore(prevExercises => {
+        return prevExercises.filter(ex => ex.sets?.length !== 0);
+      });
+    }
+  }, [listExercisesFromStore]);
+
   const onRemoveExercise = (exerciseId: number) => {
-    setListSelectedExercises(prevExercises => {
+    setListExercisesFromStore(prevExercises => {
       return prevExercises.filter(ex => ex.id !== exerciseId);
     });
   };
@@ -432,7 +448,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     field: 'reps' | 'rpe',
     value: number
   ) => {
-    setListSelectedExercises(prevExercises => {
+    setListExercisesFromStore(prevExercises => {
       const newExercises = prevExercises.map(ex => {
         if (ex.id !== exerciseId) return ex;
         return {
@@ -451,10 +467,10 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     });
   };
 
-  const onAddSetToExercise = (exerciseIndex: number) => {
-    setListSelectedExercises(prevExercises => {
-      return prevExercises.map((exercise, index) => {
-        if (index !== exerciseIndex) return exercise;
+  const onAddSetToExercise = (exerciseId: number) => {
+    setListExercisesFromStore(prevExercises => {
+      return prevExercises.map(exercise => {
+        if (exercise.id !== exerciseId) return exercise;
         return {
           ...exercise,
           sets: [...(exercise?.sets ?? []), { reps: template?.reps || 0, rpe: template?.rpe || 0 }],
@@ -484,21 +500,19 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
 
   useEffect(() => {
     if (!template || options.id) return;
-    const appliedTemplate = listExercisesFromStore.map(item => {
-      const sets = [];
-      for (let i = 0; i < template.sets; i++) {
-        sets.push({ reps: template.reps, rpe: template.rpe });
-      }
-      item.sets = sets;
-      return item;
-    });
-    setListSelectedExercises(
-      appliedTemplate.map(item => ({
-        ...item,
-        sets: item.sets ?? [],
-      }))
+    setListExercisesFromStore(prev =>
+      prev.map(item => {
+        if (!item.sets?.length) {
+          const sets = [];
+          for (let i = 0; i < template.sets; i++) {
+            sets.push({ reps: template.reps, rpe: template.rpe });
+          }
+          item.sets = sets;
+        }
+        return item;
+      })
     );
-  }, [template, listExercisesFromStore, setListSelectedExercises]);
+  }, [template, setListExercisesFromStore]);
 
   useEffect(() => {
     if (!options.id) return;
@@ -512,9 +526,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     fetchListTrainingTypes();
   }, []);
 
-  useEffect(() => {
-    console.log({ listExercisesFromStore, listExercises, listSelectedExercises });
-  }, [listExercisesFromStore, listExercises, listSelectedExercises]);
+  useEffect(() => {}, [listExercisesFromStore]);
 
   return {
     control,
@@ -526,7 +538,6 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     pageExercise,
     listExercises,
     equipmentOptions,
-    listSelectedExercises,
     listExercisesFromStore,
     roleOptions: roles.filter(item => !item.isCoach),
     problemOptions: strengthProblemTypes,

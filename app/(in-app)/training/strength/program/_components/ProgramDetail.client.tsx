@@ -9,13 +9,14 @@ import { useProgramForm } from '../../_hooks';
 import { AppInput, AppSelect } from '@/components/compose';
 import { PageHeader } from '@/app/(in-app)/_components';
 import { Controller } from 'react-hook-form';
+import { useStrengthStore } from '@/store';
+import { MAXIMUM_SETS_PER_EXERCISE } from '@/utils/constants';
 
 export default function ProgramDetail({ programId }: { programId?: string }) {
   const {
     control,
     template,
     programName,
-    listSelectedExercises,
     trainingTypeOptions,
     onAddExercise,
     onRemoveExercise,
@@ -25,6 +26,8 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
     onSubmitCreate,
     onSubmitUpdate,
   } = useProgramForm({ id: programId });
+  const { listExercises: listExercisesFromStore, setListExercises: setListExercisesFromStore } =
+    useStrengthStore();
 
   const templateInfo = useMemo(() => {
     return `${template?.sets} sets x ${template?.reps} reps x ${template?.rpe} RPE`;
@@ -43,7 +46,7 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
               render={({ field, fieldState: { error } }) => (
                 <AppInput
                   label="Program Name"
-                  inputProps={{ placeholder: 'Enter the program name' }}
+                  inputProps={{ placeholder: 'Enter program name' }}
                   errorMessage={error?.message}
                   className="mb-6"
                   {...field}
@@ -64,7 +67,21 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
                     }
                     options={trainingTypeOptions}
                     selectedValue={value}
-                    onChangeSelected={onChange}
+                    onChangeSelected={selectedValue => {
+                      const setTemplate = trainingTypeOptions.find(
+                        item => item.value === selectedValue
+                      );
+                      onChange(selectedValue);
+                      setListExercisesFromStore(prev =>
+                        prev.map(item => ({
+                          ...item,
+                          sets: item.sets?.map(o => ({
+                            reps: setTemplate?.reps ?? 0,
+                            rpe: setTemplate?.rpe ?? 0,
+                          })),
+                        }))
+                      );
+                    }}
                     errorMessage={error?.message}
                     fullWidth
                   />
@@ -89,7 +106,7 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
                 </Button>
               </div>
 
-              {listSelectedExercises.map((item, index) => (
+              {listExercisesFromStore.map((item, index) => (
                 <div key={item.id} className="border border-gray-200 rounded-lg mb-4">
                   <div className="flex justify-between items-center p-4 bg-gray-50 rounded-t-lg">
                     <div className="flex items-center">
@@ -169,14 +186,16 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
                       </div>
                     ))}
 
-                    <Button
-                      variant="ghost"
-                      className="w-full text-primary mx-auto hover:bg-green-50 hover:text-primary"
-                      onClick={() => onAddSetToExercise(index)}
-                    >
-                      <PlusIcon />
-                      Add Set
-                    </Button>
+                    {(item?.sets?.length ?? 0) < MAXIMUM_SETS_PER_EXERCISE && (
+                      <Button
+                        variant="ghost"
+                        className="w-full text-primary mx-auto hover:bg-green-50 hover:text-primary"
+                        onClick={() => onAddSetToExercise(item.id)}
+                      >
+                        <PlusIcon />
+                        Add Set
+                      </Button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -184,7 +203,7 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
 
             <Button
               className="w-full shadow mt-6"
-              disabled={!listSelectedExercises.length || !programName.trim()}
+              disabled={!listExercisesFromStore.length || !programName.trim()}
               onClick={() => {
                 programId ? onSubmitUpdate() : onSubmitCreate();
               }}

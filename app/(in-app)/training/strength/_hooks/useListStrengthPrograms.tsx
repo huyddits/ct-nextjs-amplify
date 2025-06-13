@@ -3,6 +3,7 @@ import { StrengthApi } from '@/api';
 import { useAuthStore, useStrengthStore } from '@/store';
 import { debounce } from '@/utils/helpers';
 import { AccountType } from '@/utils/types';
+import { usePagination } from '@/hooks';
 
 export type ProgramItem = {
   id: string;
@@ -19,21 +20,60 @@ export const useListStrengthPrograms = () => {
   const { info } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [listStrengthPrograms, setListStrengthPrograms] = useState<ProgramItem[]>([]);
+  const { page, limit, totalPages, setPage, setTotalPages } = usePagination();
   const isCoach = useMemo(() => info?.accountType === AccountType.Coach, [info?.accountType]);
 
   const debounceSearch = useMemo(() => debounce(setSearchQuery, 500), []);
 
-  const fetchListStrengthPrograms = useCallback(async () => {
+  const fetchListStrengthPrograms = useCallback(
+    async (pageNumber?: number) => {
+      try {
+        const response = await StrengthApi.getListStrengthPrograms({
+          name: searchQuery,
+          type: programType,
+          page: pageNumber || page,
+          limit,
+        });
+        const { data, meta, error } = response.data;
+        if (!data) throw error;
+
+        setListStrengthPrograms(
+          data.map(item => ({
+            copiedAt: item.copied_at,
+            finishedAt: item.finished_at,
+            id: item.program_id.toString(),
+            name: item.name,
+            startedAt: item.started_at,
+            trainingType: item.training_type,
+            type: item.type,
+            exercises: item.exercises,
+          }))
+        );
+        setPage(pageNumber || page);
+        setTotalPages(meta?.totalPages ?? 0);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [searchQuery, programType, page, limit]
+  );
+
+  const onLoadMore = async () => {
     try {
       const response = await StrengthApi.getListStrengthPrograms({
         name: searchQuery,
         type: programType,
+        page: page + 1,
+        limit,
       });
-      const { data, error } = response.data;
+
+      const { data, meta, error } = response.data;
+
       if (!data) throw error;
 
-      setListStrengthPrograms(
-        data.map(item => ({
+      setListStrengthPrograms(prev => [
+        ...prev,
+        ...data.map(item => ({
           copiedAt: item.copied_at,
           finishedAt: item.finished_at,
           id: item.program_id.toString(),
@@ -42,23 +82,28 @@ export const useListStrengthPrograms = () => {
           trainingType: item.training_type,
           type: item.type,
           exercises: item.exercises,
-        }))
-      );
+        })),
+      ]);
+      setPage(prev => prev + 1);
     } catch (error) {
       console.log(error);
     }
-  }, [searchQuery, programType]);
+  };
 
   useEffect(() => {
-    fetchListStrengthPrograms();
-  }, [fetchListStrengthPrograms]);
+    fetchListStrengthPrograms(1);
+  }, [searchQuery, programType]);
 
   return {
     type: programType,
+    page,
     isCoach,
+    totalPages,
     searchQuery,
     listStrengthPrograms,
+    setPage,
     setType: setProgramType,
+    onLoadMore,
     debounceSearch,
     fetchListStrengthPrograms,
   };

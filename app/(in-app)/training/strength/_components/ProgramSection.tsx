@@ -2,14 +2,28 @@ import { type ProgramItem } from '../_hooks';
 import { ProgramCard } from '.';
 import dayjs from 'dayjs';
 import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
+import { useLoadMore } from '@/hooks';
+import { useRef } from 'react';
 
 export default function ProgramSectionSection({
+  page,
+  totalPages,
   listPrograms,
+  onLoadMore,
   onRefetch,
 }: {
+  page: number;
+  totalPages: number;
   listPrograms: ProgramItem[];
   onRefetch?: () => void;
+  onLoadMore: () => Promise<void>;
 }) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const { ref: sentinelRef } = useLoadMore({
+    loadMore: onLoadMore,
+    hasMore: page < totalPages,
+    root: scrollContainerRef.current,
+  });
   return (
     <section>
       <div className="space-y-4">
@@ -25,6 +39,7 @@ export default function ProgramSectionSection({
             onRefetch={onRefetch}
           />
         ))}
+        <div ref={sentinelRef} className="h-6" />
       </div>
     </section>
   );

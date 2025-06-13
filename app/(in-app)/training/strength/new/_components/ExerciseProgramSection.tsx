@@ -17,14 +17,8 @@ const ExerciseProgramSection = forwardRef(
     const { listExercises: listExercisesFromStore, setListExercises: setListExercisesFromStore } =
       useStrengthStore();
     const [listAvailableExercises, setListAvailableExercises] = useState<Exercise[]>([]);
-    const [listAddedExercises, setListAddedExercises] = useState<Exercise[]>([]);
-
-    useImperativeHandle(ref, () => ({
-      getValue: () => listAddedExercises,
-    }));
 
     useEffect(() => {
-      setListAddedExercises(listExercisesFromStore);
       setListAvailableExercises(
         listExcercises.filter(item => !listExercisesFromStore.some(({ id }) => item.id === id))
       );
@@ -34,11 +28,9 @@ const ExerciseProgramSection = forwardRef(
       onUpdate?.();
 
       if (isAdded) {
-        setListAddedExercises(prev => [...prev, item]);
         setListExercisesFromStore(prev => [...prev, item]);
         setListAvailableExercises(prev => prev.filter(obj => obj.id !== item.id));
       } else {
-        setListAddedExercises(prev => prev.filter(({ id }) => id !== item.id));
         setListExercisesFromStore(prev => prev.filter(({ id }) => id !== item.id));
         if (listExcercises.some(obj => obj.id === item.id)) {
           setListAvailableExercises(prev => [...prev, item]);
@@ -78,10 +70,10 @@ const ExerciseProgramSection = forwardRef(
         </div>
         <div className="mb-6">
           <h2 className="text-primary font-medium mb-2">
-            Added Exercises ({listAddedExercises.length})
+            Added Exercises ({listExercisesFromStore.length})
           </h2>
           <div className="bg-white rounded-lg shadow-sm">
-            {listAddedExercises.map(item => (
+            {listExercisesFromStore.map(item => (
               <ExerciseItem
                 key={item.id}
                 name={item.name}
