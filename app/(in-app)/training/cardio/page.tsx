@@ -315,7 +315,7 @@ export default function CardioPage() {
             </Button>
 
             <Link href="/training/cardio/past">
-              <Button className="w-full" size="lg">
+              <Button className="w-full" size="lg" variant={'outline'}>
                 Past Cardio Training
               </Button>
             </Link>

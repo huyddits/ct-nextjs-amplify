@@ -51,20 +51,32 @@ type MeasurementStore = {
   measurementListOptions: SelectOption[];
   baseMeasurementList: MeasurementItem[];
   coachStudent: CoachStudentItem[];
-  flyerAndBases: BaseFlyerAndBases;
+  flyerList: BaseFlyerAndBases[];
+  basesSpotterList: BaseFlyerAndBases[];
   setMeasurementListOptions: (options: SelectOption[]) => void;
   setRawMeasurementList: (list: MeasurementItem[]) => void;
   setCoachStudent: (list: CoachStudentItem[]) => void;
-  setFlyerAndBases: (list: BaseFlyerAndBases) => void;
+  setFlyerList: (list: BaseFlyerAndBases[]) => void;
+  setBasesSpotterList: (list: BaseFlyerAndBases[]) => void;
+  refreshFlyer: boolean;
+  refreshBasesSpotter: boolean;
+  setRefreshFlyer: (value: boolean) => void;
+  setRefreshBasesSpotter: (value: boolean) => void;
 };
 
 export const useMeasurementStore = create<MeasurementStore>(set => ({
   measurementListOptions: [],
   baseMeasurementList: [],
   coachStudent: [],
-  flyerAndBases: { measurementName: '', items: [] },
+  flyerList: [],
+  basesSpotterList: [],
+  refreshFlyer: false,
+  refreshBasesSpotter: false,
   setMeasurementListOptions: options => set({ measurementListOptions: options }),
   setRawMeasurementList: list => set({ baseMeasurementList: list }),
   setCoachStudent: list => set({ coachStudent: list }),
-  setFlyerAndBases: list => set({ flyerAndBases: list }),
+  setFlyerList: list => set({ flyerList: list }),
+  setBasesSpotterList: list => set({ basesSpotterList: list }),
+  setRefreshFlyer: value => set({ refreshFlyer: value }),
+  setRefreshBasesSpotter: value => set({ refreshBasesSpotter: value }),
 }));

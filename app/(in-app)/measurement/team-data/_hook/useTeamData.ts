@@ -5,14 +5,13 @@ import {
   LatestResultItem,
   ResultForAllMeasurementsItem,
 } from '../_types';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CoachStudentItem, MeasurementItem } from '../../new/_types';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { athletePayload, CoachStudentPayload, FlyerAndBasesPayLoad } from '@/api/types/measurement';
 import { useAuthStore, useMeasurementStore } from '@/store';
-import { create } from 'domain';
 
 type UseMeasurementFormOptions = {
   onSuccess?: () => void;
@@ -40,8 +39,16 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
   const {
     baseMeasurementList,
     coachStudent: coachStudentListFromStore,
+    flyerList,
+    basesSpotterList,
+    refreshFlyer,
+    refreshBasesSpotter,
     setRawMeasurementList,
     setCoachStudent,
+    setFlyerList,
+    setBasesSpotterList,
+    setRefreshFlyer,
+    setRefreshBasesSpotter,
   } = useMeasurementStore();
   const { control, setValue, getValues, watch } = useForm({
     resolver: yupResolver(schema),
@@ -55,6 +62,10 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
   const measurementId = watch('measurement');
 
   const getBasesSpotter = async (payload: FlyerAndBasesPayLoad) => {
+    if (basesSpotterList.length > 0 && !refreshBasesSpotter) {
+      setbasesSpotter(basesSpotterList);
+      return;
+    }
     try {
       const response = await MeasurementApi.getBasesSpotter(payload);
       const { data, error } = response.data;
@@ -68,6 +79,8 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
         })),
       }));
       setbasesSpotter(dataResponse);
+      setBasesSpotterList(dataResponse);
+      setRefreshBasesSpotter(false);
       options?.onSuccess?.();
     } catch (error) {
       console.log(error);
@@ -75,6 +88,10 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
   };
 
   const getFlyer = async (payload: FlyerAndBasesPayLoad) => {
+    if (flyerList.length > 0 && !refreshFlyer) {
+      setflyer(flyerList);
+      return;
+    }
     try {
       const response = await MeasurementApi.getFlyer(payload);
       const { data, error } = response.data;
@@ -88,6 +105,8 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
         })),
       }));
       setflyer(dataResponse);
+      setFlyerList(dataResponse);
+      setRefreshFlyer(false);
       options?.onSuccess?.();
     } catch (error) {
       console.log(error);
