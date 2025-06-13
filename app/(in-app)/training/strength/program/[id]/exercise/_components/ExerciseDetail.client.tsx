@@ -275,7 +275,7 @@ export default function StrengthExercise({ programId }: { programId: number }) {
         <div
           className={cn(
             'fixed left-0 top-1/2 -translate-y-1/2 z-10 opacity-30 transition-opacity',
-            !previousExerciseName && 'hover:opacity-80'
+            previousExerciseName && 'hover:opacity-80'
           )}
         >
           <button
@@ -290,7 +290,7 @@ export default function StrengthExercise({ programId }: { programId: number }) {
         <div
           className={cn(
             'fixed right-0 top-1/2 -translate-y-1/2 z-10 opacity-30 transition-opacity',
-            !nextExerciseName && 'hover:opacity-80'
+            nextExerciseName && 'hover:opacity-80'
           )}
         >
           <button

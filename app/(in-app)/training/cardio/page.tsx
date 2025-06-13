@@ -3,14 +3,14 @@ import { AppInput, AppSelect, AppTextarea } from '@/components/compose';
 import { Button } from '@/components/ui/button';
 import { Controller, useWatch } from 'react-hook-form';
 import { useCardio } from './_hooks';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCardioStore } from '@/store/useCardio.store';
-import { toast } from 'react-toastify';
 import Link from 'next/link';
 import { useLoading } from '@/hooks';
+import { InfoIcon } from 'lucide-react';
 
 export default function CardioPage() {
-  const { intervalsList, addInterval, clearCardioSession, setDraft, draft } = useCardioStore();
+  const { intervalsList, clearCardioSession, setDraft, draft } = useCardioStore();
   const { loading } = useLoading();
   const {
     control,
@@ -71,55 +71,21 @@ export default function CardioPage() {
     setDraft(updatedDraft);
   }, [watchedInterval, watchedNotes, watchedExercise]);
 
-  const handleCreateInterval = useCallback(async () => {
-    const valid = await trigger('intervals.0');
-    if (!valid) return;
-    const currentInterval = getValues('intervals.0');
-    const existingIntervals = getValues('intervals') || [];
-
-    const newIntervals = [...existingIntervals, currentInterval];
-    setValue('intervals', newIntervals);
-    addInterval(currentInterval);
-    toast.success('Successfully added interval');
-    setInputDisabled(true);
-  }, []);
-
   const handleCompleteWorkout = async () => {
     const valid = await trigger(['intervals.0', 'notes']);
     if (!valid) return;
 
-    const currentInterval = getValues('intervals.0');
-    addInterval(currentInterval);
+    const interval = getValues('intervals.0');
 
-    await onCompleteWorkout(getValues());
-    setInputDisabled(false);
-  };
+    setValue('intervals', [interval]);
 
-  const handleAddNew = () => {
-    const current = getValues('intervals.0');
+    const values = getValues();
+    const payload = {
+      ...values,
+      intervals: [interval],
+    };
 
-    const isEmpty =
-      !current.duration &&
-      !current.distance &&
-      !current.distanceUnit &&
-      !current.heartRateMin &&
-      current.heartRateMin &&
-      !current.heartRateMax &&
-      current.heartRateMax;
-
-    if (isEmpty) {
-      toast.error('Please enter interval data before adding a new one.');
-      return;
-    }
-    setInputDisabled(false);
-    setValue('intervals.0', {
-      duration: '',
-      rpe: '0',
-      distance: '',
-      distanceUnit: '',
-      heartRateMin: '',
-      heartRateMax: '',
-    });
+    await onCompleteWorkout(payload);
   };
 
   const distanceUnit = useWatch({
@@ -135,7 +101,10 @@ export default function CardioPage() {
         <div className="space-y-6 py-6">
           <form onSubmit={e => e.preventDefault()} className="space-y-4">
             <div className="space-y-2">
-              <h2 className="text-lg font-medium">Cardio Training Selection</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-medium">Cardio Training Selection</h2>
+                <InfoIcon className="h-5 w-5 text-gray-400" />
+              </div>
               <Controller
                 control={control}
                 name="exercise"
@@ -155,15 +124,6 @@ export default function CardioPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-medium">Intervals</h2>
-                <Button
-                  type="button"
-                  className="text-primary"
-                  variant="outline"
-                  loading={loading}
-                  onClick={handleAddNew}
-                >
-                  + Add
-                </Button>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -296,12 +256,6 @@ export default function CardioPage() {
                   />
                 )}
               />
-            </div>
-
-            <div className="flex justify-center">
-              <Button type="button" size="lg" onClick={handleCreateInterval} loading={loading}>
-                Create Interval
-              </Button>
             </div>
 
             <Button
