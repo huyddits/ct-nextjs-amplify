@@ -14,17 +14,17 @@ export default function LogData({ athletes, teamAverages }: Props) {
   return athletes.map(athlete => (
     <tr key={athlete.name} className="even:bg-gray-50 odd:bg-white">
       <td className="py-3 px-4 border-b">{athlete.name}</td>
-      <td className="text-center py-3 px-2 border-b">{athlete.strengthTrainingDays}</td>
+      <td className="text-center py-3 px-2 border-b">{athlete.strengthTrainingDays ?? 0}d</td>
       <td className="text-center py-3 px-2 border-b text-primary">
-        {teamAverages?.averageStrengthTrainingDays}d
+        {teamAverages?.averageStrengthTrainingDays ?? 0}d
       </td>
-      <td className="text-center py-3 px-2 border-b">{athlete.cardioTrainingDays}</td>
+      <td className="text-center py-3 px-2 border-b">{athlete.cardioTrainingDays ?? 0}d</td>
       <td className="text-center py-3 px-2 border-b text-primary">
-        {teamAverages?.averageCardioTrainingDays}d
+        {teamAverages?.averageCardioTrainingDays ?? 0}d
       </td>
-      <td className="text-center py-3 px-2 border-b">{athlete.cardioTotalDuration}</td>
+      <td className="text-center py-3 px-2 border-b">{athlete.cardioTotalDuration ?? 0}min</td>
       <td className="text-center py-3 px-2 border-b text-primary">
-        {teamAverages?.averageCardioDuration}min
+        {teamAverages?.averageCardioDuration ?? 0}min
       </td>
     </tr>
   ));
