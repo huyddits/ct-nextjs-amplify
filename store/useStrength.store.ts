@@ -2,12 +2,17 @@ import { Exercise } from '@/app/(in-app)/training/strength/_hooks';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { ProgramType } from '@/utils/types';
+
+type Updater = (value: Exercise[]) => Exercise[];
+type WorkoutSession = {};
 export type StrengthStore = {
   tabs: { label: string; value: ProgramType }[];
+  workoutSession: WorkoutSession;
   programType: ProgramType;
   listExercises: Exercise[];
+  setWorkoutSession: (value: WorkoutSession) => void;
   setProgramType: (value: ProgramType) => void;
-  setListExercises: (value: Exercise[]) => void;
+  setListExercises: (value: Exercise[] | Updater) => void;
 };
 
 export const useStrengthStore = create<StrengthStore>()(
@@ -22,7 +27,15 @@ export const useStrengthStore = create<StrengthStore>()(
         programType: ProgramType.TeamPrograms,
         listExercises: [],
         setProgramType: value => set({ programType: value }),
-        setListExercises: value => set({ listExercises: value }),
+        setListExercises: valueOrUpdater => {
+          if (typeof valueOrUpdater === 'function') {
+            set(state => ({ listExercises: valueOrUpdater(state.listExercises) }));
+          } else {
+            set(state => ({ listExercises: valueOrUpdater }));
+          }
+        },
+        workoutSession: {},
+        setWorkoutSession: () => {},
       };
     },
     {

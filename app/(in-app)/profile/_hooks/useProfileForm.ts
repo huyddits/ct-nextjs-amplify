@@ -11,14 +11,24 @@ import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
 import { UserApi } from '@/api';
 import { toast } from 'react-toastify';
 import { useLoading } from '@/hooks';
+import { UpdatePersonalInfoPayload } from '@/api/types/users';
 
 const schema = object().shape({
   coachCode: string().default(''),
-  firstName: string().required(ERROR_MESSAGES.INPUT).matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
-  lastName: string().required(ERROR_MESSAGES.INPUT).matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
+  firstName: string()
+    .required(ERROR_MESSAGES.INPUT)
+    .max(50, ERROR_MESSAGES.MAX_LENGTH(50))
+    .matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
+  lastName: string()
+    .required(ERROR_MESSAGES.INPUT)
+    .max(50, ERROR_MESSAGES.MAX_LENGTH(50))
+    .matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
   email: string().required(ERROR_MESSAGES.INPUT).matches($v.PATTERN.EMAIL, ERROR_MESSAGES.EMAIL),
   dateOfBirth: string().required(ERROR_MESSAGES.INPUT),
-  schoolName: string().required(ERROR_MESSAGES.INPUT).matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
+  schoolName: string()
+    .required(ERROR_MESSAGES.INPUT)
+    .max(100, ERROR_MESSAGES.MAX_LENGTH(100))
+    .matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
   cheerType: string().required(),
   cheerStyle: string().required(),
   role: string().required(),
@@ -32,6 +42,7 @@ export const useProfileForm = () => {
   const { info, updateInfo } = useAuthStore();
   const { control, handleSubmit, trigger, setValue, getValues } = useForm<FormType>({
     resolver: yupResolver(schema),
+    mode: 'onChange',
     defaultValues: {
       coachCode: '',
       firstName: '',
@@ -71,7 +82,7 @@ export const useProfileForm = () => {
       'equipment',
       info.equipmentIds.map(item => item.toString())
     );
-  }, [info]);
+  }, [info?.id, info?.coachCode]);
 
   const coachCode = useWatch({ control, name: 'coachCode' });
 
@@ -82,7 +93,7 @@ export const useProfileForm = () => {
     }
     startLoading();
     try {
-      const response = await UserApi.updatePersonalInfo({
+      const payload = {
         cheer_style_id: Number(data.cheerStyle),
         cheer_type_id: Number(data.cheerType),
         date_of_birth: dayjs(data.dateOfBirth).toISOString(),
@@ -93,7 +104,11 @@ export const useProfileForm = () => {
         role: Number(data.role),
         equipments: data.equipment.map(item => Number(item)),
         coach_code: data.coachCode,
-      });
+      } as UpdatePersonalInfoPayload;
+      if (isCoach) {
+        delete payload.coach_code;
+      }
+      const response = await UserApi.updatePersonalInfo(payload);
       const { data: dataResponse, error } = response.data;
       if (!data) throw error;
 
