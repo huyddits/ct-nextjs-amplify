@@ -88,7 +88,7 @@ export const useCategories = () => {
         label: name,
         value: id.toString(),
       }));
-      console.log('measurementUnitItems', measurementUnitItems);
+
       setMeasurementUnits(measurementUnitItems);
     } catch (error) {
       console.log(error);

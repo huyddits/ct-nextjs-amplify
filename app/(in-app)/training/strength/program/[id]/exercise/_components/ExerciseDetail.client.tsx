@@ -193,10 +193,10 @@ export default function StrengthExercise({ programId }: { programId: number }) {
 
       if (diff > minSwipeDistance) {
         // Navigate to previous exercise
-        navigateToPreviousExercise();
+        indicator > 0 && navigateToPreviousExercise();
       } else if (diff < -minSwipeDistance) {
         // Navigate to next exercise
-        navigateToNextExercise();
+        indicator < listExerciseInProgram.length - 1 && navigateToNextExercise();
       }
 
       // Reset
