@@ -15,9 +15,9 @@ type UseMeasurementFormOptions = {
 };
 
 const schema = object().shape({
-  measurement: string().required(),
-  athleteList: string(),
-  result: string().required(),
+  measurement: string().required('Measurement is a required field'),
+  athleteList: string().required('Athlete is a required field'),
+  result: string().required('Result is a required field'),
 });
 
 export const useMeasurement = (options?: UseMeasurementFormOptions) => {
@@ -29,8 +29,10 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     coachStudent: coachStudentListFromStore,
     setRawMeasurementList,
     setCoachStudent,
+    setRefreshBasesSpotter,
+    setRefreshFlyer,
   } = useMeasurementStore();
-  const { control, setValue, getValues, handleSubmit } = useForm({
+  const { control, setValue, getValues, handleSubmit, formState } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       measurement: '',
@@ -117,6 +119,10 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
         athlete_id: formData.athleteList ?? '',
         result: Number(formData.result),
       });
+      setRefreshBasesSpotter(true);
+      setRefreshFlyer(true);
+
+      await getMeasurementList();
       toast.success('Successfully saved the measurement');
       options?.onSuccess?.();
     } catch (error: unknown) {
@@ -149,12 +155,6 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     getCoachStudentList(payload);
   }, [info?.coachCode]);
 
-  useEffect(() => {
-    if (coachStudentList[0]) {
-      setValue('athleteList', coachStudentList[0].athleteId);
-    }
-  }, [coachStudentList, setValue]);
-
   return {
     measurementList,
     getMeasurementList,
@@ -163,6 +163,8 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     getCoachStudentList,
     onSubmit,
     getValues,
+    setValue,
+    formState,
     selectedMeasurement,
   };
 };
