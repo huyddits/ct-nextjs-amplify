@@ -304,7 +304,7 @@ pre {
 }
 
 .container {
-  @apply 3xl:max-w-[100rem] 2xl:max-w-[90rem] xl:max-w-[80rem] lg:max-w-[64rem] md:max-w-[48rem] mx-auto w-full;
+  @apply 3xl:max-w-[100rem] 2xl:max-w-[90rem] xl:max-w-[80rem] lg:max-w-[64rem] md:max-w-[48rem] mx-auto w-full px-4;
 }
 
 /* Add background */

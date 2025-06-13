@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { PlusIcon, MinusIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function ExerciseItem({
   name,
@@ -30,7 +31,7 @@ export default function ExerciseItem({
           </div>
         </div>
       </div>
-      <button onClick={onToggle} className="text-green-800 p-2">
+      <button onClick={onToggle} className={cn('p-2', isAdded ? 'text-green-600' : 'text-red-600')}>
         {isAdded ? (
           <React.Fragment>
             <span className="sr-only">Remove {name}</span>

@@ -17,4 +17,7 @@ export const ERROR_MESSAGES = {
     `Text exceeds maximum length of ${max} characters. Please shorten your entry.`,
 };
 
-export const DEFAULT_LIMIT = 10;
+export const DEFAULT_LIMIT = 5;
+
+export const MAXIMUM_EXERCISES_PER_PROGRAM = 15;
+export const MAXIMUM_SETS_PER_EXERCISE = 8;

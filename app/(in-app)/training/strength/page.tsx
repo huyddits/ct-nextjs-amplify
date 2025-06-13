@@ -24,8 +24,16 @@ const CustomTabTrigger = ({ value, children }: { value: ProgramType; children: R
 
 export default function StrengthPage() {
   const { setProgramType, programType, tabs } = useStrengthStore();
-  const { isCoach, listStrengthPrograms, setType, debounceSearch, fetchListStrengthPrograms } =
-    useListStrengthPrograms();
+  const {
+    page,
+    isCoach,
+    totalPages,
+    listStrengthPrograms,
+    setType,
+    onLoadMore,
+    debounceSearch,
+    fetchListStrengthPrograms,
+  } = useListStrengthPrograms();
 
   const onTabChange = (tabValue: ProgramType) => {
     setProgramType(tabValue);
@@ -75,8 +83,11 @@ export default function StrengthPage() {
           </div>
           <div className="space-y-4">
             <ProgramSection
+              page={page}
+              totalPages={totalPages}
               listPrograms={listStrengthPrograms}
               onRefetch={fetchListStrengthPrograms}
+              onLoadMore={onLoadMore}
             />
           </div>
         </div>

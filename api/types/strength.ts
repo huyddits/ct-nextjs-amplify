@@ -83,6 +83,8 @@ type WorkoutRecord = {
 };
 
 export type GetListStrengthProgramsParams = {
+  page: number;
+  limit: number;
   type: string;
   name: string;
 };
