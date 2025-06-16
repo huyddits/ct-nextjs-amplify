@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Cheer Trainer',
   webDir: 'www',
   server: {
-    url: 'https://staging.d2gkzv5wx7qsyt.amplifyapp.com', // URL PWA
+    url: 'https://staging.d1xu0qw1fwot4p.amplifyapp.com', // URL PWA
     cleartext: true,
   },
 };
