@@ -25,6 +25,9 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/favicon-cheer-trainer.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         {/* Android */}
 
         {/* IOS */}
@@ -34,8 +37,6 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="152x152" href="touch-icon-ipad.png" />
         <link rel="apple-touch-icon" sizes="167x167" href="touch-icon-ipad-retina.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="touch-icon-iphone-retina.png" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
         {/* Font */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
