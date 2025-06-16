@@ -117,53 +117,63 @@ export default function EquipmentFilter({
         </div>
       </div>
 
-      {isOpen && (
-        <div className="bg-white rounded-lg p-4 shadow-sm mb-4 border-l-4 border-primary">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-primary">Select Equipment</h3>
-            <div className="space-x-2">
-              <Button variant="ghost" size="sm" onClick={onCheckAll}>
-                Check All
-              </Button>
-              <Button variant="ghost" size="sm" onClick={onClearAll}>
-                Clear All
-              </Button>
-            </div>
-          </div>
-
-          {selectedEquipment.length.toString() && (
-            <div className="flex flex-wrap gap-2 mb-3">
-              {selectedEquipment.map(item => (
-                <div
-                  key={item.value}
-                  className="flex items-center bg-green-20 text-primary px-2 py-1 rounded-full text-xs"
-                >
-                  <span>{item.label}</span>
-                  <button
-                    className="ml-1"
-                    onClick={() => setSelectedEquipment(selectedEquipment.filter(i => i !== item))}
-                  >
-                    <XIcon className="h-3 w-3" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 gap-2">
-            {equipmentOptions.map(item => (
-              <EquipmentOption
-                key={item.value}
-                checked={isSelected(item)}
-                label={item.label}
-                onCheckedChange={isChecked => onToggleSelection(item, isChecked)}
-              />
-            ))}
+      <div
+        className={cn(
+          'transition-all duration-300 overflow-hidden',
+          isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0 p-0!',
+          'bg-white rounded-lg shadow-sm mb-4 border-l-4 border-primary p-4'
+        )}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-medium text-primary">Select Equipment</h3>
+          <div className="space-x-2">
+            <Button variant="ghost" size="sm" onClick={onCheckAll}>
+              Check All
+            </Button>
+            <Button variant="ghost" size="sm" onClick={onClearAll}>
+              Clear All
+            </Button>
           </div>
         </div>
-      )}
 
-      <Button className="w-full" onClick={onApplyFilter}>
+        {selectedEquipment.length.toString() && (
+          <div className="flex flex-wrap gap-2 mb-3">
+            {selectedEquipment.map(item => (
+              <div
+                key={item.value}
+                className="flex items-center bg-green-20 text-primary px-2 py-1 rounded-full text-xs"
+              >
+                <span>{item.label}</span>
+                <button
+                  className="ml-1"
+                  onClick={() => setSelectedEquipment(selectedEquipment.filter(i => i !== item))}
+                >
+                  <XIcon className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 gap-2">
+          {equipmentOptions.map(item => (
+            <EquipmentOption
+              key={item.value}
+              checked={isSelected(item)}
+              label={item.label}
+              onCheckedChange={isChecked => onToggleSelection(item, isChecked)}
+            />
+          ))}
+        </div>
+      </div>
+
+      <Button
+        className="w-full"
+        onClick={() => {
+          onApplyFilter?.();
+          setIsOpen(false);
+        }}
+      >
         Apply Filter
       </Button>
     </div>

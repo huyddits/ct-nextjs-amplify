@@ -38,20 +38,45 @@ export type CoachStudentItem = {
   athlete: AthleteItem;
 };
 
+export type BaseFlyerAndBases = {
+  measurementName: string;
+  items: {
+    name: string;
+    result: number;
+    unit: string;
+  }[];
+};
+
 type MeasurementStore = {
   measurementListOptions: SelectOption[];
   baseMeasurementList: MeasurementItem[];
   coachStudent: CoachStudentItem[];
+  flyerList: BaseFlyerAndBases[];
+  basesSpotterList: BaseFlyerAndBases[];
   setMeasurementListOptions: (options: SelectOption[]) => void;
   setRawMeasurementList: (list: MeasurementItem[]) => void;
   setCoachStudent: (list: CoachStudentItem[]) => void;
+  setFlyerList: (list: BaseFlyerAndBases[]) => void;
+  setBasesSpotterList: (list: BaseFlyerAndBases[]) => void;
+  refreshFlyer: boolean;
+  refreshBasesSpotter: boolean;
+  setRefreshFlyer: (value: boolean) => void;
+  setRefreshBasesSpotter: (value: boolean) => void;
 };
 
 export const useMeasurementStore = create<MeasurementStore>(set => ({
   measurementListOptions: [],
   baseMeasurementList: [],
   coachStudent: [],
+  flyerList: [],
+  basesSpotterList: [],
+  refreshFlyer: false,
+  refreshBasesSpotter: false,
   setMeasurementListOptions: options => set({ measurementListOptions: options }),
   setRawMeasurementList: list => set({ baseMeasurementList: list }),
   setCoachStudent: list => set({ coachStudent: list }),
+  setFlyerList: list => set({ flyerList: list }),
+  setBasesSpotterList: list => set({ basesSpotterList: list }),
+  setRefreshFlyer: value => set({ refreshFlyer: value }),
+  setRefreshBasesSpotter: value => set({ refreshBasesSpotter: value }),
 }));

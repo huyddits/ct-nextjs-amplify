@@ -19,9 +19,15 @@ export default function MeasurementNewPage() {
     getCoachStudentList,
     selectedMeasurement,
     onSubmit,
+    setValue,
+    formState: { isValid },
     getValues,
   } = useMeasurement({
-    onSuccess: () => {},
+    onSuccess: () => {
+      setValue('result', '');
+      setValue('athleteList', '');
+      setValue('measurement', measurementList[0]?.measurementsId.toString() || '');
+    },
     onFailure: () => {},
   });
 
@@ -97,6 +103,7 @@ export default function MeasurementNewPage() {
                 <AppSelect
                   label="Select Athlete"
                   options={athleteOptions}
+                  placeholder="Choose an athlete"
                   selectedValue={field.value}
                   onChangeSelected={field.onChange}
                   errorMessage={error?.message}
@@ -116,6 +123,9 @@ export default function MeasurementNewPage() {
                   inputProps={{
                     placeholder: 'Enter measurement',
                     type: 'number',
+                    min: 0,
+                    className:
+                      'appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
                   }}
                   errorMessage={error?.message}
                   {...field}
@@ -125,7 +135,7 @@ export default function MeasurementNewPage() {
             />
           </div>
 
-          <Button type="button" onClick={onSubmit} size="lg" className="w-full">
+          <Button type="button" onClick={onSubmit} size="lg" className="w-full" disabled={!isValid}>
             Save Result
           </Button>
         </div>
