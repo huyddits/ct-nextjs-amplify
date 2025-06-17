@@ -1,6 +1,5 @@
 'use client';
-import { AppInput, AppSelect } from '@/components/compose';
-import { VideoPlayer } from '../_components';
+import { AppInput, AppSelect, VideoPlayer } from '@/components/compose';
 import { Button } from '@/components/ui/button';
 import { useMeasurement } from './_hook';
 import { useEffect, useMemo } from 'react';

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { PlayIcon, Volume2Icon, Maximize2Icon } from 'lucide-react';
 interface VideoPlayerProps {
   source: string;
-  title: string;
+  title?: string;
 }
 export default function VideoPlayer({ source, title }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
