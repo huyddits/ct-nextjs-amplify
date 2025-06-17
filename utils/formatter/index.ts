@@ -14,3 +14,10 @@ export const formatCurrency = (
     currency: currency.toUpperCase(),
   }).format(amount);
 };
+
+export const generateRandomChar = () => {
+  // generate random query string from a to z or A to Z
+  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const randomIndex = Math.floor(Math.random() * characters.length);
+  return characters[randomIndex];
+};
