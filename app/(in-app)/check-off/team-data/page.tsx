@@ -1,20 +1,19 @@
 'use client';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CheckOffData, MonthCalendar } from './_components';
+import { CheckOffData, MonthCalendar, ReferenceData } from './_components';
 import { useState } from 'react';
 import { TabsContent } from '@radix-ui/react-tabs';
-import { Component } from 'lucide-react';
 
 const TAB_OPTIONS = [
   { value: 'checkoff', label: 'By Check-Off', Component: CheckOffData },
-  { value: 'quickref', label: 'Quick Reference', Component: () => null },
+  { value: 'quickref', label: 'Quick Reference', Component: ReferenceData },
   { value: 'athlete', label: 'By Athlete', Component: () => null },
 ];
 
 export default function CheckOffTeamDataPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   return (
-    <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">
+    <div className="padding-top-pagePast padding-bottom-pagePast max-w-4xl mx-auto px-4">
       <MonthCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
 
       <div className="py-4">
