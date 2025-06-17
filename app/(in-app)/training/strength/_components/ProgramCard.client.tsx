@@ -47,11 +47,11 @@ export default function ProgramCard({
 
   return (
     <Card className="p-4 rounded-xl shadow-sm">
-      <div className="flex justify-between items-start">
-        <div className="flex-1 pr-4">
-          <h3 className="text-base font-semibold text-gray-900">{name}</h3>
-          <p className="text-sm text-gray-600 mt-1">
-            <span className="text-gray-500 font-medium">Exercises:</span> {content}
+      <div className="flex justify-between items-start overflow-hidden">
+        <div className="flex-1 pr-4 w-full overflow-hidden">
+          <h3 className="text-base font-semibold text-gray-900 truncate break-words">{name}</h3>
+          <p className="text-sm text-gray-600 mt-1 break-words">
+            <span className="text-gray-500 font-medium break-all">Exercises:</span> {content}
           </p>
           {lastCompleted && (
             <p className="text-sm text-gray-500 mt-2">Completed Last on: {lastCompleted}</p>
