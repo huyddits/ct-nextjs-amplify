@@ -17,13 +17,13 @@ export default function PastStrengthTrainingPage() {
       end_date: endOfWeek(selectedDate, { weekStartsOn: 1 }).toISOString().slice(0, 10),
     };
   }, [selectedDate]);
-  const { data } = useGetPastStrengthTraining(queryParams);
+  const { data, isLoading } = useGetPastStrengthTraining(queryParams);
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">
       <TitlePastStrength />
       <main>
         <DatePastStrengthSection selectedDate={selectedDate} onChangeDate={setSelectedDate} />
-        <PastStrengthTrainingSection data={data} />
+        <PastStrengthTrainingSection data={data} isLoading={isLoading} />
       </main>
     </div>
   );
