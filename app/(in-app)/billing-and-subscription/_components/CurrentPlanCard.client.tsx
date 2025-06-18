@@ -2,7 +2,6 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { BillingCycle, PlanStatus } from '@/utils/types';
-import dayjs, { Dayjs } from 'dayjs';
 import { CalendarIcon } from 'lucide-react';
 import { format, parseISO, isValid } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
@@ -67,7 +66,6 @@ export default function CurrentPlanCard({
     if (billingCycle === BillingCycle.Free) {
       return 'No Expired Date';
     }
-    // return nextBillingDate ? dayjs(nextBillingDate).format('MMM DD, YYYY') : '';
     return nextBillingDate
       ? isValid(parseISO(nextBillingDate))
         ? format(parseISO(nextBillingDate), 'MMM dd, yyyy')
