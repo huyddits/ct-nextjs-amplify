@@ -25,6 +25,26 @@ import { useAuthStore } from '@/store';
 import { cn } from '@/lib/utils';
 import { useSafeAreaInset } from '@/hooks';
 import { SafeAreaDetection } from '@/app/_components';
+import { Button } from '@/components/ui/button';
+
+const TopAppBeforeAuth = ({ className }: { className?: string }) => {
+  const router = useRouter();
+  return (
+    <div className={cn('sticky z-10', className)}>
+      <SafeAreaDetection position="top" className="bg-primary" />
+      <div className={cn('flex items-center justify-between bg-primary p-4 mb-4 text-white')}>
+        <Button
+          variant="link"
+          className="text-white text-md hover:no-underline items-center"
+          onClick={() => router.back()}
+        >
+          <ArrowLeftIcon className="h-5 w-5 mr-2" />
+          Back
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 export default function TopApp({ className }: { className?: string }) {
   const { insetTop } = useSafeAreaInset();
@@ -39,7 +59,7 @@ export default function TopApp({ className }: { className?: string }) {
   };
 
   if (!token) {
-    return null;
+    return <TopAppBeforeAuth className={className} />;
   }
 
   if (
@@ -52,14 +72,9 @@ export default function TopApp({ className }: { className?: string }) {
   }
 
   return (
-    <div className="sticky z-10">
+    <div className={cn('sticky z-10', className)}>
       <SafeAreaDetection position="top" className="bg-primary" />
-      <div
-        className={cn(
-          'flex items-center justify-between bg-primary p-4 mb-4 text-white',
-          className
-        )}
-      >
+      <div className={cn('flex items-center justify-between bg-primary p-4 mb-4 text-white')}>
         {!pathname.includes(ROUTES.HOME) && (
           <Link href={`/${ROUTES.HOME}`} className="flex items-center">
             <ArrowLeftIcon className="h-5 w-5 mr-2" />

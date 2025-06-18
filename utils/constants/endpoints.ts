@@ -52,4 +52,7 @@ export const END_POINTS = {
   LAST_THREE_MONTHS: 'measurement/athlete-last-3-months',
   THREE_LATEST_RESULTS: 'measurement/athlete-three-latest-results',
   RESULT_FOR_ALL_MEASUREMENTS: 'measurement/athlete-latest-result-for-all-measurements',
+
+  // Hit Miss
+  HIT_MISS_ROUTINES: 'hit-miss/routines',
 };

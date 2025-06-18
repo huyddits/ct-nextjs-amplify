@@ -1,18 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { PlayIcon, Volume2Icon, Maximize2Icon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 interface VideoPlayerProps {
   source: string;
   title: string;
+  className?: string;
 }
-export default function VideoPlayer({ source, title }: VideoPlayerProps) {
+export default function VideoPlayer({ source, title, className }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
+  const getYouTubeEmbedURL = useCallback((url: string) => {
+    try {
+      const parsed = new URL(url);
+      if (parsed.hostname.includes('youtube.com') && parsed.pathname === '/watch') {
+        const videoId = parsed.searchParams.get('v');
+        if (videoId) {
+          return `https://www.youtube.com/embed/${videoId}`;
+        }
+      }
+
+      if (parsed.hostname === 'youtu.be') {
+        const videoId = parsed.pathname.slice(1);
+        return `https://www.youtube.com/embed/${videoId}`;
+      }
+
+      return url; // already an embed or unknown, fallback
+    } catch {
+      return url;
+    }
+  }, []);
+
   return (
-    <div className="rounded-xl overflow-hidden shadow-lg border-2 border-primary">
+    <div className={cn('rounded-xl overflow-hidden shadow-lg border-2 border-primary', className)}>
       <div className="bg-black aspect-video relative">
-        {!isPlaying ? (
+        {/* {!isPlaying ? (
           <>
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60 flex items-center justify-center">
               <button
@@ -57,6 +80,20 @@ export default function VideoPlayer({ source, title }: VideoPlayerProps) {
             <button className="text-white p-1 rounded-full hover:bg-white/20">
               <Maximize2Icon className="h-5 w-5" />
             </button>
+          </div>
+        )} */}
+        {source ? (
+          <iframe
+            className="absolute inset-0 w-full h-full"
+            src={getYouTubeEmbedURL(source)}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+          ></iframe>
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60 flex items-center justify-center">
+            <div className="text-white">Video not found</div>
           </div>
         )}
       </div>
