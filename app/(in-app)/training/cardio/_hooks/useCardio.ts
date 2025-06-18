@@ -4,7 +4,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useMemo, useState } from 'react';
 import { CardioTrainingSelectionApi } from '@/api';
 import { type SelectOption } from '@/components/compose';
-import dayjs from 'dayjs';
 import { useAuthStore, useCardioStore } from '@/store';
 import { toast } from 'react-toastify';
 import { mutate } from 'swr';
@@ -197,7 +196,6 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     try {
       startLoading();
       await CardioTrainingSelectionApi.postExercises({
-        // workout_date: dayjs().format('YYYY-MM-DD'),
         workout_date: format(new Date(), 'yyyy-MM-dd'),
         exercise: Number(formData.exercise),
         notes: formData.notes ?? '',
@@ -212,8 +210,6 @@ export const useCardio = (options?: UseCardioFormOptions) => {
       });
       clearCardioSession();
       toast.success('Successfully save the complete workout');
-      // const from = dayjs().startOf('isoWeek').format('YYYY-MM-DD');
-      // const to = dayjs().endOf('isoWeek').format('YYYY-MM-DD');
       const from = format(startOfISOWeek(new Date()), 'yyyy-MM-dd');
       const to = format(endOfISOWeek(new Date()), 'yyyy-MM-dd');
       const cacheKey = ['past-cardio', from, to, Metric.Duration];

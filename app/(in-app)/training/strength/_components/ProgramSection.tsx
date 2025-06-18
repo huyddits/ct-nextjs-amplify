@@ -1,6 +1,5 @@
 import { type ProgramItem } from '../_hooks';
 import { ProgramCard } from '.';
-import dayjs from 'dayjs';
 import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
 import { useLoadMore } from '@/hooks';
 import { useRef } from 'react';
