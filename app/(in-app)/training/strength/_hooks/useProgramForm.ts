@@ -49,7 +49,7 @@ export type ProgramForm = {
 };
 
 const schema = object().shape({
-  programName: string().required(ERROR_MESSAGES.INPUT),
+  programName: string().required(ERROR_MESSAGES.INPUT).max(100, ERROR_MESSAGES.MAX_LENGTH(100)),
   trainingType: string().required(ERROR_MESSAGES.SELECT),
   exercises: array(
     object().shape({
@@ -116,6 +116,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
 
   const { control, setValue, handleSubmit } = useForm({
     resolver: yupResolver(schema),
+    mode: 'onChange',
     defaultValues: {
       programName: '',
       trainingType: 'general',
