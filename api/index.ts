@@ -6,3 +6,4 @@ export * as CardioTrainingSelectionApi from './cardioTrainingSelection.api';
 export * as BillingApi from './billing.api';
 export * as StrengthApi from './strength.api';
 export * as MeasurementApi from './measurement.api';
+export * as HitMissApi from './hitMiss.api';
