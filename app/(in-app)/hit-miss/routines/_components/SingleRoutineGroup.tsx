@@ -38,6 +38,10 @@ export function SingleRoutineGroup({
     control,
     name: `sections.${groupData.sectionIndex}.groups.${groupIndex}.members`,
   });
+
+  const addMember = (memberId?: string) => {
+    appendMember({ id: memberId });
+  };
   return (
     <div className="relative border-2 border-gray-200 rounded-lg p-4 bg-white shadow-sm">
       <div className="flex items-center justify-between mb-2">
@@ -52,7 +56,7 @@ export function SingleRoutineGroup({
             size="sm"
             className="h-7 px-2 text-xs"
             type="button"
-            onClick={() => appendMember({ id: undefined })}
+            onClick={() => addMember()}
           >
             <PlusIcon className="h-3 w-3 mr-1" />
             Add Member

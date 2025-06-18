@@ -6,17 +6,12 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/utils/constants';
 import { SingleRoutineSection } from './SingleRoutineSection';
-import {
-  useForm,
-  useFieldArray,
-  Controller,
-  SubmitErrorHandler,
-  FieldErrors,
-} from 'react-hook-form';
+import { useForm, useFieldArray, Controller, FieldErrors } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { AppInput } from '@/components/compose';
 import { toast } from 'react-toastify';
+import { CreateRoutinePayload } from '@/api/types/hitMiss';
 
 const schema = yup.object({
   name: yup.string().required('Routine name is required'),
@@ -53,7 +48,7 @@ export function RoutineForm({ id }: Props) {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateRoutineForm>({
+  } = useForm<CreateRoutinePayload>({
     mode: 'onChange',
     resolver: yupResolver(schema) as any,
     defaultValues: {
@@ -76,14 +71,20 @@ export function RoutineForm({ id }: Props) {
     control,
     name: 'sections',
   });
+
+  const addSection = (memberId?: string) => {
+    appendSection({ name: '', groups: [{ members: [{ id: memberId }] }] });
+  };
+
   // Wrappers to match SingleRoutineSection's expected signature
   const moveSection = (index: number, direction: 'up' | 'down') => {
     if (direction === 'up' && index > 0) move(index, index - 1);
     if (direction === 'down' && index < sectionFields.length - 1) move(index, index + 1);
   };
+
   const removeSection = (index: number) => remove(index);
 
-  const onInvalid = (errors: FieldErrors<CreateRoutineForm>) => {
+  const onInvalid = (errors: FieldErrors<CreateRoutinePayload>) => {
     console.error('Form validation errors:', errors);
     // No section
     if (errors.sections && !Array.isArray(errors.sections)) {
@@ -110,7 +111,7 @@ export function RoutineForm({ id }: Props) {
     }
   };
 
-  const onSubmit = (data: CreateRoutineForm) => {
+  const onSubmit = (data: CreateRoutinePayload) => {
     console.log('Saving routine:', data, errors);
   };
 
@@ -159,7 +160,7 @@ export function RoutineForm({ id }: Props) {
           variant="outline"
           className="w-full mt-4 border-2 border-dashed border-gray-300 hover:border-gray-400"
           type="button"
-          onClick={() => appendSection({ name: '', groups: [{ members: [{ id: undefined }] }] })}
+          onClick={() => addSection()}
         >
           <PlusIcon className="h-4 w-4 mr-2" />
           Add Section

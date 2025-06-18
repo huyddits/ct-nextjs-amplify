@@ -37,5 +37,5 @@ export type CreateRoutineSingleSection = {
 };
 
 export type CreateRoutineSingleGroup = {
-  members: string[] | Array<{ id: string }>;
+  members: Array<{ id?: string } | string | undefined>;
 };

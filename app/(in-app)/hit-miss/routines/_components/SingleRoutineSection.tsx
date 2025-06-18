@@ -28,6 +28,11 @@ export function SingleRoutineSection({
     control,
     name: `sections.${idx}.groups`,
   });
+
+  const addGroup = (memberId?: string) => {
+    appendGroup({ members: [{ id: memberId }] });
+  };
+
   return (
     <Card className="mb-6 border-gray-300 shadow-sm">
       <CardHeader className="flex flex-row items-center space-y-0">
@@ -89,7 +94,7 @@ export function SingleRoutineSection({
           variant="outline"
           className="w-full border-2 border-dashed border-gray-300 hover:border-gray-400"
           type="button"
-          onClick={() => appendGroup({ members: [''] })}
+          onClick={() => addGroup()}
         >
           <PlusIcon className="h-4 w-4 mr-2" />
           Add Group
