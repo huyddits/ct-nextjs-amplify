@@ -1,6 +1,5 @@
 'use client';
 import { AppInput, AppSelect } from '@/components/compose';
-import { VideoPlayer } from '../_components';
 import { Button } from '@/components/ui/button';
 import { useMeasurement } from './_hook';
 import { useEffect, useMemo } from 'react';
@@ -9,6 +8,7 @@ import { useMeasurementStore } from '@/store/useMeasurement.store';
 import { useAuthStore } from '@/store';
 import { CoachStudentPayload } from '@/api/types/measurement';
 import { SafeAreaDetection } from '@/app/_components';
+import { VideoPlayer } from '../_components';
 export default function MeasurementNewPage() {
   const { measurementListOptions } = useMeasurementStore();
   const { info } = useAuthStore();
