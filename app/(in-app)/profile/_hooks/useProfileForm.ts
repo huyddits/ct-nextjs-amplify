@@ -6,13 +6,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { AccountType } from '@/utils/types';
 import { useAuthStore } from '@/store';
 import { useEffect, useMemo, useState } from 'react';
-import dayjs from 'dayjs';
 import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
 import { UserApi } from '@/api';
 import { toast } from 'react-toastify';
 import { useLoading } from '@/hooks';
 import { UpdatePersonalInfoPayload } from '@/api/types/users';
-import { format, parseISO } from 'date-fns';
+import { format, parse, parseISO } from 'date-fns';
 
 const schema = object().shape({
   coachCode: string().default(''),
@@ -49,7 +48,6 @@ export const useProfileForm = () => {
       firstName: '',
       lastName: '',
       email: '',
-      // dateOfBirth: dayjs().format(DEFAULT_DATE_FORMAT),
       dateOfBirth: format(new Date(), DEFAULT_DATE_FORMAT),
       schoolName: '',
       cheerType: '',
@@ -73,7 +71,6 @@ export const useProfileForm = () => {
     setValue('firstName', info.firstName);
     setValue('lastName', info.lastName);
     setValue('email', info.email);
-    // setValue('dateOfBirth', dayjs(info.dateOfBirth).format(DEFAULT_DATE_FORMAT));
     setValue('dateOfBirth', format(new Date(info.dateOfBirth), DEFAULT_DATE_FORMAT));
     setValue('coachCode', info?.coachCode ?? '');
     setValue('measurementUnit', info.measurementUnitId.toString());
@@ -99,8 +96,7 @@ export const useProfileForm = () => {
       const payload = {
         cheer_style_id: Number(data.cheerStyle),
         cheer_type_id: Number(data.cheerType),
-        // date_of_birth: dayjs(data.dateOfBirth).toISOString(),
-        date_of_birth: parseISO(data.dateOfBirth).toISOString(),
+        date_of_birth: data.dateOfBirth,
         first_name: data.firstName,
         last_name: data.lastName,
         measurement_unit_id: +data.measurementUnit,
