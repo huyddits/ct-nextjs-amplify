@@ -1,4 +1,5 @@
 import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
+import { format } from 'date-fns';
 import dayjs from 'dayjs';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { useState } from 'react';
@@ -35,6 +36,7 @@ export default function ExercisePastWorkouts({ pastWorkouts }: ExercisePastWorko
           <div key={workoutIndex}>
             <div className="flex items-center text-sm text-gray-500 mb-3">
               <span>{dayjs(workout.date).format(DEFAULT_DATE_FORMAT)}</span>
+              <span>{format(workout.date, DEFAULT_DATE_FORMAT)}</span>
             </div>
             <div className="space-y-2">
               {workout.sets.map((set, setIndex) => (

@@ -1,47 +1,60 @@
 'use client';
+import { HitMissRoutine } from '@/api/types/hitMiss';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/utils/constants';
-import { copyToClipboard } from '@/utils/helpers';
 import { CopyIcon, Edit2Icon, Trash2Icon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
+import { useDuplicateHitMissRoutine, useDeleteHitMissRoutine } from '../routines/_hooks';
 
-type RoutineItem = {
-  id: string;
-  name: string;
+type Props = {
+  data: HitMissRoutine;
 };
 
-export default function RoutineCard({ id, listItems }: { id: string; listItems: RoutineItem[] }) {
+export default function RoutineCard({ data }: Props) {
+  const { trigger: startCopy, isMutating: isCopying } = useDuplicateHitMissRoutine();
+  const { trigger: startDelete, isMutating: isDeleting } = useDeleteHitMissRoutine();
   const router = useRouter();
   const onCopy = () => {
-    const result = listItems.map((item, index) => `${index + 1}. ${item.name}`).join('\n');
-    copyToClipboard(result);
-    toast.success('Copied to clipboard');
+    startCopy(data.routine_id);
   };
 
   const onEdit = () => {
-    router.push(`/${ROUTES.HIT_MISS_ROUTINES}/${id}/edit`);
+    router.push(`/${ROUTES.HIT_MISS_ROUTINES}/${data.routine_id}/edit`);
   };
 
-  const onDelete = () => {};
+  const onDelete = () => {
+    startDelete(data.routine_id);
+  };
   return (
     <div className="border border-gray-300 rounded-lg p-4 mb-4">
       <div className="flex justify-end space-x-2 mb-2">
-        <Button variant="ghost" onClick={onCopy} className="rounded-full">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onCopy}
+          className="rounded-full"
+          loading={isCopying}
+        >
           <CopyIcon className="w-5 h-5 text-inherit" />
         </Button>
-        <Button variant="ghost" onClick={onEdit} className="rounded-full">
+        <Button variant="ghost" size="icon" onClick={onEdit} className="rounded-full">
           <Edit2Icon className="w-5 h-5 text-inherit" />
         </Button>
-        <Button variant="ghost" onClick={onDelete} className="rounded-full">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onDelete}
+          className="rounded-full"
+          loading={isDeleting}
+        >
           <Trash2Icon className="w-5 h-5 text-inherit" />
         </Button>
       </div>
-      <h2 className="text-lg font-semibold text-primary mb-3">Game Day Performance</h2>
+      <h2 className="text-lg font-semibold text-primary mb-3">{data.name}</h2>
       <ol className="space-y-2">
-        {listItems.map((item, index) => (
-          <li key={item.name} className="text-gray-700">
-            {index + 1} {item.name}
+        {data.sections.map((section, index) => (
+          <li key={section.name} className="text-gray-700">
+            {index + 1} {section.name}
           </li>
         ))}
       </ol>

@@ -210,7 +210,7 @@ export default function CardioPage() {
                           inputProps={{
                             placeholder: '140',
                             type: 'number',
-                            min: 0,
+                            min: 30,
                           }}
                           errorMessage={error?.message}
                           disabled={inputDisabled}
@@ -228,7 +228,7 @@ export default function CardioPage() {
                           inputProps={{
                             placeholder: '160',
                             type: 'number',
-                            min: 0,
+                            min: 30,
                           }}
                           errorMessage={error?.message}
                           disabled={inputDisabled}

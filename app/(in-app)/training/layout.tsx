@@ -1,10 +1,13 @@
 import React from 'react';
-import { TabNavigation } from './_components';
+import { TabNavigationTraining } from './_components';
+import { SafeAreaDetection } from '@/app/_components';
 export default function TrainingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
-      <TabNavigation />
+      <SafeAreaDetection position="top" />
+      <TabNavigationTraining />
       <div>{children}</div>
+      <SafeAreaDetection position="bottom" />
     </div>
   );
 }

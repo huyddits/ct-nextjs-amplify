@@ -6,7 +6,12 @@ const config: CapacitorConfig = {
   webDir: 'www',
   server: {
     url: 'https://staging.d1xu0qw1fwot4p.amplifyapp.com', // URL PWA
+    // url: 'http://localhost:3001',
     cleartext: true,
+  },
+  ios: {
+    contentInset: 'never',
+    // backgroundColor: '#257951',
   },
 };
 

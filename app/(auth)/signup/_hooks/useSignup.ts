@@ -8,6 +8,7 @@ import { AccountType, MeasurementUnit } from '@/utils/types';
 import * as $v from '@/utils/validators';
 import { ERROR_MESSAGES } from '@/utils/constants';
 import { useLoading } from '@/hooks';
+import { parseISO } from 'date-fns';
 type UseSignupOptions = {
   onSuccess?: () => void;
   onFailure?: (message: string) => void;
@@ -103,7 +104,7 @@ export const useSignup = (options: UseSignupOptions) => {
         account_type: data.userType,
         cheer_style_id: Number(data.cheerStyle),
         cheer_type_id: Number(data.cheerType),
-        date_of_birth: dayjs(data.dateOfBirth).toISOString(),
+        date_of_birth: parseISO(data.dateOfBirth).toISOString(),
         email: data.email,
         equipment_ids: data.equipment.map(value => Number(value)),
         first_name: data.firstName,

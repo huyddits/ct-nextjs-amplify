@@ -1,6 +1,6 @@
 'use client';
 
-import React, { JSX } from 'react';
+import React, { ComponentProps, JSX } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
+import { format as dateFnsFormat, formatDate, isValid, parseISO } from 'date-fns';
 
 interface AppCalendarPickerProps {
   icon?: JSX.Element;
@@ -21,6 +22,7 @@ interface AppCalendarPickerProps {
   errorMessage?: string;
   disabled?: boolean;
   onChange?: (date?: Date) => void;
+  variant?: ComponentProps<typeof Button>['variant'];
 }
 
 export default function AppCalendarPicker({
@@ -34,6 +36,7 @@ export default function AppCalendarPicker({
   disabled,
   errorMessage,
   onChange,
+  variant = 'outline',
 }: Readonly<AppCalendarPickerProps>) {
   const format = dateFormat ?? DEFAULT_DATE_FORMAT;
 
@@ -43,7 +46,7 @@ export default function AppCalendarPicker({
       <Popover>
         <PopoverTrigger asChild>
           <Button
-            variant="outline"
+            variant={variant}
             className={cn(
               'w-full font-normal h-9 flex items-center',
               !value && 'text-muted-foreground',
@@ -59,7 +62,9 @@ export default function AppCalendarPicker({
           <Calendar
             mode="single"
             selected={value}
-            onSelect={date => onChange?.(date ?? undefined)}
+            onSelect={date => {
+              onChange?.(date ?? undefined);
+            }}
             initialFocus
             toDate={maxDate}
           />
