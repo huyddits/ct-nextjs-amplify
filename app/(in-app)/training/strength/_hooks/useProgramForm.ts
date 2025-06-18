@@ -102,6 +102,8 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     setTotalPages: setTotalPagesExercise,
   } = usePagination();
 
+  const [isOpenExercisePicker, setIsOpenExercisePicker] = useState(false);
+
   const [filterForm, setFilterForm] = useState<FilterForm>({
     exerciseName: '',
     roleId: [],
@@ -437,7 +439,9 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     });
   };
 
-  const onAddExercise = () => {};
+  const onAddExercise = () => {
+    setIsOpenExercisePicker(true);
+  };
 
   const onUpdateSetFromExercise = (
     exerciseId: number,
@@ -542,11 +546,13 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     programTypeOptions,
     totalPagesExercise,
     trainingTypeOptions: strengthTrainingTypes,
+    isOpenExercisePicker,
     setFilterForm,
     setProgramType,
     setPageExercise,
     setListExercises,
     setListExercisesFromStore,
+    setIsOpenExercisePicker,
     loadMoreExercises,
     fetchListExcersises,
     onSubmitCreate,
