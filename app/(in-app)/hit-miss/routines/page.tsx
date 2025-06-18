@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { PlusCircleIcon } from 'lucide-react';
+import { Loader2Icon, PlusCircleIcon } from 'lucide-react';
 import { RoutineCard } from '../_components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/utils/constants';
@@ -23,7 +23,7 @@ export default function RoutinesPage() {
       <div className="px-4 py-2">
         {isLoading ? (
           <div className="flex justify-center items-center py-10">
-            <span className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+            <Loader2Icon className="w-8 h-8 animate-spin text-primary" />
           </div>
         ) : (
           <>

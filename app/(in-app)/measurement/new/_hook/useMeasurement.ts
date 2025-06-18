@@ -8,6 +8,7 @@ import { useMeasurementStore } from '@/store/useMeasurement.store';
 import { InferType, object, string } from 'yup';
 import { CoachStudentPayload } from '@/api/types/measurement';
 import { useAuthStore } from '@/store';
+import { useLoading } from '@/hooks';
 
 type UseMeasurementFormOptions = {
   onSuccess?: () => void;
@@ -24,6 +25,7 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   const { info } = useAuthStore();
   const [measurementList, setMeasurementList] = useState<MeasurementItem[]>([]);
   const [coachStudentList, setCoachStudentList] = useState<CoachStudentItem[]>([]);
+  const { loading, startLoading, stopLoading } = useLoading();
   const {
     baseMeasurementList,
     coachStudent: coachStudentListFromStore,
@@ -114,6 +116,7 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
 
   const onSaveResult = async (formData: FormType) => {
     try {
+      startLoading();
       await MeasurementApi.postMeasurement({
         measurement_id: Number(formData.measurement),
         athlete_id: formData.athleteList ?? '',
@@ -128,6 +131,8 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     } catch (error: unknown) {
       console.error('Measurement submission failed:', error);
       options?.onFailure?.('Failed to save measurement');
+    } finally {
+      stopLoading();
     }
   };
 
@@ -166,5 +171,6 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     setValue,
     formState,
     selectedMeasurement,
+    loading,
   };
 };

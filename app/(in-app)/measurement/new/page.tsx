@@ -23,6 +23,7 @@ export default function MeasurementNewPage() {
     setValue,
     formState: { isValid },
     getValues,
+    loading,
   } = useMeasurement({
     onSuccess: () => {
       setValue('result', '');
@@ -142,7 +143,14 @@ export default function MeasurementNewPage() {
             />
           </div>
 
-          <Button type="button" onClick={onSubmit} size="lg" className="w-full" disabled={!isValid}>
+          <Button
+            type="button"
+            onClick={onSubmit}
+            size="lg"
+            className="w-full"
+            disabled={!isValid}
+            loading={loading}
+          >
             Save Result
           </Button>
         </div>

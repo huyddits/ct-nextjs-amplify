@@ -1,5 +1,5 @@
 import { CategoryApi, StrengthApi } from '@/api';
-import { useCategories, usePagination } from '@/hooks';
+import { useCategories, useLoading, usePagination } from '@/hooks';
 import { useAuthStore, useCategoriesStore, useStrengthStore } from '@/store';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -101,6 +101,8 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     setPage: setPageExercise,
     setTotalPages: setTotalPagesExercise,
   } = usePagination();
+
+  const { loading, startLoading, stopLoading } = useLoading();
 
   const [filterForm, setFilterForm] = useState<FilterForm>({
     exerciseName: '',
@@ -359,6 +361,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
   const handleCreateProgram = async (data: FormType) => {
     console.log(data);
     try {
+      startLoading();
       await StrengthApi.createProgram({
         name: data.programName,
         training_type: data.trainingType,
@@ -375,6 +378,8 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
       router.push('/training/strength');
     } catch (error) {
       console.log(error);
+    } finally {
+      stopLoading();
     }
   };
 
@@ -383,6 +388,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
       return console.log('Program id not found');
     }
     try {
+      startLoading();
       await StrengthApi.updateProgram({
         program_id: +options.id,
         name: data.programName,
@@ -399,6 +405,8 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
       router.push('/training/strength');
     } catch (error) {
       console.log(error);
+    } finally {
+      stopLoading();
     }
   };
 
@@ -556,5 +564,6 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     onRemoveExercise,
     onRemoveSetFromExercise,
     onUpdateSetFromExercise,
+    loading,
   };
 };

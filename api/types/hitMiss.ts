@@ -25,3 +25,17 @@ export type HitMissRoutine = {
 };
 
 export type HitMissRoutineListResponse = ApiResponse<HitMissRoutine[]>;
+
+export type CreateRoutinePayload = {
+  name: string;
+  sections: CreateRoutineSingleSection[];
+};
+
+export type CreateRoutineSingleSection = {
+  name: string;
+  groups: CreateRoutineSingleGroup[];
+};
+
+export type CreateRoutineSingleGroup = {
+  members: Array<{ id?: string } | string | undefined>;
+};

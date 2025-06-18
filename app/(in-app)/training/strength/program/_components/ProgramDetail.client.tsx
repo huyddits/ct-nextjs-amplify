@@ -25,6 +25,7 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
     onUpdateSetFromExercise,
     onSubmitCreate,
     onSubmitUpdate,
+    loading,
   } = useProgramForm({ id: programId });
   const { listExercises: listExercisesFromStore, setListExercises: setListExercisesFromStore } =
     useStrengthStore();
@@ -207,6 +208,7 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
               onClick={() => {
                 programId ? onSubmitUpdate() : onSubmitCreate();
               }}
+              loading={loading}
             >
               {programId ? 'Update Program' : 'Save Program'}
             </Button>
