@@ -42,7 +42,8 @@ export default function AppDatePicker({
   const format = inputFormat ?? DEFAULT_DATE_FORMAT;
 
   useEffect(() => {
-    value ? setSelectedDate(parse(value, format, new Date())) : setSelectedDate(null);
+    // value ? setSelectedDate(parse(value, format, new Date())) : setSelectedDate(null);
+    setSelectedDate(value ? new Date(value) : null);
   }, [value, format]);
 
   console.log('selectedDate', selectedDate);
