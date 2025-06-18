@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono } from 'next/font/google';
 // import { ServiceWorkerRegister } from "./_components";
-import { ToastContainerClient } from './_components';
+import { SafeAreaDetection, ToastContainerClient } from './_components';
 import { AppConfirm } from '@/components/compose';
 import { StripeProvider } from '@/context/StripeContext';
 import './globals.css';

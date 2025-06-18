@@ -4,13 +4,15 @@ import { CalendarIcon, SchoolIcon, UserIcon } from 'lucide-react';
 import { useProfileForm } from '../_hooks';
 import { Controller } from 'react-hook-form';
 import { AppDatePicker, AppInput, AppSelect } from '@/components/compose';
-import { useCategories } from '@/hooks';
+import { useCategories, useSafeAreaInset } from '@/hooks';
 import AppMultipleSelect from '@/components/compose/AppMultipleSelect';
 import { MEASUREMENT_UNIT_OPTIONS } from '@/utils/constants';
 import ButtonEdit from './ButtonEdit.client';
 import { useMemo } from 'react';
+import { SafeAreaDetection } from '@/app/_components';
 
 export default function ProfileForm() {
+  const { insetBottom } = useSafeAreaInset();
   const { isCoach, isEditing, coachCode, control, trigger, onSaveInfo, onToggle, loading } =
     useProfileForm();
   const {

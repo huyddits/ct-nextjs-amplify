@@ -7,6 +7,7 @@ import { Controller } from 'react-hook-form';
 import { useMeasurementStore } from '@/store/useMeasurement.store';
 import { useAuthStore } from '@/store';
 import { CoachStudentPayload } from '@/api/types/measurement';
+import { SafeAreaDetection } from '@/app/_components';
 export default function MeasurementNewPage() {
   const { measurementListOptions } = useMeasurementStore();
   const { info } = useAuthStore();
@@ -59,8 +60,14 @@ export default function MeasurementNewPage() {
     }));
   }, [coachStudentList]);
 
+  const postfixUnit =
+    info?.measurementUnitType?.toLowerCase() === 'metric'
+      ? selectedMeasurement?.metricUnit
+      : selectedMeasurement?.imperialUnit;
+
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">
+      <SafeAreaDetection position="top" />
       <div className="py-4">
         <div className="space-y-6">
           <div>
@@ -128,7 +135,7 @@ export default function MeasurementNewPage() {
                   }}
                   errorMessage={error?.message}
                   {...field}
-                  postfix={selectedMeasurement?.imperialUnit}
+                  postfix={postfixUnit}
                 />
               )}
             />

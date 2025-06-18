@@ -1,5 +1,11 @@
+import { SafeAreaDetection } from '@/app/_components';
 import { ProfileForm } from './_components';
 
 export default function ProfilePage() {
-  return <ProfileForm />;
+  return (
+    <div>
+      <ProfileForm />
+      <SafeAreaDetection position="bottom" />
+    </div>
+  );
 }
