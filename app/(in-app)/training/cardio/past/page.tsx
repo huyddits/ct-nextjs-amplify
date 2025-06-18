@@ -10,8 +10,10 @@ import {
 import { usePastCardioTraining } from './_hooks';
 import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
+import { endOfISOWeek, format, startOfISOWeek } from 'date-fns';
 
-const dateFormat = 'YYYY-MM-DD';
+// const dateFormat = 'YYYY-MM-DD';
+const dateFormat = 'yyyy-MM-dd';
 
 export default function PastTrainingPage() {
   dayjs.extend(isoWeek);
@@ -19,11 +21,13 @@ export default function PastTrainingPage() {
   const [metric, setMetric] = useState<string>('duration');
 
   const from = useMemo(() => {
-    return dayjs(selectedDate).startOf('isoWeek').format(dateFormat);
+    // return dayjs(selectedDate).startOf('isoWeek').format(dateFormat);
+    return format(startOfISOWeek(selectedDate), 'yyyy-MM-dd');
   }, [selectedDate]);
 
   const to = useMemo(() => {
-    return dayjs(selectedDate).endOf('isoWeek').format(dateFormat);
+    // return dayjs(selectedDate).endOf('isoWeek').format(dateFormat);
+    return format(endOfISOWeek(selectedDate), 'yyyy-MM-dd');
   }, [selectedDate]);
 
   const options = useMemo(() => {

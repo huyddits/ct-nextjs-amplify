@@ -1,1 +1,1 @@
-export { default as TabNavigation } from './TabNavigation.client';
+export { default as TabNavigationTraining } from './TabNavigationTraining.client';

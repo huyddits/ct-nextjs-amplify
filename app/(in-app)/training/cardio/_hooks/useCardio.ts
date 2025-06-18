@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { mutate } from 'swr';
 import { Metric } from '../_types/index';
 import { useLoading } from '@/hooks';
+import { endOfISOWeek, format, startOfISOWeek } from 'date-fns';
 
 type UseCardioFormOptions = {
   onSuccess?: () => void;
@@ -163,7 +164,8 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     try {
       startLoading();
       await CardioTrainingSelectionApi.postExercises({
-        workout_date: dayjs().format('YYYY-MM-DD'),
+        // workout_date: dayjs().format('YYYY-MM-DD'),
+        workout_date: format(new Date(), 'yyyy-MM-dd'),
         exercise: Number(formData.exercise),
         notes: formData.notes ?? '',
         intervals: formData.intervals.map(data => ({
@@ -177,8 +179,10 @@ export const useCardio = (options?: UseCardioFormOptions) => {
       });
       clearCardioSession();
       toast.success('Successfully save the complete workout');
-      const from = dayjs().startOf('isoWeek').format('YYYY-MM-DD');
-      const to = dayjs().endOf('isoWeek').format('YYYY-MM-DD');
+      // const from = dayjs().startOf('isoWeek').format('YYYY-MM-DD');
+      // const to = dayjs().endOf('isoWeek').format('YYYY-MM-DD');
+      const from = format(startOfISOWeek(new Date()), 'yyyy-MM-dd');
+      const to = format(endOfISOWeek(new Date()), 'yyyy-MM-dd');
       const cacheKey = ['past-cardio', from, to, Metric.Duration];
       mutate(cacheKey, null, { revalidate: true });
       options?.onSuccess?.();

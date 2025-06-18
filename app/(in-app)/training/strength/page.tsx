@@ -10,6 +10,8 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ROUTES } from '@/utils/constants';
 import { useStrengthStore } from '@/store';
 import { ProgramType } from '@/utils/types';
+import { useSafeAreaInset } from '@/hooks';
+import { SafeAreaDetection } from '@/app/_components';
 
 const CustomTabTrigger = ({ value, children }: { value: ProgramType; children: ReactNode }) => {
   return (
@@ -24,6 +26,7 @@ const CustomTabTrigger = ({ value, children }: { value: ProgramType; children: R
 
 export default function StrengthPage() {
   const { setProgramType, programType, tabs } = useStrengthStore();
+  const { insetTop, insetBottom } = useSafeAreaInset();
   const {
     page,
     isCoach,
@@ -50,7 +53,8 @@ export default function StrengthPage() {
     <section>
       <Tabs
         value={programType}
-        className="border-b sticky top-9 z-50 bg-white border-t"
+        className="border-b sticky z-50 bg-white border-t"
+        style={{ top: insetTop + 32 }}
         onValueChange={value => onTabChange(value as ProgramType)}
       >
         <TabsList className="w-full mx-auto px-4 bg-white items-center">
@@ -61,6 +65,7 @@ export default function StrengthPage() {
           ))}
         </TabsList>
       </Tabs>
+
       <div className="max-w-3xl mb-4 mx-auto px-4 padding-top-section padding-bottom-section">
         {isAllowCreate && (
           <Link href={`/${ROUTES.TRAINING_STRENGTH_NEW}`}>
@@ -92,7 +97,10 @@ export default function StrengthPage() {
           </div>
         </div>
       </div>
-      <div className="fixed bottom-app left-0 right-0 px-4 py-2 bg-white border-t">
+      <div
+        className="fixed bottom-app left-0 right-0 px-4 py-2 bg-white border-t"
+        style={{ bottom: insetBottom + 60 }}
+      >
         <Link
           href="/training/strength/pastStrength"
           className="max-w-3xl mx-auto flex justify-center"

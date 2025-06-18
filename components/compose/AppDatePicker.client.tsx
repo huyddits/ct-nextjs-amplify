@@ -2,8 +2,8 @@
 import React, { useEffect, useState, JSX } from 'react';
 import DatePicker from 'react-datepicker';
 import { Label } from '@/components/ui/label';
-import dayjs from 'dayjs';
 import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
+import { parse } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 interface AppDatePickerProps {
@@ -42,8 +42,10 @@ export default function AppDatePicker({
   const format = inputFormat ?? DEFAULT_DATE_FORMAT;
 
   useEffect(() => {
-    value ? setSelectedDate(dayjs(value, format).toDate()) : setSelectedDate(null);
+    value ? setSelectedDate(parse(value, format, new Date())) : setSelectedDate(null);
   }, [value, format]);
+
+  console.log('selectedDate', selectedDate);
   return (
     <div className={cn('space-y-2', fullWidth && 'w-full')}>
       {label && (

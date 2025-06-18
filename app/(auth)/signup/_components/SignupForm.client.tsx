@@ -17,7 +17,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Controller } from 'react-hook-form';
 import { AppDatePicker, AppInput, AppRadioGroup, AppSelect } from '@/components/compose';
 import { ROUTES, USER_TYPE_OPTIONS } from '@/utils/constants';
-import { useCategories } from '@/hooks';
+import { useCategories, useSafeAreaInset } from '@/hooks';
 import { useSignup } from '../_hooks';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
@@ -34,6 +34,8 @@ export default function SignupForm() {
     equipments: equipmentOptions,
     measurementUnits: measurementUnitOptions,
   } = useCategories();
+
+  const { insetTop } = useSafeAreaInset();
   const { control, isValid, userType, password, loading, onSubmit, trigger, setValue } = useSignup({
     onSuccess: () => {
       toast.success('Account create successfully');

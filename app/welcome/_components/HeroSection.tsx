@@ -1,16 +1,20 @@
+'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRightIcon } from 'lucide-react';
-import { Logo } from '@/app/_components';
+import { Logo, SafeAreaDetection } from '@/app/_components';
+import { useSafeAreaInset } from '@/hooks';
 
 export default function HeroSection() {
+  const { insetTop } = useSafeAreaInset();
   return (
     <section className="flex flex-col h-[50vh] min-h-fit">
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-b from-(--primary)/90 to-(--primary)/70 z-10" />
-        <div className="relative h-[50vh] min-h-[400px] bg-cover bg-center">
+        <div className="relative h-[55vh] md:[50vh] min-h-[400px] bg-cover bg-center">
           <div className="absolute inset-0 flex flex-col items-center justify-center z-20 text-white p-6 text-center">
-            <Logo className="rounded-xl overflow-hidden" />
+            <SafeAreaDetection />
+            <Logo className="rounded-xl overflow-hidden shrink-0" />
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               Welcome to Cheer Trainer
