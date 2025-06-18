@@ -8,6 +8,7 @@ import { useConfirmStore } from '@/store';
 import { useMemo } from 'react';
 import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
 import dayjs from 'dayjs';
+import { isSameDay, parse } from 'date-fns';
 
 interface ProgramCardProps {
   id: string;
@@ -41,7 +42,9 @@ export default function ProgramCard({
 
   const isWorkoutSessionFinished = useMemo(() => {
     const today = lastCompleted.slice(0, DEFAULT_DATE_FORMAT.length); /** MM-DD-YYYY */
-    const isToday = dayjs(today, DEFAULT_DATE_FORMAT).isSame(dayjs(), 'date');
+    // const isToday = dayjs(today, DEFAULT_DATE_FORMAT).isSame(dayjs(), 'date');
+    const parsed = parse(today, DEFAULT_DATE_FORMAT, new Date());
+    const isToday = isSameDay(parsed, new Date());
     return isToday;
   }, [lastCompleted]);
 
