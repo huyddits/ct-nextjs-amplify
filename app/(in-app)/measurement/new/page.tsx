@@ -61,6 +61,11 @@ export default function MeasurementNewPage() {
     }));
   }, [coachStudentList]);
 
+  const postfixUnit =
+    info?.measurementUnitType?.toLowerCase() === 'metric'
+      ? selectedMeasurement?.metricUnit
+      : selectedMeasurement?.imperialUnit;
+
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">
       <SafeAreaDetection position="top" />
@@ -131,7 +136,7 @@ export default function MeasurementNewPage() {
                   }}
                   errorMessage={error?.message}
                   {...field}
-                  postfix={selectedMeasurement?.imperialUnit}
+                  postfix={postfixUnit}
                 />
               )}
             />
