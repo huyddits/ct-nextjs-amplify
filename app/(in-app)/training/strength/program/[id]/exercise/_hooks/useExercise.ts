@@ -5,7 +5,7 @@ import { set } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
-
+import { generateRandomChar } from '@/utils/formatter';
 export type ProgramDetail = {
   programId: number;
   name: string;
@@ -141,7 +141,7 @@ export const useExercise = (options: UseExerciseOptions) => {
       );
 
       toast.success('Workout completed successfully');
-      router.push(`/${ROUTES.TRAINING_STRENGTH}`);
+      router.push(`/${ROUTES.TRAINING_STRENGTH}?${generateRandomChar()}`);
     } catch (error) {
       console.log(error);
     }
