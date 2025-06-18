@@ -1,10 +1,9 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { type InferType, object, string, ref, array } from 'yup';
 import { UserApi } from '@/api';
-import dayjs from 'dayjs';
-import { AccountType, MeasurementUnit } from '@/utils/types';
+import { AccountType } from '@/utils/types';
 import * as $v from '@/utils/validators';
 import { ERROR_MESSAGES } from '@/utils/constants';
 import { useLoading } from '@/hooks';
@@ -104,7 +103,7 @@ export const useSignup = (options: UseSignupOptions) => {
         account_type: data.userType,
         cheer_style_id: Number(data.cheerStyle),
         cheer_type_id: Number(data.cheerType),
-        date_of_birth: parseISO(data.dateOfBirth).toISOString(),
+        date_of_birth: data.dateOfBirth,
         email: data.email,
         equipment_ids: data.equipment.map(value => Number(value)),
         first_name: data.firstName,

@@ -1,11 +1,10 @@
 'use client';
 
-import React, { ComponentProps, JSX } from 'react';
+import React, { ComponentProps, JSX, useMemo } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import dayjs from 'dayjs';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
@@ -40,6 +39,12 @@ export default function AppCalendarPicker({
 }: Readonly<AppCalendarPickerProps>) {
   const format = dateFormat ?? DEFAULT_DATE_FORMAT;
 
+  const displayedLabel = useMemo(() => {
+    if (triggerLabel) return triggerLabel;
+    if (value) return dateFnsFormat(value, format);
+    return 'Select date';
+  }, [triggerLabel, value]);
+
   return (
     <div className={cn('space-y-2', fullWidth && 'w-full')}>
       {label && <Label>{label}</Label>}
@@ -55,7 +60,7 @@ export default function AppCalendarPicker({
             )}
           >
             {icon && <span>{icon}</span>}
-            {triggerLabel ?? dayjs(value).format(format)}
+            {displayedLabel}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
