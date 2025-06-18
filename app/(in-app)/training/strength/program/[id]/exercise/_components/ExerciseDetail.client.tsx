@@ -22,6 +22,7 @@ import ExerciseNote from './ExerciseNote.client';
 import ExerciseNavigator from './ExerciseNavigator.client';
 import ExerciseInstructionAndCues from './ExerciseInstructionAndCues';
 import { cn } from '@/lib/utils';
+import { VideoPlayer } from '@/app/(in-app)/measurement/_components';
 
 export default function StrengthExercise({ programId }: { programId: number }) {
   const {
@@ -302,14 +303,11 @@ export default function StrengthExercise({ programId }: { programId: number }) {
           </button>
         </div>
 
-        {/* Video Player */}
-        <div className="relative aspect-video bg-gray-100 rounded-lg mb-6">
-          <button className="absolute inset-0 flex items-center justify-center">
-            <div className="bg-white/90 rounded-full p-4">
-              <Play className="h-6 w-6 text-gray-600" />
-            </div>
-          </button>
-        </div>
+        <VideoPlayer
+          className="mb-6"
+          source={currentExercise?.exerciseVideoUrl}
+          title={currentExercise?.exerciseName}
+        />
 
         {currentExercise && (
           <ExerciseInstructionAndCues
