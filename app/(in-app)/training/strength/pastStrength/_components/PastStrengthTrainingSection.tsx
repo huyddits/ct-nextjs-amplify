@@ -33,9 +33,9 @@ export default function LegDaySection({ data, isLoading }: Props) {
               key={day.date + program.program_id}
               className="bg-white rounded-lg shadow p-4 mb-6"
             >
-              <div className="flex justify-between items-center mb-3 gap-2">
+              <div className="flex justify-between items-center mb-3 gap-4">
                 <h2 className="text-lg md:text-xl font-bold truncate">{program.program_name}</h2>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 flex-shrink-0">
                   {new Date(day.date).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
