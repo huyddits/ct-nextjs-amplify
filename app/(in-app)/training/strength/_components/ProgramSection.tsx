@@ -35,11 +35,10 @@ export default function ProgramSectionSection({
             content={item.exercises}
             name={item.name}
             lastCompleted={
-              // item.finishedAt ? dayjs(item.finishedAt).format(DEFAULT_DATE_FORMAT + ', h:mm A') : ''
               item.finishedAt
                 ? (() => {
                     const date = parseISO(item.finishedAt);
-                    return isValid(date) ? format(date, `${DEFAULT_DATE_FORMAT}, h:mm A`) : '';
+                    return isValid(date) ? format(date, `${DEFAULT_DATE_FORMAT}, h:mm a`) : '';
                   })()
                 : ''
             }
