@@ -11,7 +11,7 @@ import { InfoIcon } from 'lucide-react';
 
 export default function CardioPage() {
   const { intervalsList, clearCardioSession, setDraft, draft } = useCardioStore();
-  const { loading } = useLoading();
+  const { loading, startLoading, stopLoading } = useLoading();
   const {
     control,
     setValue,
@@ -72,20 +72,27 @@ export default function CardioPage() {
   }, [watchedInterval, watchedNotes, watchedExercise]);
 
   const handleCompleteWorkout = async () => {
-    const valid = await trigger(['intervals.0', 'notes']);
-    if (!valid) return;
+    try {
+      startLoading();
+      const valid = await trigger(['intervals.0', 'notes']);
+      if (!valid) return;
 
-    const interval = getValues('intervals.0');
+      const interval = getValues('intervals.0');
 
-    setValue('intervals', [interval]);
+      setValue('intervals', [interval]);
 
-    const values = getValues();
-    const payload = {
-      ...values,
-      intervals: [interval],
-    };
+      const values = getValues();
+      const payload = {
+        ...values,
+        intervals: [interval],
+      };
 
-    await onCompleteWorkout(payload);
+      await onCompleteWorkout(payload);
+    } catch (error) {
+      console.error('Error completing workout:', error);
+    } finally {
+      stopLoading();
+    }
   };
 
   const distanceUnit = useWatch({

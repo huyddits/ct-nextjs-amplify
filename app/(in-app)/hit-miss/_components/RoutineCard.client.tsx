@@ -35,10 +35,10 @@ export default function RoutineCard({ data }: Props) {
           className="rounded-full"
           loading={isCopying}
         >
-          <CopyIcon className="w-5 h-5 text-inherit" />
+          {!isCopying && <CopyIcon className="size-5 text-inherit" />}
         </Button>
         <Button variant="ghost" size="icon" onClick={onEdit} className="rounded-full">
-          <Edit2Icon className="w-5 h-5 text-inherit" />
+          <Edit2Icon className="size-5 text-inherit" />
         </Button>
         <Button
           variant="ghost"
@@ -47,7 +47,7 @@ export default function RoutineCard({ data }: Props) {
           className="rounded-full"
           loading={isDeleting}
         >
-          <Trash2Icon className="w-5 h-5 text-inherit" />
+          {!isDeleting && <Trash2Icon className="size-5 text-inherit" />}
         </Button>
       </div>
       <h2 className="text-lg font-semibold text-primary mb-3">{data.name}</h2>
