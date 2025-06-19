@@ -1,6 +1,6 @@
 'use client';
 
-import { CalendarIcon, SchoolIcon, UserIcon } from 'lucide-react';
+import { CalendarIcon, CopyIcon, SchoolIcon, UserIcon } from 'lucide-react';
 import { useProfileForm } from '../_hooks';
 import { Controller } from 'react-hook-form';
 import { AppDatePicker, AppInput, AppSelect } from '@/components/compose';
@@ -9,7 +9,9 @@ import AppMultipleSelect from '@/components/compose/AppMultipleSelect';
 import { MEASUREMENT_UNIT_OPTIONS } from '@/utils/constants';
 import ButtonEdit from './ButtonEdit.client';
 import { useMemo } from 'react';
-import { SafeAreaDetection } from '@/app/_components';
+import { Button } from '@/components/ui/button';
+import { copyToClipboard } from '@/utils/helpers';
+import { toast } from 'react-toastify';
 
 export default function ProfileForm() {
   const { insetBottom } = useSafeAreaInset();
@@ -65,8 +67,18 @@ export default function ProfileForm() {
                     (Share with Athletes to be added to Team)
                   </span>
                 </div>
-                <div className="mt-1 border border-primary rounded-md p-3 text-center font-medium">
+                <div className="relative mt-1 border border-primary rounded-md p-3 text-center font-medium">
                   {coachCode}
+                  <Button
+                    variant="ghost"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full"
+                    onClick={() => {
+                      copyToClipboard(coachCode);
+                      toast.success('Copied to clipboard');
+                    }}
+                  >
+                    <CopyIcon />
+                  </Button>
                 </div>
               </div>
               <div className="flex justify-end">

@@ -5,9 +5,10 @@ import { type InferType, object, string, ref, array } from 'yup';
 import { UserApi } from '@/api';
 import { AccountType } from '@/utils/types';
 import * as $v from '@/utils/validators';
-import { ERROR_MESSAGES } from '@/utils/constants';
+import { ERROR_MESSAGES, MIN_DATE_OF_BIRTH } from '@/utils/constants';
 import { useLoading } from '@/hooks';
-import { parseISO } from 'date-fns';
+import { differenceInYears, parse, parseISO, isValid as isValidDate } from 'date-fns';
+import { isEnoughYearOld } from '@/utils/validators';
 type UseSignupOptions = {
   onSuccess?: () => void;
   onFailure?: (message: string) => void;
@@ -46,7 +47,13 @@ export const useSignup = (options: UseSignupOptions) => {
           [ref('password')],
           'Passwords do not match. Please make sure both entries are identical.'
         ),
-      dateOfBirth: string().required(ERROR_MESSAGES.INPUT),
+      dateOfBirth: string()
+        .required(ERROR_MESSAGES.INPUT)
+        .test(
+          'is-old-enough',
+          `You must be at least ${MIN_DATE_OF_BIRTH} years old`,
+          isEnoughYearOld
+        ),
       schoolName: string()
         .required(ERROR_MESSAGES.INPUT)
         .matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME)

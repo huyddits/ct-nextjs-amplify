@@ -21,3 +21,5 @@ export const DEFAULT_LIMIT = 10;
 
 export const MAXIMUM_EXERCISES_PER_PROGRAM = 15;
 export const MAXIMUM_SETS_PER_EXERCISE = 8;
+
+export const MIN_DATE_OF_BIRTH = 13; // yo

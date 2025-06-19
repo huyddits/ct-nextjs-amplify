@@ -2,7 +2,7 @@
 import { AppInput } from '@/components/compose';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MailIcon, CheckCircleIcon } from 'lucide-react';
-import React, { createRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { object, string } from 'yup';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -22,7 +22,7 @@ const schema = object().shape({
 });
 
 export default function ForgotPasswordPage() {
-  const recaptchaRef = createRef<ReCAPTCHA>();
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
   const [reCaptchaToken, setReCaptchaToken] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const { loading, startLoading, stopLoading } = useLoading();
@@ -30,6 +30,7 @@ export default function ForgotPasswordPage() {
     control,
     formState: { isValid },
     setError,
+    trigger,
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(schema),
@@ -103,6 +104,7 @@ export default function ForgotPasswordPage() {
                       inputProps={{ placeholder: 'name@example.com' }}
                       errorMessage={error?.message}
                       {...field}
+                      onBlur={() => trigger('email')}
                     />
                   );
                 }}
