@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeftIcon, PlusIcon, SaveIcon } from 'lucide-react';
+import { ArrowLeftIcon, Loader2Icon, PlusIcon, SaveIcon } from 'lucide-react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/utils/constants';
@@ -12,6 +12,13 @@ import * as yup from 'yup';
 import { AppInput } from '@/components/compose';
 import { toast } from 'react-toastify';
 import { CreateRoutinePayload } from '@/api/types/hitMiss';
+import {
+  useCreateHitMissRoutine,
+  useGetHitMissRoutineDetail,
+  useUpdateHitMissRoutine,
+} from '../_hooks';
+import { useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 
 const schema = yup.object({
   name: yup.string().required('Routine name is required'),
@@ -24,9 +31,9 @@ const schema = yup.object({
           .array()
           .of(
             yup.object({
-              members: yup
+              users: yup
                 .array()
-                .of(yup.object({ id: yup.string().required('Member is required') }))
+                .of(yup.object({ user_id: yup.string().required('Member is required') }))
                 .min(1, 'At least one member is required')
                 .required(),
             })
@@ -43,12 +50,12 @@ interface Props {
 }
 
 export function RoutineForm({ id }: Props) {
+  const router = useRouter();
   const isEdit = !!id;
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateRoutinePayload>({
+  const { data: routine, isLoading: isLoadingRoutineDetail } = useGetHitMissRoutineDetail(id);
+  const { trigger: createRoutine, isMutating: isCreating } = useCreateHitMissRoutine();
+  const { trigger: updateRoutine, isMutating: isUpdating } = useUpdateHitMissRoutine();
+  const { control, handleSubmit, setValue } = useForm<CreateRoutinePayload>({
     mode: 'onChange',
     resolver: yupResolver(schema) as any,
     defaultValues: {
@@ -56,12 +63,26 @@ export function RoutineForm({ id }: Props) {
       sections: [
         {
           name: '',
-          groups: [{ members: [{ id: undefined }] }],
+          groups: [{ users: [{ user_id: undefined }] }],
         },
       ],
     },
   });
-
+  useEffect(() => {
+    if (routine) {
+      setValue('name', routine.name || '');
+      const sections =
+        routine.sections?.map(section => ({
+          name: section.name || '',
+          groups:
+            section.groups?.map(group => ({
+              users: group.users?.map(user => ({ user_id: (user as any).user_id })) || [],
+            })) || [],
+        })) || [];
+      setValue('sections', sections);
+    }
+  }, [routine, setValue]);
+  const isLoading = useMemo(() => isCreating || isUpdating, [isCreating, isUpdating]);
   const {
     fields: sectionFields,
     append: appendSection,
@@ -72,8 +93,8 @@ export function RoutineForm({ id }: Props) {
     name: 'sections',
   });
 
-  const addSection = (memberId?: string) => {
-    appendSection({ name: '', groups: [{ members: [{ id: memberId }] }] });
+  const addSection = (user_id?: string) => {
+    appendSection({ name: '', groups: [{ users: [{ user_id }] }] });
   };
 
   // Wrappers to match SingleRoutineSection's expected signature
@@ -85,7 +106,6 @@ export function RoutineForm({ id }: Props) {
   const removeSection = (index: number) => remove(index);
 
   const onInvalid = (errors: FieldErrors<CreateRoutinePayload>) => {
-    console.error('Form validation errors:', errors);
     // No section
     if (errors.sections && !Array.isArray(errors.sections)) {
       toast.error('At least one section is required.');
@@ -101,7 +121,7 @@ export function RoutineForm({ id }: Props) {
         // If there are group errors, check for member errors
         if (section && Array.isArray(section.groups)) {
           for (const group of section.groups) {
-            if (group && group.members && !Array.isArray(group.members)) {
+            if (group && group.users && !Array.isArray(group.users)) {
               toast.error('Each group must have at least one member.');
               return;
             }
@@ -112,7 +132,33 @@ export function RoutineForm({ id }: Props) {
   };
 
   const onSubmit = (data: CreateRoutinePayload) => {
-    console.log('Saving routine:', data, errors);
+    const body: CreateRoutinePayload = {
+      name: data.name,
+      sections: data.sections.map(section => ({
+        name: section.name,
+        groups: section.groups.map(group => ({
+          users: group.users.map(user => {
+            if (typeof user === 'object' && user !== null && 'user_id' in user) {
+              return String(user.user_id);
+            }
+            return user;
+          }),
+        })),
+      })),
+    };
+
+    if (isEdit) {
+      updateRoutine({
+        routine_id: Number(id),
+        body,
+      });
+    } else {
+      createRoutine(body, {
+        onSuccess: () => {
+          router.push(`/${ROUTES.HIT_MISS_ROUTINES}`);
+        },
+      });
+    }
   };
 
   return (
@@ -125,58 +171,66 @@ export function RoutineForm({ id }: Props) {
           <h1 className="text-lg font-semibold ml-4">{isEdit ? 'Edit Routine' : 'Add Routine'}</h1>
         </div>
       </div>
-      <div className="max-w-3xl mx-auto pt-[112px] pb-[140px] p-4">
-        <Card className="mb-6 border-gray-300">
-          <CardHeader>
-            <CardTitle>
-              <Controller
-                control={control}
-                name="name"
-                render={({ field, fieldState: { error } }) => (
-                  <AppInput
-                    {...field}
-                    inputProps={{ placeholder: 'Enter Routine Name' }}
-                    className="text-xl font-bold"
-                    errorMessage={error?.message}
+      {isLoadingRoutineDetail ? (
+        <div className="flex items-center justify-center mt-96 gap-4">
+          <Loader2Icon className="animate-spin size-8 text-primary" />
+          Loading Routine...
+        </div>
+      ) : (
+        <>
+          <div className="max-w-3xl mx-auto pt-[112px] pb-[140px] p-4">
+            <Card className="mb-6 border-gray-300">
+              <CardHeader>
+                <CardTitle>
+                  <Controller
+                    control={control}
+                    name="name"
+                    render={({ field, fieldState: { error } }) => (
+                      <AppInput
+                        {...field}
+                        inputProps={{ placeholder: 'Enter Routine Name' }}
+                        className="text-xl font-bold"
+                        errorMessage={error?.message}
+                      />
+                    )}
                   />
-                )}
+                </CardTitle>
+              </CardHeader>
+            </Card>
+
+            {sectionFields.map((section, idx) => (
+              <SingleRoutineSection
+                key={section.id}
+                idx={idx}
+                totalSection={sectionFields.length}
+                moveSection={moveSection}
+                removeSection={removeSection}
+                control={control}
               />
-            </CardTitle>
-          </CardHeader>
-        </Card>
+            ))}
 
-        {sectionFields.map((section, idx) => (
-          <SingleRoutineSection
-            key={section.id}
-            idx={idx}
-            totalSection={sectionFields.length}
-            moveSection={moveSection}
-            removeSection={removeSection}
-            control={control}
-          />
-        ))}
-
-        <Button
-          variant="outline"
-          className="w-full mt-4 border-2 border-dashed border-gray-300 hover:border-gray-400"
-          type="button"
-          onClick={() => addSection()}
-        >
-          <PlusIcon className="h-4 w-4 mr-2" />
-          Add Section
-        </Button>
-      </div>
-
-      <div className="position-avoid-bottom-app">
-        <div className="bg-white px-4 py-3 shadow-top">
-          <div className="max-w-3xl mx-auto">
-            <Button className="w-full shadow" size="lg" type="submit">
-              <SaveIcon className="h-5 w-5 mr-3" />
-              Save Routine
+            <Button
+              variant="outline"
+              className="w-full mt-4 border-2 border-dashed border-gray-300 hover:border-gray-400"
+              type="button"
+              onClick={() => addSection()}
+            >
+              <PlusIcon className="h-4 w-4 mr-2" />
+              Add Section
             </Button>
           </div>
-        </div>
-      </div>
+          <div className="position-avoid-bottom-app">
+            <div className="bg-white px-4 py-3 shadow-top">
+              <div className="max-w-3xl mx-auto">
+                <Button className="w-full shadow" size="lg" type="submit" loading={isLoading}>
+                  {!isLoading && <SaveIcon className="h-5 w-5 mr-3" />}
+                  Save Routine
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </form>
   );
 }
