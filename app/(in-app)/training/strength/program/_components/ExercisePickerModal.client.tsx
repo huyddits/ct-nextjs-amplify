@@ -12,20 +12,21 @@ export default function ExercisePickerModal({
   onOpenChange,
 }: {
   isOpen: boolean;
-  programId: number;
+  programId?: number;
   onOpenChange: (open: boolean) => void;
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your account and remove your
-            data from our servers.
+      <DialogContent className="w-screen max-w-none! h-full overflow-y-auto p-0 block">
+        <DialogHeader className="my-8 pb-0 min-h-0">
+          <DialogTitle className="text-center text-primary text-xl">
+            {programId ? 'Edit Program' : 'New Program'}
+          </DialogTitle>
+          <DialogDescription className="text-center w-full">
+            Select the exercises you want to add to the program
           </DialogDescription>
         </DialogHeader>
-        <ExercisePicker />
+        {isOpen && <ExercisePicker isNested onClose={() => onOpenChange(false)} />}
       </DialogContent>
     </Dialog>
   );
