@@ -5,6 +5,7 @@ import { AppConfirm } from '@/components/compose';
 import { StripeProvider } from '@/context/StripeContext';
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
+import { SWRProvider } from '@/context/SWRContext';
 
 // const geistSans = Geist({
 //   variable: '--font-geist-sans',
@@ -91,7 +92,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`antialiased`}>
-        <StripeProvider>{children}</StripeProvider>
+        <StripeProvider>
+          <SWRProvider>{children}</SWRProvider>
+        </StripeProvider>
         {/* <ServiceWorkerRegister /> */}
         <ToastContainerClient />
         <AppConfirm />
