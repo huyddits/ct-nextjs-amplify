@@ -1,33 +1,13 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { PlusCircleIcon } from 'lucide-react';
+import { Loader2Icon, PlusCircleIcon } from 'lucide-react';
 import { RoutineCard } from '../_components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/utils/constants';
+import { useGetHitMissRoutineList } from './_hooks';
 export default function RoutinesPage() {
+  const { data, isLoading } = useGetHitMissRoutineList();
   const router = useRouter();
-  const competitionSeasonRoutine: { id: string; name: string }[] = [
-    { id: 'competition-0', name: 'Opening Tucks' },
-    { id: 'competition-1', name: 'Double Full Basket' },
-    { id: 'competition-2', name: 'Elite 1' },
-    { id: 'competition-3', name: 'Elite 2' },
-    { id: 'competition-4', name: 'Pyramid' },
-    { id: 'competition-5', name: 'Cheer' },
-  ];
-
-  const gameDayPerformance: { id: string; name: string }[] = [
-    { id: 'performance-0', name: 'Opening Stunt' },
-    { id: 'performance-1', name: 'X Full Basket' },
-    { id: 'performance-2', name: 'Elite 1' },
-    { id: 'performance-3', name: 'Pyramid' },
-  ];
-
-  const gameDayPepRally: { id: string; name: string }[] = [
-    { id: 'pep-0', name: 'Opening Stunt' },
-    { id: 'pep-1', name: 'Baskets' },
-    { id: 'pep-2', name: 'Cheer 1' },
-  ];
-
   const onCreate = () => {
     router.push(`/${ROUTES.HIT_MISS_ROUTINES_NEW}`);
   };
@@ -36,14 +16,24 @@ export default function RoutinesPage() {
     <div className="pb-20 pt-12">
       <div className="px-4 py-3">
         <Button className="w-full" size="lg" onClick={onCreate}>
-          <PlusCircleIcon className="w-5 h-5 mr-2" />
+          <PlusCircleIcon className="size-5 mr-2" />
           New Routine
         </Button>
       </div>
       <div className="px-4 py-2">
-        <RoutineCard id="1" listItems={competitionSeasonRoutine} />
-        <RoutineCard id="2" listItems={gameDayPerformance} />
-        <RoutineCard id="3" listItems={gameDayPepRally} />
+        {isLoading ? (
+          <div className="flex justify-center items-center py-10">
+            <Loader2Icon className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          <>
+            {!data?.length ? (
+              <div className="text-center text-gray-500 py-10">No routines found.</div>
+            ) : (
+              data.map(routine => <RoutineCard key={routine.routine_id} data={routine} />)
+            )}
+          </>
+        )}
       </div>
     </div>
   );
