@@ -18,6 +18,7 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
     template,
     programName,
     trainingTypeOptions,
+    isOpenExercisePicker,
     onAddExercise,
     onRemoveExercise,
     onAddSetToExercise,
@@ -98,7 +99,6 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
                 <h3 className="text-lg font-medium text-primary">Selected Exercises</h3>
                 <Button
                   variant="ghost"
-                  disabled
                   className="text-primary hover:text-primary hover:bg-primary/10"
                   onClick={onAddExercise}
                 >
