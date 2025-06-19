@@ -113,8 +113,14 @@ export const useUpdateHitMissRoutine = () => {
 
 export const useGetHitMissRoutineDetail = (routine_id?: string) => {
   const enabledKey = routine_id ? [HIT_MISS_ROUTINE.HIT_MISS_ROUTINE_LIST_KEY, routine_id] : null;
-  return useSWR(enabledKey, async () => {
-    const { data } = await getHitMissRoutineDetail(Number(routine_id));
-    return data.data;
-  });
+  return useSWR(
+    enabledKey,
+    async () => {
+      const { data } = await getHitMissRoutineDetail(Number(routine_id));
+      return data.data;
+    },
+    {
+      dedupingInterval: 1000,
+    }
+  );
 };

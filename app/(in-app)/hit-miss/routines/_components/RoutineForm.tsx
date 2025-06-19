@@ -52,7 +52,11 @@ interface Props {
 export function RoutineForm({ id }: Props) {
   const router = useRouter();
   const isEdit = !!id;
-  const { data: routine, isLoading: isLoadingRoutineDetail } = useGetHitMissRoutineDetail(id);
+  const {
+    data: routine,
+    isLoading: isLoadingRoutineDetail,
+    isValidating,
+  } = useGetHitMissRoutineDetail(id);
   const { trigger: createRoutine, isMutating: isCreating } = useCreateHitMissRoutine();
   const { trigger: updateRoutine, isMutating: isUpdating } = useUpdateHitMissRoutine();
   const { control, handleSubmit, setValue } = useForm<CreateRoutinePayload>({
@@ -71,15 +75,7 @@ export function RoutineForm({ id }: Props) {
   useEffect(() => {
     if (routine) {
       setValue('name', routine.name || '');
-      const sections =
-        routine.sections?.map(section => ({
-          name: section.name || '',
-          groups:
-            section.groups?.map(group => ({
-              users: group.users?.map(user => ({ user_id: (user as any).user_id })) || [],
-            })) || [],
-        })) || [];
-      setValue('sections', sections);
+      setValue('sections', routine.sections);
     }
   }, [routine, setValue]);
   const isLoading = useMemo(() => isCreating || isUpdating, [isCreating, isUpdating]);
@@ -171,7 +167,7 @@ export function RoutineForm({ id }: Props) {
           <h1 className="text-lg font-semibold ml-4">{isEdit ? 'Edit Routine' : 'Add Routine'}</h1>
         </div>
       </div>
-      {isLoadingRoutineDetail ? (
+      {isLoadingRoutineDetail || isValidating ? (
         <div className="flex items-center justify-center mt-96 gap-4">
           <Loader2Icon className="animate-spin size-8 text-primary" />
           Loading Routine...
