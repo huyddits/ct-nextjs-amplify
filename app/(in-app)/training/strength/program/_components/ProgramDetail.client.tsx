@@ -2,7 +2,7 @@
 
 import type React from 'react';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { InfoIcon, PlusIcon, Trash2Icon, MinusIcon } from 'lucide-react';
 import { useProgramForm } from '../../_hooks';
@@ -11,6 +11,7 @@ import { PageHeader } from '@/app/(in-app)/_components';
 import { Controller } from 'react-hook-form';
 import { useStrengthStore } from '@/store';
 import { MAXIMUM_SETS_PER_EXERCISE } from '@/utils/constants';
+import ExercisePickerModal from './ExercisePickerModal.client';
 
 export default function ProgramDetail({ programId }: { programId?: string }) {
   const {
@@ -26,6 +27,7 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
     onUpdateSetFromExercise,
     onSubmitCreate,
     onSubmitUpdate,
+    setIsOpenExercisePicker,
     loading,
   } = useProgramForm({ id: programId });
   const { listExercises: listExercisesFromStore, setListExercises: setListExercisesFromStore } =
@@ -35,6 +37,26 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
     return `${template?.sets} sets x ${template?.reps} reps x ${template?.rpe} RPE`;
   }, [template]);
 
+  useEffect(() => {
+    if (!isOpenExercisePicker) {
+      // auto fill new exercise was add but without sets set
+      // with the current template
+      if (listExercisesFromStore.some(item => !item.sets?.length)) {
+        setListExercisesFromStore(prev =>
+          prev.map(item => {
+            if (item.sets?.length) return item;
+            return {
+              ...item,
+              sets: Array.from({ length: template?.sets ?? 0 }).map(() => ({
+                reps: template?.reps ?? 0,
+                rpe: template?.rpe ?? 0,
+              })),
+            };
+          })
+        );
+      }
+    }
+  }, [isOpenExercisePicker]);
   return (
     <div className="padding-bottom-app padding-top-app container">
       <PageHeader title="Program Editor" allowBack />
@@ -215,6 +237,12 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
           </div>
         </div>
       </div>
+
+      <ExercisePickerModal
+        isOpen={isOpenExercisePicker}
+        programId={programId ? Number(programId) : undefined}
+        onOpenChange={open => setIsOpenExercisePicker(open)}
+      />
     </div>
   );
 }

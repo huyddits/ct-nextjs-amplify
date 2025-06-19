@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ProgramTypeSelect, ProgramFilter, EquipmentFilter, ExerciseProgramSection } from '.';
 import { Button } from '@/components/ui/button';
 import { useProgramForm } from '../_hooks';
@@ -8,8 +8,15 @@ import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/app/(in-app)/_components';
 import { type Exercise } from '../_hooks';
 import { useStrengthStore } from '@/store';
+import { cn } from '@/lib/utils';
 
-export default function ExercisePicker() {
+interface ExercisePickerProps {
+  isNested?: boolean;
+  programId?: number;
+  onClose?: () => void;
+}
+
+export default function ExercisePicker({ isNested, programId, onClose }: ExercisePickerProps) {
   const router = useRouter();
   const { listExercises: listExercisesFromStore } = useStrengthStore();
   const {
@@ -39,9 +46,16 @@ export default function ExercisePicker() {
 
     router.push(`/${ROUTES.TRAINING_STRENGTH_PROGRAM}`);
   };
+
+  useEffect(() => {
+    isNested && fetchListExcersises();
+  }, [isNested]);
+
   return (
-    <div className="padding-top-pagePast padding-bottom-pagePast container">
-      <PageHeader title="Create Program" allowBack />
+    <div
+      className={cn('padding-top-pagePast padding-bottom-pagePast container', isNested && 'p-0!')}
+    >
+      {!isNested && <PageHeader title={programId ? 'Edit Program' : 'Create Program'} allowBack />}
       <ProgramTypeSelect
         value={programType}
         options={programTypeOptions}
@@ -95,10 +109,18 @@ export default function ExercisePicker() {
         onLoadMore={loadMoreExercises}
       />
 
-      <Button className="w-full" size="lg" onClick={onGoToProgramEditor}>
-        Go to Program Editor
-      </Button>
-      {errorMessage && <span className="error-message">{errorMessage}</span>}
+      {isNested ? (
+        <Button className="w-full mb-8" size="lg" onClick={onClose}>
+          Close
+        </Button>
+      ) : (
+        <>
+          <Button className="w-full" size="lg" onClick={onGoToProgramEditor}>
+            Go to Program Editor
+          </Button>
+          {errorMessage && <span className="error-message">{errorMessage}</span>}
+        </>
+      )}
     </div>
   );
 }
