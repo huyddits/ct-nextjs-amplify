@@ -2,84 +2,97 @@ import { UserApi } from '@/api';
 import { useAuthStore } from '@/store';
 import { WHITE_LIST } from '@/utils/constants';
 import { BillingCycle, PlanStatus, PlanType } from '@/utils/types';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { useMemo } from 'react';
+import useSWR, { mutate } from 'swr';
 
+const GET_PERSONAL_INFO_KEY = 'GET_PERSONAL_INFO_KEY';
 export const usePersonalInfo = () => {
   const pathname = usePathname();
   const { info, setInfo, token } = useAuthStore();
 
-  const handleGetPersonalInfo = async () => {
-    try {
-      const response = await UserApi.getPersonalInfo();
-      const { data } = response.data;
-      if (!data) {
-        throw response.data.error;
+  const enabledKey = useMemo(() => {
+    if (!token || WHITE_LIST.includes(pathname)) return null;
+    return [GET_PERSONAL_INFO_KEY, token];
+  }, [token, info, pathname]);
+
+  useSWR(
+    enabledKey,
+    async () => {
+      try {
+        const response = await UserApi.getPersonalInfo();
+        const { data } = response.data;
+        if (!data) {
+          throw response.data.error;
+        }
+
+        const foundPlan = data.plan.find(({ status }) =>
+          [PlanStatus.Active, PlanStatus.Canceled].includes(status)
+        );
+
+        setInfo({
+          id: data.user_id,
+          coachCode: data.profile.coach_code,
+          accountType: data.account_type,
+          firstName: data.profile.first_name,
+          lastName: data.profile.last_name,
+          email: data.email,
+          schoolName: data.profile.school_name,
+          isActive: data.is_active,
+          createdAt: data.created_at,
+          profileId: data.profile?.profile_id ?? '',
+          dateOfBirth: data.profile?.date_of_birth ?? '',
+          measurementUnitId: data.profile?.measurement_unit_id,
+          measurementUnitName: data.profile.measurement_unit_name,
+          measurementUnitType: data.profile.measurement_unit_type,
+          roleId: data.profile?.role_id ?? 0,
+          roleName: data.profile?.role_name ?? '',
+          cheerTypeId: data.profile?.cheer_type_id,
+          cheerTypeName: data.profile?.cheer_type_name,
+          cheerStyleId: data.profile?.cheer_style_id,
+          cheerStyleName: data.profile?.cheer_style_name,
+          equipmentIds: data.equipments?.map(e => e.id) ?? [],
+          userPlanId: foundPlan?.user_plan_id ?? '',
+          planName: foundPlan?.plan.name ?? '',
+          planId: foundPlan?.plan.plan_id ?? '',
+          planEndDate: foundPlan?.end_date ?? '',
+          planStartDate: foundPlan?.start_date ?? '',
+          planNextBillingDate: foundPlan?.next_billing_date ?? '',
+          planStatus: foundPlan?.status ?? PlanStatus.Active,
+          planActualPrice: Number(foundPlan?.plan.actual_price),
+          planBasePrice: Number(foundPlan?.plan.base_price),
+          planBillingCycle: foundPlan?.plan.billing_cycle ?? BillingCycle.Free,
+          planType: foundPlan?.plan.type ?? PlanType.Athlete,
+          planPromo: foundPlan?.plan.promo_code ?? '',
+          planStripePriceId: foundPlan?.plan.stripe_price_id ?? '',
+          planStripeCustomerId: data.stripe_customer_id,
+          planStripeSubscriptionId: data?.stripe_subscription_id ?? '',
+        });
+      } catch (error) {
+        console.log(error);
       }
-
-      const foundPlan = data.plan.find(({ status }) =>
-        [PlanStatus.Active, PlanStatus.Canceled].includes(status)
-      );
-
-      setInfo({
-        id: data.user_id,
-        coachCode: data.profile.coach_code,
-        accountType: data.account_type,
-        firstName: data.profile.first_name,
-        lastName: data.profile.last_name,
-        email: data.email,
-        schoolName: data.profile.school_name,
-        isActive: data.is_active,
-        createdAt: data.created_at,
-        profileId: data.profile?.profile_id ?? '',
-        dateOfBirth: data.profile?.date_of_birth ?? '',
-        measurementUnitId: data.profile?.measurement_unit_id,
-        measurementUnitName: data.profile.measurement_unit_name,
-        measurementUnitType: data.profile.measurement_unit_type,
-        roleId: data.profile?.role_id ?? 0,
-        roleName: data.profile?.role_name ?? '',
-        cheerTypeId: data.profile?.cheer_type_id,
-        cheerTypeName: data.profile?.cheer_type_name,
-        cheerStyleId: data.profile?.cheer_style_id,
-        cheerStyleName: data.profile?.cheer_style_name,
-        equipmentIds: data.equipments?.map(e => e.id) ?? [],
-        userPlanId: foundPlan?.user_plan_id ?? '',
-        planName: foundPlan?.plan.name ?? '',
-        planId: foundPlan?.plan.plan_id ?? '',
-        planEndDate: foundPlan?.end_date ?? '',
-        planStartDate: foundPlan?.start_date ?? '',
-        planNextBillingDate: foundPlan?.next_billing_date ?? '',
-        planStatus: foundPlan?.status ?? PlanStatus.Active,
-        planActualPrice: Number(foundPlan?.plan.actual_price),
-        planBasePrice: Number(foundPlan?.plan.base_price),
-        planBillingCycle: foundPlan?.plan.billing_cycle ?? BillingCycle.Free,
-        planType: foundPlan?.plan.type ?? PlanType.Athlete,
-        planPromo: foundPlan?.plan.promo_code ?? '',
-        planStripePriceId: foundPlan?.plan.stripe_price_id ?? '',
-        planStripeCustomerId: data.stripe_customer_id,
-        planStripeSubscriptionId: data?.stripe_subscription_id ?? '',
-      });
-    } catch (error) {
-      console.log(error);
+    },
+    {
+      dedupingInterval: 5000,
+      revalidateOnFocus: true,
     }
+  );
+  const refetch = () => {
+    mutate(GET_PERSONAL_INFO_KEY);
   };
-  useEffect(() => {
-    if (!token) return;
-    handleGetPersonalInfo();
-  }, [token]);
 
-  useEffect(() => {
-    const windowFocusHandler = () => {
-      if (WHITE_LIST.includes(pathname)) {
-        return;
-      }
-      handleGetPersonalInfo();
-    };
-    addEventListener('focus', windowFocusHandler);
-    return () => {
-      removeEventListener('focus', windowFocusHandler);
-    };
-  }, [pathname]);
+  // useEffect(() => {
+  //   const windowFocusHandler = () => {
+  //     if (WHITE_LIST.includes(pathname)) {
+  //       return;
+  //     }
+  //     handleGetPersonalInfo();
+  //   };
+  //   addEventListener('focus', windowFocusHandler);
+  //   return () => {
+  //     removeEventListener('focus', windowFocusHandler);
+  //   };
+  // }, [pathname]);
 
-  return { data: info, refetch: handleGetPersonalInfo };
+  return { data: info, refetch };
 };

@@ -6,6 +6,7 @@ import React, { useMemo } from 'react';
 import { useGetListAthlete } from '../_hooks';
 import { usePersonalInfo } from '@/hooks';
 import { CreateRoutineSingleGroup } from '@/api/types/hitMiss';
+import { useAuthStore } from '@/store';
 
 interface SingleRoutineGroupProps {
   groupIndex: number;
@@ -20,7 +21,7 @@ export function SingleRoutineGroup({
   groupData,
   removeGroup,
 }: SingleRoutineGroupProps) {
-  const { data: info } = usePersonalInfo();
+  const { info } = useAuthStore();
   const { data: athleteList, isLoading: isLoadingAthleteList } = useGetListAthlete(
     info?.coachCode || ''
   );
@@ -61,24 +62,26 @@ export function SingleRoutineGroup({
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <UsersIcon className="h-4 w-4 text-gray-600" />
-          <span className="text-sm font-medium text-gray-700">Group {groupIndex + 1}</span>
-          <span className="text-xs text-gray-500">({memberFields.length} members)</span>
+          <div className="flex flex-col max-sm:justify-center sm:flex-row sm:items-center gap-1">
+            <span className="text-sm font-medium text-gray-700">Group {groupIndex + 1}</span>
+            <span className="text-xs text-gray-500">({memberFields.length} members)</span>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
-            className="h-7 px-2 text-xs"
+            className="text-xs"
             type="button"
             onClick={() => addMember()}
           >
             <PlusIcon className="h-3 w-3 mr-1" />
-            Add Member
+            Add <span className="hidden sm:inline">Athlete</span>
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 text-gray-400 hover:text-red-600"
+            className="size-4 text-gray-400 hover:text-red-600"
             type="button"
             onClick={() => removeGroup(groupIndex)}
           >
@@ -94,7 +97,7 @@ export function SingleRoutineGroup({
               name={`sections.${groupData.sectionIndex}.groups.${groupIndex}.users.${memberIndex}.user_id`}
               render={({ field, fieldState: { error } }) => (
                 <AppSelect
-                  className="flex-1"
+                  className="w-full overflow-hidden"
                   options={athleteOptions}
                   selectedValue={field.value}
                   onChangeSelected={field.onChange}
