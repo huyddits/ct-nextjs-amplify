@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ArrowLeftIcon, Loader2Icon, PlusIcon, SaveIcon } from 'lucide-react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ROUTES } from '@/utils/constants';
+import { ERROR_MESSAGES, ROUTES } from '@/utils/constants';
 import { SingleRoutineSection } from './SingleRoutineSection';
 import { useForm, useFieldArray, Controller, FieldErrors } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,15 +18,17 @@ import {
   useUpdateHitMissRoutine,
 } from '../_hooks';
 import { useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 
 const schema = yup.object({
-  name: yup.string().required('Routine name is required'),
+  name: yup.string().max(100, ERROR_MESSAGES.MAX_LENGTH(100)).required('Routine name is required'),
   sections: yup
     .array()
     .of(
       yup.object({
-        name: yup.string().required('Section name is required'),
+        name: yup
+          .string()
+          .max(100, ERROR_MESSAGES.MAX_LENGTH(100))
+          .required('Section name is required'),
         groups: yup
           .array()
           .of(
@@ -50,26 +52,16 @@ interface Props {
 }
 
 export function RoutineForm({ id }: Props) {
-  const router = useRouter();
   const isEdit = !!id;
-  const {
-    data: routine,
-    isLoading: isLoadingRoutineDetail,
-    isValidating,
-  } = useGetHitMissRoutineDetail(id);
+  const { data: routine, isLoading: isLoadingRoutineDetail } = useGetHitMissRoutineDetail(id);
   const { trigger: createRoutine, isMutating: isCreating } = useCreateHitMissRoutine();
   const { trigger: updateRoutine, isMutating: isUpdating } = useUpdateHitMissRoutine();
   const { control, handleSubmit, setValue } = useForm<CreateRoutinePayload>({
-    mode: 'onChange',
+    mode: 'onTouched',
     resolver: yupResolver(schema) as any,
     defaultValues: {
       name: '',
-      sections: [
-        {
-          name: '',
-          groups: [{ users: [{ user_id: undefined }] }],
-        },
-      ],
+      sections: [],
     },
   });
   useEffect(() => {
@@ -149,11 +141,7 @@ export function RoutineForm({ id }: Props) {
         body,
       });
     } else {
-      createRoutine(body, {
-        onSuccess: () => {
-          router.push(`/${ROUTES.HIT_MISS_ROUTINES}`);
-        },
-      });
+      createRoutine(body);
     }
   };
 
@@ -167,7 +155,7 @@ export function RoutineForm({ id }: Props) {
           <h1 className="text-lg font-semibold ml-4">{isEdit ? 'Edit Routine' : 'Add Routine'}</h1>
         </div>
       </div>
-      {isLoadingRoutineDetail || isValidating ? (
+      {isLoadingRoutineDetail ? (
         <div className="flex items-center justify-center mt-96 gap-4">
           <Loader2Icon className="animate-spin size-8 text-primary" />
           Loading Routine...

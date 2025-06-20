@@ -3,34 +3,53 @@ import { Download } from 'lucide-react';
 import { useForm, Controller } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { AppInput, AppTextarea } from '@/components/compose';
+import { CheckOffStatusEnum, CheckOffStudentReview } from '@/api/types/checkOff';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useUpdateCheckOffStudentReview } from '../_hooks/useGetCheckOffStudentReview';
+import { ERROR_MESSAGES } from '@/utils/constants';
 
-interface CheckOff {
-  video: string;
-  athlete: string;
-  task: string;
-  athleteNotes: string;
-}
+type Props = {
+  data: CheckOffStudentReview;
+};
 
-export function CheckOffCard({ checkOff }: { checkOff: CheckOff }) {
-  const { control, handleSubmit } = useForm({
+const statusOptions = [
+  { label: 'Completed', value: CheckOffStatusEnum.Completed },
+  { label: 'Not Completed', value: CheckOffStatusEnum.NotCompleted },
+  { label: 'Excused', value: CheckOffStatusEnum.Excused },
+];
+
+const schema = yup.object({
+  status: yup
+    .mixed<CheckOffStatusEnum>()
+    .oneOf(Object.values(CheckOffStatusEnum))
+    .required(ERROR_MESSAGES.INPUT),
+  coach_review_note: yup
+    .string()
+    .required(ERROR_MESSAGES.INPUT)
+    .max(500, ERROR_MESSAGES.MAX_LENGTH(500)),
+});
+
+export function CheckOffCard({ data: checkOff }: Props) {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<yup.InferType<typeof schema>>({
     defaultValues: {
-      athlete: checkOff.athlete,
-      task: checkOff.task,
-      athleteNotes: checkOff.athleteNotes,
-      status: 'not_completed', // default status
-      feedback: '',
+      status: (checkOff.status as CheckOffStatusEnum) || CheckOffStatusEnum.NotCompleted,
+      coach_review_note: checkOff.coach_review_note || '',
     },
+    resolver: yupResolver(schema),
   });
 
-  const statusOptions = [
-    { value: 'completed', label: 'Completed' },
-    { value: 'not_completed', label: 'Not Completed' },
-    { value: 'excused', label: 'Excused' },
-  ];
+  const { trigger, isMutating } = useUpdateCheckOffStudentReview();
 
-  const onSubmit = (data: any) => {
-    // handle save logic
-    console.log(data);
+  const onSubmit = (formData: yup.InferType<typeof schema>) => {
+    trigger({
+      submit_id: checkOff.submit_id,
+      ...formData,
+    });
   };
 
   return (
@@ -39,13 +58,11 @@ export function CheckOffCard({ checkOff }: { checkOff: CheckOff }) {
       <div className="mb-6">
         <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden">
           <video className="w-full h-full object-contain" controls playsInline preload="metadata">
-            <source src={checkOff.video} type="video/mp4" />
+            <source src={checkOff.media_link} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-
-          {/* Download Button */}
           <a
-            href={checkOff.video}
+            href={checkOff.media_link}
             download
             className="absolute top-3 right-3 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
             aria-label="Download video"
@@ -61,43 +78,29 @@ export function CheckOffCard({ checkOff }: { checkOff: CheckOff }) {
         {/* Athlete Name */}
         <div className="flex items-center gap-2">
           <span className="font-medium min-w-[120px]">Athlete:</span>
-          <Controller
-            name="athlete"
-            control={control}
-            render={({ field }) => (
-              <AppInput
-                size="lg"
-                {...field}
-                className="flex-1 [&_input]:bg-gray-50 [&_input]:shadow-none [&_input]:border-none focus:ring-0"
-              />
-            )}
+
+          <AppInput
+            size="lg"
+            value={checkOff.athlete.email}
+            className="flex-1 [&_input]:bg-gray-50 [&_input]:shadow-none [&_input]:border-none focus:ring-0"
           />
         </div>
 
         {/* Check-Off Task (renamed from Skill/Challenge) */}
         <div className="flex items-center gap-2">
           <span className="font-medium min-w-[120px]">Check-Off Task:</span>
-          <Controller
-            name="task"
-            control={control}
-            render={({ field }) => (
-              <AppInput
-                {...field}
-                size="lg"
-                className="flex-1 [&_input]:bg-gray-50 [&_input]:shadow-none [&_input]:border-none focus:ring-0"
-              />
-            )}
+          <AppInput
+            readonly
+            value={checkOff.checkoff.assigned_task}
+            size="lg"
+            className="flex-1 [&_input]:bg-gray-50 [&_input]:shadow-none [&_input]:border-none focus:ring-0"
           />
         </div>
 
         {/* Athlete's Notes (new field) */}
         <div className="space-y-2">
           <span className="font-medium">Athlete&rsquo;s Notes:</span>
-          <Controller
-            name="athleteNotes"
-            control={control}
-            render={({ field }) => <AppTextarea {...field} />}
-          />
+          <AppTextarea value={checkOff.note} textareaProps={{ readOnly: true }} />
         </div>
 
         {/* Status Selector Boxes */}
@@ -125,18 +128,23 @@ export function CheckOffCard({ checkOff }: { checkOff: CheckOff }) {
             </div>
           )}
         />
+        {errors.status && <div className="error-message">{errors.status.message}</div>}
 
         {/* Feedback Textarea */}
         <Controller
-          name="feedback"
+          name="coach_review_note"
           control={control}
-          render={({ field }) => (
-            <AppTextarea textareaProps={{ placeholder: 'Check Off Feedback' }} {...field} />
+          render={({ field, formState: { errors } }) => (
+            <AppTextarea
+              errorMessage={errors.coach_review_note?.message}
+              textareaProps={{ placeholder: 'Check Off Feedback' }}
+              {...field}
+            />
           )}
         />
 
         {/* Save Button */}
-        <Button type="submit" size="lg" className="w-full">
+        <Button type="submit" size="lg" className="w-full" loading={isMutating}>
           Save Review
         </Button>
       </form>
