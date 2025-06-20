@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { AppSelect } from '@/components/compose';
 import { MinusCircleIcon, PlusIcon, Trash2Icon, UsersIcon } from 'lucide-react';
-import { Controller, useFieldArray } from 'react-hook-form';
+import { Controller, useFieldArray, useWatch } from 'react-hook-form';
 import React, { useMemo } from 'react';
 import { useGetListAthlete } from '../_hooks';
 import { usePersonalInfo } from '@/hooks';
+import { CreateRoutineSingleGroup } from '@/api/types/hitMiss';
 
 interface SingleRoutineGroupProps {
   groupIndex: number;
@@ -20,28 +21,41 @@ export function SingleRoutineGroup({
   removeGroup,
 }: SingleRoutineGroupProps) {
   const { data: info } = usePersonalInfo();
-  const { data: athleteList } = useGetListAthlete(info?.coachCode || '');
+  const { data: athleteList, isLoading: isLoadingAthleteList } = useGetListAthlete(
+    info?.coachCode || ''
+  );
 
-  const athleteOptions = useMemo(
-    () =>
+  const groups: CreateRoutineSingleGroup[] = useWatch({
+    control,
+    name: `sections.${groupData.sectionIndex}.groups`,
+  });
+
+  const athleteOptions = useMemo(() => {
+    const selectedAthleteId = (groups ?? [])
+      .map(group => group.users.map(user => (user as any).user_id).filter((id: string) => id))
+      .flat();
+
+    return (
       athleteList?.map(athlete => ({
         label: `${athlete.athlete.profile.first_name} ${athlete.athlete.profile.last_name}`,
         value: athlete.athlete_id,
-      })) || [],
-    [athleteList]
-  );
+        disabled: selectedAthleteId.includes(athlete.athlete_id),
+      })) || []
+    );
+  }, [athleteList, groups]);
   const {
     fields: memberFields,
     append: appendMember,
     remove: removeMember,
   } = useFieldArray({
     control,
-    name: `sections.${groupData.sectionIndex}.groups.${groupIndex}.members`,
+    name: `sections.${groupData.sectionIndex}.groups.${groupIndex}.users`,
   });
 
-  const addMember = (memberId?: string) => {
-    appendMember({ id: memberId });
+  const addMember = (user_id?: string) => {
+    appendMember({ user_id });
   };
+
   return (
     <div className="relative border-2 border-gray-200 rounded-lg p-4 bg-white shadow-sm">
       <div className="flex items-center justify-between mb-2">
@@ -77,7 +91,7 @@ export function SingleRoutineGroup({
           <div key={member.id} className="flex items-start gap-2">
             <Controller
               control={control}
-              name={`sections.${groupData.sectionIndex}.groups.${groupIndex}.members.${memberIndex}.id`}
+              name={`sections.${groupData.sectionIndex}.groups.${groupIndex}.users.${memberIndex}.user_id`}
               render={({ field, fieldState: { error } }) => (
                 <AppSelect
                   className="flex-1"
@@ -86,6 +100,7 @@ export function SingleRoutineGroup({
                   onChangeSelected={field.onChange}
                   placeholder="Select Athlete"
                   errorMessage={error?.message}
+                  loading={isLoadingAthleteList}
                   fullWidth
                   required
                 />

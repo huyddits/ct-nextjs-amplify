@@ -3,7 +3,6 @@ import React, { useEffect, useState, JSX } from 'react';
 import DatePicker from 'react-datepicker';
 import { Label } from '@/components/ui/label';
 import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
-import { parse } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 interface AppDatePickerProps {
@@ -44,8 +43,8 @@ export default function AppDatePicker({
   const format = inputFormat ?? DEFAULT_DATE_FORMAT;
 
   useEffect(() => {
-    // value ? setSelectedDate(parse(value, format, new Date())) : setSelectedDate(null);
-    setSelectedDate(value ? new Date(value) : null);
+    const date = value ? new Date(value) : null;
+    setSelectedDate(date instanceof Date && !isNaN(date.getTime()) ? date : null);
   }, [value, format]);
 
   console.log('selectedDate', selectedDate);
