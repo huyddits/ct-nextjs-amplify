@@ -29,8 +29,8 @@ export function SingleRoutineSection({
     name: `sections.${idx}.groups`,
   });
 
-  const addGroup = (memberId?: string) => {
-    appendGroup({ members: [{ id: memberId }] });
+  const addGroup = (user_id?: string) => {
+    appendGroup({ users: [{ user_id }] });
   };
 
   return (

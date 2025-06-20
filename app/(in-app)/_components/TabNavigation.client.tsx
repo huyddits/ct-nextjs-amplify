@@ -30,7 +30,7 @@ export default function TabNavigation({
 
   return (
     <div className={className} style={style}>
-      <SafeAreaDetection className="bg-yellow-500" position="top" />
+      <SafeAreaDetection className="bg-white" position="top" />
       <Tabs defaultValue={defaultValue} onValueChange={onValueChange}>
         <TabsList className="flex p-0">
           {listTabs.map((tab: TabOption) => (

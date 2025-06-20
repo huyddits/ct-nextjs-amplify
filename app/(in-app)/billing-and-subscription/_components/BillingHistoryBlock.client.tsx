@@ -17,7 +17,7 @@ const BillingReceiptItem = ({ billingDate, currency, amount, invoicePdf }: Billi
   return (
     <div className="flex items-center justify-between py-2 border-b border-gray-100">
       <div>
-        <div className="text-sm font-medium">{format(parseISO(billingDate), 'MMMM D, YYYY')}</div>
+        <div className="text-sm font-medium">{format(parseISO(billingDate), 'MMMM d, yyyy')}</div>
         <div className="text-xs text-gray-500">Coach Plan</div>
       </div>
       <div className="flex items-center">

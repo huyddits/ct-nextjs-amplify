@@ -26,16 +26,24 @@ export type HitMissRoutine = {
 
 export type HitMissRoutineListResponse = ApiResponse<HitMissRoutine[]>;
 
-export type CreateRoutinePayload = {
+export type CreateRoutinePayload<Detail = false> = {
   name: string;
-  sections: CreateRoutineSingleSection[];
+  sections: CreateRoutineSingleSection<Detail>[];
+} & (Detail extends true ? { routine_id: number } : {});
+
+export type CreateRoutineSingleSection<Detail = false> = {
+  name: string;
+  groups: CreateRoutineSingleGroup<Detail>[];
+} & (Detail extends true ? { section_id: number } : {});
+
+export type CreateRoutineSingleGroup<Detail = false> = {
+  users: Array<RoutineMember | string | undefined>;
+} & (Detail extends true ? { group_id: number } : {});
+
+type RoutineMember = {
+  first_name?: string;
+  last_name?: string;
+  user_id?: string;
 };
 
-export type CreateRoutineSingleSection = {
-  name: string;
-  groups: CreateRoutineSingleGroup[];
-};
-
-export type CreateRoutineSingleGroup = {
-  members: Array<{ id?: string } | string | undefined>;
-};
+export type HitMissRoutineDetailResponse = ApiResponse<CreateRoutinePayload<true>>;
