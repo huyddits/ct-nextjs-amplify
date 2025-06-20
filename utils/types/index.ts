@@ -18,6 +18,8 @@ export interface ApiResponse<T, K = undefined> {
   };
 }
 
+export type PaginationParams = Pick<Pagination, 'page' | 'limit'>;
+
 export enum SocialProvider {
   Facebook = 'FACEBOOK',
   Google = 'GOOGLE',

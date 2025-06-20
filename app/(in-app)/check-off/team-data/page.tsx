@@ -1,8 +1,9 @@
 'use client';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CheckOffData, MonthCalendar, ReferenceData } from './_components';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { TabsContent } from '@radix-ui/react-tabs';
+import { format, startOfMonth } from 'date-fns';
 
 const TAB_OPTIONS = [
   { value: 'checkoff', label: 'By Check-Off', Component: CheckOffData },
@@ -12,6 +13,10 @@ const TAB_OPTIONS = [
 
 export default function CheckOffTeamDataPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const formattedDate = useMemo(() => {
+    if (!selectedDate) return undefined;
+    return format(startOfMonth(selectedDate), 'yyyy-MM-dd');
+  }, [selectedDate]);
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-4xl mx-auto px-4">
       <MonthCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
@@ -27,7 +32,7 @@ export default function CheckOffTeamDataPage() {
           </TabsList>
           {TAB_OPTIONS.map(tab => (
             <TabsContent key={tab.value} value={tab.value}>
-              <tab.Component />
+              <tab.Component selectedDate={formattedDate} />
             </TabsContent>
           ))}
         </Tabs>

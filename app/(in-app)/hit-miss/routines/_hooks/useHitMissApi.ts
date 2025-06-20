@@ -11,6 +11,8 @@ import useSWRMutation from 'swr/mutation';
 import { toast } from 'react-toastify';
 import { getCoachStudentList } from '@/api/measurement.api';
 import { CreateRoutinePayload } from '@/api/types/hitMiss';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/utils/constants';
 
 export const HIT_MISS_ROUTINE = {
   HIT_MISS_ROUTINE_LIST_KEY: 'HIT_MISS_ROUTINE_LIST_KEY',
@@ -67,13 +69,20 @@ export const useDeleteHitMissRoutine = () => {
 
 export const useGetListAthlete = (coach_code: string) => {
   const enabledKey = coach_code ? [HIT_MISS_ROUTINE.COACH_STUDENT_LIST_KEY, coach_code] : null;
-  return useSWR(enabledKey, async () => {
-    const { data } = await getCoachStudentList({ coach_code });
-    return data.data;
-  });
+  return useSWR(
+    enabledKey,
+    async () => {
+      const { data } = await getCoachStudentList({ coach_code });
+      return data.data;
+    },
+    {
+      dedupingInterval: 15000,
+    }
+  );
 };
 
 export const useCreateHitMissRoutine = () => {
+  const router = useRouter();
   return useSWRMutation<any, Error, string, CreateRoutinePayload>(
     HIT_MISS_ROUTINE.CREATE_HIT_MISS_ROUTINE,
     async (_key, { arg }) => {
@@ -82,8 +91,9 @@ export const useCreateHitMissRoutine = () => {
     },
     {
       onSuccess: () => {
-        mutate(HIT_MISS_ROUTINE.HIT_MISS_ROUTINE_LIST_KEY);
         toast.success('Routine created successfully');
+        mutate(HIT_MISS_ROUTINE.HIT_MISS_ROUTINE_LIST_KEY);
+        router.push(`/${ROUTES.HIT_MISS_ROUTINES}`);
       },
       onError: () => {
         toast.error('Failed to create routine');
@@ -93,6 +103,7 @@ export const useCreateHitMissRoutine = () => {
 };
 
 export const useUpdateHitMissRoutine = () => {
+  const router = useRouter();
   return useSWRMutation<any, Error, string, { routine_id: number; body: CreateRoutinePayload }>(
     HIT_MISS_ROUTINE.UPDATE_HIT_MISS_ROUTINE,
     async (_key, { arg: { routine_id, body } }) => {
@@ -103,6 +114,7 @@ export const useUpdateHitMissRoutine = () => {
       onSuccess: () => {
         mutate(HIT_MISS_ROUTINE.HIT_MISS_ROUTINE_LIST_KEY);
         toast.success('Routine updated successfully');
+        router.push(`/${ROUTES.HIT_MISS_ROUTINES}`);
       },
       onError: () => {
         toast.error('Failed to update routine');
@@ -120,7 +132,7 @@ export const useGetHitMissRoutineDetail = (routine_id?: string) => {
       return data.data;
     },
     {
-      dedupingInterval: 1000,
+      dedupingInterval: 1500,
     }
   );
 };
