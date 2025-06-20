@@ -15,7 +15,7 @@ export default function ByBaseSpotterContent() {
             listItems={baseItem.items.map((item, index) => ({
               id: (index + 1).toString(),
               name: item.name,
-              value: `${item.result} ${item.unit}`,
+              value: `${item.result} ${item.measurementUnit}`,
             }))}
           />
         </div>

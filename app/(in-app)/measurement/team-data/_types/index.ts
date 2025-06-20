@@ -3,7 +3,7 @@ export type BaseFlyerAndBases = {
   items: {
     name: string;
     result: number;
-    unit: string;
+    measurementUnit: string;
   }[];
 };
 
@@ -16,7 +16,7 @@ export type LatestResultItem = {
 
 export type ImprovedItem = {
   improvement: string;
-  unit: string;
+  measurementUnit: string;
 };
 
 export type ResultForAllMeasurementsItem = {
