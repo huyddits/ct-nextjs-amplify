@@ -39,7 +39,7 @@ export type FlyerAndBasesResponse = {
   items: {
     name: string;
     result: number;
-    unit: string;
+    measurement_unit: string;
   }[];
 };
 
@@ -52,7 +52,7 @@ export type LatestResultResponse = {
 
 export type ImprovementResponse = {
   improvement: string;
-  unit: string;
+  measurement_unit: string;
 };
 
 export type ResultForAllMeasurementsResponse = {

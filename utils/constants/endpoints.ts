@@ -55,4 +55,7 @@ export const END_POINTS = {
 
   // Hit Miss
   HIT_MISS_ROUTINES: 'hit-miss/routines',
+
+  // CheckOff
+  CHECK_OFF_NEW: 'check-off/new-checkoff',
 };

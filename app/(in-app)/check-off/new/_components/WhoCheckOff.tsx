@@ -1,29 +1,69 @@
 'use client';
 
-import { useState } from 'react';
-import { CheckIcon, CircleIcon, SearchIcon, XIcon } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { SearchIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-const mockTeam = [
-  'Brittney Mach',
-  'Chaz Johnson',
-  'Nick Lutz',
-  'Ross Davis',
-  'Steve Roberts',
-  'Tori Pimentel',
-  'Alex Thompson',
-];
+import { CoachStudentPayload } from '@/api/types/measurement';
+import { useAuthStore } from '@/store';
+import { CoachStudentItem } from '@/store/useMeasurement.store';
+import { AppInput } from '@/components/compose';
+import { useCheckOffNew } from '../_hook';
 
 type Props = {
   onClose: () => void;
+  receivers: { userId: string }[];
+  onChangeReceivers: (value: { userId: string }[]) => void;
+  onSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
 };
 
-export default function WhoCheckOff({ onClose }: Props) {
-  const [selected, setSelected] = useState<string[]>([]);
-
-  const toggle = (name: string) => {
-    setSelected(prev => (prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]));
+export default function WhoCheckOff({ onClose, receivers, onChangeReceivers, onSubmit }: Props) {
+  const [selected, setSelected] = useState<CoachStudentItem[]>([]);
+  const { info } = useAuthStore();
+  const [search, setSearch] = useState('');
+  const isSelected = (id: string) => receivers.some(s => s.userId === id);
+  const { loading, coachStudentList, getCoachStudentList } = useCheckOffNew({});
+  const handleSelectAll = () => {
+    const all = coachStudentList
+      .filter(item => !!item.athleteId)
+      .map(item => ({ userId: item.athleteId! }));
+    onChangeReceivers(all);
   };
+
+  const handleDeselectAll = () => {
+    onChangeReceivers([]);
+  };
+
+  const filteredList = useMemo(() => {
+    return coachStudentList.filter(item => {
+      const fullName = `${item.athlete.profile.firstName} ${item.athlete.profile.lastName}`;
+      return fullName.toLowerCase().includes(search.toLowerCase());
+    });
+  }, [search, coachStudentList]);
+  const toggle = (student: CoachStudentItem) => {
+    const id = student.athleteId;
+    if (!id) return;
+    const exists = receivers.some(r => r.userId === id);
+    if (exists) {
+      onChangeReceivers(receivers.filter(r => r.userId !== id));
+    } else {
+      onChangeReceivers([...receivers, { userId: id }]);
+    }
+  };
+
+  useEffect(() => {
+    if (!info?.coachCode) {
+      return;
+    }
+    const payload: CoachStudentPayload = {
+      coach_code: info.coachCode,
+    };
+
+    getCoachStudentList(payload);
+  }, [info?.coachCode]);
+
+  useEffect(() => {
+    onChangeReceivers(selected.map(item => ({ userId: item.athleteId })));
+  }, [selected]);
 
   return (
     <div
@@ -35,49 +75,52 @@ export default function WhoCheckOff({ onClose }: Props) {
         onClick={e => e.stopPropagation()}
       >
         <div className="space-y-4 mt-4">
-          {/* Search Bar */}
           <div className="relative">
             <SearchIcon className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
-            <input
-              placeholder="Search Team"
-              className="w-full border border-green-600 rounded-full py-2 pl-10 pr-4"
+            <AppInput
+              label=""
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              icon={<SearchIcon className="w-5 h-5 text-gray-400" />}
+              inputProps={{
+                placeholder: 'Search Team',
+              }}
+              fullWidth
+              size="md"
             />
           </div>
 
-          {/* Header */}
           <div className="flex justify-between text-green-700 font-medium text-sm px-1">
-            <button onClick={() => setSelected(mockTeam)}>Select All</button>
+            <button onClick={handleSelectAll}>Select All</button>
             <span>{selected.length} selected</span>
-            <button onClick={() => setSelected([])}>Deselect All</button>
+            <button onClick={handleDeselectAll}>Deselect All</button>
           </div>
 
-          {/* Member list */}
           <div className="max-h-56 overflow-y-auto pr-1 space-y-2">
-            {mockTeam.map(name => {
-              const isSelected = selected.includes(name);
+            {filteredList.map(item => {
+              const name = `${item.athlete.profile.firstName} ${item.athlete.profile.lastName}`;
+              const selectedItem = isSelected(item.athleteId);
+
               return (
-                <div
-                  key={name}
-                  onClick={() => toggle(name)}
-                  className={`flex justify-between items-center border-2 rounded-full py-2 px-4 cursor-pointer ${
-                    isSelected ? 'bg-green-100 border-green-600' : 'border-green-600'
-                  }`}
-                >
-                  <span>{name}</span>
-                  {isSelected ? (
-                    <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center">
-                      <CheckIcon className="w-4 h-4 text-white" />
-                    </div>
-                  ) : (
-                    <CircleIcon className="text-gray-400 w-5 h-5" />
-                  )}
+                <div key={item.athleteId} className="flex items-center justify-between gap-3">
+                  <div
+                    onClick={() => toggle(item)}
+                    className={`flex-1 text-left border-2 rounded-full py-2 px-4 transition ${
+                      selectedItem ? 'bg-green-50 border-green-600' : 'border-green-600'
+                    }`}
+                  >
+                    <span className="font-medium text-sm">{name}</span>
+                  </div>
+
+                  <div className="w-5 h-5 rounded-full border-2 border-green-600 flex items-center justify-center">
+                    {selectedItem && <div className="w-3 h-3 rounded-full bg-green-600" />}
+                  </div>
                 </div>
               );
             })}
           </div>
 
-          {/* Submit Button */}
-          <Button className="w-full" size="lg">
+          <Button type="button" className="w-full" size="lg" onClick={onSubmit} loading={loading}>
             Send Check Off
           </Button>
         </div>

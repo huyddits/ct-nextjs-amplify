@@ -92,8 +92,8 @@ export default function ByAthleteContent() {
                     axisLine={false}
                     tickLine={false}
                     tick={{ fontSize: 12, fill: '#666' }}
-                    domain={[0, 180]}
-                    ticks={[0, 45, 90, 135, 180]}
+                    domain={[0, 1000]}
+                    ticks={[0, 200, 400, 600, 800, 1000]}
                   />
                   <Line
                     type="monotone"
@@ -135,7 +135,7 @@ export default function ByAthleteContent() {
                     <div className="text-2xl font-semibold">
                       {improvement.improvement}
                       <span className=" ml-1 text-sm font-normal text-gray-500">
-                        {improvement.unit}
+                        {improvement.measurementUnit}
                       </span>
                     </div>
                   ) : (
