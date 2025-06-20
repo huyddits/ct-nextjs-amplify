@@ -43,7 +43,7 @@ export type BaseFlyerAndBases = {
   items: {
     name: string;
     result: number;
-    unit: string;
+    measurementUnit: string;
   }[];
 };
 
