@@ -1,3 +1,6 @@
+import { differenceInYears } from 'date-fns';
+import { MIN_DATE_OF_BIRTH } from '../constants';
+
 export const PATTERN = {
   NAME: /^[\p{L}\p{M} '-]+$/u,
   EMAIL: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -29,4 +32,10 @@ export const isEmail = (value: string) => {
 
 export const isName = (value: string) => {
   return PATTERN.NAME.test(value);
+};
+
+export const isEnoughYearOld = (value: string) => {
+  if (!value) return false;
+  const age = differenceInYears(new Date(), value);
+  return age >= MIN_DATE_OF_BIRTH;
 };

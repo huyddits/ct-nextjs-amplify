@@ -62,7 +62,7 @@ function Button({
       disabled={disabled || loading}
       {...props}
     >
-      {loading && <Loader2Icon className="animate-spin size-4" />}
+      {loading && <Loader2Icon className="animate-spin size-5" />}
       {children}
     </Comp>
   );

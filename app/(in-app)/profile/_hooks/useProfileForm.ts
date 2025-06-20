@@ -1,5 +1,5 @@
 import { object, string, array, InferType } from 'yup';
-import { ERROR_MESSAGES } from '@/utils/constants';
+import { ERROR_MESSAGES, MIN_DATE_OF_BIRTH } from '@/utils/constants';
 import * as $v from '@/utils/validators';
 import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import { useLoading } from '@/hooks';
 import { UpdatePersonalInfoPayload } from '@/api/types/users';
 import { format, parse, parseISO } from 'date-fns';
+import { isEnoughYearOld } from '@/utils/validators';
 
 const schema = object().shape({
   coachCode: string().default(''),
@@ -24,7 +25,9 @@ const schema = object().shape({
     .max(50, ERROR_MESSAGES.MAX_LENGTH(50))
     .matches($v.PATTERN.NAME, ERROR_MESSAGES.NAME),
   email: string().required(ERROR_MESSAGES.INPUT).matches($v.PATTERN.EMAIL, ERROR_MESSAGES.EMAIL),
-  dateOfBirth: string().required(ERROR_MESSAGES.INPUT),
+  dateOfBirth: string()
+    .required(ERROR_MESSAGES.INPUT)
+    .test('is-old-enough', `You must be at least ${MIN_DATE_OF_BIRTH} years old`, isEnoughYearOld),
   schoolName: string()
     .required(ERROR_MESSAGES.INPUT)
     .max(100, ERROR_MESSAGES.MAX_LENGTH(100))

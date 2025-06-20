@@ -54,7 +54,7 @@ export const END_POINTS = {
   RESULT_FOR_ALL_MEASUREMENTS: 'measurement/athlete-latest-result-for-all-measurements',
 
   // Hit Miss
-  HIT_MISS_ROUTINES: 'hit-miss/routines',
+  HIT_MISS_ROUTINES: 'hitmiss/routine',
 
   // CheckOff
   CHECK_OFF_NEW: 'check-off/new-checkoff',

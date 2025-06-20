@@ -9,6 +9,7 @@ export type SelectOption = {
   label: string;
   value: string;
   unitType?: string;
+  disabled?: boolean;
   [key: string]: any;
 };
 
@@ -24,6 +25,7 @@ interface AppSelectProps {
   placeholder?: string;
   errorMessage?: string;
   disabled?: boolean;
+  loading?: boolean;
   onChangeSelected: (selectedValue: string) => void;
 }
 
@@ -40,6 +42,7 @@ export default function AppSelect({
   errorMessage,
   selectedValue,
   onChangeSelected,
+  loading,
 }: Readonly<AppSelectProps>) {
   const [isChanged, setIsChanged] = useState(false);
   const selectedLabel = defaultLabel ?? options.find(o => o.value === selectedValue)?.label ?? '';
@@ -65,6 +68,7 @@ export default function AppSelect({
         <SelectTrigger
           aria-labelledby={id}
           disabled={disabled}
+          loading={loading}
           className={cn('bg-white', fullWidth ? 'w-full' : '')}
         >
           {!isChanged ? (
@@ -82,7 +86,7 @@ export default function AppSelect({
         <SelectContent>
           {options.length ? (
             options.map(item => (
-              <SelectItem key={item.value} value={item.value}>
+              <SelectItem key={item.value} value={item.value} disabled={item.disabled}>
                 {item.label}
               </SelectItem>
             ))
