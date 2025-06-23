@@ -74,6 +74,9 @@ export type PersonalInfo = {
   planStripeCustomerId: string | null;
   planStripeSubscriptionId: string | null;
   planPromo: string | null;
+  acknowledgementStrength: boolean;
+  acknowledgementCardio: boolean;
+  acknowledgementFitness: boolean;
 } | null;
 
 export enum BillingCycle {

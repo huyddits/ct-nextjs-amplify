@@ -14,9 +14,7 @@ import { copyToClipboard } from '@/utils/helpers';
 import { toast } from 'react-toastify';
 
 export default function ProfileForm() {
-  const { insetBottom } = useSafeAreaInset();
-  const { isCoach, isEditing, coachCode, control, trigger, onSaveInfo, onToggle, loading } =
-    useProfileForm();
+  const { isCoach, isEditing, coachCode, control, trigger, onToggle, loading } = useProfileForm();
   const {
     roles: roleOptions,
     cheerStyles: cheerStyleOptions,

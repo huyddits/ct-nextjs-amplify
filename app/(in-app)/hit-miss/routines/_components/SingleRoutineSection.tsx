@@ -66,7 +66,7 @@ export function SingleRoutineSection({
             <AppInput
               {...field}
               inputProps={{ placeholder: 'Enter Section Name' }}
-              className="font-semibold flex-1"
+              className="flex-1 max-sm:[&_input]:text-sm"
               errorMessage={error?.message}
             />
           )}

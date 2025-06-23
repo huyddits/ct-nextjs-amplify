@@ -67,6 +67,9 @@ export const usePersonalInfo = () => {
           planStripePriceId: foundPlan?.plan.stripe_price_id ?? '',
           planStripeCustomerId: data.stripe_customer_id,
           planStripeSubscriptionId: data?.stripe_subscription_id ?? '',
+          acknowledgementCardio: data.profile.cardio_acknowledgment,
+          acknowledgementFitness: data.profile.fitness_acknowledgment,
+          acknowledgementStrength: data.profile.strength_acknowledgment,
         });
       } catch (error) {
         console.log(error);

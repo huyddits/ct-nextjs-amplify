@@ -1,13 +1,14 @@
 'use client';
 import { Download } from 'lucide-react';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { AppInput, AppTextarea } from '@/components/compose';
 import { CheckOffStatusEnum, CheckOffStudentReview } from '@/api/types/checkOff';
 import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useUpdateCheckOffStudentReview } from '../_hooks/useGetCheckOffStudentReview';
-import { ERROR_MESSAGES } from '@/utils/constants';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { CHECKOFF_SCHEMA, useCheckOffForm } from '../_hooks/useCheckOffForm';
 
 type Props = {
   data: CheckOffStudentReview;
@@ -19,37 +20,33 @@ const statusOptions = [
   { label: 'Excused', value: CheckOffStatusEnum.Excused },
 ];
 
-const schema = yup.object({
-  status: yup
-    .mixed<CheckOffStatusEnum>()
-    .oneOf(Object.values(CheckOffStatusEnum))
-    .required(ERROR_MESSAGES.INPUT),
-  coach_review_note: yup
-    .string()
-    .required(ERROR_MESSAGES.INPUT)
-    .max(500, ERROR_MESSAGES.MAX_LENGTH(500)),
-});
-
 export function CheckOffCard({ data: checkOff }: Props) {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<yup.InferType<typeof schema>>({
-    defaultValues: {
-      status: (checkOff.status as CheckOffStatusEnum) || CheckOffStatusEnum.NotCompleted,
-      coach_review_note: checkOff.coach_review_note || '',
-    },
-    resolver: yupResolver(schema),
-  });
+  } = useCheckOffForm(checkOff);
 
+  const [finishReview, setFinishReview] = useState(false);
   const { trigger, isMutating } = useUpdateCheckOffStudentReview();
+  const isCompleted =
+    finishReview ||
+    checkOff.status === CheckOffStatusEnum.Completed ||
+    checkOff.status === CheckOffStatusEnum.Excused;
 
-  const onSubmit = (formData: yup.InferType<typeof schema>) => {
-    trigger({
-      submit_id: checkOff.submit_id,
-      ...formData,
-    });
+  const onSubmit = (formData: yup.InferType<typeof CHECKOFF_SCHEMA>) => {
+    trigger(
+      {
+        submit_id: checkOff.submit_id,
+        ...formData,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Review updated successfully');
+          setFinishReview(true);
+        },
+      }
+    );
   };
 
   return (
@@ -78,7 +75,6 @@ export function CheckOffCard({ data: checkOff }: Props) {
         {/* Athlete Name */}
         <div className="flex items-center gap-2">
           <span className="font-medium min-w-[120px]">Athlete:</span>
-
           <AppInput
             size="lg"
             value={checkOff.athlete.email}
@@ -109,7 +105,7 @@ export function CheckOffCard({ data: checkOff }: Props) {
           control={control}
           render={({ field }) => (
             <div
-              className="grid grid-cols-3 gap-2 mt-4"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4"
               role="radiogroup"
               aria-label="Completion status"
             >
@@ -117,7 +113,7 @@ export function CheckOffCard({ data: checkOff }: Props) {
                 <Button
                   key={option.value}
                   type="button"
-                  onClick={() => field.onChange(option.value)}
+                  onClick={() => !isCompleted && field.onChange(option.value)}
                   variant={field.value === option.value ? 'default' : 'outline'}
                   aria-checked={field.value === option.value}
                   role="radio"
@@ -137,15 +133,21 @@ export function CheckOffCard({ data: checkOff }: Props) {
           render={({ field, formState: { errors } }) => (
             <AppTextarea
               errorMessage={errors.coach_review_note?.message}
-              textareaProps={{ placeholder: 'Check Off Feedback' }}
+              textareaProps={{ placeholder: 'Check Off Feedback', readOnly: isCompleted }}
               {...field}
             />
           )}
         />
 
         {/* Save Button */}
-        <Button type="submit" size="lg" className="w-full" loading={isMutating}>
-          Save Review
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full"
+          loading={isMutating}
+          disabled={isCompleted}
+        >
+          {isCompleted ? 'Review Completed' : 'Save Review'}
         </Button>
       </form>
     </div>

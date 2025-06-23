@@ -1,3 +1,4 @@
+'use client';
 import { type ProgramItem } from '../_hooks';
 import { ProgramCard } from '.';
 import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';

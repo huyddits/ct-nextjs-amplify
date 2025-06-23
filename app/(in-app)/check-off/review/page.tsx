@@ -4,11 +4,18 @@ import { useGetCheckOffStudentReview } from './_hooks/useGetCheckOffStudentRevie
 import { CheckOffStudentReview } from '@/api/types/checkOff';
 import { CheckOffCard } from './_components';
 import { Loader2Icon } from 'lucide-react';
-import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { useEffect, useMemo } from 'react';
 
 export default function CheckOffStudent() {
-  const [limit, setLimit] = useState(10);
-  const { data, isLoading } = useGetCheckOffStudentReview({ page: 1, limit });
+  const { data, isLoading, setSize, size, isValidating } = useGetCheckOffStudentReview();
+
+  useEffect(() => {
+    return () => {
+      setSize(1);
+    };
+  }, []);
+  const isEmpty = useMemo(() => !data?.[0]?.data?.length, [data]);
 
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">
@@ -17,12 +24,26 @@ export default function CheckOffStudent() {
           <div className="flex justify-center items-center py-10">
             <Loader2Icon className="w-8 h-8 animate-spin text-primary" />
           </div>
-        ) : !data?.length ? (
+        ) : isEmpty ? (
           <div className="text-center text-gray-500 py-10">No check-off data found.</div>
         ) : (
-          data.map((checkOff: CheckOffStudentReview) => (
-            <CheckOffCard key={checkOff.submit_id} data={checkOff} />
-          ))
+          <>
+            {data?.map(page =>
+              page.data?.map((checkOff: CheckOffStudentReview) => (
+                <CheckOffCard key={checkOff.submit_id} data={checkOff} />
+              ))
+            )}
+            {(size < (data?.[data.length - 1]?.meta?.totalPages || 0) || isValidating) && (
+              <Button
+                onClick={() => setSize(size + 1)}
+                className="w-full"
+                loading={isValidating}
+                variant="default"
+              >
+                Load More
+              </Button>
+            )}
+          </>
         )}
       </div>
     </div>

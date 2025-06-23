@@ -24,7 +24,7 @@ export default function TabNavigationHitMiss() {
       ]}
       value={subPath}
       prefixPath={`/${ROUTES.HIT_MISS}`}
-      className="fixed w-full z-20 shadow"
+      className="fixed w-full z-20 shadow top-0"
     />
   );
 }

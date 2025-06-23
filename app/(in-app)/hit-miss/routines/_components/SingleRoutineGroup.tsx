@@ -64,7 +64,7 @@ export function SingleRoutineGroup({
           <UsersIcon className="h-4 w-4 text-gray-600" />
           <div className="flex flex-col max-sm:justify-center sm:flex-row sm:items-center gap-1">
             <span className="text-sm font-medium text-gray-700">Group {groupIndex + 1}</span>
-            <span className="text-xs text-gray-500">({memberFields.length} members)</span>
+            <span className="text-xs text-gray-500">({memberFields.length} athletes)</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -76,7 +76,7 @@ export function SingleRoutineGroup({
             onClick={() => addMember()}
           >
             <PlusIcon className="h-3 w-3 mr-1" />
-            Add <span className="hidden sm:inline">Athlete</span>
+            Add<span className="hidden sm:inline">Athlete</span>
           </Button>
           <Button
             variant="ghost"
@@ -97,7 +97,7 @@ export function SingleRoutineGroup({
               name={`sections.${groupData.sectionIndex}.groups.${groupIndex}.users.${memberIndex}.user_id`}
               render={({ field, fieldState: { error } }) => (
                 <AppSelect
-                  className="w-full overflow-hidden"
+                  className="w-full overflow-hidden max-sm:[&_input]:text-sm"
                   options={athleteOptions}
                   selectedValue={field.value}
                   onChangeSelected={field.onChange}

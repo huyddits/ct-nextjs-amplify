@@ -7,6 +7,7 @@ export const END_POINTS = {
   USERS: 'users',
   USERS_ME: 'users/me',
   USERS_PROFILE: 'users/profile',
+  USERS_ACKNOWLEDGE: 'users/acknowledge',
 
   USERS_FORGOT_PASSWORD: 'users/forgot-password',
   USERS_RESET_PASSWORD: 'users/reset-password',
