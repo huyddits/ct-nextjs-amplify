@@ -57,6 +57,10 @@ export const END_POINTS = {
   HIT_MISS_ROUTINES: 'hitmiss/routine',
   SUMMARY_SECTION: 'hitmiss/session/summary-section',
   SUMMARY_GROUP: 'hitmiss/session/summary-group',
+  HIT_MISS_SESSION: 'hitmiss/session/current',
+  HIT_MISS_EVENT: 'hitmiss/session/:session_id/event',
+  HIT_MISS_DELETE_EVENT: 'hitmiss/session/:session_id/event/last',
+  HIT_MISS_COMPLETE: 'hitmiss/session/:session_id/complete',
 
   // Check Off
   CHECK_OFF_TEAM_DATA: 'check-off/team-data',

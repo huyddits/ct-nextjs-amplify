@@ -8,6 +8,9 @@ export type HitMissUser = {
 
 export type HitMissGroup = {
   group_id: number;
+  rep_count?: number;
+  hit_percentage?: number;
+  events?: HitMissEventItem[];
   users: HitMissUser[];
 };
 
@@ -24,40 +27,74 @@ export type HitMissRoutine = {
   sections: HitMissSection[];
 };
 
-export type summarySectionResponse = {
+export type SummarySectionResponse = {
   routine_id: number;
   from?: string;
   to?: string;
-  sections: summarySection[];
+  sections: SummarySection[];
 };
 
-export type summarySection = {
+export type SummarySection = {
   section_id: number;
   name: string;
   total_reps: number;
   hit_percentage: number;
 };
 
-export type summaryGroupResponse = {
+export type SummaryGroupResponse = {
   routine_id: number;
   from?: string;
   to?: string;
-  sections: summaryGroup[];
+  sections: SummaryGroup[];
 };
 
-export type summaryGroup = {
+export type SummaryGroup = {
   section_id: number;
   name: string;
-  groups: groups[];
+  groups: Groups[];
 };
-export type groups = {
+export type Groups = {
   group_id: number;
   total_reps: number;
   hit_percentage: number;
 };
 
-export type summaryPlayload = {
+export type SummaryPayload = {
   routine_id: number;
+};
+
+export type HitMissCurrentResponse = {
+  id: number;
+  status: string;
+  completed_at: string;
+  events: EventsHitMiss;
+};
+
+export type EventsHitMiss = {
+  routine_id: number;
+  name: string;
+  description: string;
+  sections: HitMissSection[];
+};
+
+export type HitMissEventItem = {
+  id: number;
+  type: string;
+};
+
+export type SesstionPayload = {
+  session_id: number;
+};
+
+export type SesstionEventItemPayload = {
+  section_id: number;
+  group_id: number;
+  type: string;
+};
+
+export type SesstionCompleteItemPayload = {
+  id: number;
+  status: string;
 };
 
 export type HitMissRoutineListResponse = ApiResponse<HitMissRoutine[]>;
@@ -84,6 +121,14 @@ type RoutineMember = {
 
 export type HitMissRoutineDetailResponse = ApiResponse<CreateRoutinePayload<true>>;
 
-export type HitMissRoutineSummaryResponse = ApiResponse<summarySectionResponse[], {}>;
+export type HitMissRoutineSummaryResponse = ApiResponse<SummarySectionResponse[], {}>;
 
-export type HitMissRoutineGroupResponse = ApiResponse<summaryGroupResponse[], {}>;
+export type HitMissRoutineGroupResponse = ApiResponse<SummaryGroupResponse[], {}>;
+
+export type HitMissRoutineCurrentResponse = ApiResponse<HitMissCurrentResponse, {}>;
+
+export type PostHitMissEventResponse = ApiResponse<{}, {}>;
+
+export type DeleteHitMissSessionResponse = ApiResponse<{}, {}>;
+
+export type PostHitMissCompletePayload = ApiResponse<{}, {}>;

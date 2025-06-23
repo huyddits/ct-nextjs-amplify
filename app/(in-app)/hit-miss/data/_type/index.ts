@@ -22,33 +22,33 @@ export type HitMissRoutine = {
   sections: HitMissSection[];
 };
 
-export type summarySectionResponse = {
+export type SummarySectionResponse = {
   routineId: number;
   from?: string;
   to?: string;
-  sections: summarySection[];
+  sections: SummarySection[];
 };
 
-export type summarySection = {
+export type SummarySection = {
   sectionId: number;
   name: string;
   totalReps: number;
   hitPercentage: number;
 };
 
-export type summaryGroupResponse = {
+export type SummaryGroupResponse = {
   routineId: number;
   from?: string;
   to?: string;
-  sections: summaryGroup[];
+  sections: SummaryGroup[];
 };
 
-export type summaryGroup = {
+export type SummaryGroup = {
   sectionId: number;
   name: string;
-  groups: groups[];
+  groups: Groups[];
 };
-export type groups = {
+export type Groups = {
   groupId: number;
   totalReps: number;
   hitPercentage: number;

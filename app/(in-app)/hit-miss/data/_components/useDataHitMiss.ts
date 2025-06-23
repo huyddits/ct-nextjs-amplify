@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { HitMissRoutine, summaryGroupResponse, summarySectionResponse } from '../_type';
+import { HitMissRoutine, SummaryGroupResponse, SummarySectionResponse } from '../_type';
 import { HitMissApi } from '@/api';
 import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { object, string } from 'yup';
-import { summaryPlayload } from '@/api/types/hitMiss';
+import { SummaryPayload } from '@/api/types/hitMiss';
 
 type UseDataHitMissFormOptions = {
   onSuccess?: () => void;
@@ -16,8 +16,8 @@ const schema = object().shape({
 });
 export const useDataHitMiss = (options?: UseDataHitMissFormOptions) => {
   const [hitMissRoutineList, setHitMissRoutineList] = useState<HitMissRoutine[]>([]);
-  const [summarySection, setSummarySection] = useState<summarySectionResponse[]>([]);
-  const [summaryGroup, setSummaryGroup] = useState<summaryGroupResponse[]>([]);
+  const [summarySection, setSummarySection] = useState<SummarySectionResponse[]>([]);
+  const [summaryGroup, setSummaryGroup] = useState<SummaryGroupResponse[]>([]);
   const { control } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -61,7 +61,7 @@ export const useDataHitMiss = (options?: UseDataHitMissFormOptions) => {
     m => m.routineId.toString() === hitMissRoutines
   );
 
-  const getSummarySection = async (params: summaryPlayload) => {
+  const getSummarySection = async (params: SummaryPayload) => {
     try {
       const response = await HitMissApi.getSummarySection(params);
       const { data, error } = response.data;
@@ -84,7 +84,7 @@ export const useDataHitMiss = (options?: UseDataHitMissFormOptions) => {
     }
   };
 
-  const getSummaryGroup = async (params: summaryPlayload) => {
+  const getSummaryGroup = async (params: SummaryPayload) => {
     try {
       const response = await HitMissApi.getSummaryGroup(params);
       const { data, error } = response.data;
@@ -115,7 +115,7 @@ export const useDataHitMiss = (options?: UseDataHitMissFormOptions) => {
 
   useEffect(() => {
     if (!routineId) return;
-    const payload: summaryPlayload = {
+    const payload: SummaryPayload = {
       routine_id: Number(routineId),
     };
     getSummarySection(payload);
