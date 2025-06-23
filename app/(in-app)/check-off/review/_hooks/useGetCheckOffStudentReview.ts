@@ -15,12 +15,12 @@ export function useGetCheckOffStudentReview() {
       return [CHECK_OFF_STUDENT_REVIEW.CHECK_OFF_STUDENT_REVIEW_KEY, pageIndex + 1];
     },
     async (key: string[]) => {
-      const { data } = await getCheckOffStudentReview({ page: Number(key?.[1] || 1), limit: 2 });
+      const { data } = await getCheckOffStudentReview({ page: Number(key?.[1] || 1), limit: 10 });
       return data;
     },
     {
-      parallel: true,
-      revalidateFirstPage: false,
+      dedupingInterval: 1000, // 1 second,
+      initialSize: 1,
     }
   );
 }
