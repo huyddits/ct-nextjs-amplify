@@ -109,7 +109,7 @@ export function CheckOffCard({ data: checkOff }: Props) {
           control={control}
           render={({ field }) => (
             <div
-              className="grid grid-cols-3 gap-2 mt-4"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4"
               role="radiogroup"
               aria-label="Completion status"
             >

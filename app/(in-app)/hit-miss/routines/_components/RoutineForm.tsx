@@ -18,6 +18,7 @@ import {
   useUpdateHitMissRoutine,
 } from '../_hooks';
 import { useEffect, useMemo } from 'react';
+import { useSafeAreaInset } from '@/hooks';
 
 const schema = yup.object({
   name: yup.string().max(100, ERROR_MESSAGES.MAX_LENGTH(100)).required('Routine name is required'),
@@ -52,12 +53,13 @@ interface Props {
 }
 
 export function RoutineForm({ id }: Props) {
+  const { insetTop, insetBottom } = useSafeAreaInset();
   const isEdit = !!id;
   const { data: routine, isLoading: isLoadingRoutineDetail } = useGetHitMissRoutineDetail(id);
   const { trigger: createRoutine, isMutating: isCreating } = useCreateHitMissRoutine();
   const { trigger: updateRoutine, isMutating: isUpdating } = useUpdateHitMissRoutine();
   const { control, handleSubmit, setValue } = useForm<CreateRoutinePayload>({
-    mode: 'onTouched',
+    mode: 'onChange',
     resolver: yupResolver(schema) as any,
     defaultValues: {
       name: '',
@@ -147,7 +149,10 @@ export function RoutineForm({ id }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
-      <div className="bg-white border-b border-gray-300 position-avoid-top-nav">
+      <div
+        className="bg-white border-b border-gray-300 position-avoid-top-nav"
+        style={{ paddingTop: insetTop }}
+      >
         <div className="flex items-center p-4">
           <Link href={`/${ROUTES.HIT_MISS_ROUTINES}`} className="text-gray-600">
             <ArrowLeftIcon className="h-6 w-6" />
@@ -173,7 +178,7 @@ export function RoutineForm({ id }: Props) {
                       <AppInput
                         {...field}
                         inputProps={{ placeholder: 'Enter Routine Name' }}
-                        className="text-xl font-bold"
+                        className="max-sm:[&_input]:text-sm font-normal"
                         errorMessage={error?.message}
                       />
                     )}
@@ -203,7 +208,7 @@ export function RoutineForm({ id }: Props) {
               Add Section
             </Button>
           </div>
-          <div className="position-avoid-bottom-app">
+          <div className="position-avoid-bottom-app" style={{ paddingBottom: insetBottom }}>
             <div className="bg-white px-4 py-3 shadow-top">
               <div className="max-w-3xl mx-auto">
                 <Button className="w-full shadow" size="lg" type="submit" loading={isLoading}>
