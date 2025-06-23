@@ -5,3 +5,4 @@ export { default as ProgramFilter } from './ProgramFilter';
 export { default as ExerciseProgramSection } from './ExerciseProgramSection';
 export { default as EquipmentFilter } from './EquipmentFilter';
 export { default as ExercisePicker } from './ExercisePicker';
+export { default as RouteGuardPolicyStrength } from './RouteGuardPolicyStrength';

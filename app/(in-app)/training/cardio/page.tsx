@@ -6,10 +6,12 @@ import { useCardio } from './_hooks';
 import { useEffect, useState } from 'react';
 import { useCardioStore } from '@/store/useCardio.store';
 import Link from 'next/link';
-import { useLoading } from '@/hooks';
+import { useAckowledgement, useLoading } from '@/hooks';
 import { InfoIcon } from 'lucide-react';
+import { useAuthStore } from '@/store';
 
 export default function CardioPage() {
+  const { acknowledgementCardio } = useAckowledgement();
   const { intervalsList, clearCardioSession, setDraft, draft } = useCardioStore();
   const { loading, startLoading, stopLoading } = useLoading();
   const {
@@ -101,6 +103,10 @@ export default function CardioPage() {
   });
 
   const distanceLabel = distanceUnit === 'Stairs' ? 'Stairs' : 'Distance';
+
+  if (!acknowledgementCardio) {
+    return;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
