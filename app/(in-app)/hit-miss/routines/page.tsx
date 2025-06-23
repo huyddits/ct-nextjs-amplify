@@ -13,7 +13,7 @@ export default function RoutinesPage() {
   };
 
   return (
-    <div className="pb-20 pt-12">
+    <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto">
       <div className="px-4 py-3">
         <Button className="w-full" size="lg" onClick={onCreate}>
           <PlusCircleIcon className="size-5 mr-2" />

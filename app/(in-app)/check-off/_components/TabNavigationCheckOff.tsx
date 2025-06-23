@@ -41,7 +41,7 @@ export default function TabNavigationCheckOff() {
       value={subPath}
       listTabs={listTabs}
       prefixPath={`/${ROUTES.CHECK_OFF}`}
-      className="fixed w-full z-20 shadow"
+      className="fixed w-full z-20 shadow top-0"
     />
   );
 }
