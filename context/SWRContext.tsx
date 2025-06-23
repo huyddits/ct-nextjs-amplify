@@ -5,6 +5,10 @@ import { SWRConfig } from 'swr';
 
 export const SWRProvider = ({ children }: PropsWithChildren) => {
   return (
-    <SWRConfig value={{ dedupingInterval: 3000, shouldRetryOnError: false }}>{children}</SWRConfig>
+    <SWRConfig
+      value={{ dedupingInterval: 4000, shouldRetryOnError: false, revalidateOnFocus: false }}
+    >
+      {children}
+    </SWRConfig>
   );
 };

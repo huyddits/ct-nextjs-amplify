@@ -75,7 +75,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
         items: data.items.map(subData => ({
           name: subData.name,
           result: subData.result,
-          unit: subData.unit,
+          measurementUnit: subData.measurement_unit,
         })),
       }));
       setbasesSpotter(dataResponse);
@@ -101,7 +101,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
         items: data.items.map(subData => ({
           name: subData.name,
           result: subData.result,
-          unit: subData.unit,
+          measurementUnit: subData.measurement_unit,
         })),
       }));
       setflyer(dataResponse);
@@ -200,7 +200,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
       if (!data) throw error;
       const dataResponse = {
         improvement: data.improvement,
-        unit: data.unit,
+        measurementUnit: data.measurement_unit,
       };
       setImprovement(dataResponse);
       options?.onSuccess?.();
