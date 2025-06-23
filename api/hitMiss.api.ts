@@ -4,6 +4,9 @@ import {
   CreateRoutinePayload,
   HitMissRoutineListResponse,
   HitMissRoutineDetailResponse,
+  summaryPlayload,
+  HitMissRoutineSummaryResponse,
+  HitMissRoutineGroupResponse,
 } from './types/hitMiss';
 
 export const getHitMissRoutineList = () => {
@@ -30,4 +33,16 @@ export const getHitMissRoutineDetail = (routine_Id: number) => {
   return axiosIns.get<HitMissRoutineDetailResponse>(
     `${END_POINTS.HIT_MISS_ROUTINES}/${routine_Id}`
   );
+};
+
+export const getSummarySection = (params: summaryPlayload) => {
+  return axiosIns.get<HitMissRoutineSummaryResponse>(END_POINTS.SUMMARY_SECTION, {
+    params: params,
+  });
+};
+
+export const getSummaryGroup = (params: summaryPlayload) => {
+  return axiosIns.get<HitMissRoutineGroupResponse>(END_POINTS.SUMMARY_GROUP, {
+    params: params,
+  });
 };

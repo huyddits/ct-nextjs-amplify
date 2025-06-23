@@ -24,6 +24,42 @@ export type HitMissRoutine = {
   sections: HitMissSection[];
 };
 
+export type summarySectionResponse = {
+  routine_id: number;
+  from?: string;
+  to?: string;
+  sections: summarySection[];
+};
+
+export type summarySection = {
+  section_id: number;
+  name: string;
+  total_reps: number;
+  hit_percentage: number;
+};
+
+export type summaryGroupResponse = {
+  routine_id: number;
+  from?: string;
+  to?: string;
+  sections: summaryGroup[];
+};
+
+export type summaryGroup = {
+  section_id: number;
+  name: string;
+  groups: groups[];
+};
+export type groups = {
+  group_id: number;
+  total_reps: number;
+  hit_percentage: number;
+};
+
+export type summaryPlayload = {
+  routine_id: number;
+};
+
 export type HitMissRoutineListResponse = ApiResponse<HitMissRoutine[]>;
 
 export type CreateRoutinePayload<Detail = false> = {
@@ -47,3 +83,7 @@ type RoutineMember = {
 };
 
 export type HitMissRoutineDetailResponse = ApiResponse<CreateRoutinePayload<true>>;
+
+export type HitMissRoutineSummaryResponse = ApiResponse<summarySectionResponse[], {}>;
+
+export type HitMissRoutineGroupResponse = ApiResponse<summaryGroupResponse[], {}>;
