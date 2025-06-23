@@ -8,9 +8,9 @@ import Link from 'next/link';
 import { useListStrengthPrograms } from './_hooks';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ROUTES } from '@/utils/constants';
-import { useStrengthStore } from '@/store';
+import { useAuthStore, useStrengthStore } from '@/store';
 import { ProgramType } from '@/utils/types';
-import { useSafeAreaInset } from '@/hooks';
+import { useAckowledgement, useSafeAreaInset } from '@/hooks';
 import { SafeAreaDetection } from '@/app/_components';
 
 const CustomTabTrigger = ({ value, children }: { value: ProgramType; children: ReactNode }) => {
@@ -25,6 +25,7 @@ const CustomTabTrigger = ({ value, children }: { value: ProgramType; children: R
 };
 
 export default function StrengthPage() {
+  const { acknowledgementStrength } = useAckowledgement();
   const { setProgramType, programType, tabs } = useStrengthStore();
   const { insetTop, insetBottom } = useSafeAreaInset();
   const {
@@ -48,6 +49,8 @@ export default function StrengthPage() {
     if (programType === ProgramType.MyPrograms) return true;
     return false;
   }, [programType, isCoach]);
+
+  if (!acknowledgementStrength) return;
 
   return (
     <section>

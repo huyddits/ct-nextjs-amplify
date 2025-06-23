@@ -7,3 +7,4 @@ export * from './usePagination';
 export * from './useLoadMore';
 export * from './useOnPageLeave';
 export * from './useSafeAreaInset';
+export * from './useAcknowledgement';

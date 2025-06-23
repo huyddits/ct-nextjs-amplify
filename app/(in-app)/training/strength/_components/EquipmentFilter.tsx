@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect, useState } from 'react';
 import { DumbbellIcon, FilterIcon, ChevronUpIcon, ChevronDownIcon, XIcon } from 'lucide-react';
 import { set } from 'date-fns';
