@@ -95,6 +95,9 @@ export type UserProfile = {
   measurement_unit_name: string;
   measurement_unit_type: string;
   school_name: string;
+  cardio_acknowledgment: boolean;
+  fitness_acknowledgment: boolean;
+  strength_acknowledgment: boolean;
 };
 
 export type GetPersonalInfoResponse = ApiResponse<
@@ -149,3 +152,9 @@ export type UpdatePersonalInfoResponse = ApiResponse<
   },
   {}
 >;
+
+export type UpdatePersonalAcknowledgePayload = {
+  strength_acknowledgment: boolean;
+  cardio_acknowledgment: boolean;
+  fitness_acknowledgment: boolean;
+};

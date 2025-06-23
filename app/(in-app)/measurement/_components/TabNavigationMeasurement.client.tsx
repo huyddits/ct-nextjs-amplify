@@ -9,7 +9,6 @@ import { useSafeAreaInset } from '@/hooks';
 
 export default function TabNavigationMeasurement() {
   const { info } = useAuthStore();
-  const { insetTop } = useSafeAreaInset();
   const pathname = usePathname();
   const [_, __, subPath] = pathname.split('/');
   const listTabs = useMemo(

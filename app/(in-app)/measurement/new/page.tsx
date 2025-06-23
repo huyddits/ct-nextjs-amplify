@@ -69,7 +69,6 @@ export default function MeasurementNewPage() {
 
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">
-      <SafeAreaDetection position="top" />
       <div className="py-4">
         <div className="space-y-6">
           <div>

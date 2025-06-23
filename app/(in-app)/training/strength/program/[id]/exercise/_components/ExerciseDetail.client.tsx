@@ -326,6 +326,7 @@ export default function StrengthExercise({ programId }: { programId: number }) {
               removeSet={onRemoveSet}
               toggleSetCompletion={toggleSetCompletion}
               updateSet={onUpdateSet}
+              totalSet={listExerciseInProgram[indicator]?.sets.length || 0}
             />
           ))}
         </div>

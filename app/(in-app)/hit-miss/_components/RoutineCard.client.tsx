@@ -50,7 +50,7 @@ export default function RoutineCard({ data }: Props) {
           {!isDeleting && <Trash2Icon className="size-5 text-inherit" />}
         </Button>
       </div>
-      <h2 className="text-lg font-semibold text-primary mb-3 break-word">{data.name}</h2>
+      <h2 className="text-lg font-semibold text-primary mb-3 break-words">{data.name}</h2>
       <ol className="space-y-2">
         {data.sections.map((section, index) => (
           <li key={section.name} className="text-gray-700 break-words">

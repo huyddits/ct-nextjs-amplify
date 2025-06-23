@@ -9,6 +9,7 @@ import type {
   GetPersonalInfoResponse,
   UpdatePersonalInfoPayload,
   UpdatePersonalInfoResponse,
+  UpdatePersonalAcknowledgePayload,
 } from './types/users';
 
 export const registerUser = (payload: CreateUserPayload) => {
@@ -37,4 +38,8 @@ export const getPersonalInfo = () => {
 
 export const updatePersonalInfo = (payload: UpdatePersonalInfoPayload) => {
   return axiosIns.put<UpdatePersonalInfoResponse>(END_POINTS.USERS_PROFILE, payload);
+};
+
+export const updateAcknowledge = (payload: UpdatePersonalAcknowledgePayload) => {
+  return axiosIns.put(END_POINTS.USERS_ACKNOWLEDGE, payload);
 };
