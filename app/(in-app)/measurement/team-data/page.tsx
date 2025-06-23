@@ -3,7 +3,6 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { ByAthleteContent, ByBaseSpotterContent, ByFlyerContent } from './_components';
-import { useTeamData } from './_hook';
 import { useSafeAreaInset } from '@/hooks';
 
 const TAB_VALUES = ['flyer', 'base-spotter', 'athlete'];

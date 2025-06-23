@@ -8,6 +8,8 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useUpdateCheckOffStudentReview } from '../_hooks/useGetCheckOffStudentReview';
 import { ERROR_MESSAGES } from '@/utils/constants';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 type Props = {
   data: CheckOffStudentReview;
@@ -42,14 +44,26 @@ export function CheckOffCard({ data: checkOff }: Props) {
     },
     resolver: yupResolver(schema),
   });
-
+  const [finishReview, setFinishReview] = useState(false);
   const { trigger, isMutating } = useUpdateCheckOffStudentReview();
+  const isCompleted =
+    finishReview ||
+    checkOff.status === CheckOffStatusEnum.Completed ||
+    checkOff.status === CheckOffStatusEnum.Excused;
 
   const onSubmit = (formData: yup.InferType<typeof schema>) => {
-    trigger({
-      submit_id: checkOff.submit_id,
-      ...formData,
-    });
+    trigger(
+      {
+        submit_id: checkOff.submit_id,
+        ...formData,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Review updated successfully');
+          setFinishReview(true);
+        },
+      }
+    );
   };
 
   return (
@@ -78,7 +92,6 @@ export function CheckOffCard({ data: checkOff }: Props) {
         {/* Athlete Name */}
         <div className="flex items-center gap-2">
           <span className="font-medium min-w-[120px]">Athlete:</span>
-
           <AppInput
             size="lg"
             value={checkOff.athlete.email}
@@ -117,7 +130,7 @@ export function CheckOffCard({ data: checkOff }: Props) {
                 <Button
                   key={option.value}
                   type="button"
-                  onClick={() => field.onChange(option.value)}
+                  onClick={() => !isCompleted && field.onChange(option.value)}
                   variant={field.value === option.value ? 'default' : 'outline'}
                   aria-checked={field.value === option.value}
                   role="radio"
@@ -137,15 +150,21 @@ export function CheckOffCard({ data: checkOff }: Props) {
           render={({ field, formState: { errors } }) => (
             <AppTextarea
               errorMessage={errors.coach_review_note?.message}
-              textareaProps={{ placeholder: 'Check Off Feedback' }}
+              textareaProps={{ placeholder: 'Check Off Feedback', readOnly: isCompleted }}
               {...field}
             />
           )}
         />
 
         {/* Save Button */}
-        <Button type="submit" size="lg" className="w-full" loading={isMutating}>
-          Save Review
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full"
+          loading={isMutating}
+          disabled={isCompleted}
+        >
+          {isCompleted ? 'Review Completed' : 'Save Review'}
         </Button>
       </form>
     </div>

@@ -1,9 +1,7 @@
 import { getCheckOffStudentReview, updateCheckOffStudentReview } from '@/api/checkOff.api';
-import { PaginationParams } from '@/utils/types';
 import { UpdateCheckOffStudentReviewBody } from '@/api/types/checkOff';
 import useSWRMutation from 'swr/mutation';
 import useSWRInfinite from 'swr/infinite';
-import { toast } from 'react-toastify';
 
 export const CHECK_OFF_STUDENT_REVIEW = {
   CHECK_OFF_STUDENT_REVIEW_KEY: 'CHECK_OFF_STUDENT_REVIEW_KEY',
@@ -36,7 +34,6 @@ export function useUpdateCheckOffStudentReview() {
     },
     {
       onSuccess: () => {
-        toast.success('Review updated successfully');
         // mutate((key: string | string[]) => {
         //   if (typeof key === 'string') {
         //     return key === CHECK_OFF_STUDENT_REVIEW.CHECK_OFF_STUDENT_REVIEW_KEY;
@@ -44,9 +41,6 @@ export function useUpdateCheckOffStudentReview() {
         //   if (Array.isArray(key))
         //     return key.includes(CHECK_OFF_STUDENT_REVIEW.CHECK_OFF_STUDENT_REVIEW_KEY);
         // });
-      },
-      onError: () => {
-        toast.error('Failed to update review');
       },
     }
   );

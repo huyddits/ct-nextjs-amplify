@@ -84,7 +84,10 @@ export function RoutineForm({ id }: Props) {
   });
 
   const addSection = (user_id?: string) => {
-    appendSection({ name: '', groups: [{ users: [{ user_id }] }] });
+    appendSection({
+      name: '',
+      groups: [{ users: [{ user_id }] }],
+    });
   };
 
   // Wrappers to match SingleRoutineSection's expected signature
@@ -189,7 +192,7 @@ export function RoutineForm({ id }: Props) {
 
             {sectionFields.map((section, idx) => (
               <SingleRoutineSection
-                key={section.id}
+                key={section.id + idx}
                 idx={idx}
                 totalSection={sectionFields.length}
                 moveSection={moveSection}
