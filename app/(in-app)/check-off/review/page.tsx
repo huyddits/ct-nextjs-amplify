@@ -5,11 +5,16 @@ import { CheckOffStudentReview } from '@/api/types/checkOff';
 import { CheckOffCard } from './_components';
 import { Loader2Icon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export default function CheckOffStudent() {
   const { data, isLoading, setSize, size, isValidating } = useGetCheckOffStudentReview();
 
+  useEffect(() => {
+    return () => {
+      setSize(1);
+    };
+  }, []);
   const isEmpty = useMemo(() => !data?.[0]?.data?.length, [data]);
 
   return (
