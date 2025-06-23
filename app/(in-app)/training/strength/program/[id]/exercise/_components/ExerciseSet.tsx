@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { CheckIcon, XIcon } from 'lucide-react';
 
 type ExerciseSet = {
@@ -13,6 +14,7 @@ type ExerciseSetProps = {
   removeSet: (index: number) => void;
   toggleSetCompletion: (index: number) => void;
   updateSet: (index: number, field: keyof ExerciseSet, value: number) => void;
+  totalSet: number;
 };
 
 export default function ExerciseSet({
@@ -21,14 +23,21 @@ export default function ExerciseSet({
   removeSet,
   toggleSetCompletion,
   updateSet,
+  totalSet,
 }: ExerciseSetProps) {
   return (
     <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2">
-          <button onClick={() => removeSet(index)} className="text-red-500">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => removeSet(index)}
+            className="text-red-500 size-7"
+            disabled={totalSet === 1}
+          >
             <XIcon className="h-5 w-5" />
-          </button>
+          </Button>
           <span className="font-medium">Set {index + 1}</span>
         </div>
         <button

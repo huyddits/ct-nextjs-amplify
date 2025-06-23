@@ -39,7 +39,7 @@ export function CheckOffCard({ data: checkOff }: Props) {
     formState: { errors },
   } = useForm<yup.InferType<typeof schema>>({
     defaultValues: {
-      status: (checkOff.status as CheckOffStatusEnum) || CheckOffStatusEnum.NotCompleted,
+      status: checkOff.status,
       coach_review_note: checkOff.coach_review_note || '',
     },
     resolver: yupResolver(schema),
