@@ -1,15 +1,14 @@
 'use client';
 import { Download } from 'lucide-react';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { AppInput, AppTextarea } from '@/components/compose';
 import { CheckOffStatusEnum, CheckOffStudentReview } from '@/api/types/checkOff';
 import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useUpdateCheckOffStudentReview } from '../_hooks/useGetCheckOffStudentReview';
-import { ERROR_MESSAGES } from '@/utils/constants';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { CHECKOFF_SCHEMA, useCheckOffForm } from '../_hooks/useCheckOffForm';
 
 type Props = {
   data: CheckOffStudentReview;
@@ -21,29 +20,13 @@ const statusOptions = [
   { label: 'Excused', value: CheckOffStatusEnum.Excused },
 ];
 
-const schema = yup.object({
-  status: yup
-    .mixed<CheckOffStatusEnum>()
-    .oneOf(Object.values(CheckOffStatusEnum))
-    .required(ERROR_MESSAGES.INPUT),
-  coach_review_note: yup
-    .string()
-    .required(ERROR_MESSAGES.INPUT)
-    .max(500, ERROR_MESSAGES.MAX_LENGTH(500)),
-});
-
 export function CheckOffCard({ data: checkOff }: Props) {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<yup.InferType<typeof schema>>({
-    defaultValues: {
-      status: checkOff.status,
-      coach_review_note: checkOff.coach_review_note || '',
-    },
-    resolver: yupResolver(schema),
-  });
+  } = useCheckOffForm(checkOff);
+
   const [finishReview, setFinishReview] = useState(false);
   const { trigger, isMutating } = useUpdateCheckOffStudentReview();
   const isCompleted =
@@ -51,7 +34,7 @@ export function CheckOffCard({ data: checkOff }: Props) {
     checkOff.status === CheckOffStatusEnum.Completed ||
     checkOff.status === CheckOffStatusEnum.Excused;
 
-  const onSubmit = (formData: yup.InferType<typeof schema>) => {
+  const onSubmit = (formData: yup.InferType<typeof CHECKOFF_SCHEMA>) => {
     trigger(
       {
         submit_id: checkOff.submit_id,
