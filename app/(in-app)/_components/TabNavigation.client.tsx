@@ -31,7 +31,7 @@ export default function TabNavigation({
   return (
     <div className={className} style={style}>
       <SafeAreaDetection className="bg-white" position="top" />
-      <Tabs defaultValue={defaultValue} onValueChange={onValueChange}>
+      <Tabs value={defaultValue} onValueChange={onValueChange}>
         <TabsList className="flex p-0">
           {listTabs.map((tab: TabOption) => (
             <TabsTrigger key={tab.value} value={tab.value} className="tab-navigation-item">
