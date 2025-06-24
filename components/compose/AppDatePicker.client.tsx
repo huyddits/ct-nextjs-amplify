@@ -47,7 +47,6 @@ export default function AppDatePicker({
     setSelectedDate(date instanceof Date && !isNaN(date.getTime()) ? date : null);
   }, [value, format]);
 
-  console.log('selectedDate', selectedDate);
   return (
     <div className={cn('space-y-2', fullWidth && 'w-full')}>
       {label && (
