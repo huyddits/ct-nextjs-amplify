@@ -17,9 +17,9 @@ type UseCheckOffNewFormOptions = {
 
 const schema = object().shape({
   assignedDate: string(),
-  dueDate: string(),
-  assignedTask: string(),
-  note: string(),
+  dueDate: string().required(),
+  assignedTask: string().required(),
+  note: string().max(500),
   receivers: array(
     object().shape({
       userId: string(),
