@@ -12,7 +12,6 @@ import {
   SesstionPayload,
   DeleteHitMissSessionResponse,
   SesstionEventItemPayload,
-  SesstionCompleteItemPayload,
   PostHitMissCompletePayload,
   UndoHitMissPayload,
 } from './types/hitMiss';
