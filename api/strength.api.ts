@@ -23,6 +23,8 @@ import type {
   UpdateProgramPayload,
   GetStrengthPastTrainingDataPayload,
   GetStrengthPastTrainingDataResponse,
+  GetPastWorkoutsParams,
+  GetPastWorkoutsResponse,
 } from './types/strength';
 import { END_POINTS } from '@/utils/constants';
 import { ApiResponse } from '@/utils/types';
@@ -97,4 +99,13 @@ export const getStrengthPastTrainingData = async (payload: GetStrengthPastTraini
 
 export const completeWorkout = (payload: CompleteWorkoutPayload) => {
   return axiosIns.post<CompleteWorkoutResponse>(END_POINTS.STRENGTH_COMPLETE_WORKOUT, payload);
+};
+
+export const getPastWorkouts = ({ id, limit, page }: GetPastWorkoutsParams) => {
+  return axiosIns.get<GetPastWorkoutsResponse>(
+    END_POINTS.STRENGTH_PAST_WORKOUTS.replace('{id}', id.toString()),
+    {
+      params: { page, limit },
+    }
+  );
 };

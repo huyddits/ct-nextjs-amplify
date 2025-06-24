@@ -1,6 +1,5 @@
 import { CheckOffByAthleteItem, CheckOffStatusEnum } from '@/api/types/checkOff';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
 import { useMemo } from 'react';
 type Props = {
   data: CheckOffByAthleteItem;
@@ -35,7 +34,7 @@ export function SingleAthleteTask({ data }: Props) {
   const dateSubmittedInfo = useMemo(() => {
     if (data.submitted_date) {
       return {
-        status: format(data.submitted_date, 'dd/MM/yyyy'),
+        status: data.submitted_date,
         className: 'bg-primary text-white',
       };
     }
@@ -54,7 +53,7 @@ export function SingleAthleteTask({ data }: Props) {
       </div>
       <div className="grid grid-cols-2">
         <div className="py-1 px-3 border-r border-t">Due Date</div>
-        <div className="py-1 px-3 border-t">{format(data.due_date, 'dd/MM/yyyy')}</div>
+        <div className="py-1 px-3 border-t">{data.due_date}</div>
       </div>
       <div className={cn('grid grid-cols-2', dateSubmittedInfo.className)}>
         <div className="py-1 px-3 border-r border-t">Date Submitted</div>

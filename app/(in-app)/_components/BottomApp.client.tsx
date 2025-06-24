@@ -11,12 +11,10 @@ import { usePathname } from 'next/navigation';
 import BottomNavigationItem from './BottomNavigationItem.client';
 import { useAuthStore } from '@/store';
 import { ROUTES } from '@/utils/constants';
-import { useSafeAreaInset } from '@/hooks';
 import { SafeAreaDetection } from '@/app/_components';
 export default function BottomApp() {
   const { token } = useAuthStore();
   const pathname = usePathname();
-  const { insetBottom } = useSafeAreaInset();
   const listItems = [
     {
       name: 'Home',
