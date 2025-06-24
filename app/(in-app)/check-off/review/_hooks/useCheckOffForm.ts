@@ -22,5 +22,6 @@ export function useCheckOffForm(checkOff: CheckOffStudentReview) {
       coach_review_note: checkOff.coach_review_note || '',
     },
     resolver: yupResolver(CHECKOFF_SCHEMA),
+    mode: 'onChange',
   });
 }

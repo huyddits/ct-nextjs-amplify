@@ -2,9 +2,10 @@
 import { Loader2Icon } from 'lucide-react';
 import { useTeamDataCheckOff } from '../_hooks';
 import { SingleCheckOffData } from './SingleCheckOffData';
+import { CheckOffDateParams } from '@/api/types/checkOff';
 
 type Props = {
-  selectedDate?: string;
+  selectedDate?: CheckOffDateParams;
 };
 export function CheckOffData({ selectedDate }: Props) {
   const { data, isValidating } = useTeamDataCheckOff(selectedDate);

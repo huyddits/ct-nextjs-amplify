@@ -32,6 +32,10 @@ export type CheckOffStudentReviewAthlete = {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  profile: {
+    first_name: string;
+    last_name: string;
+  };
 };
 
 export type CheckOffStudentReviewCoach = {
@@ -48,6 +52,12 @@ export enum CheckOffStatusEnum {
   Completed = 'completed',
   NotCompleted = 'not_completed',
   Excused = 'excused',
+}
+
+export enum CheckOffSubmitStatusEnum {
+  NotSubmitted = 'not_submitted',
+  Submitted = 'submitted',
+  DidNotSubmit = 'did_not_submit',
 }
 
 export type CheckOffStudentReview = {
@@ -92,3 +102,24 @@ export type receiversItem = {
 };
 
 export type CreateCheckOffResponse = ApiResponse<{}, {}>;
+
+export type CheckOffByAthleteItem = {
+  checkoff_name: string;
+  due_date: string;
+  due_date_raw: string;
+  submitted_date?: string;
+  status?: CheckOffStatusEnum;
+  notes: string;
+};
+
+export type CheckOffByAthleteData = {
+  percent_completion: number;
+  data: CheckOffByAthleteItem[];
+};
+
+export type CheckOffByAthleteResponse = ApiResponse<CheckOffByAthleteData>;
+
+export type CheckOffDateParams = {
+  month: number;
+  year: number;
+};
