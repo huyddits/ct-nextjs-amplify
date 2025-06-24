@@ -92,9 +92,10 @@ export type SesstionEventItemPayload = {
   type: string;
 };
 
-export type SesstionCompleteItemPayload = {
-  id: number;
-  status: string;
+export type UndoHitMissPayload = {
+  session_id: number;
+  section_id: number;
+  group_id: number;
 };
 
 export type HitMissRoutineListResponse = ApiResponse<HitMissRoutine[]>;

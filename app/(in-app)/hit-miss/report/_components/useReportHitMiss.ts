@@ -5,11 +5,12 @@ import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { HitMissApi } from '@/api';
 import {
-  SesstionCompleteItemPayload,
   SesstionEventItemPayload,
   SesstionPayload,
   SummaryPayload,
+  UndoHitMissPayload,
 } from '@/api/types/hitMiss';
+import { useLoadingByKey } from '@/hooks/useLoadingByKey';
 
 type UseReportHitMissFormOptions = {
   onSuccess: () => void;
@@ -29,7 +30,7 @@ const schema = object().shape({
 export const useReportHitMiss = (options?: UseReportHitMissFormOptions) => {
   const [hitMissRoutineList, setHitMissRoutineList] = useState<HitMissRoutine[]>([]);
   const [hitMissCurrentList, setHitMissCurrentList] = useState<HitMissCurrentItem>();
-  const { control, handleSubmit } = useForm({
+  const { control } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       routines: '',
@@ -38,6 +39,7 @@ export const useReportHitMiss = (options?: UseReportHitMissFormOptions) => {
     mode: 'onChange',
   });
   const routineId = useWatch({ control, name: 'routines' });
+  const { isLoading, startLoading, stopLoading } = useLoadingByKey();
 
   const getHitMissRoutinesList = async () => {
     try {
@@ -109,8 +111,10 @@ export const useReportHitMiss = (options?: UseReportHitMissFormOptions) => {
 
   type FormType = InferType<typeof schema>;
 
-  const onHandleHitMiss = async (formData: FormType) => {
+  const onHandleHitMiss = async (formData: FormType, key?: string) => {
     try {
+      if (key) startLoading(key);
+
       if (!formData.id || isNaN(Number(formData.id))) {
         throw new Error('Invalid session ID');
       }
@@ -130,40 +134,56 @@ export const useReportHitMiss = (options?: UseReportHitMissFormOptions) => {
       options?.onSuccess?.();
     } catch (error) {
       console.log(error);
+    } finally {
+      if (key) stopLoading(key);
     }
   };
 
-  const deleteHitMissSession = async (params: SesstionPayload) => {
+  const deleteHitMissSession = async (params: UndoHitMissPayload, key?: string) => {
     try {
+      if (key) startLoading(key);
       await HitMissApi.deleteHitMissEvent(params);
       await getHitMissCurrentList({ routine_id: Number(routineId) });
       options?.onSuccess?.();
     } catch (error) {
       console.log(error);
+    } finally {
+      if (key) stopLoading(key);
     }
   };
 
-  const onCompleteHitMiss = async (params: SesstionPayload) => {
+  const onCompleteHitMiss = async (params: SesstionPayload, key?: string) => {
     try {
+      if (key) startLoading(key);
       await HitMissApi.postHitMissComplete(params);
       await getHitMissCurrentList({ routine_id: Number(routineId) });
       options?.onSuccess?.();
     } catch (error) {
       console.log(error);
+    } finally {
+      if (key) stopLoading(key);
     }
   };
-  const onSubmit = (formData: FormType) => {
-    onHandleHitMiss(formData);
+  const onSubmit = (formData: FormType, key?: string) => {
+    onHandleHitMiss(formData, key);
   };
 
-  const onDelete = () => {
+  const onDelete = (sectionId: number, groupId: number, key?: string) => {
     if (!hitMissCurrentList?.id) return;
-    deleteHitMissSession({ session_id: hitMissCurrentList.id });
+    console.log(key, 'ádasdasdasd');
+    deleteHitMissSession(
+      {
+        session_id: hitMissCurrentList.id,
+        section_id: sectionId,
+        group_id: groupId,
+      },
+      key
+    );
   };
 
-  const onSubmitComplete = () => {
+  const onSubmitComplete = (key?: string) => {
     if (!hitMissCurrentList?.id) return;
-    onCompleteHitMiss({ session_id: hitMissCurrentList.id });
+    onCompleteHitMiss({ session_id: hitMissCurrentList.id }, key);
   };
 
   useEffect(() => {
@@ -187,5 +207,6 @@ export const useReportHitMiss = (options?: UseReportHitMissFormOptions) => {
     onSubmitComplete,
     onSubmit,
     onDelete,
+    isLoading,
   };
 };

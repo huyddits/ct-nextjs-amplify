@@ -8,21 +8,27 @@ import { useConfirmStore } from '@/store';
 import { Controller } from 'react-hook-form';
 import { useReportHitMiss } from './_components';
 import { AppSelect } from '@/components/compose';
-import { on } from 'events';
 
 export default function ReportPage() {
   const { confirm } = useConfirmStore();
-  const { control, hitMissRoutineList, hitMissCurrentList, onSubmit, onDelete, onSubmitComplete } =
-    useReportHitMiss({
-      onSuccess: () => {},
-      onFailure: () => {},
-    });
+  const {
+    control,
+    hitMissRoutineList,
+    hitMissCurrentList,
+    onSubmit,
+    onDelete,
+    onSubmitComplete,
+    isLoading,
+  } = useReportHitMiss({
+    onSuccess: () => {},
+    onFailure: () => {},
+  });
   const handleReset = () => {
     confirm({
       title: 'WARNING!',
       description: 'Are you sure you want to reset?',
       onConfirm: () => {
-        onSubmitComplete();
+        onSubmitComplete('reset');
       },
     });
   };
@@ -39,7 +45,6 @@ export default function ReportPage() {
     const hits = attempts.filter(a => a.type === 'hit').length;
     return total === 0 ? 0 : Math.round((hits / total) * 100);
   };
-
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">
       <div className="mt-4 space-y-4">
@@ -93,9 +98,9 @@ export default function ReportPage() {
                     <div className="flex items-center justify-between mt-4">
                       <div className="flex items-center gap-3">
                         <div className="flex flex-wrap gap-1.5">
-                          {attempts.map((attempt, index) => (
+                          {attempts.map(attempt => (
                             <div
-                              key={index}
+                              key={attempt.id}
                               className={`w-2.5 h-2.5 rounded-full ${
                                 attempt.type === 'hit' ? 'bg-green-600' : 'bg-red-600'
                               }`}
@@ -107,7 +112,11 @@ export default function ReportPage() {
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8 text-gray-500 hover:text-gray-700"
-                            onClick={onDelete}
+                            onClick={() => {
+                              const key = `${section.sectionId}-${group.groupId}`;
+                              onDelete(section.sectionId, group.groupId, key);
+                            }}
+                            loading={isLoading(`${section.sectionId}-${group.groupId}`)}
                           >
                             <Undo2 className="h-4 w-4" />
                           </Button>
@@ -128,27 +137,37 @@ export default function ReportPage() {
                     <div className="flex justify-between mt-4">
                       <Button
                         className="w-[45%] h-14 rounded-xl transition-all duration-200 bg-gradient-to-b from-green-500 to-green-600 hover:scale-102 border-green-700 text-white font-bold text-xl border-2 active:bg-green-800 active:scale-95"
-                        onClick={() =>
-                          onSubmit({
-                            id: hitMissCurrentList?.id ?? 0,
-                            sectionId: section.sectionId,
-                            groupId: group.groupId,
-                            type: 'hit',
-                          })
-                        }
+                        onClick={() => {
+                          const key = `${section.sectionId}-${group.groupId}-hit`;
+                          onSubmit(
+                            {
+                              id: hitMissCurrentList?.id ?? 0,
+                              sectionId: section.sectionId,
+                              groupId: group.groupId,
+                              type: 'hit',
+                            },
+                            key
+                          );
+                        }}
+                        loading={isLoading(`${section.sectionId}-${group.groupId}-hit`)}
                       >
                         HIT
                       </Button>
                       <Button
                         className="w-[45%] h-14 rounded-xl transition-all duration-200 bg-gradient-to-b from-red-500 to-red-600 hover:scale-102 border-red-700 text-white font-bold text-xl border-2 active:bg-red-800 active:scale-95"
-                        onClick={() =>
-                          onSubmit({
-                            id: hitMissCurrentList?.id ?? 0,
-                            sectionId: section.sectionId,
-                            groupId: group.groupId,
-                            type: 'miss',
-                          })
-                        }
+                        onClick={() => {
+                          const key = `${section.sectionId}-${group.groupId}-miss`;
+                          onSubmit(
+                            {
+                              id: hitMissCurrentList?.id ?? 0,
+                              sectionId: section.sectionId,
+                              groupId: group.groupId,
+                              type: 'miss',
+                            },
+                            key
+                          );
+                        }}
+                        loading={isLoading(`${section.sectionId}-${group.groupId}-miss`)}
                       >
                         MISS
                       </Button>
@@ -164,6 +183,7 @@ export default function ReportPage() {
           <Button
             onClick={handleReset}
             className="w-full h-12 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md flex items-center justify-center gap-2"
+            loading={isLoading('reset')}
           >
             <RefreshCw className="h-5 w-5" />
             Reset All

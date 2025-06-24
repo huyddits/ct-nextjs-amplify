@@ -14,6 +14,7 @@ import {
   SesstionEventItemPayload,
   SesstionCompleteItemPayload,
   PostHitMissCompletePayload,
+  UndoHitMissPayload,
 } from './types/hitMiss';
 
 export const getHitMissRoutineList = () => {
@@ -65,11 +66,14 @@ export const postHitMissEvent = (params: SesstionPayload, payload: SesstionEvent
   return axiosIns.post<PostHitMissEventResponse>(endpoint, payload);
 };
 
-export const deleteHitMissEvent = (params: SesstionPayload) => {
+export const deleteHitMissEvent = (params: UndoHitMissPayload) => {
   const endpoint = END_POINTS.HIT_MISS_DELETE_EVENT.replace(
     ':session_id',
     String(params.session_id)
-  );
+  )
+    .replace(':section_id', String(params.section_id))
+    .replace(':group_id', String(params.group_id));
+
   return axiosIns.delete<DeleteHitMissSessionResponse>(endpoint);
 };
 
