@@ -13,7 +13,7 @@ import { useAuthStore } from '@/store';
 
 type Props = {
   data: CheckOffStudentReview;
-  refetch: () => void; // Optional refetch function if needed
+  onSubmit: () => void; // Optional refetch function if needed
 };
 
 const statusOptions = [
@@ -22,7 +22,7 @@ const statusOptions = [
   { label: 'Excused', value: CheckOffStatusEnum.Excused },
 ];
 
-export function CheckOffCard({ data: checkOff, refetch }: Props) {
+export function CheckOffCard({ data: checkOff, onSubmit: refetch }: Props) {
   const { info } = useAuthStore();
   const {
     control,
