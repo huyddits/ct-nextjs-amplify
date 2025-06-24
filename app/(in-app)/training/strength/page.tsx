@@ -31,6 +31,7 @@ export default function StrengthPage() {
   const {
     page,
     isCoach,
+    loading,
     totalPages,
     listStrengthPrograms,
     setType,
@@ -92,6 +93,7 @@ export default function StrengthPage() {
           <div className="space-y-4">
             <ProgramSection
               page={page}
+              loading={loading}
               totalPages={totalPages}
               listPrograms={listStrengthPrograms}
               onRefetch={fetchListStrengthPrograms}

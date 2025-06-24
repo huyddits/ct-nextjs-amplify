@@ -26,17 +26,19 @@ import { VideoPlayer } from '@/app/(in-app)/measurement/_components';
 
 export default function StrengthExercise({ programId }: { programId: number }) {
   const {
-    history,
-    template,
     indicator,
+    workoutPage,
+    pastWorkouts,
     exerciseName,
     currentExercise,
     nextExerciseName,
+    workoutTotalPages,
     previousExerciseName,
     listExerciseInProgram,
     onAddSet,
     onRemoveSet,
     onUpdateSet,
+    onLoadMorePastWorkouts,
     setIndicator,
     onCompleteWorkout,
     setListExerciseInProgram,
@@ -395,7 +397,14 @@ export default function StrengthExercise({ programId }: { programId: number }) {
         </div>
 
         {/* Past Workouts */}
-        {!!history?.length && <ExercisePastWorkouts pastWorkouts={history} />}
+        {!!pastWorkouts.length && (
+          <ExercisePastWorkouts
+            page={workoutPage}
+            totalPages={workoutTotalPages}
+            pastWorkouts={pastWorkouts}
+            onLoadMore={onLoadMorePastWorkouts}
+          />
+        )}
       </div>
     </div>
   );
