@@ -26,6 +26,7 @@ const schema = yup.object({
     .array()
     .of(
       yup.object({
+        section_id: yup.number().optional(),
         name: yup
           .string()
           .max(100, ERROR_MESSAGES.MAX_LENGTH(100))
@@ -34,6 +35,7 @@ const schema = yup.object({
           .array()
           .of(
             yup.object({
+              group_id: yup.number().optional(),
               users: yup
                 .array()
                 .of(yup.object({ user_id: yup.string().required('Member is required') }))
@@ -65,6 +67,7 @@ export function RoutineForm({ id }: Props) {
       name: '',
       sections: [],
     },
+    shouldUnregister: false,
   });
   useEffect(() => {
     if (routine) {
@@ -128,8 +131,9 @@ export function RoutineForm({ id }: Props) {
     const body: CreateRoutinePayload = {
       name: data.name,
       sections: data.sections.map(section => ({
-        name: section.name,
+        ...section,
         groups: section.groups.map(group => ({
+          ...group,
           users: group.users.map(user => {
             if (typeof user === 'object' && user !== null && 'user_id' in user) {
               return String(user.user_id);
