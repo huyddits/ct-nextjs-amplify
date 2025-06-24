@@ -200,3 +200,11 @@ export type GetListExercisesInProgramResponse = ApiResponse<ProgramStart, {}>;
 export type CompleteWorkoutPayload = WorkoutRecord[];
 
 export type CompleteWorkoutResponse = ApiResponse<{}, {}>;
+
+export type GetPastWorkoutsParams = {
+  page: number;
+  limit: number;
+  id: number;
+};
+
+export type GetPastWorkoutsResponse = ApiResponse<PastWorkoutRecord[]>;

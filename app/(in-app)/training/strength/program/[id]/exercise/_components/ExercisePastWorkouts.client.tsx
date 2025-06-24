@@ -2,36 +2,26 @@ import { DEFAULT_DATE_FORMAT } from '@/utils/formatter';
 import { format } from 'date-fns';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { useState } from 'react';
-
+import { WorkoutRecord } from '../_hooks';
 type ExercisePastWorkoutsProps = {
-  pastWorkouts: {
-    note: string;
-    date: string;
-    sets: {
-      weight: number;
-      reps: number;
-      rpe: number;
-    }[];
-  }[];
+  page: number;
+  totalPages: number;
+  pastWorkouts: WorkoutRecord[];
+  onLoadMore: () => void;
 };
 
-export default function ExercisePastWorkouts({ pastWorkouts }: ExercisePastWorkoutsProps) {
-  const [showAllPastWorkouts, setShowAllPastWorkouts] = useState(false);
-
-  const [localIndex, setLocalIndex] = useState(2);
-
-  console.log('pastWorkouts', pastWorkouts);
-
-  const togglePastWorkoutsView = () => {
-    setLocalIndex(100);
-    setShowAllPastWorkouts(!showAllPastWorkouts);
-  };
+export default function ExercisePastWorkouts({
+  page,
+  totalPages,
+  pastWorkouts,
+  onLoadMore,
+}: ExercisePastWorkoutsProps) {
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm">
       <h2 className="font-medium mb-4">Past Workouts</h2>
 
-      <div className="space-y-6">
-        {pastWorkouts.slice(0, localIndex).map((workout, workoutIndex) => (
+      <div className="space-y-6 overflow-y-auto max-h-[400px]">
+        {pastWorkouts.map((workout, workoutIndex) => (
           <div key={workoutIndex}>
             <div className="flex items-center text-sm text-gray-500 mb-3">
               <span>{format(workout.date, DEFAULT_DATE_FORMAT)}</span>
@@ -56,22 +46,13 @@ export default function ExercisePastWorkouts({ pastWorkouts }: ExercisePastWorko
         ))}
       </div>
 
-      {localIndex < pastWorkouts.length && (
+      {page < totalPages && (
         <button
-          onClick={togglePastWorkoutsView}
+          onClick={onLoadMore}
           className="w-full text-primary font-medium mt-4 flex items-center justify-center"
         >
-          {showAllPastWorkouts ? (
-            <>
-              <ChevronUpIcon className="h-4 w-4 mr-1" />
-              Show less
-            </>
-          ) : (
-            <>
-              <ChevronDownIcon className="h-4 w-4 mr-1" />
-              More past workouts
-            </>
-          )}
+          <ChevronDownIcon className="h-4 w-4 mr-1" />
+          More past workouts
         </button>
       )}
     </div>
