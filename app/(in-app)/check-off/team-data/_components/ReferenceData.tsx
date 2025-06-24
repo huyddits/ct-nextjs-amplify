@@ -2,9 +2,10 @@
 import React from 'react';
 import { Loader2Icon } from 'lucide-react';
 import { useCheckOffReference } from '../_hooks';
+import { CheckOffDateParams } from '@/api/types/checkOff';
 
 type Props = {
-  selectedDate?: string;
+  selectedDate?: CheckOffDateParams;
 };
 
 export function ReferenceData({ selectedDate }: Props) {
