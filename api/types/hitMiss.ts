@@ -122,9 +122,9 @@ type RoutineMember = {
 
 export type HitMissRoutineDetailResponse = ApiResponse<CreateRoutinePayload<true>>;
 
-export type HitMissRoutineSummaryResponse = ApiResponse<SummarySectionResponse[], {}>;
+export type HitMissRoutineSummaryResponse = ApiResponse<SummarySectionResponse, {}>;
 
-export type HitMissRoutineGroupResponse = ApiResponse<SummaryGroupResponse[], {}>;
+export type HitMissRoutineGroupResponse = ApiResponse<SummaryGroupResponse, {}>;
 
 export type HitMissRoutineCurrentResponse = ApiResponse<HitMissCurrentResponse, {}>;
 

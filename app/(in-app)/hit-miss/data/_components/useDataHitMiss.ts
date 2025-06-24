@@ -16,8 +16,8 @@ const schema = object().shape({
 });
 export const useDataHitMiss = (options?: UseDataHitMissFormOptions) => {
   const [hitMissRoutineList, setHitMissRoutineList] = useState<HitMissRoutine[]>([]);
-  const [summarySection, setSummarySection] = useState<SummarySectionResponse[]>([]);
-  const [summaryGroup, setSummaryGroup] = useState<SummaryGroupResponse[]>([]);
+  const [summarySection, setSummarySection] = useState<SummarySectionResponse>();
+  const [summaryGroup, setSummaryGroup] = useState<SummaryGroupResponse>();
   const { control } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -66,7 +66,7 @@ export const useDataHitMiss = (options?: UseDataHitMissFormOptions) => {
       const response = await HitMissApi.getSummarySection(params);
       const { data, error } = response.data;
       if (!data) throw error;
-      const dataResponse = data.map(data => ({
+      const dataResponse = {
         routineId: data.routine_id,
         from: data.from,
         to: data.to,
@@ -76,7 +76,7 @@ export const useDataHitMiss = (options?: UseDataHitMissFormOptions) => {
           totalReps: data.total_reps,
           hitPercentage: data.hit_percentage,
         })),
-      }));
+      };
       setSummarySection(dataResponse);
       return data;
     } catch (error) {
@@ -89,7 +89,7 @@ export const useDataHitMiss = (options?: UseDataHitMissFormOptions) => {
       const response = await HitMissApi.getSummaryGroup(params);
       const { data, error } = response.data;
       if (!data) throw error;
-      const dataResponse = data.map(data => ({
+      const dataResponse = {
         routineId: data.routine_id,
         from: data.from,
         to: data.to,
@@ -102,7 +102,7 @@ export const useDataHitMiss = (options?: UseDataHitMissFormOptions) => {
             hitPercentage: data.hit_percentage,
           })),
         })),
-      }));
+      };
       setSummaryGroup(dataResponse);
     } catch (error) {
       console.log(error);
