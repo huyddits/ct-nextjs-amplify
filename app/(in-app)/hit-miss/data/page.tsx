@@ -54,17 +54,23 @@ export default function DataPage() {
             </tr>
           </thead>
           <tbody className="bg-white">
-            {summarySection.flatMap((routine, i) =>
-              routine.sections.map((section, j) => (
+            {summarySection && summarySection.sections.length > 0 ? (
+              summarySection.sections.map((section, index) => (
                 <tr
-                  key={`${routine.routineId}-${section.sectionId}`}
-                  className={`border-b border-gray-300 ${(i + j) % 2 === 1 ? 'bg-gray-50' : ''}`}
+                  key={`${summarySection.routineId}-${section.sectionId}`}
+                  className={`border-b border-gray-300 ${index % 2 === 1 ? 'bg-gray-50' : ''}`}
                 >
                   <td className="p-2 font-medium">{section.name}</td>
                   <td className="p-2 text-center font-medium">{section.totalReps}</td>
                   <td className="p-2 text-center font-medium">{section.hitPercentage}%</td>
                 </tr>
               ))
+            ) : (
+              <tr>
+                <td colSpan={3} className="p-4 text-center text-gray-500">
+                  No data available
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -81,16 +87,14 @@ export default function DataPage() {
             </tr>
           </thead>
           <tbody className="bg-white">
-            {summaryGroup.flatMap((routine, routineIdx) =>
-              routine.sections.map((section, sectionIdx) =>
+            {summaryGroup && summaryGroup.sections.length > 0 ? (
+              summaryGroup.sections.map((section, sectionIdx) =>
                 section.groups.map((group, groupIdx) => (
                   <tr
-                    key={`${routine.routineId}-${section.sectionId}-${group.groupId}`}
-                    className={
-                      (routineIdx + sectionIdx + groupIdx) % 2 === 1
-                        ? 'bg-gray-50 border-b border-gray-300'
-                        : 'border-b border-gray-300'
-                    }
+                    key={`${summaryGroup.routineId}-${section.sectionId}-${group.groupId}`}
+                    className={`border-b border-gray-300 ${
+                      (sectionIdx + groupIdx) % 2 === 1 ? 'bg-gray-50' : ''
+                    }`}
                   >
                     {groupIdx === 0 && (
                       <td rowSpan={section.groups.length} className="p-2 font-medium align-top">
@@ -103,6 +107,12 @@ export default function DataPage() {
                   </tr>
                 ))
               )
+            ) : (
+              <tr>
+                <td colSpan={4} className="p-4 text-center text-gray-500">
+                  No data available
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
