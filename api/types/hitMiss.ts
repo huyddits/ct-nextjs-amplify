@@ -97,6 +97,12 @@ export type SesstionCompleteItemPayload = {
   status: string;
 };
 
+export type UndoHitMissPayload = {
+  session_id: number;
+  section_id: number;
+  group_id: number;
+};
+
 export type HitMissRoutineListResponse = ApiResponse<HitMissRoutine[]>;
 
 export type CreateRoutinePayload<Detail = false> = {
