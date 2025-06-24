@@ -5,7 +5,6 @@ import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { HitMissApi } from '@/api';
 import {
-  SesstionCompleteItemPayload,
   SesstionEventItemPayload,
   SesstionPayload,
   SummaryPayload,
