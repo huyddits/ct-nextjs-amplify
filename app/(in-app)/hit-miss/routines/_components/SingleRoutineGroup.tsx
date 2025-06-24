@@ -73,9 +73,10 @@ export function SingleRoutineGroup({
             className="text-xs"
             type="button"
             onClick={() => addMember()}
+            disabled={memberFields.length >= 20}
           >
             <PlusIcon className="h-3 w-3 mr-1" />
-            Add<span className="hidden sm:inline">Athlete</span>
+            <span className="hidden sm:inline">Add</span>Athlete
           </Button>
           <Button
             variant="ghost"
