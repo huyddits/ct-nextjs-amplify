@@ -4,7 +4,6 @@ import { MinusCircleIcon, PlusIcon, Trash2Icon, UsersIcon } from 'lucide-react';
 import { Controller, useFieldArray, useWatch } from 'react-hook-form';
 import React, { useMemo } from 'react';
 import { useGetListAthlete } from '../_hooks';
-import { usePersonalInfo } from '@/hooks';
 import { CreateRoutineSingleGroup } from '@/api/types/hitMiss';
 import { useAuthStore } from '@/store';
 

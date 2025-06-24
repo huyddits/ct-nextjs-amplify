@@ -8,7 +8,14 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useMemo } from 'react';
 
 export default function CheckOffStudent() {
-  const { data, isLoading, setSize, size, isValidating } = useGetCheckOffStudentReview();
+  const {
+    data,
+    isLoading,
+    setSize,
+    size,
+    isValidating,
+    mutate: refetch,
+  } = useGetCheckOffStudentReview();
 
   useEffect(() => {
     return () => {
@@ -30,7 +37,7 @@ export default function CheckOffStudent() {
           <>
             {data?.map(page =>
               page.data?.map((checkOff: CheckOffStudentReview) => (
-                <CheckOffCard key={checkOff.submit_id} data={checkOff} />
+                <CheckOffCard key={checkOff.submit_id} data={checkOff} onSubmit={refetch} />
               ))
             )}
             {(size < (data?.[data.length - 1]?.meta?.totalPages || 0) || isValidating) && (

@@ -6,12 +6,12 @@ import { AppInput, AppTextarea } from '@/components/compose';
 import { CheckOffStatusEnum, CheckOffStudentReview } from '@/api/types/checkOff';
 import * as yup from 'yup';
 import { useUpdateCheckOffStudentReview } from '../_hooks/useGetCheckOffStudentReview';
-import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { CHECKOFF_SCHEMA, useCheckOffForm } from '../_hooks/useCheckOffForm';
 
 type Props = {
   data: CheckOffStudentReview;
+  refetch: () => void; // Optional refetch function
 };
 
 const statusOptions = [
@@ -20,17 +20,15 @@ const statusOptions = [
   { label: 'Excused', value: CheckOffStatusEnum.Excused },
 ];
 
-export function CheckOffCard({ data: checkOff }: Props) {
+export function CheckOffCard({ data: checkOff, refetch }: Props) {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useCheckOffForm(checkOff);
 
-  const [finishReview, setFinishReview] = useState(false);
   const { trigger, isMutating } = useUpdateCheckOffStudentReview();
   const isCompleted =
-    finishReview ||
     checkOff.status === CheckOffStatusEnum.Completed ||
     checkOff.status === CheckOffStatusEnum.Excused;
 
@@ -43,7 +41,7 @@ export function CheckOffCard({ data: checkOff }: Props) {
       {
         onSuccess: () => {
           toast.success('Review updated successfully');
-          setFinishReview(true);
+          refetch();
         },
       }
     );

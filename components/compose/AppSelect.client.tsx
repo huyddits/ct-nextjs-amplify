@@ -83,7 +83,7 @@ export default function AppSelect({
             <SelectValue placeholder={placeholder} aria-disabled={disabled} />
           )}
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="max-h-96">
           {options.length ? (
             options.map(item => (
               <SelectItem key={item.value} value={item.value} disabled={item.disabled}>
