@@ -9,9 +9,11 @@ import { useUpdateCheckOffStudentReview } from '../_hooks/useGetCheckOffStudentR
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { CHECKOFF_SCHEMA, useCheckOffForm } from '../_hooks/useCheckOffForm';
+import { useAuthStore } from '@/store';
 
 type Props = {
   data: CheckOffStudentReview;
+  refetch: () => void; // Optional refetch function if needed
 };
 
 const statusOptions = [
@@ -20,7 +22,8 @@ const statusOptions = [
   { label: 'Excused', value: CheckOffStatusEnum.Excused },
 ];
 
-export function CheckOffCard({ data: checkOff }: Props) {
+export function CheckOffCard({ data: checkOff, refetch }: Props) {
+  const { info } = useAuthStore();
   const {
     control,
     handleSubmit,
@@ -43,6 +46,7 @@ export function CheckOffCard({ data: checkOff }: Props) {
       {
         onSuccess: () => {
           toast.success('Review updated successfully');
+          refetch();
           setFinishReview(true);
         },
       }
@@ -77,7 +81,7 @@ export function CheckOffCard({ data: checkOff }: Props) {
           <span className="font-medium min-w-[120px]">Athlete:</span>
           <AppInput
             size="lg"
-            value={checkOff.athlete.email}
+            value={`${checkOff.athlete.profile.first_name} ${checkOff.athlete.profile.last_name}`}
             className="flex-1 [&_input]:bg-gray-50 [&_input]:shadow-none [&_input]:border-none focus:ring-0"
           />
         </div>
@@ -141,6 +145,7 @@ export function CheckOffCard({ data: checkOff }: Props) {
 
         {/* Save Button */}
         <Button
+          hidden={info?.roleName !== 'Coach'}
           type="submit"
           size="lg"
           className="w-full"

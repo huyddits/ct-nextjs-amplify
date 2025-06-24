@@ -1,5 +1,5 @@
 import { CheckOffTask } from '@/api/types/checkOff';
-import { differenceInDays, format } from 'date-fns';
+import { differenceInDays, format, parse } from 'date-fns';
 
 type Props = {
   data: CheckOffTask;
@@ -8,21 +8,26 @@ export function SingleCheckOffData({ data }: Props) {
   return (
     <div className="border rounded-lg overflow-hidden bg-white">
       <div className="bg-[#257951] text-white px-4 py-2 flex justify-between items-center">
-        <h3 className="font-medium">{data.assigned_task}</h3>
+        <h3 className="font-medium">{data.assigned_task || '-'}</h3>
       </div>
       <div className="p-4 space-y-4">
         <div className="space-y-3">
           <div>
             <h4 className="text-sm font-medium text-gray-500">Date Developed</h4>
-            <p className="text-sm">{format(data.assigned_date, 'MM/dd/yyyy')}</p>
+            <p className="text-sm">{data.assigned_date}</p>
           </div>
           <div>
             <h4 className="text-sm font-medium text-gray-500">Due Date</h4>
-            <p className="text-sm">{format(data.due_date, 'MM/dd/yyyy')}</p>
+            <p className="text-sm">{data.due_date}</p>
           </div>
           <div>
             <h4 className="text-sm font-medium text-gray-500"># Days Open</h4>
-            <p className="text-sm">{differenceInDays(data.due_date, data.assigned_date)}</p>
+            <p className="text-sm">
+              {differenceInDays(
+                parse(data.due_date, 'dd/MM/yyyy', new Date()),
+                parse(data.assigned_date, 'dd/MM/yyyy', new Date())
+              )}
+            </p>
           </div>
           <div>
             <h4 className="text-sm font-medium text-gray-500">Notes/Comments</h4>
