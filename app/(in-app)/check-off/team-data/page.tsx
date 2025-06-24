@@ -1,21 +1,25 @@
 'use client';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CheckOffData, MonthCalendar, ReferenceData } from './_components';
+import { ByAthleteData, CheckOffData, MonthCalendar, ReferenceData } from './_components';
 import { useMemo, useState } from 'react';
 import { TabsContent } from '@radix-ui/react-tabs';
 import { format, startOfMonth } from 'date-fns';
+import { CheckOffDateParams } from '@/api/types/checkOff';
 
 const TAB_OPTIONS = [
   { value: 'checkoff', label: 'By Check-Off', Component: CheckOffData },
   { value: 'quickref', label: 'Quick Reference', Component: ReferenceData },
-  { value: 'athlete', label: 'By Athlete', Component: () => null },
+  { value: 'athlete', label: 'By Athlete', Component: ByAthleteData },
 ];
 
 export default function CheckOffTeamDataPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const formattedDate = useMemo(() => {
+  const formattedDate = useMemo((): CheckOffDateParams | undefined => {
     if (!selectedDate) return undefined;
-    return format(startOfMonth(selectedDate), 'yyyy-MM-dd');
+    return {
+      month: selectedDate.getMonth() + 1,
+      year: selectedDate.getFullYear(),
+    };
   }, [selectedDate]);
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-4xl mx-auto px-4">
