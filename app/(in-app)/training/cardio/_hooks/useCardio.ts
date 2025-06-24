@@ -44,22 +44,11 @@ const schema = object().shape({
         .optional(),
       heartRateMax: string()
         .transform(val => (val === '' || val === undefined || val === null ? undefined : val))
-        .test('valid-max', 'Heart rate max must be between 30 and 220', value => {
+        .test('valid-min', 'Heart rate min must be between 30 and 220', value => {
           if (!value) return true;
           const val = Number(value);
           return !isNaN(val) && val >= 30 && val <= 220;
         })
-        .test(
-          'max-greater-than-min',
-          'Heart rate max must be greater than or equal to min',
-          function (value) {
-            const { heartRateMin } = this.parent;
-            const minVal = Number(heartRateMin);
-            const maxVal = Number(value);
-            if (!value || !heartRateMin) return true;
-            return maxVal >= minVal;
-          }
-        )
         .optional(),
     })
   )
@@ -100,6 +89,8 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     trigger,
     formState: { isValid },
     reset,
+    setError,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -241,5 +232,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     getExercises,
     clearCardioSession,
     loading,
+    clearErrors,
+    setError,
   };
 };

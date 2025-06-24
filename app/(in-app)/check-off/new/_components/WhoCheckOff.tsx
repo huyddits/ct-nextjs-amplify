@@ -92,7 +92,7 @@ export default function WhoCheckOff({ onClose, receivers, onChangeReceivers, onS
 
           <div className="flex justify-between text-green-700 font-medium text-sm px-1">
             <button onClick={handleSelectAll}>Select All</button>
-            <span>{selected.length} selected</span>
+            <span>{receivers.length} selected</span>
             <button onClick={handleDeselectAll}>Deselect All</button>
           </div>
 
