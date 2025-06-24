@@ -9,9 +9,11 @@ import { useAuthStore } from '@/store';
 import { CoachStudentPayload } from '@/api/types/measurement';
 import { SafeAreaDetection } from '@/app/_components';
 import { VideoPlayer } from '../_components';
+import { useAckowledgement } from '@/hooks';
 export default function MeasurementNewPage() {
   const { measurementListOptions } = useMeasurementStore();
   const { info } = useAuthStore();
+  const { acknowledgementFitness } = useAckowledgement();
   const {
     control,
     measurementList,
@@ -66,6 +68,8 @@ export default function MeasurementNewPage() {
     info?.measurementUnitType?.toLowerCase() === 'metric'
       ? selectedMeasurement?.metricUnit
       : selectedMeasurement?.imperialUnit;
+
+  if (!acknowledgementFitness) return;
 
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">

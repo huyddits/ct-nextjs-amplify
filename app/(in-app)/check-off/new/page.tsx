@@ -30,10 +30,7 @@ export default function CheckOffNewPage() {
             control={control}
             defaultValue={today}
             render={({ field }) => (
-              <>
-                <div className="border-2 bg-white rounded-lg p-1 text-center">{field.value}</div>
-                <input type="hidden" {...field} />
-              </>
+              <AppInput {...field} readonly inputProps={{ className: 'text-center' }} />
             )}
           />
         </div>
@@ -53,6 +50,7 @@ export default function CheckOffNewPage() {
                 fullWidth
                 required
                 errorMessage={error?.message}
+                inputClassName="text-center"
               />
             )}
           />
