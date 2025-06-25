@@ -10,17 +10,18 @@ import {
 import { useEffect, useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { useAckowledgement } from '@/hooks';
+import { useAcknowledgement } from '@/hooks';
 import { useAuthStore } from '@/store';
 import { AccountType } from '@/utils/types';
 import { CoachFitnessPolicy, AthleteFitnessPolicy } from '../_components';
 export default function RouteGuardPolicyFitness() {
   const {
+    loading,
     acknowledgementStrength,
     acknowledgementCardio,
     acknowledgementFitness,
     updateAcknowledge,
-  } = useAckowledgement();
+  } = useAcknowledgement();
   const { info } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
   const [isAgree, setIsAgree] = useState(false);
@@ -59,7 +60,7 @@ export default function RouteGuardPolicyFitness() {
           <AthleteFitnessPolicy />
         )}
 
-        <div className="mt-5">
+        <div>
           <Label>
             <Checkbox
               checked={isAgree}
@@ -69,7 +70,7 @@ export default function RouteGuardPolicyFitness() {
           </Label>
         </div>
         <div className="flex gap-2 w-fit ml-auto">
-          <Button onClick={onClickAgree} disabled={!isAgree}>
+          <Button onClick={onClickAgree} disabled={!isAgree} loading={loading}>
             Agree
           </Button>
           <Button variant="outline" onClick={onClickCancel}>

@@ -6,12 +6,12 @@ import { useCardio } from './_hooks';
 import { useEffect, useState } from 'react';
 import { useCardioStore } from '@/store/useCardio.store';
 import Link from 'next/link';
-import { useAckowledgement, useLoading } from '@/hooks';
+import { useAcknowledgement, useLoading } from '@/hooks';
 import { InfoIcon } from 'lucide-react';
 import { useAuthStore } from '@/store';
 
 export default function CardioPage() {
-  const { acknowledgementCardio } = useAckowledgement();
+  const { acknowledgementCardio } = useAcknowledgement();
   const { intervalsList, clearCardioSession, setDraft, draft } = useCardioStore();
   const { loading, startLoading, stopLoading } = useLoading();
   const {

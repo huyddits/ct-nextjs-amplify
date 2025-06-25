@@ -72,7 +72,7 @@ export default function TopApp({ className }: { className?: string }) {
   }
 
   return (
-    <div className={cn('sticky z-10', className)}>
+    <div className={cn('sticky z-10 top-0', className)}>
       <SafeAreaDetection position="top" className="bg-primary" />
       <div className={cn('flex items-center justify-between bg-primary p-4 mb-4 text-white')}>
         {!pathname.includes(ROUTES.HOME) && (
