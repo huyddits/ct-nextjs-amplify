@@ -81,7 +81,7 @@ export function SingleRoutineGroup({
           <Button
             variant="ghost"
             size="icon"
-            className="size-4 text-gray-400 hover:text-red-600"
+            className="size-4 text-gray-400 hover:text-destructive"
             type="button"
             onClick={() => removeGroup(groupIndex)}
           >
