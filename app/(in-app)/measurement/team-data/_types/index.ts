@@ -26,3 +26,8 @@ export type ResultForAllMeasurementsItem = {
   measurementUnit: string;
   createdAt: string;
 };
+
+export type LatesThreeMonthsItem = {
+  results: LatestResultItem[];
+  maxResult: number;
+};

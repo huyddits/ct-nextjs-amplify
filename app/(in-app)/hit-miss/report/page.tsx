@@ -118,7 +118,9 @@ export default function ReportPage() {
                       <div className="p-4">
                         <div className="space-y-3">
                           <div className="pb-2 border-b border-gray-200">
-                            <p className="text-lg font-semibold text-gray-900">{groupName}</p>
+                            <p className="text-lg font-semibold text-gray-900 break-words whitespace-pre-wrap">
+                              {groupName}
+                            </p>
                           </div>
                           <div className="pb-2">
                             <p className="text-md font-medium text-gray-700">
