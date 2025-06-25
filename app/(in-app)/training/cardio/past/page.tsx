@@ -29,7 +29,7 @@ export default function PastTrainingPage() {
     return { from, to, metric };
   }, [from, to, metric]);
 
-  const { performanceMetricsItems, weeklySummaryItems, weeklyWorkoutItems } =
+  const { performanceMetricsItems, weeklySummaryItems, weeklyWorkoutItems, loading } =
     usePastCardioTraining(options);
 
   return (
@@ -37,13 +37,19 @@ export default function PastTrainingPage() {
       <PastTraining />
       <main>
         <DatePastTrainingSection selectedDate={selectedDate} onChangeDate={setSelectedDate} />
-        <PerformanceMetrics
-          performanceMetricsItems={performanceMetricsItems}
-          metric={metric}
-          setMetric={setMetric}
-        />
-        {weeklySummaryItems && <WeeklySummarySection weeklySummaryItems={weeklySummaryItems} />}
-        <WeeklyWorkoutsSection weeklyWorkoutItems={weeklyWorkoutItems} />
+        {loading ? (
+          <div className="text-center py-4 text-gray-500">Loading data...</div>
+        ) : (
+          <>
+            <PerformanceMetrics
+              performanceMetricsItems={performanceMetricsItems}
+              metric={metric}
+              setMetric={setMetric}
+            />
+            {weeklySummaryItems && <WeeklySummarySection weeklySummaryItems={weeklySummaryItems} />}
+            <WeeklyWorkoutsSection weeklyWorkoutItems={weeklyWorkoutItems} />
+          </>
+        )}
       </main>
     </div>
   );

@@ -156,7 +156,7 @@ export default function CardioPage() {
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-medium">Intervals</h2>
+                <h2 className="text-lg font-medium">Interval</h2>
               </div>
 
               <div className="grid grid-cols-2 gap-4">

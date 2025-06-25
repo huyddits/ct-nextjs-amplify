@@ -10,6 +10,7 @@ import { CoachStudentPayload } from '@/api/types/measurement';
 import { SafeAreaDetection } from '@/app/_components';
 import { VideoPlayer } from '../_components';
 import { useAcknowledgement } from '@/hooks';
+import { TIME_UNIT } from '@/utils/constants';
 export default function MeasurementNewPage() {
   const { measurementListOptions } = useMeasurementStore();
   const { info } = useAuthStore();
@@ -133,14 +134,50 @@ export default function MeasurementNewPage() {
                   label="Record Result"
                   inputProps={{
                     placeholder: 'Enter measurement',
-                    type: 'number',
+                    type: 'text',
                     min: 0,
                     className:
                       'appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
                   }}
                   errorMessage={error?.message}
-                  {...field}
+                  value={field.value}
                   postfix={postfixUnit}
+                  onChange={e => {
+                    const raw = e.target.value;
+                    if (postfixUnit === TIME_UNIT.MINUTES || postfixUnit === TIME_UNIT.SECONDS) {
+                      const digits = raw.replace(/\D/g, '');
+                      let formatted = '';
+                      if (digits.length <= 2) {
+                        formatted = digits;
+                      } else {
+                        const minutes = digits.slice(0, 2);
+                        let seconds = digits.slice(2, 4);
+                        formatted = `${minutes}:${seconds}`;
+                      }
+                      field.onChange(formatted);
+                    } else {
+                      const input = e.target.value;
+                      if (/^\d*\.?\d*$/.test(input)) field.onChange(input);
+                    }
+                  }}
+                  onBlur={() => {
+                    if (postfixUnit === TIME_UNIT.MINUTES || postfixUnit === TIME_UNIT.SECONDS) {
+                      const raw = field.value;
+                      const digits = raw.replace(/\D/g, '');
+                      let formatted = '';
+                      if (digits.length <= 2) {
+                        formatted = digits.padStart(2, '0') + ':00';
+                      } else {
+                        const minutes = digits.slice(0, 2);
+                        let seconds = digits.slice(2, 4);
+                        if (+seconds > 59) {
+                          seconds = '59';
+                        }
+                        formatted = `${minutes}:${seconds}`;
+                      }
+                      field.onChange(formatted);
+                    }
+                  }}
                 />
               )}
             />

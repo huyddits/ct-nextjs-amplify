@@ -2,6 +2,7 @@ import { MeasurementApi } from '@/api';
 import {
   BaseFlyerAndBases,
   ImprovedItem,
+  LatesThreeMonthsItem,
   LatestResultItem,
   ResultForAllMeasurementsItem,
 } from '../_types';
@@ -30,7 +31,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
   const [coachStudentList, setCoachStudentList] = useState<CoachStudentItem[]>([]);
   const [latestResult, setLatestResult] = useState<LatestResultItem>();
   const [improvement, setImprovement] = useState<ImprovedItem>();
-  const [lastThreeMonths, setLastThreeMonths] = useState<LatestResultItem[]>([]);
+  const [lastThreeMonths, setLastThreeMonths] = useState<LatesThreeMonthsItem>();
   const [threeLatestResults, setThreeLatestResults] = useState<LatestResultItem[]>([]);
   const [resultForAllMeasurements, setResultForAllMeasurements] = useState<
     ResultForAllMeasurementsItem[]
@@ -214,12 +215,15 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
       const response = await MeasurementApi.getLastThreeMonths(payload);
       const { data, error } = response.data;
       if (!data) throw error;
-      const dataResponse = data.map(data => ({
-        measurementSessionId: data.measurement_session_id,
-        result: Number(data.result),
-        measurementUnit: data.measurement_unit,
-        createdAt: data.created_at,
-      }));
+      const dataResponse = {
+        maxResult: data.max_result,
+        results: data.results.map(data => ({
+          measurementSessionId: data.measurement_session_id,
+          result: data.result,
+          measurementUnit: data.measurement_unit,
+          createdAt: data.created_at,
+        })),
+      };
       setLastThreeMonths(dataResponse);
       options?.onSuccess?.();
     } catch (error) {
@@ -249,7 +253,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
     try {
       const response = await MeasurementApi.getResultForAllMeasurements(payload);
       const { data, error } = response.data;
-      if (!data) throw error;
+      if (!data || data.length === 0) throw error;
       const dataResponse = data.map(data => ({
         measurementId: data.measurement_id,
         measurementName: data.measurement_name,

@@ -83,6 +83,11 @@ export type FlyerAndBasesPayLoad = {
   limit: number;
 };
 
+export type GetLatesThreeMonthsResponse = {
+  results: LatestResultResponse[];
+  max_result: number;
+};
+
 export type CreateMeasurementResponse = ApiResponse<{}, {}>;
 
 export type GetListMeasurementResponse = ApiResponse<MeasurementListResponse[], {}>;
@@ -97,7 +102,7 @@ export type GetLatestResultResponse = ApiResponse<LatestResultResponse, {}>;
 
 export type GetImprovementResponse = ApiResponse<ImprovementResponse, {}>;
 
-export type GetLastThreeMonthsResponse = ApiResponse<LatestResultResponse[], {}>;
+export type GetLastThreeMonthsResponse = ApiResponse<GetLatesThreeMonthsResponse, {}>;
 
 export type GetThreeLatestResultsResponse = ApiResponse<LatestResultResponse[], {}>;
 

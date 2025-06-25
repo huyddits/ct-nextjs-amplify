@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { type WeeklyWorkouts, type WeeklySummary, type PerformanceMetrics } from '../_types/index';
 
 import useSWR, { useSWRConfig } from 'swr';
+import { useLoading } from '@/hooks';
 
 type UsePastCardioTrainingOptions = {
   onSuccess?: () => void;
@@ -19,12 +20,16 @@ export const usePastCardioTraining = (options: UsePastCardioTrainingOptions) => 
     return ['past-cardio', options.from, options.to, options.metric ?? 'duration'];
   }, [options.from, options.to, options.metric]);
 
+  const { loading, startLoading, stopLoading } = useLoading();
+
   const fetcher = async (key: [string, string, string, string]) => {
+    startLoading();
     const [_url, from, to, metric] = key;
     const [summaryRes, workoutsRes, metricsRes] = await Promise.allSettled([
       PastCardioTrainingApi.getWeeklySummary({ from, to }),
       PastCardioTrainingApi.getWeeklyWorkouts({ from, to }),
       PastCardioTrainingApi.getPerformanceMetrics({ from, to, metric: metric ?? 'duration' }),
+      stopLoading(),
     ]);
 
     const summary = summaryRes.status === 'fulfilled' && summaryRes.value.data.data;
@@ -78,5 +83,6 @@ export const usePastCardioTraining = (options: UsePastCardioTrainingOptions) => 
     performanceMetricsItems: data?.metrics ?? [],
     isLoading: !error && !data,
     isError: !!error,
+    loading,
   };
 };
