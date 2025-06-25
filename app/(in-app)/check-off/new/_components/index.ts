@@ -1,1 +1,1 @@
-export { default as WhoCheckOff } from './WhoCheckOff';
+export { WhoCheckOff } from './WhoCheckOff';

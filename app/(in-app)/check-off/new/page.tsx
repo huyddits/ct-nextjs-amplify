@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { WhoCheckOff } from './_components';
 import { Controller, useWatch } from 'react-hook-form';
 import { useCheckOffNew } from './_hook';
+import { Button } from '@/components/ui/button';
 
 export default function CheckOffNewPage() {
   const today = format(new Date(), 'MM/dd/yyyy');
@@ -30,10 +31,7 @@ export default function CheckOffNewPage() {
             control={control}
             defaultValue={today}
             render={({ field }) => (
-              <>
-                <div className="border-2 bg-white rounded-lg p-1 text-center">{field.value}</div>
-                <input type="hidden" {...field} />
-              </>
+              <AppInput {...field} readonly inputProps={{ className: 'text-center' }} />
             )}
           />
         </div>
@@ -53,6 +51,7 @@ export default function CheckOffNewPage() {
                 fullWidth
                 required
                 errorMessage={error?.message}
+                inputClassName="text-center"
                 onBlur={() => trigger('dueDate')}
               />
             )}
@@ -102,13 +101,14 @@ export default function CheckOffNewPage() {
           />
         </div>
 
-        <button
+        <Button
+          variant="outline"
           onClick={() => setOpen(true)}
-          className="w-full border-2 rounded-lg p-3 flex items-center justify-between text-lg bg-white"
+          className="w-full border-2 rounded-lg h-auto p-3 flex items-center justify-between bg-white"
         >
           <span className="text-gray-400">Who is this check off for?</span>
-          <SendIcon className="w-6 h-6 text-gray-700 scale-x-[-1]" />
-        </button>
+          <SendIcon className="size-6 text-gray-500" />
+        </Button>
         {open && (
           <WhoCheckOff
             onClose={() => setOpen(false)}

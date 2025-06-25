@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { generateRandomChar } from '@/utils/formatter';
+import { usePagination } from '@/hooks';
 export type ProgramDetail = {
   programId: number;
   name: string;
@@ -54,6 +55,15 @@ export const useExercise = (options: UseExerciseOptions) => {
   const [listExerciseInProgram, setListExerciseInProgram] = useState<ExerciseDetailInProgram[]>([]);
   const { strengthTrainingTypes } = useCategoriesStore();
   const [indicator, setIndicator] = useState(0);
+  const [currentProgramExerciseId, setCurrentProgramExerciseId] = useState<number>();
+  const {
+    limit: workoutLimit,
+    page: workoutPage,
+    totalPages: workoutTotalPages,
+    setPage: setWorkoutPage,
+    setTotalPages: setWorkoutTotalPages,
+  } = usePagination(5);
+  const [pastWorkouts, setPastWorkouts] = useState<WorkoutRecord[]>([]);
   const fetchListExerciseInProgram = async () => {
     try {
       const response = await StrengthApi.getListExercisesInProgram(options.programId);
@@ -109,6 +119,75 @@ export const useExercise = (options: UseExerciseOptions) => {
           };
         })
       );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchPastWorkouts = async ({
+    programExerciseId,
+    page,
+  }: {
+    programExerciseId: number;
+    page?: number;
+  }) => {
+    try {
+      const response = await StrengthApi.getPastWorkouts({
+        id: programExerciseId,
+        limit: workoutLimit,
+        page: page ?? workoutPage,
+      });
+      const { meta, data, error } = response.data;
+
+      if (error) throw error;
+
+      setPastWorkouts(
+        data?.map(item => {
+          return {
+            date: item.created_at,
+            id: item.training_data_id,
+            note: item.note,
+            sets: item.sets.map(set => ({
+              reps: set.rep,
+              rpe: set.rpe,
+              weight: set.weight,
+            })),
+          };
+        }) ?? []
+      );
+      setWorkoutTotalPages(meta?.totalPages ?? 0);
+      if (workoutPage !== page && page) {
+        setWorkoutPage(page);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onLoadMorePastWorkouts = async () => {
+    if (!currentProgramExerciseId) return;
+    try {
+      const response = await StrengthApi.getPastWorkouts({
+        id: currentProgramExerciseId,
+        page: workoutPage,
+        limit: workoutLimit,
+      });
+      const { data, error } = response.data;
+      if (error) throw error;
+      const mappedData: WorkoutRecord[] =
+        data?.map(item => {
+          return {
+            date: item.created_at,
+            id: item.training_data_id,
+            note: item.note,
+            sets: item.sets.map(set => ({
+              reps: set.rep,
+              rpe: set.rpe,
+              weight: set.weight,
+            })),
+          };
+        }) ?? [];
+      setPastWorkouts(prev => [...prev, ...mappedData]);
     } catch (error) {
       console.log(error);
     }
@@ -209,10 +288,6 @@ export const useExercise = (options: UseExerciseOptions) => {
     return listExerciseInProgram[indicator];
   }, [indicator, listExerciseInProgram]);
 
-  const history = useMemo(() => {
-    return currentExercise?.trainingData;
-  }, [currentExercise]);
-
   const template = useMemo(() => {
     return strengthTrainingTypes.find(({ value }) => value === programDetail?.trainingType);
   }, [strengthTrainingTypes, programDetail?.trainingType]);
@@ -221,10 +296,19 @@ export const useExercise = (options: UseExerciseOptions) => {
     fetchListExerciseInProgram();
   }, []);
 
+  useEffect(() => {
+    const current = listExerciseInProgram[indicator];
+    if (!current) return;
+    fetchPastWorkouts({ page: 1, programExerciseId: current.programExerciseId });
+    setCurrentProgramExerciseId(current.programExerciseId);
+  }, [indicator, listExerciseInProgram]);
+
   return {
-    history,
+    workoutPage,
     template,
     indicator,
+    workoutTotalPages,
+    pastWorkouts,
     exerciseName,
     programDetail,
     currentExercise,
@@ -236,6 +320,8 @@ export const useExercise = (options: UseExerciseOptions) => {
     onRemoveSet,
     onUpdateSet,
     onCompleteWorkout,
+    onLoadMorePastWorkouts,
+    fetchPastWorkouts,
     setListExerciseInProgram,
     fetchListExerciseInProgram,
   };

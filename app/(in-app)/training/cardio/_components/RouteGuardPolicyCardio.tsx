@@ -7,12 +7,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAuthStore } from '@/store';
 import { useEffect, useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/utils/constants';
 import { useAckowledgement } from '@/hooks';
 
 export default function RouteGuardPolicyCardio() {
@@ -22,7 +20,6 @@ export default function RouteGuardPolicyCardio() {
     acknowledgementStrength,
     updateAcknowledge,
   } = useAckowledgement();
-  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isAgree, setIsAgree] = useState(false);
   const onClickAgree = () => {
@@ -50,7 +47,7 @@ export default function RouteGuardPolicyCardio() {
         <DialogHeader>
           <DialogTitle className="font-bold">IMPORTANT SAFETY NOTICE AND DISCLAIMER</DialogTitle>
           <DialogDescription>
-            <div className="text-gray-600">STRENGTH TRAINING SAFETY REQUIREMENTS</div>
+            <div className="text-gray-600">CARDIO TRAINING SAFETY REQUIREMENTS</div>
           </DialogDescription>
         </DialogHeader>
         <div className="text-sm space-y-6 overflow-auto h-[400px]">
@@ -302,7 +299,7 @@ export default function RouteGuardPolicyCardio() {
             <Checkbox
               checked={isAgree}
               onCheckedChange={value => setIsAgree(value === 'indeterminate' ? false : value)}
-            ></Checkbox>
+            />
             I understand and agree to the above terms
           </Label>
         </div>

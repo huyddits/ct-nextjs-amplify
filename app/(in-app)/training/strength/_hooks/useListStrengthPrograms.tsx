@@ -3,7 +3,7 @@ import { StrengthApi } from '@/api';
 import { useAuthStore, useStrengthStore } from '@/store';
 import { debounce } from '@/utils/helpers';
 import { AccountType } from '@/utils/types';
-import { usePagination } from '@/hooks';
+import { useLoading, usePagination } from '@/hooks';
 
 export type ProgramItem = {
   id: string;
@@ -21,6 +21,7 @@ export const useListStrengthPrograms = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [listStrengthPrograms, setListStrengthPrograms] = useState<ProgramItem[]>([]);
   const { page, limit, totalPages, setPage, setTotalPages } = usePagination();
+  const { loading, startLoading, stopLoading } = useLoading();
   const isCoach = useMemo(() => info?.accountType === AccountType.Coach, [info?.accountType]);
 
   const debounceSearch = useMemo(() => debounce(setSearchQuery, 500), []);
@@ -28,6 +29,7 @@ export const useListStrengthPrograms = () => {
   const fetchListStrengthPrograms = useCallback(
     async (pageNumber?: number) => {
       try {
+        startLoading();
         const response = await StrengthApi.getListStrengthPrograms({
           name: searchQuery,
           type: programType,
@@ -53,6 +55,8 @@ export const useListStrengthPrograms = () => {
         setTotalPages(meta?.totalPages ?? 0);
       } catch (error) {
         console.log(error);
+      } finally {
+        stopLoading();
       }
     },
     [searchQuery, programType, page, limit]
@@ -95,6 +99,7 @@ export const useListStrengthPrograms = () => {
   }, [searchQuery, programType]);
 
   return {
+    loading,
     type: programType,
     page,
     isCoach,

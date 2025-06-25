@@ -36,7 +36,7 @@ export const useCheckOffByAthlete = (athleteId = '', selectedDate?: CheckOffDate
   const enabledKey =
     athleteId && selectedDate
       ? [TEAM_DATA_CHECK_OFF.BY_ATHLETE_KEY, athleteId, selectedDate]
-      : TEAM_DATA_CHECK_OFF.BY_ATHLETE_KEY;
+      : null;
   return useSWR(enabledKey, async () => {
     const { data } = await getCheckOffByAthlete(athleteId, selectedDate!);
     return data.data;

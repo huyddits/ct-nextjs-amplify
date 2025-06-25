@@ -8,6 +8,7 @@ import { useAuthStore } from '@/store';
 import { CoachStudentItem } from '@/store/useMeasurement.store';
 import { AppInput } from '@/components/compose';
 import { useCheckOffNew } from '../_hook';
+import { cn } from '@/lib/utils';
 
 type Props = {
   onClose: () => void;
@@ -16,7 +17,7 @@ type Props = {
   onSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
 };
 
-export default function WhoCheckOff({ onClose, receivers, onChangeReceivers, onSubmit }: Props) {
+export function WhoCheckOff({ onClose, receivers, onChangeReceivers, onSubmit }: Props) {
   const [selected, setSelected] = useState<CoachStudentItem[]>([]);
   const { info } = useAuthStore();
   const [search, setSearch] = useState('');
@@ -90,10 +91,14 @@ export default function WhoCheckOff({ onClose, receivers, onChangeReceivers, onS
             />
           </div>
 
-          <div className="flex justify-between text-green-700 font-medium text-sm px-1">
-            <button onClick={handleSelectAll}>Select All</button>
+          <div className="flex justify-between items-center text-green-700 font-medium text-sm px-1">
+            <Button variant="link" size="sm" onClick={handleSelectAll}>
+              Select All
+            </Button>
             <span>{receivers.length} selected</span>
-            <button onClick={handleDeselectAll}>Deselect All</button>
+            <Button variant="link" size="sm" onClick={handleDeselectAll}>
+              Deselect All
+            </Button>
           </div>
 
           <div className="max-h-56 overflow-y-auto pr-1 space-y-2">
@@ -102,18 +107,25 @@ export default function WhoCheckOff({ onClose, receivers, onChangeReceivers, onS
               const selectedItem = isSelected(item.athleteId);
 
               return (
-                <div key={item.athleteId} className="flex items-center justify-between gap-3">
-                  <div
-                    onClick={() => toggle(item)}
-                    className={`flex-1 text-left border-2 rounded-full py-2 px-4 transition ${
+                <div
+                  key={item.athleteId}
+                  className="flex items-center justify-between gap-3 group"
+                  onClick={() => toggle(item)}
+                >
+                  <button
+                    className={`cursor-pointer group-hover:bg-green-50 transition-all flex-1 text-left border-2 rounded-full py-2 px-4 ${
                       selectedItem ? 'bg-green-50 border-green-600' : 'border-green-600'
                     }`}
                   >
                     <span className="font-medium text-sm">{name}</span>
-                  </div>
+                  </button>
 
                   <div className="w-5 h-5 rounded-full border-2 border-green-600 flex items-center justify-center">
-                    {selectedItem && <div className="w-3 h-3 rounded-full bg-green-600" />}
+                    <div
+                      className={cn('w-3 h-3 rounded-full bg-green-600 hidden', {
+                        block: selectedItem,
+                      })}
+                    />
                   </div>
                 </div>
               );

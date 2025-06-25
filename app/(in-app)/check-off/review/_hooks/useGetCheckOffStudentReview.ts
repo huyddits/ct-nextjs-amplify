@@ -21,7 +21,6 @@ export function useGetCheckOffStudentReview() {
     {
       dedupingInterval: 1000, // 1 second,
       initialSize: 1,
-      revalidateFirstPage: false,
       parallel: true,
       persistSize: false,
     }

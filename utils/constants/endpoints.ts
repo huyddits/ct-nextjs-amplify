@@ -37,6 +37,7 @@ export const END_POINTS = {
   STRENGTH_PROGRAMS_COPY: 'strength/program/copy',
   STRENGTH_PAST_TRAINING_DATA: 'strength/program/past-training-data',
   STRENGTH_COMPLETE_WORKOUT: 'strength/complete-workout',
+  STRENGTH_PAST_WORKOUTS: 'strength/program-exercise/{id}/past-training-data',
   STRENGTH_SKILLS: 'stunt',
   PROBLEMS: 'problem',
   EXERCISES_FILTER: 'strength/exercise/filter',
