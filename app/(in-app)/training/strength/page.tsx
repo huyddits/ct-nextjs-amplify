@@ -8,10 +8,9 @@ import Link from 'next/link';
 import { useListStrengthPrograms } from './_hooks';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ROUTES } from '@/utils/constants';
-import { useAuthStore, useStrengthStore } from '@/store';
+import { useStrengthStore } from '@/store';
 import { ProgramType } from '@/utils/types';
 import { useAckowledgement, useSafeAreaInset } from '@/hooks';
-import { SafeAreaDetection } from '@/app/_components';
 
 const CustomTabTrigger = ({ value, children }: { value: ProgramType; children: ReactNode }) => {
   return (

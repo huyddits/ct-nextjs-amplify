@@ -57,7 +57,7 @@ export default function WeeklyWorkoutsSection({
                     </div>
 
                     {item.notes && (
-                      <div className="bg-gray-50 p-2 rounded">
+                      <div className="bg-gray-50 p-2 rounded break-words whitespace-pre-wrap">
                         <span className="text-gray-500">Note: </span>
                         <span className="text-gray-700">{item.notes}</span>
                       </div>

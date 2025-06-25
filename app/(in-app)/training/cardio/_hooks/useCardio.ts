@@ -18,9 +18,7 @@ type UseCardioFormOptions = {
 
 const schema = object().shape({
   exercise: string(),
-  notes: string()
-    .max(500, 'Notes must be at most 500 characters')
-    .required('Please enter the data notes'),
+  notes: string().max(500, 'Notes must be at most 500 characters'),
   intervals: array(
     object().shape({
       cardio_interval_id: string(),
@@ -41,10 +39,23 @@ const schema = object().shape({
           const val = Number(value);
           return !isNaN(val) && val >= 30 && val <= 220;
         })
+        .test(
+          'min-less-than-max',
+          'Heart rate min must be less than or equal to max',
+          function (value) {
+            const min = Number(value);
+            const max = Number(this.parent.heartRateMax);
+            // if (!value || !this.parent.heartRateMax) return min <= 160; // less than default
+            if (!value && !this.parent.heartRateMax) return true;
+            if (!value) return this.parent.heartRateMax >= 140;
+            if (!this.parent.heartRateMax) return min <= 160;
+            return !isNaN(min) && !isNaN(max) && min <= max;
+          }
+        )
         .optional(),
       heartRateMax: string()
         .transform(val => (val === '' || val === undefined || val === null ? undefined : val))
-        .test('valid-max', 'Heart rate max must be between 30 and 220', value => {
+        .test('valid-min', 'Heart rate min must be between 30 and 220', value => {
           if (!value) return true;
           const val = Number(value);
           return !isNaN(val) && val >= 30 && val <= 220;
@@ -53,11 +64,12 @@ const schema = object().shape({
           'max-greater-than-min',
           'Heart rate max must be greater than or equal to min',
           function (value) {
-            const { heartRateMin } = this.parent;
-            const minVal = Number(heartRateMin);
-            const maxVal = Number(value);
-            if (!value || !heartRateMin) return true;
-            return maxVal >= minVal;
+            const max = Number(value);
+            const min = Number(this.parent.heartRateMin);
+            if (!value && !this.parent.heartRateMin) return true; // greater than default
+            if (!value) return this.parent.heartRateMin <= 160;
+            if (!this.parent.heartRateMin) return max >= 140;
+            return !isNaN(min) && !isNaN(max) && min <= max;
           }
         )
         .optional(),
@@ -100,6 +112,8 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     trigger,
     formState: { isValid },
     reset,
+    setError,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -241,5 +255,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     getExercises,
     clearCardioSession,
     loading,
+    setError,
+    clearErrors,
   };
 };
