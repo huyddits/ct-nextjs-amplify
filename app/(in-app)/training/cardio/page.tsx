@@ -188,10 +188,31 @@ export default function CardioPage() {
                         placeholder: '0.0',
                         type: 'number',
                         min: 0,
+                        onKeyDown: e => {
+                          if (
+                            distanceLabel === 'Stairs' &&
+                            (e.key === '.' || e.key === ',' || e.key === 'e')
+                          ) {
+                            e.preventDefault();
+                          }
+                        },
                       }}
                       errorMessage={error?.message}
                       disabled={inputDisabled}
-                      {...field}
+                      value={field.value}
+                      onChange={e => {
+                        const value = e.target.value;
+                        if (distanceLabel === 'Stairs') {
+                          const onlyDigits = value.replace(/\D/g, '');
+                          field.onChange(onlyDigits);
+                        } else {
+                          const cleaned = value.replace(',', '.');
+                          const formatted = cleaned.includes('.')
+                            ? cleaned.replace(/^(\d+)\.(\d).*/, '$1.$2')
+                            : cleaned;
+                          field.onChange(formatted);
+                        }
+                      }}
                       className="text-sm text-gray-600"
                       onBlur={() => trigger('intervals.0.distance')}
                     />
@@ -242,7 +263,6 @@ export default function CardioPage() {
                             console.log('min:', min, 'max:', max);
 
                             if (value && max && min > max) {
-                              // setValue('intervals.0.heartRateMax', undefined);
                               setError('intervals.0.heartRateMax', {
                                 type: 'max',
                                 message: 'Min must be less than or equal to Max',

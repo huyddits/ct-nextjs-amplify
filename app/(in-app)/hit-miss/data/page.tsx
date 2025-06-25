@@ -93,11 +93,11 @@ export default function DataPage() {
                     }
                   >
                     {groupIdx === 0 && (
-                      <td rowSpan={section.groups.length} className="p-2 font-medium align-top">
+                      <td rowSpan={section.groups.length} className="p-2 font-medium align-middle ">
                         {section.name}
                       </td>
                     )}
-                    <td className="p-2 text-center font-medium">{group.groupId}</td>
+                    <td className="p-2 text-center font-medium">{`Group ${groupIdx + 1}`}</td>
                     <td className="p-2 text-center font-medium">{group.totalReps}</td>
                     <td className="p-2 text-center font-medium">{group.hitPercentage}%</td>
                   </tr>

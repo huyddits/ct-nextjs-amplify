@@ -18,9 +18,7 @@ type UseCardioFormOptions = {
 
 const schema = object().shape({
   exercise: string(),
-  notes: string()
-    .max(500, 'Notes must be at most 500 characters')
-    .required('Please enter the data notes'),
+  notes: string().max(500, 'Notes must be at most 500 characters'),
   intervals: array(
     object().shape({
       cardio_interval_id: string(),
