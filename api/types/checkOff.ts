@@ -9,6 +9,7 @@ export type CheckOffTask = {
   completed: string[];
   not_complete: string[];
   excused: string[];
+  days_open?: number;
 };
 
 export type CheckOffDataResponse = ApiResponse<CheckOffTask[]>;

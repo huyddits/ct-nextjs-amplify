@@ -39,6 +39,19 @@ const schema = object().shape({
           const val = Number(value);
           return !isNaN(val) && val >= 30 && val <= 220;
         })
+        .test(
+          'min-less-than-max',
+          'Heart rate min must be less than or equal to max',
+          function (value) {
+            const min = Number(value);
+            const max = Number(this.parent.heartRateMax);
+            // if (!value || !this.parent.heartRateMax) return min <= 160; // less than default
+            if (!value && !this.parent.heartRateMax) return true;
+            if (!value) return this.parent.heartRateMax >= 140;
+            if (!this.parent.heartRateMax) return min <= 160;
+            return !isNaN(min) && !isNaN(max) && min <= max;
+          }
+        )
         .optional(),
       heartRateMax: string()
         .transform(val => (val === '' || val === undefined || val === null ? undefined : val))
@@ -47,6 +60,18 @@ const schema = object().shape({
           const val = Number(value);
           return !isNaN(val) && val >= 30 && val <= 220;
         })
+        .test(
+          'max-greater-than-min',
+          'Heart rate max must be greater than or equal to min',
+          function (value) {
+            const max = Number(value);
+            const min = Number(this.parent.heartRateMin);
+            if (!value && !this.parent.heartRateMin) return true; // greater than default
+            if (!value) return this.parent.heartRateMin <= 160;
+            if (!this.parent.heartRateMin) return max >= 140;
+            return !isNaN(min) && !isNaN(max) && min <= max;
+          }
+        )
         .optional(),
     })
   )
@@ -230,7 +255,7 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     getExercises,
     clearCardioSession,
     loading,
-    clearErrors,
     setError,
+    clearErrors,
   };
 };

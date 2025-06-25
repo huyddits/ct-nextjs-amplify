@@ -223,7 +223,7 @@ export default function ReportPage() {
                 className="w-full h-12 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md flex items-center justify-center gap-2"
                 loading={isLoading('reset')}
               >
-                <RefreshCw className="h-5 w-5" />
+                {!isLoading('reset') && <RefreshCw className="h-5 w-5" />}
                 Reset All
               </Button>
             </div>

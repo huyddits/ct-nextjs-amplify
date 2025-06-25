@@ -35,9 +35,9 @@ export function SingleRoutineSection({
 
   return (
     <Card className="mb-6 border-gray-300 shadow-sm">
-      <CardHeader className="flex flex-row items-center space-y-0">
-        <div className="flex items-center space-x-2">
-          <div className="flex flex-col">
+      <CardHeader className="flex flex-row space-y-0">
+        <div className="flex space-x-2">
+          <div className="flex flex-col my-auto -translate-y-1.5">
             <Button
               variant="ghost"
               size="icon"
@@ -57,7 +57,7 @@ export function SingleRoutineSection({
               <ChevronDownIcon className="h-4 w-4" />
             </Button>
           </div>
-          <div className="flex-none w-6 text-gray-600 font-medium">{idx + 1}.</div>
+          <div className="flex-none h-9 w-6 text-gray-600 font-medium my-auto">{idx + 1}.</div>
         </div>
         <Controller
           control={control}
@@ -72,9 +72,9 @@ export function SingleRoutineSection({
           )}
         />
         <Button
-          variant="ghost"
+          variant="link"
           size="icon"
-          className="flex-none text-gray-400 hover:text-red-600 ml-2"
+          className="flex-none text-gray-400 hover:text-destructive"
           onClick={() => removeSection(idx)}
         >
           <Trash2Icon className="h-4 w-4" />
