@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { CheckIcon, XIcon } from 'lucide-react';
 
 type ExerciseSet = {
@@ -42,9 +43,13 @@ export default function ExerciseSet({
         </div>
         <button
           onClick={() => toggleSetCompletion(index)}
-          className={`p-1.5 rounded-full transition-colors ${
-            set.completed ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400'
-          }`}
+          className={cn(
+            'p-1.5 rounded-full transition-colors',
+            set.completed
+              ? 'bg-primary text-white pointer-events-none cursor-none'
+              : 'bg-gray-100 text-gray-400 pointer-events-auto cursor-pointer'
+          )}
+          disabled={set.completed}
         >
           <CheckIcon className="h-4 w-4" />
         </button>

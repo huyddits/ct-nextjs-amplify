@@ -1,5 +1,5 @@
 'use client';
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, SearchIcon } from 'lucide-react';
 import ProgramSection from './_components/ProgramSection';
@@ -25,7 +25,12 @@ const CustomTabTrigger = ({ value, children }: { value: ProgramType; children: R
 
 export default function StrengthPage() {
   const { acknowledgementStrength } = useAcknowledgement();
-  const { setProgramType, programType, tabs } = useStrengthStore();
+  const {
+    setProgramType,
+    programType,
+    tabs,
+    setListExercises: setListExercisesFromStore,
+  } = useStrengthStore();
   const { insetTop, insetBottom } = useSafeAreaInset();
   const {
     page,
@@ -49,6 +54,10 @@ export default function StrengthPage() {
     if (programType === ProgramType.MyPrograms) return true;
     return false;
   }, [programType, isCoach]);
+
+  useEffect(() => {
+    setListExercisesFromStore([]);
+  }, []);
 
   if (!acknowledgementStrength) return;
 
