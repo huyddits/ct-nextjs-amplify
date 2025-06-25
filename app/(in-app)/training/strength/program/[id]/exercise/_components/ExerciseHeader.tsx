@@ -11,9 +11,6 @@ export default function ExerciseHeader({ programId, title }: { programId: number
       <h1 className="text-xl font-semibold text-center flex-1 absolute left-1/2 transform -translate-x-1/2">
         {title}
       </h1>
-      <Link href={`/${ROUTES.TRAINING_STRENGTH_PROGRAM}/${programId}`}>
-        <button className="text-primary font-medium">Edit Program</button>
-      </Link>
     </div>
   );
 }
