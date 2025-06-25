@@ -56,6 +56,7 @@ export default function ExerciseSet({
             type="number"
             value={set.weight}
             onChange={e => updateSet(index, 'weight', Number(e.target.value))}
+            onFocus={e => setTimeout(() => e.target.select(), 100)}
             className="w-full border rounded p-2 text-center"
             placeholder="0"
           />
@@ -65,7 +66,11 @@ export default function ExerciseSet({
           <input
             type="number"
             value={set.reps}
-            onChange={e => updateSet(index, 'reps', Number(e.target.value))}
+            onChange={e => {
+              const value = Math.min(100, Math.max(1, Math.round(Number(e.target.value))));
+              updateSet(index, 'reps', value);
+            }}
+            onFocus={e => setTimeout(() => e.target.select(), 100)}
             className="w-full border rounded p-2 text-center"
             placeholder="0"
           />
@@ -74,14 +79,15 @@ export default function ExerciseSet({
           <label className="block text-xs text-gray-500 mb-1">RPE</label>
           <input
             type="number"
-            min="1"
+            min="5"
             max="10"
             step="1"
             value={set.rpe}
             onChange={e => {
-              const value = Math.min(10, Math.max(1, Math.round(Number(e.target.value))));
+              const value = Math.min(10, Math.max(5, Math.round(Number(e.target.value))));
               updateSet(index, 'rpe', value);
             }}
+            onFocus={e => setTimeout(() => e.target.select(), 100)}
             className="w-full border rounded p-2 text-center"
             placeholder="1-10"
           />

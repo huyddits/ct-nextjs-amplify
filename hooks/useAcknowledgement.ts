@@ -1,10 +1,12 @@
 import { UserApi } from '@/api';
 import { useAuthStore } from '@/store';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { toast } from 'react-toastify';
+import { useLoading } from './useLoading';
 
-export const useAckowledgement = () => {
+export const useAcknowledgement = () => {
   const { info, updateInfo } = useAuthStore();
+  const { loading, startLoading, stopLoading } = useLoading();
 
   const acknowledgementCardio = useMemo(
     () => info?.acknowledgementCardio ?? true,
@@ -26,7 +28,9 @@ export const useAckowledgement = () => {
     acknowledgementStrength: boolean;
     acknowledgementFitness: boolean;
   }) => {
+    if (loading) return;
     try {
+      startLoading();
       await UserApi.updateAcknowledge({
         cardio_acknowledgment: payload.acknowledgementCardio,
         fitness_acknowledgment: payload.acknowledgementFitness,
@@ -36,10 +40,13 @@ export const useAckowledgement = () => {
       updateInfo(payload);
     } catch (error) {
       console.log(error);
+    } finally {
+      stopLoading();
     }
   };
 
   return {
+    loading,
     acknowledgementCardio: acknowledgementCardio,
     acknowledgementStrength: acknowledgementStrength,
     acknowledgementFitness: acknowledgementFitness,

@@ -460,6 +460,13 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
     setListExercisesFromStore(prevExercises => {
       const newExercises = prevExercises.map(ex => {
         if (ex.id !== exerciseId) return ex;
+        let validValue = value;
+        if (field === 'rpe') {
+          validValue = value > 10 ? 10 : value < 5 ? 5 : value;
+        }
+        if (field === 'reps') {
+          validValue = value > 100 ? 100 : value < 1 ? 1 : value;
+        }
         return {
           ...ex,
           sets:
@@ -467,7 +474,7 @@ export const useProgramForm = (options: UseProgramFormOptions) => {
               if (index !== setIndex) return set;
               return {
                 ...set,
-                [field]: value,
+                [field]: validValue,
               };
             }) ?? [],
         };
