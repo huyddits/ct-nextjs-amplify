@@ -1,5 +1,4 @@
 import { CheckOffTask } from '@/api/types/checkOff';
-import { differenceInDays, format, parse } from 'date-fns';
 
 type Props = {
   data: CheckOffTask;
@@ -22,12 +21,7 @@ export function SingleCheckOffData({ data }: Props) {
           </div>
           <div>
             <h4 className="text-sm font-medium text-gray-500"># Days Open</h4>
-            <p className="text-sm">
-              {differenceInDays(
-                parse(data.due_date, 'dd/MM/yyyy', new Date()),
-                parse(data.assigned_date, 'dd/MM/yyyy', new Date())
-              )}
-            </p>
+            <p className="text-sm">{data.days_open ?? 0}</p>
           </div>
           <div>
             <h4 className="text-sm font-medium text-gray-500">Notes/Comments</h4>

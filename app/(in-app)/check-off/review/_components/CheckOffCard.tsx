@@ -100,7 +100,10 @@ export function CheckOffCard({ data: checkOff, onSubmit: refetch }: Props) {
         {/* Athlete's Notes (new field) */}
         <div className="space-y-2">
           <span className="font-medium">Athlete&rsquo;s Notes:</span>
-          <AppTextarea value={checkOff.note} textareaProps={{ readOnly: true }} />
+          <AppTextarea
+            value={checkOff.note}
+            textareaProps={{ readOnly: true, placeholder: "Athlete's notes...", className: 'mt-1' }}
+          />
         </div>
 
         {/* Status Selector Boxes */}
@@ -108,27 +111,29 @@ export function CheckOffCard({ data: checkOff, onSubmit: refetch }: Props) {
           name="status"
           control={control}
           render={({ field }) => (
-            <div
-              className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4"
-              role="radiogroup"
-              aria-label="Completion status"
-            >
-              {statusOptions.map(option => (
-                <Button
-                  key={option.value}
-                  type="button"
-                  onClick={() => !isCompleted && field.onChange(option.value)}
-                  variant={field.value === option.value ? 'default' : 'outline'}
-                  aria-checked={field.value === option.value}
-                  role="radio"
-                >
-                  {option.label}
-                </Button>
-              ))}
+            <div>
+              <div
+                className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4"
+                role="radiogroup"
+                aria-label="Completion status"
+              >
+                {statusOptions.map(option => (
+                  <Button
+                    key={option.value}
+                    type="button"
+                    onClick={() => !isCompleted && field.onChange(option.value)}
+                    variant={field.value === option.value ? 'default' : 'outline'}
+                    aria-checked={field.value === option.value}
+                    role="radio"
+                  >
+                    {option.label}
+                  </Button>
+                ))}
+              </div>
+              {errors.status && <div className="mt-2 error-message">{errors.status.message}</div>}
             </div>
           )}
         />
-        {errors.status && <div className="error-message">{errors.status.message}</div>}
 
         {/* Feedback Textarea */}
         <Controller
