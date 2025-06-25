@@ -68,23 +68,25 @@ const ExerciseProgramSection = forwardRef(
             )}
           </div>
         </div>
-        <div className="mb-6">
-          <h2 className="text-primary font-medium mb-2">
-            Added Exercises ({listExercisesFromStore.length})
-          </h2>
-          <div className="bg-white rounded-lg shadow-sm">
-            {listExercisesFromStore.map(item => (
-              <ExerciseItem
-                key={item.id}
-                name={item.name}
-                imageSrc={item.imageUrl}
-                description={item.description}
-                onToggle={() => onToggle(item, false)}
-                isAdded={false}
-              />
-            ))}
+        {!!listExercisesFromStore.length && (
+          <div className="mb-6">
+            <h2 className="text-primary font-medium mb-2">
+              Added Exercises ({listExercisesFromStore.length})
+            </h2>
+            <div className="bg-white rounded-lg shadow-sm">
+              {listExercisesFromStore.map(item => (
+                <ExerciseItem
+                  key={item.id}
+                  name={item.name}
+                  imageSrc={item.imageUrl}
+                  description={item.description}
+                  onToggle={() => onToggle(item, false)}
+                  isAdded={false}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
