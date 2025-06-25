@@ -17,9 +17,16 @@ type UseCheckOffNewFormOptions = {
 
 const schema = object().shape({
   assignedDate: string(),
-  dueDate: string(),
-  assignedTask: string(),
-  note: string(),
+  dueDate: string().required(
+    'Please select a future date. Past dates are not allowed for this field'
+  ),
+  assignedTask: string()
+    .max(100, 'Text exceeds maximum length of [100] characters. Please shorten your entry.')
+    .required('His field is required. Please enter a value to continue'),
+  note: string().max(
+    500,
+    'Text exceeds maximum length of [500] characters. Please shorten your entry.'
+  ),
   receivers: array(
     object().shape({
       userId: string(),
@@ -34,7 +41,7 @@ export const useCheckOffNew = (options: UseCheckOffNewFormOptions) => {
   const [coachStudentList, setCoachStudentList] = useState<CoachStudentItem[]>([]);
   const { info } = useAuthStore();
   const { coachStudent: coachStudentListFromStore, setCoachStudent } = useMeasurementStore();
-  const { control, handleSubmit, setValue, reset } = useForm({
+  const { control, handleSubmit, setValue, reset, trigger } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       assignedDate: format(new Date(), 'MM/dd/yyyy'),
@@ -135,5 +142,6 @@ export const useCheckOffNew = (options: UseCheckOffNewFormOptions) => {
     coachStudentList,
     getCoachStudentList,
     reset,
+    trigger,
   };
 };
