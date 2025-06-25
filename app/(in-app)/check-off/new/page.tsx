@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 export default function CheckOffNewPage() {
   const today = format(new Date(), 'MM/dd/yyyy');
   const [open, setOpen] = useState(false);
-  const { control, onSubmit, setValue, reset } = useCheckOffNew({
+  const { control, onSubmit, setValue, reset, trigger } = useCheckOffNew({
     onSuccess: () => {
       reset();
       setOpen(false);
@@ -52,6 +52,7 @@ export default function CheckOffNewPage() {
                 required
                 errorMessage={error?.message}
                 inputClassName="text-center"
+                onBlur={() => trigger('dueDate')}
               />
             )}
           />
@@ -74,6 +75,7 @@ export default function CheckOffNewPage() {
                 fullWidth
                 required
                 errorMessage={error?.message}
+                onBlur={() => trigger('assignedTask')}
               />
             )}
           />

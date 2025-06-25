@@ -95,7 +95,7 @@ export function WhoCheckOff({ onClose, receivers, onChangeReceivers, onSubmit }:
             <Button variant="link" size="sm" onClick={handleSelectAll}>
               Select All
             </Button>
-            <span>{selected.length} selected</span>
+            <span>{receivers.length} selected</span>
             <Button variant="link" size="sm" onClick={handleDeselectAll}>
               Deselect All
             </Button>
