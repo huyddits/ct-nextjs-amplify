@@ -24,6 +24,8 @@ export default function CardioPage() {
     selectedExercise,
     onCompleteWorkout,
     reset,
+    setError,
+    clearErrors,
   } = useCardio({
     onSuccess: () => {
       clearCardioSession();
@@ -155,6 +157,7 @@ export default function CardioPage() {
                       disabled={inputDisabled}
                       {...field}
                       className="text-sm text-gray-600"
+                      onBlur={() => trigger('intervals.0.duration')}
                     />
                   )}
                 />
@@ -185,11 +188,33 @@ export default function CardioPage() {
                         placeholder: '0.0',
                         type: 'number',
                         min: 0,
+                        onKeyDown: e => {
+                          if (
+                            distanceLabel === 'Stairs' &&
+                            (e.key === '.' || e.key === ',' || e.key === 'e')
+                          ) {
+                            e.preventDefault();
+                          }
+                        },
                       }}
                       errorMessage={error?.message}
                       disabled={inputDisabled}
-                      {...field}
+                      value={field.value}
+                      onChange={e => {
+                        const value = e.target.value;
+                        if (distanceLabel === 'Stairs') {
+                          const onlyDigits = value.replace(/\D/g, '');
+                          field.onChange(onlyDigits);
+                        } else {
+                          const cleaned = value.replace(',', '.');
+                          const formatted = cleaned.includes('.')
+                            ? cleaned.replace(/^(\d+)\.(\d).*/, '$1.$2')
+                            : cleaned;
+                          field.onChange(formatted);
+                        }
+                      }}
                       className="text-sm text-gray-600"
+                      onBlur={() => trigger('intervals.0.distance')}
                     />
                   )}
                 />
@@ -227,8 +252,25 @@ export default function CardioPage() {
                           }}
                           errorMessage={error?.message}
                           disabled={inputDisabled}
-                          {...field}
+                          value={field.value}
                           className="text-sm text-gray-600 w-full"
+                          onChange={e => {
+                            const value = e.target.value;
+                            field.onChange(value);
+
+                            const max = Number(getValues('intervals.0.heartRateMax'));
+                            const min = Number(value);
+                            console.log('min:', min, 'max:', max);
+
+                            if (value && max && min > max) {
+                              setError('intervals.0.heartRateMax', {
+                                type: 'max',
+                                message: 'Min must be less than or equal to Max',
+                              });
+                            } else {
+                              clearErrors(['intervals.0.heartRateMin', 'intervals.0.heartRateMax']);
+                            }
+                          }}
                         />
                       )}
                     />
@@ -245,8 +287,25 @@ export default function CardioPage() {
                           }}
                           errorMessage={error?.message}
                           disabled={inputDisabled}
-                          {...field}
+                          value={field.value}
                           className="text-sm text-gray-600 w-full"
+                          onChange={e => {
+                            const value = e.target.value;
+                            field.onChange(value);
+
+                            const min = Number(getValues('intervals.0.heartRateMin'));
+                            const max = Number(value);
+                            console.log('min:', min, 'max:', max);
+
+                            if (value && min && max < min) {
+                              setError('intervals.0.heartRateMax', {
+                                type: 'manual',
+                                message: 'Max must be greater than or equal to Min',
+                              });
+                            } else {
+                              clearErrors(['intervals.0.heartRateMin', 'intervals.0.heartRateMax']);
+                            }
+                          }}
                         />
                       )}
                     />
@@ -266,6 +325,7 @@ export default function CardioPage() {
                     }}
                     errorMessage={error?.message}
                     {...field}
+                    onBlur={() => trigger('notes')}
                   />
                 )}
               />
