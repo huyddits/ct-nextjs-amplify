@@ -11,15 +11,16 @@ import { useEffect, useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useRouter } from 'next/navigation';
-import { useAckowledgement } from '@/hooks';
+import { useAcknowledgement } from '@/hooks';
 
 export default function RouteGuardPolicyCardio() {
   const {
+    loading,
     acknowledgementCardio,
     acknowledgementFitness,
     acknowledgementStrength,
     updateAcknowledge,
-  } = useAckowledgement();
+  } = useAcknowledgement();
   const [isOpen, setIsOpen] = useState(false);
   const [isAgree, setIsAgree] = useState(false);
   const onClickAgree = () => {
@@ -46,8 +47,8 @@ export default function RouteGuardPolicyCardio() {
       <DialogContent className="[&_[data-slot=dialog-close]]:hidden">
         <DialogHeader>
           <DialogTitle className="font-bold">IMPORTANT SAFETY NOTICE AND DISCLAIMER</DialogTitle>
-          <DialogDescription>
-            <div className="text-gray-600">CARDIO TRAINING SAFETY REQUIREMENTS</div>
+          <DialogDescription className="text-gray-600">
+            CARDIO TRAINING SAFETY REQUIREMENTS
           </DialogDescription>
         </DialogHeader>
         <div className="text-sm space-y-6 overflow-auto h-[400px]">
@@ -294,7 +295,7 @@ export default function RouteGuardPolicyCardio() {
           </p>
         </div>
 
-        <div className="mt-5">
+        <div>
           <Label>
             <Checkbox
               checked={isAgree}
@@ -304,7 +305,7 @@ export default function RouteGuardPolicyCardio() {
           </Label>
         </div>
         <div className="flex gap-4 w-fit ml-auto">
-          <Button onClick={onClickAgree} disabled={!isAgree}>
+          <Button onClick={onClickAgree} disabled={!isAgree} loading={loading}>
             Agree
           </Button>
           <Button variant="outline" onClick={onClickCancel}>

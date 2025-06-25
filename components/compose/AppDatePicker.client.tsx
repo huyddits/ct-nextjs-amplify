@@ -58,7 +58,7 @@ export default function AppDatePicker({
       )}
       <div className="relative flex items-stretch">
         {icon && (
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
             {icon}
           </div>
         )}

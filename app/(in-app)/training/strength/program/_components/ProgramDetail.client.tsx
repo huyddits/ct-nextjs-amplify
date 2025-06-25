@@ -165,7 +165,7 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
                         <div className="flex-1 grid grid-cols-7 gap-2 items-center">
                           <div className="col-span-2">
                             <input
-                              type="text"
+                              type="number"
                               value={set.reps}
                               onChange={e =>
                                 onUpdateSetFromExercise(
@@ -175,13 +175,14 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
                                   Number.parseInt(e.target.value) || 0
                                 )
                               }
+                              onFocus={e => setTimeout(() => e.target.select(), 100)}
                               className="w-full p-2 border border-gray-300 rounded text-center"
                             />
                           </div>
                           <div className="text-gray-500 text-center">reps</div>
                           <div className="col-span-2">
                             <input
-                              type="text"
+                              type="number"
                               value={set.rpe}
                               onChange={e =>
                                 onUpdateSetFromExercise(
@@ -191,6 +192,7 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
                                   Number.parseInt(e.target.value) || 0
                                 )
                               }
+                              onFocus={e => setTimeout(() => e.target.select(), 100)}
                               className="w-full p-2 border border-gray-300 rounded text-center"
                             />
                           </div>

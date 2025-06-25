@@ -110,10 +110,10 @@ export const useExercise = (options: UseExerciseOptions) => {
               };
             }),
             type: item.type,
-            sets: item.sets.map(obj => ({
+            sets: item.sets.map((obj, index) => ({
               reps: obj.rep,
               rpe: obj.rpe,
-              weight: 0,
+              weight: item.training_data?.[0]?.sets?.[index]?.weight ?? 0,
               completed: false,
             })),
           };
@@ -201,23 +201,24 @@ export const useExercise = (options: UseExerciseOptions) => {
       return;
     }
     try {
-      await StrengthApi.completeWorkout(
-        listExerciseInProgram.map(item => {
-          return {
-            note: item.notes,
-            program_exercise_id: item.programExerciseId,
-            sets: item.sets
-              .filter(set => set.completed)
-              .map(set => {
-                return {
-                  rep: set.reps,
-                  rpe: set.rpe,
-                  weight: set.weight,
-                };
-              }),
-          };
-        })
-      );
+      // exclude empty set from sets
+      const validList = listExerciseInProgram.map(item => {
+        return {
+          note: item.notes,
+          program_exercise_id: item.programExerciseId,
+          sets: item.sets
+            .filter(set => set.completed)
+            .map(set => {
+              return {
+                rep: set.reps,
+                rpe: set.rpe,
+                weight: set.weight,
+              };
+            }),
+        };
+      });
+      // exclude exercise with empty sets
+      await StrengthApi.completeWorkout(validList.filter(item => item.sets.length > 0));
 
       toast.success('Workout completed successfully');
       router.push(`/${ROUTES.TRAINING_STRENGTH}?${generateRandomChar()}`);
@@ -260,7 +261,6 @@ export const useExercise = (options: UseExerciseOptions) => {
         return {
           ...item,
           sets: item.sets.map((set, index) => {
-            console.log('value', value);
             if (index !== setIndex) return set;
             return {
               ...set,
@@ -301,7 +301,7 @@ export const useExercise = (options: UseExerciseOptions) => {
     if (!current) return;
     fetchPastWorkouts({ page: 1, programExerciseId: current.programExerciseId });
     setCurrentProgramExerciseId(current.programExerciseId);
-  }, [indicator, listExerciseInProgram]);
+  }, [indicator, listExerciseInProgram.length]);
 
   return {
     workoutPage,

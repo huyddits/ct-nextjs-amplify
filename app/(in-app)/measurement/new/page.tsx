@@ -9,12 +9,12 @@ import { useAuthStore } from '@/store';
 import { CoachStudentPayload } from '@/api/types/measurement';
 import { SafeAreaDetection } from '@/app/_components';
 import { VideoPlayer } from '../_components';
-import { useAckowledgement } from '@/hooks';
+import { useAcknowledgement } from '@/hooks';
 import { TIME_UNIT } from '@/utils/constants';
 export default function MeasurementNewPage() {
   const { measurementListOptions } = useMeasurementStore();
   const { info } = useAuthStore();
-  const { acknowledgementFitness } = useAckowledgement();
+  const { acknowledgementFitness } = useAcknowledgement();
   const {
     control,
     measurementList,
