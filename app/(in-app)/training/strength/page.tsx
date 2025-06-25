@@ -10,7 +10,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ROUTES } from '@/utils/constants';
 import { useStrengthStore } from '@/store';
 import { ProgramType } from '@/utils/types';
-import { useAckowledgement, useSafeAreaInset } from '@/hooks';
+import { useAcknowledgement, useSafeAreaInset } from '@/hooks';
 
 const CustomTabTrigger = ({ value, children }: { value: ProgramType; children: ReactNode }) => {
   return (
@@ -24,7 +24,7 @@ const CustomTabTrigger = ({ value, children }: { value: ProgramType; children: R
 };
 
 export default function StrengthPage() {
-  const { acknowledgementStrength } = useAckowledgement();
+  const { acknowledgementStrength } = useAcknowledgement();
   const { setProgramType, programType, tabs } = useStrengthStore();
   const { insetTop, insetBottom } = useSafeAreaInset();
   const {

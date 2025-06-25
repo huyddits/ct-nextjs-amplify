@@ -71,7 +71,6 @@ export default function ByAthleteContent() {
           )}
         />
 
-        {/* Progress Chart Section */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-medium">Progress Chart</h2>
@@ -80,30 +79,41 @@ export default function ByAthleteContent() {
 
           <div className="bg-white p-4 rounded-lg space-y-4">
             <div className="h-[200px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={lastThreeMonths}>
-                  <XAxis
-                    dataKey="createdAt"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12, fill: '#666' }}
-                  />
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12, fill: '#666' }}
-                    domain={[0, 1000]}
-                    ticks={[0, 200, 400, 600, 800, 1000]}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="result"
-                    stroke="var(--ct-green-500)"
-                    strokeWidth={2}
-                    dot={{ fill: 'var(--ct-green-500)', strokeWidth: 0 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              {lastThreeMonths && (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={lastThreeMonths.results}>
+                    <XAxis
+                      dataKey="createdAt"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: '#666' }}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: '#666' }}
+                      domain={[0, lastThreeMonths.maxResult]}
+                      ticks={[
+                        0,
+                        Math.round(lastThreeMonths.maxResult * 0.25),
+                        Math.round(lastThreeMonths.maxResult * 0.5),
+                        Math.round(lastThreeMonths.maxResult * 0.75),
+                        lastThreeMonths.maxResult,
+                      ]}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="result"
+                      stroke="var(--ct-green-500)"
+                      strokeWidth={2}
+                      dot={{
+                        fill: 'var(--ct-green-500)',
+                        strokeWidth: 0,
+                      }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -151,10 +161,12 @@ export default function ByAthleteContent() {
         <div className="space-y-4">
           <h2 className="text-sm font-medium">Recent Tests</h2>
           <div className="bg-white rounded-lg">
-            {threeLatestResults.map((item, measurementSessionId) => {
-              return (
+            {threeLatestResults.length === 0 ? (
+              <div className="text-gray-500 italic text-sm px-4 py-3"></div>
+            ) : (
+              threeLatestResults.map(item => (
                 <div
-                  key={measurementSessionId}
+                  key={item.measurementSessionId}
                   className="flex justify-between py-3 px-4 border-b last:border-b-0"
                 >
                   <span className="text-gray-600">{item.createdAt}</span>
@@ -162,8 +174,8 @@ export default function ByAthleteContent() {
                     {item.result ?? 0} {item.measurementUnit ?? ''}
                   </span>
                 </div>
-              );
-            })}
+              ))
+            )}
           </div>
         </div>
 
@@ -172,8 +184,8 @@ export default function ByAthleteContent() {
             Current Measurements
           </div>
           <div className="bg-white rounded-b-lg divide-y">
-            {resultForAllMeasurements.map((item, measurementId) => (
-              <div key={measurementId} className="flex justify-between py-3 px-4">
+            {resultForAllMeasurements.map(item => (
+              <div key={item.measurementId} className="flex justify-between py-3 px-4">
                 <div>{item.measurementName}</div>
                 <div className="text-right space-x-4">
                   <span>{item.result}</span>

@@ -10,15 +10,16 @@ import {
 import { useEffect, useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { useAckowledgement } from '@/hooks';
+import { useAcknowledgement } from '@/hooks';
 
 export default function RouteGuardPolicyStrength() {
   const {
+    loading,
     acknowledgementStrength,
     acknowledgementCardio,
     acknowledgementFitness,
     updateAcknowledge,
-  } = useAckowledgement();
+  } = useAcknowledgement();
   const [isOpen, setIsOpen] = useState(false);
   const [isAgree, setIsAgree] = useState(false);
   const onClickAgree = () => {
@@ -242,7 +243,7 @@ export default function RouteGuardPolicyStrength() {
             Disclaimers" in our Terms and Conditions.
           </p>
         </div>
-        <div className="mt-5">
+        <div>
           <Label>
             <Checkbox
               checked={isAgree}
@@ -252,7 +253,7 @@ export default function RouteGuardPolicyStrength() {
           </Label>
         </div>
         <div className="flex gap-2 w-fit ml-auto">
-          <Button onClick={onClickAgree} disabled={!isAgree}>
+          <Button onClick={onClickAgree} disabled={!isAgree} loading={loading}>
             Agree
           </Button>
           <Button variant="outline" onClick={onClickCancel}>

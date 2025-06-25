@@ -6,12 +6,12 @@ import { useCardio } from './_hooks';
 import { useEffect, useState } from 'react';
 import { useCardioStore } from '@/store/useCardio.store';
 import Link from 'next/link';
-import { useAckowledgement, useLoading } from '@/hooks';
+import { useAcknowledgement, useLoading } from '@/hooks';
 import { InfoIcon } from 'lucide-react';
 import { useAuthStore } from '@/store';
 
 export default function CardioPage() {
-  const { acknowledgementCardio } = useAckowledgement();
+  const { acknowledgementCardio } = useAcknowledgement();
   const { intervalsList, clearCardioSession, setDraft, draft } = useCardioStore();
   const { loading, startLoading, stopLoading } = useLoading();
   const {
@@ -156,7 +156,7 @@ export default function CardioPage() {
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-medium">Intervals</h2>
+                <h2 className="text-lg font-medium">Interval</h2>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
