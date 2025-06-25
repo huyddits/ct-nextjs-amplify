@@ -48,7 +48,7 @@ export default function DataPage() {
         <table className="w-full text-sm text-gray-900">
           <thead>
             <tr>
-              <th className="bg-primary text-white p-2 text-left break-words whitespace">
+              <th className="bg-primary text-white p-2 text-left break-words whitespace-pre-wrap">
                 Section Name
               </th>
               <th className="bg-primary text-white p-2 text-center">Reps</th>
@@ -62,7 +62,9 @@ export default function DataPage() {
                   key={`${summarySection.routineId}-${section.sectionId}`}
                   className={`border-b border-gray-300 ${index % 2 === 1 ? 'bg-gray-50' : ''}`}
                 >
-                  <td className="p-2 font-medium break-words whitespace">{section.name}</td>
+                  <td className="p-2 font-medium break-words whitespace-pre-wrap">
+                    {section.name}
+                  </td>
                   <td className="p-2 text-center font-medium">{section.totalReps}</td>
                   <td className="p-2 text-center font-medium">{section.hitPercentage}%</td>
                 </tr>
