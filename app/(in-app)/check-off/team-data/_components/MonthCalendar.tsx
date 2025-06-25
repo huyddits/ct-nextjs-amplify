@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { Dispatch, SetStateAction, useMemo } from 'react';
 import AppCalendar from '@/components/compose/AppCalendar.client';
 import { Button } from '@/components/ui/button';
+import { format } from 'date-fns';
 
 export type Props = {
   selectedDate: Date;
@@ -10,14 +11,7 @@ export type Props = {
 };
 
 export function MonthCalendar({ selectedDate, setSelectedDate }: Props) {
-  const formattedLabel = useMemo(
-    () =>
-      selectedDate.toLocaleString('default', {
-        month: 'long',
-        year: 'numeric',
-      }),
-    [selectedDate]
-  );
+  const formattedLabel = useMemo(() => format(selectedDate, 'MMMM yyyy'), [selectedDate]);
 
   const handlePrev = () => {
     setSelectedDate(prev => {
