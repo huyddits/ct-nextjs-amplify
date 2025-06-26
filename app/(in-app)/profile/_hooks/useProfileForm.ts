@@ -117,6 +117,7 @@ export const useProfileForm = () => {
 
       updateInfo({
         dateOfBirth: dataResponse?.date_of_birth,
+        coachCode: dataResponse?.coach_code,
         email: dataResponse?.email,
         firstName: dataResponse?.first_name,
         lastName: dataResponse?.last_name,
