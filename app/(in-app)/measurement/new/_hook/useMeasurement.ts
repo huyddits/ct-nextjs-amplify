@@ -18,7 +18,12 @@ type UseMeasurementFormOptions = {
 const schema = object().shape({
   measurement: string().required('Measurement is a required field'),
   athleteList: string().required('Athlete is a required field'),
-  result: string().required('Result is a required field'),
+  result: string()
+    .required('Result is a required field')
+    .test('is-valid-distance', 'Result must not exceed 100', value => {
+      const num = Number(value);
+      return !isNaN(num) && num >= 0 && num <= 1000;
+    }),
 });
 
 export const useMeasurement = (options?: UseMeasurementFormOptions) => {

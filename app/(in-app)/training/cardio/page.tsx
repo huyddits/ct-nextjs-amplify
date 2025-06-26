@@ -106,24 +106,6 @@ export default function CardioPage() {
 
   const distanceLabel = distanceUnit === 'Stairs' ? 'Stairs' : 'Distance';
 
-  // Helper for instant validation
-  const validateHeartRate = (min: string = '140', max: string = '160') => {
-    // const minVal = Number(min);
-    // const maxVal = Number(max);
-    // if (min && max && !isNaN(minVal) && !isNaN(maxVal) && minVal > maxVal) {
-    //   setError('intervals.0.heartRateMin', {
-    //     type: 'manual',
-    //     message: 'Min must be less than or equal to Max',
-    //   });
-    //   setError('intervals.0.heartRateMax', {
-    //     type: 'manual',
-    //     message: 'Max must be greater than or equal to Min',
-    //   });
-    // } else {
-    //   clearErrors(['intervals.0.heartRateMin', 'intervals.0.heartRateMax']);
-    // }
-  };
-
   if (!acknowledgementCardio) {
     return;
   }
@@ -270,32 +252,12 @@ export default function CardioPage() {
                           }}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             field.onChange(e);
-                            // const min = e.target.value;
-                            // const max = getValues('intervals.0.heartRateMax');
-                            // validateHeartRate(min, max);
                             trigger('intervals.0.heartRateMax');
                           }}
                           errorMessage={error?.message}
                           disabled={inputDisabled}
                           value={field.value}
                           className="text-sm text-gray-600 w-full"
-                          // onChange={e => {
-                          //   const value = e.target.value;
-                          //   field.onChange(value);
-
-                          //   const max = Number(getValues('intervals.0.heartRateMax'));
-                          //   const min = Number(value);
-                          //   console.log('min:', min, 'max:', max);
-
-                          //   if (value && max && min > max) {
-                          //     setError('intervals.0.heartRateMax', {
-                          //       type: 'max',
-                          //       message: 'Min must be less than or equal to Max',
-                          //     });
-                          //   } else {
-                          //     clearErrors(['intervals.0.heartRateMin', 'intervals.0.heartRateMax']);
-                          //   }
-                          // }}
                         />
                       )}
                     />
@@ -312,32 +274,12 @@ export default function CardioPage() {
                           }}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             field.onChange(e);
-                            // const max = e.target.value;
-                            // const min = getValues('intervals.0.heartRateMin');
-                            // validateHeartRate(min, max);
                             trigger('intervals.0.heartRateMin');
                           }}
                           errorMessage={error?.message}
                           disabled={inputDisabled}
                           value={field.value}
                           className="text-sm text-gray-600 w-full"
-                          // onChange={e => {
-                          //   const value = e.target.value;
-                          //   field.onChange(value);
-
-                          //   const min = Number(getValues('intervals.0.heartRateMin'));
-                          //   const max = Number(value);
-                          //   console.log('min:', min, 'max:', max);
-
-                          //   if (value && min && max < min) {
-                          //     setError('intervals.0.heartRateMax', {
-                          //       type: 'manual',
-                          //       message: 'Max must be greater than or equal to Min',
-                          //     });
-                          //   } else {
-                          //     clearErrors(['intervals.0.heartRateMin', 'intervals.0.heartRateMax']);
-                          //   }
-                          // }}
                         />
                       )}
                     />
