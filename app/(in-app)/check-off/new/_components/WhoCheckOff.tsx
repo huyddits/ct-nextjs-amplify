@@ -117,7 +117,9 @@ export function WhoCheckOff({ onClose, receivers, onChangeReceivers, onSubmit }:
                       selectedItem ? 'bg-green-50 border-green-600' : 'border-green-600'
                     }`}
                   >
-                    <span className="font-medium text-sm">{name}</span>
+                    <span className="font-medium text-sm break-all whitespace-pre-wrap ">
+                      {name}
+                    </span>
                   </button>
 
                   <div className="w-5 h-5 rounded-full border-2 border-green-600 flex items-center justify-center">

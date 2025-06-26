@@ -102,7 +102,9 @@ export default function MeasurementNewPage() {
 
               <div>
                 <h3 className="text-gray-700 font-medium mb-2">Instructions:</h3>
-                <p className="text-gray-600">{selectedMeasurement?.instruction}</p>
+                <p className="text-gray-600  break-all whitespace-pre-wrap">
+                  {selectedMeasurement?.instruction}
+                </p>
               </div>
             </>
           )}
