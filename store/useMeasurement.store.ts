@@ -54,7 +54,7 @@ type MeasurementStore = {
   flyerList: BaseFlyerAndBases[];
   basesSpotterList: BaseFlyerAndBases[];
   setMeasurementListOptions: (options: SelectOption[]) => void;
-  setRawMeasurementList: (list: MeasurementItem[]) => void;
+  setBaseMeasurementList: (list: MeasurementItem[]) => void;
   setCoachStudent: (list: CoachStudentItem[]) => void;
   setFlyerList: (list: BaseFlyerAndBases[]) => void;
   setBasesSpotterList: (list: BaseFlyerAndBases[]) => void;
@@ -73,7 +73,7 @@ export const useMeasurementStore = create<MeasurementStore>(set => ({
   refreshFlyer: false,
   refreshBasesSpotter: false,
   setMeasurementListOptions: options => set({ measurementListOptions: options }),
-  setRawMeasurementList: list => set({ baseMeasurementList: list }),
+  setBaseMeasurementList: list => set({ baseMeasurementList: list }),
   setCoachStudent: list => set({ coachStudent: list }),
   setFlyerList: list => set({ flyerList: list }),
   setBasesSpotterList: list => set({ basesSpotterList: list }),

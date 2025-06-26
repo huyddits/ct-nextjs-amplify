@@ -43,11 +43,25 @@ export type FlyerAndBasesResponse = {
   }[];
 };
 
+type MeasurementRecord = {
+  measurement_id: number;
+  name: string;
+  instruction: string;
+  imperial_unit: string;
+  metric_unit: string;
+  thumbnail_link: string;
+  video_link: string;
+  status: number;
+  created_at: string;
+  updated_at: string;
+};
+
 export type LatestResultResponse = {
   measurement_session_id: number;
   result: number;
   measurement_unit: string;
   created_at: string;
+  measurement: MeasurementRecord;
 };
 
 export type ImprovementResponse = {
@@ -61,6 +75,7 @@ export type ResultForAllMeasurementsResponse = {
   result: number;
   measurement_unit: string;
   created_at: string;
+  measurement_session_id: number;
 };
 
 export type CoachStudentPayload = {
@@ -73,7 +88,7 @@ export type CreateMeasurementPayload = {
   result: number;
 };
 
-export type athletePayload = {
+export type AthletePayload = {
   measurement_id?: number;
   athlete_id?: string;
 };
