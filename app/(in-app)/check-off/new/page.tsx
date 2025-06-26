@@ -45,7 +45,7 @@ export default function CheckOffNewPage() {
                 label=""
                 dateFormat="MM/dd/yyyy"
                 placeholder="Select due date"
-                minDate={new Date()}
+                minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
                 value={field.value ?? ''}
                 onChange={field.onChange}
                 fullWidth
@@ -107,7 +107,7 @@ export default function CheckOffNewPage() {
           className="w-full border-2 rounded-lg h-auto p-3 flex items-center justify-between bg-white"
         >
           <span className="text-gray-400">Who is this check off for?</span>
-          <SendIcon className="size-6 text-gray-500" />
+          <SendIcon className="size-6 text-gray-500 rotate-[270deg]" />
         </Button>
         {open && (
           <WhoCheckOff

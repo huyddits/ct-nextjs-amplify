@@ -118,7 +118,7 @@ export default function ReportPage() {
                       <div className="p-4">
                         <div className="space-y-3">
                           <div className="pb-2 border-b border-gray-200">
-                            <p className="text-lg font-semibold text-gray-900 break-words whitespace-pre-wrap">
+                            <p className="text-lg font-semibold text-gray-900 break-all whitespace-pre-wrap">
                               {groupName}
                             </p>
                           </div>
@@ -225,7 +225,7 @@ export default function ReportPage() {
                 className="w-full h-12 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md flex items-center justify-center gap-2"
                 loading={isLoading('reset')}
               >
-                {!isLoading('reset') && <RefreshCw className="h-5 w-5" />}
+                {!isLoading('reset')}
                 Reset All
               </Button>
             </div>
