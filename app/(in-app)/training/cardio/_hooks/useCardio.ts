@@ -10,6 +10,7 @@ import { mutate } from 'swr';
 import { Metric } from '../_types/index';
 import { useLoading } from '@/hooks';
 import { endOfISOWeek, format, startOfISOWeek } from 'date-fns';
+import { usePastCardioTraining } from '../past/_hooks';
 
 type UseCardioFormOptions = {
   onSuccess?: () => void;
@@ -226,8 +227,14 @@ export const useCardio = (options?: UseCardioFormOptions) => {
       toast.success('Successfully save the complete workout');
       const from = format(startOfISOWeek(new Date()), 'yyyy-MM-dd');
       const to = format(endOfISOWeek(new Date()), 'yyyy-MM-dd');
-      const cacheKey = ['past-cardio', from, to, Metric.Duration];
-      mutate(cacheKey, null, { revalidate: true });
+      const cacheKeyDuration = ['past-cardio', from, to, Metric.Duration];
+      const cacheKeyDistance = ['past-cardio', from, to, Metric.Distance];
+      const cacheKeyStairs = ['past-cardio', from, to, Metric.Stairs];
+
+      // mutate(cacheKey, null, { revalidate: true });
+      mutate(cacheKeyDuration, null, { revalidate: true });
+      mutate(cacheKeyDistance, null, { revalidate: true });
+      mutate(cacheKeyStairs, null, { revalidate: true });
       options?.onSuccess?.();
     } catch (error: unknown) {
       console.error('Workout submission failed:', error);
