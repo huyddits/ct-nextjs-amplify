@@ -1,8 +1,8 @@
 import { PastCardioTrainingApi } from '@/api';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { type WeeklyWorkouts, type WeeklySummary, type PerformanceMetrics } from '../_types/index';
 
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { useLoading } from '@/hooks';
 
 type UsePastCardioTrainingOptions = {
@@ -34,6 +34,11 @@ export const usePastCardioTraining = (options: UsePastCardioTrainingOptions) => 
       const workouts = workoutsRes.status === 'fulfilled' && workoutsRes.value.data.data;
       const metrics = metricsRes.status === 'fulfilled' && metricsRes.value.data.data;
 
+      if (summaryRes.status !== 'fulfilled') console.warn('Failed to fetch summary');
+      if (workoutsRes.status !== 'fulfilled') console.warn('Failed to fetch workouts');
+      if (metricsRes.status !== 'fulfilled') console.warn('Failed to fetch metrics');
+
+      console.log('summary', summary);
       return {
         summary: {
           dailyAverageDuration: summary ? summary.dailyAverageDuration : 0,
@@ -71,10 +76,11 @@ export const usePastCardioTraining = (options: UsePastCardioTrainingOptions) => 
   };
 
   const { data, error } = useSWR(swrKey, fetcher, {
-    onErrorRetry: (error, key, config, revalidate, { retryCount }) => {},
+    onErrorRetry: () => {},
     revalidateIfStale: true,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
+    revalidateOnMount: true,
     dedupingInterval: 10 * 60 * 1000,
   });
 
