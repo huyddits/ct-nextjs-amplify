@@ -2,7 +2,7 @@
 
 import type React from 'react';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { InfoIcon, PlusIcon, Trash2Icon, MinusIcon } from 'lucide-react';
 import { useProgramForm } from '../../_hooks';
@@ -12,6 +12,7 @@ import { Controller } from 'react-hook-form';
 import { useStrengthStore } from '@/store';
 import { MAXIMUM_SETS_PER_EXERCISE } from '@/utils/constants';
 import ExercisePickerModal from './ExercisePickerModal.client';
+import TrainingTypeInfoModal from './TrainingTypeInfoModal';
 
 export default function ProgramDetail({ programId }: { programId?: string }) {
   const {
@@ -32,6 +33,8 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
   } = useProgramForm({ id: programId });
   const { listExercises: listExercisesFromStore, setListExercises: setListExercisesFromStore } =
     useStrengthStore();
+
+  const [isOpenInfo, setIsOpenInfo] = useState(false);
 
   const templateInfo = useMemo(() => {
     return `${template?.sets} sets x ${template?.reps} reps x ${template?.rpe} RPE`;
@@ -86,7 +89,11 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
                   <AppSelect
                     label={
                       <label className="flex items-center">
-                        Training Type <InfoIcon className="h-4 w-4 ml-2 text-gray-400" />
+                        Training Type{' '}
+                        <InfoIcon
+                          className="h-4 w-4 ml-2 text-gray-400"
+                          onClick={() => setIsOpenInfo(true)}
+                        />
                       </label>
                     }
                     options={trainingTypeOptions}
@@ -245,6 +252,8 @@ export default function ProgramDetail({ programId }: { programId?: string }) {
         programId={programId ? Number(programId) : undefined}
         onOpenChange={open => setIsOpenExercisePicker(open)}
       />
+
+      <TrainingTypeInfoModal isOpen={isOpenInfo} onOpenChange={open => setIsOpenInfo(open)} />
     </div>
   );
 }

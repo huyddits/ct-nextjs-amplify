@@ -217,8 +217,12 @@ export const useExercise = (options: UseExerciseOptions) => {
             }),
         };
       });
+
       // exclude exercise with empty sets
-      await StrengthApi.completeWorkout(validList.filter(item => item.sets.length > 0));
+      // await StrengthApi.completeWorkout(validList.filter(item => item.sets.length > 0));
+
+      // TODO(ducnm): alter this once api is ready
+      await StrengthApi.completeWorkout(validList);
 
       toast.success('Workout completed successfully');
       router.push(`/${ROUTES.TRAINING_STRENGTH}?${generateRandomChar()}`);
