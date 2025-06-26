@@ -39,7 +39,7 @@ export default function DataPage() {
       </div>
 
       <div className="mx-4 mt-4">
-        <div className="w-full border border-gray-300 rounded-md p-3 text-center bg-white text-gray-700 font-medium break-words whitespace-pre-wrap">
+        <div className="w-full border border-gray-300 rounded-md p-3 text-center bg-white text-gray-700 font-medium break-all whitespace-pre-wrap">
           {selectedHitMissRoutines && <div>{selectedHitMissRoutines.name}</div>}
         </div>
       </div>
@@ -48,9 +48,7 @@ export default function DataPage() {
         <table className="w-full text-sm text-gray-900">
           <thead>
             <tr>
-              <th className="bg-primary text-white p-2 text-left break-words whitespace-pre-wrap">
-                Section Name
-              </th>
+              <th className="bg-primary text-white p-2 text-left">Section Name</th>
               <th className="bg-primary text-white p-2 text-center">Reps</th>
               <th className="bg-primary text-white p-2 text-center">% Hit</th>
             </tr>
@@ -62,9 +60,7 @@ export default function DataPage() {
                   key={`${summarySection.routineId}-${section.sectionId}`}
                   className={`border-b border-gray-300 ${index % 2 === 1 ? 'bg-gray-50' : ''}`}
                 >
-                  <td className="p-2 font-medium break-words whitespace-pre-wrap">
-                    {section.name}
-                  </td>
+                  <td className="p-2 font-medium break-all whitespace-pre-wrap">{section.name}</td>
                   <td className="p-2 text-center font-medium">{section.totalReps}</td>
                   <td className="p-2 text-center font-medium">{section.hitPercentage}%</td>
                 </tr>
@@ -101,7 +97,10 @@ export default function DataPage() {
                     }`}
                   >
                     {groupIdx === 0 && (
-                      <td rowSpan={section.groups.length} className="p-2 font-medium align-middle ">
+                      <td
+                        rowSpan={section.groups.length}
+                        className="p-2 font-medium align-middle break-all whitespace-pre-wrap "
+                      >
                         {section.name}
                       </td>
                     )}
