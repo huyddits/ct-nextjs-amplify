@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { MeasurementApi } from '@/api';
 import { CoachStudentItem, MeasurementItem } from '../_types';
@@ -28,13 +28,11 @@ const schema = object().shape({
 
 export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   const { info } = useAuthStore();
-  const [measurementList, setMeasurementList] = useState<MeasurementItem[]>([]);
-  const [coachStudentList, setCoachStudentList] = useState<CoachStudentItem[]>([]);
   const { loading, startLoading, stopLoading } = useLoading();
   const {
     baseMeasurementList,
-    coachStudent: coachStudentListFromStore,
-    setRawMeasurementList,
+    coachStudent: coachStudentList,
+    setBaseMeasurementList,
     setCoachStudent,
     setRefreshBasesSpotter,
     setRefreshFlyer,
@@ -53,24 +51,23 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
 
   const getMeasurementList = async () => {
     if (baseMeasurementList.length > 0) {
-      setMeasurementList(baseMeasurementList);
       return;
     }
     try {
       const response = await MeasurementApi.getMeasurementList();
       const { data, error } = response.data;
-      if (!data) throw error;
-      const dataResponse = data.map(data => ({
-        measurementsId: data.measurement_id,
-        name: data.name,
-        instruction: data.instruction,
-        imperialUnit: data.imperial_unit,
-        metricUnit: data.metric_unit,
-        thumbnailLink: data.thumbnail_link,
-        videoLink: data.video_link,
-      }));
-      setRawMeasurementList(dataResponse);
-      setMeasurementList(dataResponse);
+      if (error) throw error;
+      const dataResponse =
+        data?.map(data => ({
+          measurementsId: data.measurement_id,
+          name: data.name,
+          instruction: data.instruction,
+          imperialUnit: data.imperial_unit,
+          metricUnit: data.metric_unit,
+          thumbnailLink: data.thumbnail_link,
+          videoLink: data.video_link,
+        })) ?? [];
+      setBaseMeasurementList(dataResponse);
       options?.onSuccess?.();
     } catch (error) {
       console.log(error);
@@ -78,13 +75,13 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   };
 
   const measurement = useWatch({ control, name: 'measurement' });
-  const selectedMeasurement = measurementList.find(
-    m => m.measurementsId.toString() === measurement
-  );
+
+  const selectedMeasurement = useMemo(() => {
+    return baseMeasurementList.find(m => m.measurementsId.toString() === measurement);
+  }, [baseMeasurementList, measurement]);
 
   const getCoachStudentList = async (payload: CoachStudentPayload) => {
-    if (coachStudentListFromStore.length > 0) {
-      setCoachStudentList(coachStudentListFromStore);
+    if (coachStudentList.length > 0) {
       return;
     }
     try {
@@ -113,7 +110,6 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
         },
       }));
       setCoachStudent(dataResponse);
-      setCoachStudentList(dataResponse);
     } catch (error) {
       console.log(error);
     }
@@ -148,10 +144,10 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   }, []);
 
   useEffect(() => {
-    if (measurementList[0] && !getValues('measurement')) {
-      setValue('measurement', measurementList[0].measurementsId.toString());
+    if (baseMeasurementList[0] && !getValues('measurement')) {
+      setValue('measurement', baseMeasurementList[0].measurementsId.toString());
     }
-  }, [measurementList, setValue]);
+  }, [baseMeasurementList, setValue]);
 
   useEffect(() => {
     if (!info?.coachCode) {
@@ -166,7 +162,7 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   }, [info?.coachCode]);
 
   return {
-    measurementList,
+    measurementList: baseMeasurementList,
     getMeasurementList,
     control,
     coachStudentList,

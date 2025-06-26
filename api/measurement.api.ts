@@ -8,7 +8,7 @@ import {
   CreateMeasurementPayload,
   GetBasesSpotterResponse,
   GetLatestResultResponse,
-  athletePayload,
+  AthletePayload,
   GetImprovementResponse,
   GetLastThreeMonthsResponse,
   GetThreeLatestResultsResponse,
@@ -42,31 +42,31 @@ export const getFlyer = (params: FlyerAndBasesPayLoad) => {
   });
 };
 
-export const getLatestResult = (params: athletePayload) => {
+export const getLatestResult = (params: AthletePayload) => {
   return axiosIns.get<GetLatestResultResponse>(END_POINTS.LATEST_RESULT, {
     params: params,
   });
 };
 
-export const getImprovement = (params: athletePayload) => {
+export const getImprovement = (params: AthletePayload) => {
   return axiosIns.get<GetImprovementResponse>(END_POINTS.IMPROVEMENT, {
     params: params,
   });
 };
 
-export const getLastThreeMonths = (params: athletePayload) => {
+export const getLastThreeMonths = (params: AthletePayload) => {
   return axiosIns.get<GetLastThreeMonthsResponse>(END_POINTS.LAST_THREE_MONTHS, {
     params: params,
   });
 };
 
-export const getThreeLatestResults = (params: athletePayload) => {
+export const getThreeLatestResults = (params: AthletePayload) => {
   return axiosIns.get<GetThreeLatestResultsResponse>(END_POINTS.THREE_LATEST_RESULTS, {
     params: params,
   });
 };
 
-export const getResultForAllMeasurements = (params: athletePayload) => {
+export const getResultForAllMeasurements = (params: AthletePayload) => {
   return axiosIns.get<GetResultForAllMeasurementsResponse>(END_POINTS.RESULT_FOR_ALL_MEASUREMENTS, {
     params: params,
   });

@@ -59,8 +59,13 @@ export default function ExerciseSet({
           <label className="block text-xs text-gray-500 mb-1">Weight</label>
           <input
             type="number"
+            min="0"
+            max="1000"
             value={set.weight}
-            onChange={e => updateSet(index, 'weight', Number(e.target.value))}
+            onChange={e => {
+              const value = Math.min(1000, Math.max(0, Math.round(Number(e.target.value))));
+              updateSet(index, 'weight', Number(value));
+            }}
             onFocus={e => setTimeout(() => e.target.select(), 100)}
             className="w-full border rounded p-2 text-center"
             placeholder="0"
