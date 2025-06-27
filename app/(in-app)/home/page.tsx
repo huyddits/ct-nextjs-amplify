@@ -1,4 +1,10 @@
-import { StatisticOnTimeSection, StatisticOnValueSection, AlertSection } from './_components';
+import {
+  StatisticOnTimeSection,
+  StatisticOnValueSection,
+  AlertSection,
+  PushSubscribeButton,
+  PushTestNotificationButton,
+} from './_components';
 
 export default function Dashboard() {
   return (
@@ -6,6 +12,10 @@ export default function Dashboard() {
       <StatisticOnTimeSection />
       <StatisticOnValueSection />
       <AlertSection />
+      <div className="mt-8">
+        <PushSubscribeButton />
+        <PushTestNotificationButton />
+      </div>
     </div>
   );
 }
