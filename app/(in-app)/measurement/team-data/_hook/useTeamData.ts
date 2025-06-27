@@ -11,7 +11,7 @@ import { CoachStudentItem, MeasurementItem } from '../../new/_types';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { athletePayload, CoachStudentPayload, FlyerAndBasesPayLoad } from '@/api/types/measurement';
+import { AthletePayload, CoachStudentPayload, FlyerAndBasesPayLoad } from '@/api/types/measurement';
 import { useAuthStore, useMeasurementStore } from '@/store';
 
 type UseMeasurementFormOptions = {
@@ -44,7 +44,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
     basesSpotterList,
     refreshFlyer,
     refreshBasesSpotter,
-    setRawMeasurementList,
+    setBaseMeasurementList,
     setCoachStudent,
     setFlyerList,
     setBasesSpotterList,
@@ -133,7 +133,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
         videoLink: data.video_link,
       }));
       setMeasurementList(dataResponse);
-      setRawMeasurementList(dataResponse);
+      setBaseMeasurementList(dataResponse);
       options?.onSuccess?.();
     } catch (error) {
       console.log(error);
@@ -177,7 +177,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
     }
   };
 
-  const getLatestResult = async (payload: athletePayload) => {
+  const getLatestResult = async (payload: AthletePayload) => {
     try {
       const response = await MeasurementApi.getLatestResult(payload);
       const { data, error } = response.data;
@@ -194,7 +194,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
     }
   };
 
-  const getImprovement = async (payload: athletePayload) => {
+  const getImprovement = async (payload: AthletePayload) => {
     try {
       const response = await MeasurementApi.getImprovement(payload);
       const { data, error } = response.data;
@@ -210,7 +210,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
     }
   };
 
-  const getLastThreeMonths = async (payload: athletePayload) => {
+  const getLastThreeMonths = async (payload: AthletePayload) => {
     try {
       const response = await MeasurementApi.getLastThreeMonths(payload);
       const { data, error } = response.data;
@@ -231,7 +231,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
     }
   };
 
-  const getThreeLatestResults = async (payload: athletePayload) => {
+  const getThreeLatestResults = async (payload: AthletePayload) => {
     try {
       const response = await MeasurementApi.getThreeLatestResults(payload);
       const { data, error } = response.data;
@@ -249,7 +249,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
     }
   };
 
-  const getResultForAllMeasurements = async (payload: athletePayload) => {
+  const getResultForAllMeasurements = async (payload: AthletePayload) => {
     try {
       const response = await MeasurementApi.getResultForAllMeasurements(payload);
       const { data, error } = response.data;
@@ -302,7 +302,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
   useEffect(() => {
     if (!athleteId || !measurementId) return;
 
-    const payload: athletePayload = {
+    const payload: AthletePayload = {
       athlete_id: athleteId,
       measurement_id: Number(measurementId),
     };
@@ -316,7 +316,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
   useEffect(() => {
     if (!athleteId) return;
 
-    const payload: athletePayload = {
+    const payload: AthletePayload = {
       athlete_id: athleteId,
     };
 
