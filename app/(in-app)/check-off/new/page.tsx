@@ -69,9 +69,8 @@ export default function CheckOffNewPage() {
                 onChange={field.onChange}
                 inputProps={{
                   placeholder: 'Enter skill or challenge',
-                  className: 'text-center border-2 rounded-lg p-1 text-center',
+                  className: 'text-center',
                 }}
-                size="lg"
                 fullWidth
                 required
                 errorMessage={error?.message}
@@ -93,7 +92,7 @@ export default function CheckOffNewPage() {
                 onChange={field.onChange}
                 textareaProps={{
                   placeholder: 'Add notes here',
-                  className: 'min-h-[100px] border-2 rounded-lg p-3 text-lg',
+                  className: 'min-h-[100px]',
                 }}
                 errorMessage={error?.message}
               />
@@ -104,10 +103,11 @@ export default function CheckOffNewPage() {
         <Button
           variant="outline"
           onClick={() => setOpen(true)}
-          className="w-full border-2 rounded-lg h-auto p-3 flex items-center justify-between bg-white"
+          size="lg"
+          className="w-full rounded-lg flex items-center justify-between bg-white"
         >
           <span className="text-gray-400">Who is this check off for?</span>
-          <SendIcon className="size-6 text-gray-500" />
+          <SendIcon className="size-5 text-gray-500" />
         </Button>
         {open && (
           <WhoCheckOff

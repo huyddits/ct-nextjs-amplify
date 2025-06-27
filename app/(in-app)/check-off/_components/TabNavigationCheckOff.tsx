@@ -3,8 +3,9 @@ import { usePathname } from 'next/navigation';
 import { TabNavigation } from '../../_components';
 import { ROUTES } from '@/utils/constants';
 import { useMemo } from 'react';
+import { useRole } from '@/hooks';
 
-const coachTabs = [
+export const COACH_TABS = [
   {
     title: 'New Check-Off',
     value: 'new',
@@ -19,23 +20,23 @@ const coachTabs = [
   },
 ];
 
-const athleteTabs = [
+export const ATHLETE_TABS = [
   {
     title: 'Check-Off Submission',
     value: 'submission',
   },
   {
     title: 'Reviewed Check-Offs',
-    value: 'reviewed',
+    value: 'athlete-review',
   },
 ];
-export default function TabNavigationCheckOff() {
+
+export function TabNavigationCheckOff() {
+  const { isCoach } = useRole();
   const pathname = usePathname();
   const [_, __, subPath] = pathname.split('/');
 
-  const isCoach = true;
-
-  const listTabs = useMemo(() => (isCoach ? coachTabs : athleteTabs), []);
+  const listTabs = useMemo(() => (isCoach ? COACH_TABS : ATHLETE_TABS), [isCoach]);
   return (
     <TabNavigation
       value={subPath}

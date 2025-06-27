@@ -29,6 +29,7 @@ export const ROUTES = {
   CHECK_OFF_NEW: 'check-off/new',
   CHECK_OFF_REVIEW: 'check-off/review',
   CHECK_OFF_TEAM_DATA: 'check-off/team-data',
+  CHECK_OFF_SUBMISSION: 'check-off/submission',
 };
 
 export const WHITE_LIST = [

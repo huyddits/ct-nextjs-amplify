@@ -12,10 +12,11 @@ import { Loader2Icon } from 'lucide-react';
 import { CheckOffDateParams } from '@/api/types/checkOff';
 type Props = {
   selectedDate?: CheckOffDateParams;
+  athleteId?: string;
 };
-export function ByAthleteData({ selectedDate }: Props) {
+export function ByAthleteData({ selectedDate, athleteId }: Props) {
   const { info } = useAuthStore();
-  const [selectedAthleteId, setSelectedAthleteId] = useState<string>();
+  const [selectedAthleteId, setSelectedAthleteId] = useState<string>(athleteId || '');
   const { data: checkOffData, isValidating: isLoadingCheckOffData } = useCheckOffByAthlete(
     selectedAthleteId,
     selectedDate
@@ -33,16 +34,18 @@ export function ByAthleteData({ selectedDate }: Props) {
   }, [athleteList]);
   return (
     <>
-      <AppSelect
-        className="w-full max-sm:[&_input]:text-sm mb-4"
-        options={athleteOptions}
-        selectedValue={selectedAthleteId}
-        onChangeSelected={v => setSelectedAthleteId(v)}
-        placeholder="Select Athlete"
-        loading={isLoadingAthleteList}
-        fullWidth
-        required
-      />
+      {!athleteId && (
+        <AppSelect
+          className="w-ful mb-4"
+          options={athleteOptions}
+          selectedValue={selectedAthleteId}
+          onChangeSelected={v => setSelectedAthleteId(v)}
+          placeholder="Select Athlete"
+          loading={isLoadingAthleteList}
+          fullWidth
+          required
+        />
+      )}
 
       <div className="mb-4 border rounded-md overflow-hidden">
         <div className="bg-[#257951] text-white py-2 px-3 font-medium text-center">
