@@ -124,3 +124,14 @@ export type CheckOffDateParams = {
   month: number;
   year: number;
 };
+
+export type SubmitCheckOffPayload = {
+  submit_id: number;
+  note: string;
+  file?: File; // File object for FormData
+};
+
+export type SubmitCheckOffResponse = ApiResponse<{
+  message: string;
+  submit_id: string;
+}>;

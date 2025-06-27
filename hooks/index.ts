@@ -8,3 +8,4 @@ export * from './useLoadMore';
 export * from './useOnPageLeave';
 export * from './useSafeAreaInset';
 export * from './useAcknowledgement';
+export * from './useRole';

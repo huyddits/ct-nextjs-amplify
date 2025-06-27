@@ -9,10 +9,7 @@ export const CHECKOFF_SCHEMA = yup.object({
     .mixed<CheckOffStatusEnum>()
     .oneOf(Object.values(CheckOffStatusEnum))
     .required(ERROR_MESSAGES.INPUT),
-  coach_review_note: yup
-    .string()
-    .required(ERROR_MESSAGES.INPUT)
-    .max(500, ERROR_MESSAGES.MAX_LENGTH(500)),
+  coach_review_note: yup.string().default('').max(500, ERROR_MESSAGES.MAX_LENGTH(500)),
 });
 
 export function useCheckOffForm(checkOff: CheckOffStudentReview) {

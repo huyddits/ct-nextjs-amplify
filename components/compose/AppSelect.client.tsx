@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { SelectTrigger, Select, SelectContent, SelectItem, SelectValue } from '../ui/select';
@@ -26,6 +26,8 @@ interface AppSelectProps {
   errorMessage?: string;
   disabled?: boolean;
   loading?: boolean;
+  infinite?: () => void;
+  fetchingMore?: boolean;
   onChangeSelected: (selectedValue: string) => void;
 }
 
@@ -43,9 +45,30 @@ export default function AppSelect({
   selectedValue,
   onChangeSelected,
   loading,
+  infinite,
+  fetchingMore,
 }: Readonly<AppSelectProps>) {
   const [isChanged, setIsChanged] = useState(false);
+  const [observerElement, setObserverElement] = useState<HTMLDivElement | null>(null);
   const selectedLabel = defaultLabel ?? options.find(o => o.value === selectedValue)?.label ?? '';
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (!infinite || !observerElement) return;
+
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        infinite();
+      }
+    });
+
+    observer.observe(observerElement);
+
+    return () => {
+      console.log('Disconnecting Intersection Observer');
+      observer.disconnect();
+    };
+  }, [infinite, observerElement]);
 
   const onValueChange = useCallback(
     (value: string) => {
@@ -85,11 +108,17 @@ export default function AppSelect({
         </SelectTrigger>
         <SelectContent className="max-h-96">
           {options.length ? (
-            options.map(item => (
-              <SelectItem key={item.value} value={item.value} disabled={item.disabled}>
-                {item.label}
-              </SelectItem>
-            ))
+            <>
+              {options.map(item => (
+                <SelectItem key={item.value} value={item.value} disabled={item.disabled}>
+                  {item.label}
+                </SelectItem>
+              ))}
+              {fetchingMore && (
+                <div className="text-center text-sm py-2 text-gray-500">Loading more...</div>
+              )}
+              {infinite && <div ref={setObserverElement} className="h-1" aria-hidden="true" />}
+            </>
           ) : (
             <div className="text-center text-sm py-1 text-gray-500">No data</div>
           )}

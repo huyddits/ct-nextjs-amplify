@@ -10,9 +10,8 @@ import {
 import { useEffect, useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { useAcknowledgement } from '@/hooks';
+import { useAcknowledgement, useRole } from '@/hooks';
 import { useAuthStore } from '@/store';
-import { AccountType } from '@/utils/types';
 import { CoachFitnessPolicy, AthleteFitnessPolicy } from '../_components';
 export default function RouteGuardPolicyFitness() {
   const {
@@ -25,7 +24,9 @@ export default function RouteGuardPolicyFitness() {
   const { info } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
   const [isAgree, setIsAgree] = useState(false);
-
+  const [allowChecked, setAllowChecked] = useState(false);
+  const { isCoach } = useRole();
+  const [allowCheckedRef, setAllowCheckedRef] = useState<HTMLDivElement | null>(null);
   const onClickAgree = () => {
     updateAcknowledge({
       acknowledgementStrength: acknowledgementStrength,
@@ -44,6 +45,23 @@ export default function RouteGuardPolicyFitness() {
       setIsOpen(false);
     }
   }, [acknowledgementFitness]);
+
+  useEffect(() => {
+    if (allowCheckedRef) {
+      const observer = new IntersectionObserver(
+        entries => {
+          setAllowChecked(entries[0].isIntersecting);
+          if (!entries[0].isIntersecting) {
+            setIsAgree(false);
+          }
+        },
+        { threshold: 1.0 }
+      );
+      observer.observe(allowCheckedRef);
+      return () => observer.disconnect();
+    }
+  }, [allowCheckedRef]);
+
   return (
     <Dialog open={isOpen}>
       <DialogContent className="[&_[data-slot=dialog-close]]:hidden">
@@ -53,16 +71,20 @@ export default function RouteGuardPolicyFitness() {
             FITNESS SAFETY REQUIREMENTS
           </DialogDescription>
         </DialogHeader>
-
-        {info?.accountType === AccountType.Coach ? (
-          <CoachFitnessPolicy />
-        ) : (
-          <AthleteFitnessPolicy />
-        )}
+        <div className="max-h-[400px] overflow-y-auto">
+          {isCoach ? <CoachFitnessPolicy /> : <AthleteFitnessPolicy />}
+          <div
+            aria-hidden
+            className="h-px"
+            aria-label="bottom"
+            ref={ref => setAllowCheckedRef(ref)}
+          />
+        </div>
 
         <div>
           <Label>
             <Checkbox
+              disabled={!allowChecked}
               checked={isAgree}
               onCheckedChange={value => setIsAgree(value === 'indeterminate' ? false : value)}
             />

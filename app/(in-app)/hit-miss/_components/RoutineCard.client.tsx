@@ -54,7 +54,7 @@ export default function RoutineCard({ data }: Props) {
       <ol className="space-y-2">
         {data.sections.map((section, index) => (
           <li key={section.name} className="text-gray-700 break-words">
-            {index + 1} {section.name}
+            {index + 1}. {section.name}
           </li>
         ))}
       </ol>
