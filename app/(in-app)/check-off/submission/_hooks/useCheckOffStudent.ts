@@ -1,6 +1,5 @@
 import useSWRMutation from 'swr/mutation';
-import { getCheckOffList, submitCheckOff } from '@/api/checkOff.api';
-import useSWR from 'swr';
+import { submitCheckOff } from '@/api/checkOff.api';
 
 const STUDENT_CHECK_OFF_KEY = {
   CHECK_OFF_SUBMIT: 'STUDENT_CHECK_OFF_KEY_CHECK_OFF_SUBMIT',
@@ -14,11 +13,4 @@ export const useCheckOffSubmit = () => {
       return response.data;
     }
   );
-};
-
-export const useStudentCheckOffList = () => {
-  return useSWR([STUDENT_CHECK_OFF_KEY.CHECK_OFF_LIST], async () => {
-    const { data } = await getCheckOffList({});
-    return data.data;
-  });
 };

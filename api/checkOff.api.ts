@@ -9,9 +9,7 @@ import {
   CreateCheckOffResponse,
   CheckOffByAthleteResponse,
   CheckOffDateParams,
-  SubmitCheckOffPayload,
   SubmitCheckOffResponse,
-  CheckOffListResponse,
 } from './types/checkOff';
 export const getTeamDataCheckOff = async ({ month, year }: CheckOffDateParams) => {
   return axiosIns.get<CheckOffDataResponse>(`${END_POINTS.CHECK_OFF_TEAM_DATA}/check-off`, {
@@ -56,11 +54,5 @@ export const submitCheckOff = async (payload: FormData) => {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
-  });
-};
-
-export const getCheckOffList = async (params?: { page?: number; limit?: number }) => {
-  return axiosIns.get<CheckOffListResponse>(`${END_POINTS.CHECK_OFF_STUDENT}/list`, {
-    params,
   });
 };

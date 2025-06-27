@@ -135,15 +135,3 @@ export type SubmitCheckOffResponse = ApiResponse<{
   message: string;
   submit_id: string;
 }>;
-
-export type CheckOffListItem = {
-  submit_id: number;
-  assigned_task: string;
-  due_date: string;
-  status: CheckOffStatusEnum;
-  note: string;
-  created_at: string;
-  updated_at: string;
-};
-
-export type CheckOffListResponse = ApiResponse<CheckOffListItem[]>;
