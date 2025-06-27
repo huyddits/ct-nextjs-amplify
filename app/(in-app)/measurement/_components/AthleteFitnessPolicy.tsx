@@ -1,6 +1,6 @@
 export default function AthleteFitnessPolicy() {
   return (
-    <div className="text-sm space-y-6 overflow-auto h-[400px]">
+    <div className="text-sm space-y-6">
       <p>
         <strong>FOR ATHLETES AND PARTICIPANTS:</strong>
       </p>

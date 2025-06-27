@@ -8,14 +8,14 @@ export const CHECK_OFF_STUDENT_REVIEW = {
   CHECK_OFF_STUDENT_REVIEW_UPDATE: 'CHECK_OFF_STUDENT_REVIEW_UPDATE',
 };
 
-export function useGetCheckOffStudentReview() {
+export function useGetCheckOffStudentReview(limit = 10) {
   return useSWRInfinite(
     (pageIndex, previousPageData) => {
       if (previousPageData && pageIndex + 1 > previousPageData.meta?.totalPages) return null;
       return [CHECK_OFF_STUDENT_REVIEW.CHECK_OFF_STUDENT_REVIEW_KEY, pageIndex + 1];
     },
     async (key: string[]) => {
-      const { data } = await getCheckOffStudentReview({ page: Number(key?.[1] || 1), limit: 10 });
+      const { data } = await getCheckOffStudentReview({ page: Number(key?.[1] || 1), limit });
       return data;
     },
     {

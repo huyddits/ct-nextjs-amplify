@@ -7,8 +7,8 @@ import { format, startOfMonth } from 'date-fns';
 import { CheckOffDateParams } from '@/api/types/checkOff';
 
 const TAB_OPTIONS = [
-  { value: 'checkoff', label: 'By Check-Off', Component: CheckOffData },
   { value: 'quickref', label: 'Quick Reference', Component: ReferenceData },
+  { value: 'checkoff', label: 'By Check-Off', Component: CheckOffData },
   { value: 'athlete', label: 'By Athlete', Component: ByAthleteData },
 ];
 

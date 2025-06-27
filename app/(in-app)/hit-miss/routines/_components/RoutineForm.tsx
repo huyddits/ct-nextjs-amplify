@@ -185,7 +185,7 @@ export function RoutineForm({ id }: Props) {
                       <AppInput
                         {...field}
                         inputProps={{ placeholder: 'Enter Routine Name' }}
-                        className="max-sm:[&_input]:text-sm font-normal"
+                        className="font-normal"
                         errorMessage={error?.message}
                       />
                     )}

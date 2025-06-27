@@ -40,7 +40,7 @@ export default function CheckOffStudent() {
                 <CheckOffCard key={checkOff.submit_id} data={checkOff} onSubmit={refetch} />
               ))
             )}
-            {(size < (data?.[data.length - 1]?.meta?.totalPages || 0) || isValidating) && (
+            {size < (data?.[data.length - 1]?.meta?.totalPages || 0) && (
               <Button
                 onClick={() => setSize(size + 1)}
                 className="w-full"

@@ -1,1 +1,2 @@
-export { default as TabNavigationCheckOff } from './TabNavigationCheckOff';
+export * from './TabNavigationCheckOff';
+export * from './CheckOffProvider';
