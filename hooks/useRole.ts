@@ -1,4 +1,5 @@
 import { useAuthStore } from '@/store';
+import { AccountType } from '@/utils/types';
 import { useMemo } from 'react';
 
 export const useRole = () => {
@@ -6,8 +7,8 @@ export const useRole = () => {
 
   return useMemo(
     () => ({
-      isCoach: info?.roleName === 'Coach',
-      isAthlete: info?.roleName === 'Athlete',
+      isCoach: info?.accountType === AccountType.Coach,
+      isAthlete: info?.accountType === AccountType.Athlete,
     }),
     [info]
   );

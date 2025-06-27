@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useGetCheckOffStudentReview } from '../review/_hooks';
 import { format, isPast } from 'date-fns';
-import { stat } from 'fs';
 
 export default function CheckOffSubmissionPage() {
   const [mediaFile, setMediaFile] = useState<File | null>(null);

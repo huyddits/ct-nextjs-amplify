@@ -10,7 +10,6 @@ import {
 import { useEffect, useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { useRouter } from 'next/navigation';
 import { useAcknowledgement } from '@/hooks';
 
 export default function RouteGuardPolicyCardio() {
@@ -23,6 +22,8 @@ export default function RouteGuardPolicyCardio() {
   } = useAcknowledgement();
   const [isOpen, setIsOpen] = useState(false);
   const [isAgree, setIsAgree] = useState(false);
+  const [allowChecked, setAllowChecked] = useState(false);
+  const [allowCheckedRef, setAllowCheckedRef] = useState<HTMLDivElement | null>(null);
   const onClickAgree = () => {
     updateAcknowledge({
       acknowledgementCardio: true,
@@ -42,6 +43,22 @@ export default function RouteGuardPolicyCardio() {
       setIsOpen(false);
     }
   }, [acknowledgementCardio]);
+
+  useEffect(() => {
+    if (allowCheckedRef) {
+      const observer = new IntersectionObserver(
+        entries => {
+          setAllowChecked(entries[0].isIntersecting);
+          if (!entries[0].isIntersecting) {
+            setIsAgree(false);
+          }
+        },
+        { threshold: 1.0 }
+      );
+      observer.observe(allowCheckedRef);
+      return () => observer.disconnect();
+    }
+  }, [allowCheckedRef]);
   return (
     <Dialog open={isOpen}>
       <DialogContent className="[&_[data-slot=dialog-close]]:hidden">
@@ -293,11 +310,18 @@ export default function RouteGuardPolicyCardio() {
             For complete legal terms, see Section 23 "Comprehensive Training and Testing
             Disclaimers" in our Terms and Conditions.
           </p>
+          <div
+            aria-hidden
+            className="h-px"
+            aria-label="bottom"
+            ref={ref => setAllowCheckedRef(ref)}
+          />
         </div>
 
         <div>
           <Label>
             <Checkbox
+              disabled={!allowChecked}
               checked={isAgree}
               onCheckedChange={value => setIsAgree(value === 'indeterminate' ? false : value)}
             />
