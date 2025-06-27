@@ -69,4 +69,7 @@ export const END_POINTS = {
   CHECK_OFF_TEAM_DATA: 'check-off/team-data',
   CHECK_OFF_STUDENT: 'check-off/student-checkoff',
   CHECK_OFF_NEW: 'check-off/new-checkoff',
+
+  // Notification
+  NOTIFICATION_SUBSCRIBE_WEB: 'notification/subscribe-web',
 };

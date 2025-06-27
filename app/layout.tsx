@@ -1,5 +1,4 @@
 import { Geist, Geist_Mono } from 'next/font/google';
-// import { ServiceWorkerRegister } from "./_components";
 import { SafeAreaDetection, ToastContainerClient } from './_components';
 import { AppConfirm } from '@/components/compose';
 import { StripeProvider } from '@/context/StripeContext';
@@ -51,7 +50,6 @@ export default function RootLayout({
         <StripeProvider>
           <SWRProvider>{children}</SWRProvider>
         </StripeProvider>
-        {/* <ServiceWorkerRegister /> */}
         <ToastContainerClient />
         <AppConfirm />
         <div className="hidden bg-gray-100/50 w-5 h-5" />

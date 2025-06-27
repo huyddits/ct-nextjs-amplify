@@ -8,3 +8,4 @@ export * as StrengthApi from './strength.api';
 export * as MeasurementApi from './measurement.api';
 export * as HitMissApi from './hitMiss.api';
 export * as CheckOffApi from './checkOff.api';
+export * as NotificationApi from './notification.api';
