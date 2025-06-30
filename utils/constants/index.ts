@@ -29,3 +29,5 @@ export const TIME_UNIT = {
   SECONDS: 'Seconds',
   MINUTES: 'Minutes',
 };
+
+export const DEEP_LINK_ROOT = 'cheertrainer://app';

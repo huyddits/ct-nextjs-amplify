@@ -104,3 +104,8 @@ export enum ProgramType {
   TeamPrograms = 'team_program',
   MyPrograms = 'personal_program',
 }
+
+export enum Platform {
+  web = 'web',
+  mobile = 'mobile',
+}

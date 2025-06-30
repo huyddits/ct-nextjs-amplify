@@ -1,4 +1,4 @@
-import { AccountType, ApiResponse, BillingCycle, PlanType } from '@/utils/types';
+import { AccountType, ApiResponse, BillingCycle, PlanType, Platform } from '@/utils/types';
 
 type PlanFeature = { feature_id: number; name: string };
 
@@ -63,6 +63,7 @@ export type GetBillingHistoryResponse = ApiResponse<BillingRecord[], {}>;
 export type CreateSubscriptionSessionPayload = {
   price_id: string;
   discounts: string;
+  platform: Platform;
 };
 
 export type CreateSubscriptionSessionResponse = ApiResponse<{
