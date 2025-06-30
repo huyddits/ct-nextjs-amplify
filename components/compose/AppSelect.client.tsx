@@ -10,6 +10,7 @@ export type SelectOption = {
   value: string;
   unitType?: string;
   disabled?: boolean;
+  className?: string;
   [key: string]: any;
 };
 
@@ -110,7 +111,12 @@ export default function AppSelect({
           {options.length ? (
             <>
               {options.map(item => (
-                <SelectItem key={item.value} value={item.value} disabled={item.disabled}>
+                <SelectItem
+                  key={item.value}
+                  value={item.value}
+                  disabled={item.disabled}
+                  className={item.className}
+                >
                   {item.label}
                 </SelectItem>
               ))}

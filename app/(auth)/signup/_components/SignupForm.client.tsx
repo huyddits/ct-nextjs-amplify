@@ -36,26 +36,16 @@ export default function SignupForm() {
     measurementUnits: measurementUnitOptions,
   } = useCategories();
 
-  const {
-    control,
-    isValid,
-    userType,
-    password,
-    loading,
-    onSubmit,
-    trigger,
-    setValue,
-    getValues,
-    reset,
-  } = useSignup({
-    onSuccess: () => {
-      toast.success('Account create successfully');
-      router.push(`/${ROUTES.LOGIN}`);
-    },
-    onFailure: () => {
-      toast.error('Something went wrong');
-    },
-  });
+  const { control, userType, password, loading, onSubmit, trigger, setValue, getValues, reset } =
+    useSignup({
+      onSuccess: () => {
+        toast.success('Account create successfully');
+        router.push(`/${ROUTES.LOGIN}`);
+      },
+      onFailure: () => {
+        toast.error('Something went wrong');
+      },
+    });
 
   const [isAgree, setIsAgree] = useState(false);
 
@@ -81,8 +71,9 @@ export default function SignupForm() {
 
       setTimeout(() => {
         reset(parsedData, {
-          keepErrors: false,
-          keepDefaultValues: false,
+          keepErrors: true,
+          keepDirty: true,
+          keepIsValid: true,
         });
         clearSessionStorage();
       });
@@ -341,14 +332,14 @@ export default function SignupForm() {
             <Link
               href={`/${ROUTES.TERMS_AND_CONDITIONS}`}
               className="text-primary hover:underline"
-              target="_blank"
+              onClick={onCacheInfo}
             >
               Terms and Conditions
             </Link>
           </Label>
         </div>
 
-        <Button type="submit" className="w-full" disabled={!isAgree || !isValid} loading={loading}>
+        <Button type="submit" className="w-full" disabled={!isAgree} loading={loading}>
           Create Account
           <ChevronRightIcon className="ml-2 h-4 w-4" />
         </Button>
