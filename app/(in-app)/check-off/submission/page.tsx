@@ -107,7 +107,7 @@ export default function CheckOffSubmissionPage() {
                         value: JSON.stringify({
                           submit_id: option.submit_id,
                           due_date: option.due_date || '-',
-                          note: option.note || '-',
+                          note: option.checkoff.note || '-',
                           status: option.status || '',
                         }),
                         disabled: !!option.status,
@@ -152,7 +152,7 @@ export default function CheckOffSubmissionPage() {
         <div className="space-y-2 [&_label]:h-7 [&_label]:justify-center [&_label]:text-foreground [&_label]:text-lg [&_label]:font-medium">
           <AppInput
             label="Instructions / Notes from Coach"
-            value={selectedCheckOff?.note}
+            value={selectedCheckOff?.note || '-'}
             readonly
             inputProps={{
               placeholder: 'Select a check-off to see notes',
