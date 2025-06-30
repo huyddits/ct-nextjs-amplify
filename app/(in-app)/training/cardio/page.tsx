@@ -261,7 +261,7 @@ export default function CardioPage() {
                         />
                       )}
                     />
-                    <span className="text-gray-600 flex items-center">-</span>
+                    <span className="text-gray-600 flex items-center h-9">-</span>
                     <Controller
                       control={control}
                       name="intervals.0.heartRateMax"
