@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ROUTES } from '@/utils/constants';
 import Link from 'next/link';
 import { useAuthStore } from '@/store';
@@ -26,6 +26,7 @@ import { cn } from '@/lib/utils';
 import { useSafeAreaInset } from '@/hooks';
 import { SafeAreaDetection } from '@/app/_components';
 import { Button } from '@/components/ui/button';
+import { Platform } from '@/utils/types';
 
 const TopAppBeforeAuth = ({ className }: { className?: string }) => {
   const router = useRouter();
@@ -48,6 +49,8 @@ const TopAppBeforeAuth = ({ className }: { className?: string }) => {
 
 export default function TopApp({ className }: { className?: string }) {
   const { insetTop } = useSafeAreaInset();
+  const searchParams = useSearchParams();
+  const platform = searchParams.get('platform');
   const [isOpen, setIsOpen] = useState(false);
   const { removeToken, token } = useAuthStore();
   const pathname = usePathname();
@@ -57,6 +60,10 @@ export default function TopApp({ className }: { className?: string }) {
     removeToken();
     location.replace(`/${ROUTES.LOGIN}`);
   };
+
+  if (platform === Platform.mobile) {
+    return null;
+  }
 
   if (!token) {
     return <TopAppBeforeAuth className={className} />;

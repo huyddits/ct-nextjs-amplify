@@ -4,3 +4,4 @@ export { default as SSOViaSocial } from './SSOViaSocial';
 export { default as ToastContainerClient } from './ToastContainer.client';
 export { default as Logo } from './Logo';
 export { default as SafeAreaDetection } from './SafeAreaDetection';
+export { default as DeepLinkHandler } from './DeepLinkHandler.client';

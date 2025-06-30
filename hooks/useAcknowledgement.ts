@@ -1,6 +1,6 @@
 import { UserApi } from '@/api';
 import { useAuthStore } from '@/store';
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { useLoading } from './useLoading';
 
