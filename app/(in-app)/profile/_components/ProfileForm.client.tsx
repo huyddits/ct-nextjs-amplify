@@ -24,7 +24,7 @@ export default function ProfileForm() {
   } = useCategories();
 
   const roleOptionsByType = useMemo(() => {
-    return roleOptions.filter(item => item.isCoach === isCoach);
+    return roleOptions?.filter(item => item.isCoach === isCoach) || [];
   }, [roleOptions, isCoach]);
 
   return (
@@ -190,7 +190,7 @@ export default function ProfileForm() {
                   placeholder="Select Type"
                   selectedValue={value}
                   onChangeSelected={onChange}
-                  options={cheerTypeOptions}
+                  options={cheerTypeOptions ?? []}
                   errorMessage={error?.message}
                   disabled={!isEditing}
                   fullWidth
@@ -208,7 +208,7 @@ export default function ProfileForm() {
                   placeholder="Select Style"
                   selectedValue={value}
                   onChangeSelected={onChange}
-                  options={cheerStyleOptions}
+                  options={cheerStyleOptions ?? []}
                   errorMessage={error?.message}
                   disabled={!isEditing}
                   fullWidth
@@ -241,7 +241,7 @@ export default function ProfileForm() {
               render={({ field: { value, onChange }, fieldState: { error } }) => (
                 <AppMultipleSelect
                   label="Equipment Access"
-                  options={equipmentOptions}
+                  options={equipmentOptions ?? []}
                   selectedValues={value}
                   onChangeSelected={onChange}
                   placeholder="Select Equipment"
@@ -260,7 +260,7 @@ export default function ProfileForm() {
                 <AppSelect
                   label="Measurement Unit"
                   options={
-                    measurementUnitOptions.length
+                    measurementUnitOptions?.length
                       ? measurementUnitOptions
                       : MEASUREMENT_UNIT_OPTIONS
                   }

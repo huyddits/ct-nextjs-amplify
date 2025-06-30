@@ -1,6 +1,8 @@
 PODS:
   - Capacitor (7.3.0):
     - CapacitorCordova
+  - CapacitorApp (7.0.1):
+    - Capacitor
   - CapacitorCommunitySafeArea (7.0.0-alpha.1):
     - Capacitor
   - CapacitorCordova (7.3.0)
@@ -9,6 +11,7 @@ PODS:
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorCommunitySafeArea (from `../../node_modules/@capacitor-community/safe-area`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - CapacitorPluginSafeArea (from `../../node_modules/capacitor-plugin-safe-area`)
@@ -16,6 +19,8 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
+  CapacitorApp:
+    :path: "../../node_modules/@capacitor/app"
   CapacitorCommunitySafeArea:
     :path: "../../node_modules/@capacitor-community/safe-area"
   CapacitorCordova:
@@ -25,10 +30,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Capacitor: 8585c18a230122906e114ba5f6325ec65ee1371f
+  CapacitorApp: febecbb9582cb353aed037e18ec765141f880fe9
   CapacitorCommunitySafeArea: 3f049619072ab5d0da2529bcb05b358ff6c13dc1
   CapacitorCordova: 2685f5c43675793b5f06dfd66b3b26268f003b97
   CapacitorPluginSafeArea: 22031c3436269ca80fac90ec2c94bc7c1e59a81d
 
-PODFILE CHECKSUM: d642e06cef17aa916c4cee226ad6fc04c7100142
+PODFILE CHECKSUM: dad374d84095e4f32cf86c5394638ad7a7dfd109
 
 COCOAPODS: 1.16.2

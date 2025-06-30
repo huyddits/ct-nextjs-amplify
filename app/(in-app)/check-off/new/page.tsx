@@ -91,7 +91,7 @@ export default function CheckOffNewPage() {
                 value={field.value}
                 onChange={field.onChange}
                 textareaProps={{
-                  placeholder: 'Add notes here',
+                  placeholder: 'Add notes here...',
                   className: 'min-h-[100px]',
                 }}
                 errorMessage={error?.message}

@@ -10,6 +10,7 @@
 		"contentInset": "never"
 	},
 	"packageClassList": [
-		"SafeAreaPlugin"
+		"SafeAreaPlugin",
+		"AppPlugin"
 	]
 }

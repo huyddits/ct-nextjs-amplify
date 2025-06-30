@@ -30,6 +30,8 @@ export const ROUTES = {
   CHECK_OFF_REVIEW: 'check-off/review',
   CHECK_OFF_TEAM_DATA: 'check-off/team-data',
   CHECK_OFF_SUBMISSION: 'check-off/submission',
+  CHECK_OUT_SUCCESS: 'checkout/success',
+  CHECK_OUT_FAILURE: 'checkout/failure',
 };
 
 export const WHITE_LIST = [
@@ -37,3 +39,5 @@ export const WHITE_LIST = [
   `/${ROUTES.ABOUT_US}`,
   `/${ROUTES.PRIVACY}`,
 ];
+
+export const SUBSCRIPTION_ROUTES = [`/${ROUTES.CHECK_OUT_SUCCESS}`, `/${ROUTES.CHECK_OUT_FAILURE}`];

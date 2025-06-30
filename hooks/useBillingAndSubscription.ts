@@ -1,8 +1,9 @@
 import { BillingApi } from '@/api';
 import { useEffect, useMemo, useState } from 'react';
-import { BillingCycle, PlanStatus, PlanType } from '@/utils/types';
+import { BillingCycle, PlanStatus, PlanType, Platform } from '@/utils/types';
 import { useAuthStore } from '@/store';
 import { usePagination } from './usePagination';
+import { Capacitor } from '@capacitor/core';
 export type SubscriptionPlan = {
   name: string;
   type: PlanType;
@@ -47,6 +48,7 @@ export type BillingReceipt = {
 
 export const useBillingAndSubscription = () => {
   const { info } = useAuthStore();
+  const platform = Capacitor.getPlatform();
   const [listBasePlans, setListBasePlans] = useState<SubscriptionPlan[]>([]); // reserved for non-promotion code plans
   const [listCoachPlans, setListCoachPlans] = useState<SubscriptionPlan[]>([]);
   const [listAthletePlans, setListAthletePlans] = useState<SubscriptionPlan[]>([]);
@@ -194,13 +196,16 @@ export const useBillingAndSubscription = () => {
   };
 
   const handleSubscribePlan = async ({ priceId }: { priceId: string }) => {
+    console.log('platform', platform);
     const discounts = listApplied.includes(priceId) ? promoCode : '';
     try {
+      const isMobile = platform === 'ios' || platform === 'android';
       const response = await BillingApi.subscribeToAPlan({
         price_id: priceId,
         discounts,
+        platform: isMobile ? Platform.mobile : Platform.web,
       });
-      console.log(response.data);
+      console.log('response.data', response.data);
       if (!response.data.data?.url) {
         throw response.data.error;
       }
