@@ -14,8 +14,6 @@ export default function SignupPage() {
       <SafeAreaDetection position="top" className="bg-transparent" />
       <LogoSection description="Create your account" />
       <SignupForm />
-      <LoginLinkSection />
-      <FooterSection />
     </React.Fragment>
   );
 }

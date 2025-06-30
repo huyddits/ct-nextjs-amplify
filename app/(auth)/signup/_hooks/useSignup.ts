@@ -90,6 +90,8 @@ export const useSignup = (options: UseSignupOptions) => {
     setValue,
     handleSubmit,
     formState: { isValid },
+    getValues,
+    reset,
   } = useForm({
     resolver: yupResolver(formSchema),
     defaultValues: {
@@ -148,9 +150,10 @@ export const useSignup = (options: UseSignupOptions) => {
     userType,
     password,
     control,
-
+    getValues,
     trigger,
     setValue,
     onSubmit,
+    reset,
   };
 };
