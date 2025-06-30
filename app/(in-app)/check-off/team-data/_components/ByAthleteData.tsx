@@ -4,26 +4,31 @@ import { useGetListAthlete } from '@/app/(in-app)/hit-miss/routines/_hooks';
 import { AppSelect } from '@/components/compose';
 import { usePersonalInfo } from '@/hooks';
 import { useAuthStore } from '@/store';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useCheckOffByAthlete } from '../_hooks';
 import { SingleAthleteTask } from './SingleAthleteTask';
-import { is } from 'date-fns/locale';
 import { Loader2Icon } from 'lucide-react';
 import { CheckOffDateParams } from '@/api/types/checkOff';
 type Props = {
   selectedDate?: CheckOffDateParams;
   athleteId?: string;
+  coachCode?: string | null;
 };
-export function ByAthleteData({ selectedDate, athleteId }: Props) {
-  const { info } = useAuthStore();
-  const [selectedAthleteId, setSelectedAthleteId] = useState<string>(athleteId || '');
+export function ByAthleteData({ selectedDate, athleteId, coachCode }: Props) {
+  const [selectedAthleteId, setSelectedAthleteId] = useState<string>();
+
+  useEffect(() => {
+    if (athleteId) {
+      setSelectedAthleteId(athleteId);
+    }
+  }, [athleteId]);
+
   const { data: checkOffData, isValidating: isLoadingCheckOffData } = useCheckOffByAthlete(
     selectedAthleteId,
     selectedDate
   );
-  const { data: athleteList, isLoading: isLoadingAthleteList } = useGetListAthlete(
-    info?.coachCode || ''
-  );
+  const { data: athleteList, isLoading: isLoadingAthleteList } = useGetListAthlete(coachCode || '');
+
   const athleteOptions = useMemo(() => {
     return (
       athleteList?.map(athlete => ({

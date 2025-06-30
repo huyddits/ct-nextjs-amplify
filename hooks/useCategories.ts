@@ -1,107 +1,81 @@
 import { CategoryApi } from '@/api';
-import { useCategoriesStore } from '@/store';
-import { useEffect, useState } from 'react';
+import useSWR from 'swr';
+
+const ONE_HOUR = 60 * 60 * 1000; // 1 hour in milliseconds
+
+const fetchers = {
+  roles: async () => {
+    const response = await CategoryApi.getRoles();
+    const { data, error } = response.data;
+    if (!data) throw error;
+    return data.map(item => ({
+      label: item.name,
+      value: item.id.toString(),
+      isCoach: item.is_coach,
+    }));
+  },
+  cheerStyles: async () => {
+    const response = await CategoryApi.getCheerStyles();
+    const { data, error } = response.data;
+    if (!data) throw error;
+    return data.map(({ name, id }) => ({
+      label: name,
+      value: id.toString(),
+    }));
+  },
+  equipments: async () => {
+    const response = await CategoryApi.getEquipments();
+    const { data, error } = response.data;
+    if (!data) throw error;
+    return data.map(({ name, id }) => ({
+      label: name,
+      value: id.toString(),
+    }));
+  },
+  cheerTypes: async () => {
+    const response = await CategoryApi.getCheerTypes();
+    const { data, error } = response.data;
+    if (!data) throw error;
+    return data.map(({ name, id }) => ({
+      label: name,
+      value: id.toString(),
+    }));
+  },
+  measurementUnits: async () => {
+    const response = await CategoryApi.getMeasurementUnits();
+    const { data, error } = response.data;
+    if (!data) throw error;
+    return data.map(({ name, id }) => ({
+      label: name,
+      value: id.toString(),
+    }));
+  },
+};
 
 export const useCategories = () => {
-  const {
-    roles,
-    equipments,
-    cheerTypes,
-    cheerStyles,
-    measurementUnits,
-    setRoles,
-    setEquipments,
-    setCheerTypes,
-    setCheerStyles,
-    setMeasurementUnits,
-  } = useCategoriesStore();
-  const getRoles = async () => {
-    if (roles.length) return;
-    try {
-      const response = await CategoryApi.getRoles();
-      const { data, error } = response.data;
-      if (!data) throw error;
-      const roleItems = data.map(item => ({
-        label: item.name,
-        value: item.id.toString(),
-        isCoach: item.is_coach,
-      }));
-      setRoles(roleItems);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { data: roles } = useSWR('categories/roles', fetchers.roles, {
+    dedupingInterval: ONE_HOUR,
+  });
 
-  const getCheerStyles = async () => {
-    if (cheerStyles.length) return;
-    try {
-      const response = await CategoryApi.getCheerStyles();
-      const { data, error } = response.data;
-      if (!data) throw error;
-      const cheerStyleItems = data.map(({ name, id }) => ({
-        label: name,
-        value: id.toString(),
-      }));
-      setCheerStyles(cheerStyleItems);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const getEquipments = async () => {
-    if (equipments.length) return;
-    try {
-      const response = await CategoryApi.getEquipments();
-      const { data, error } = response.data;
-      if (!data) throw error;
-      const equipmentItems = data.map(({ name, id }) => ({
-        label: name,
-        value: id.toString(),
-      }));
-      setEquipments(equipmentItems);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const getCheerTypes = async () => {
-    if (cheerTypes.length) return;
-    try {
-      const response = await CategoryApi.getCheerTypes();
-      const { data, error } = response.data;
-      if (!data) throw error;
-      const cheerTypeItems = data.map(({ name, id }) => ({
-        label: name,
-        value: id.toString(),
-      }));
-      setCheerTypes(cheerTypeItems);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { data: cheerStyles } = useSWR('categories/cheerStyles', fetchers.cheerStyles, {
+    dedupingInterval: ONE_HOUR,
+  });
 
-  const getMeasurementUnits = async () => {
-    if (measurementUnits.length) return;
-    try {
-      const response = await CategoryApi.getMeasurementUnits();
-      const { data, error } = response.data;
-      if (!data) throw error;
-      const measurementUnitItems = data.map(({ name, id }) => ({
-        label: name,
-        value: id.toString(),
-      }));
+  const { data: equipments } = useSWR('categories/equipments', fetchers.equipments, {
+    dedupingInterval: ONE_HOUR,
+  });
 
-      setMeasurementUnits(measurementUnitItems);
-    } catch (error) {
-      console.log(error);
+  const { data: cheerTypes } = useSWR('categories/cheerTypes', fetchers.cheerTypes, {
+    dedupingInterval: ONE_HOUR,
+  });
+
+  const { data: measurementUnits } = useSWR(
+    'categories/measurementUnits',
+    fetchers.measurementUnits,
+    {
+      dedupingInterval: ONE_HOUR,
     }
-  };
-
-  useEffect(() => {
-    getEquipments();
-    getRoles();
-    getCheerStyles();
-    getCheerTypes();
-    getMeasurementUnits();
-  }, []);
+  );
 
   return {
     roles,

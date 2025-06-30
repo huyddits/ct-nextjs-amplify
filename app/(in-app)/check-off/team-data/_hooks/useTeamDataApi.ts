@@ -33,6 +33,7 @@ export const useCheckOffReference = (selectedDate?: CheckOffDateParams) => {
 };
 
 export const useCheckOffByAthlete = (athleteId = '', selectedDate?: CheckOffDateParams) => {
+  console.log(athleteId, selectedDate);
   const enabledKey =
     athleteId && selectedDate
       ? [TEAM_DATA_CHECK_OFF.BY_ATHLETE_KEY, athleteId, selectedDate]

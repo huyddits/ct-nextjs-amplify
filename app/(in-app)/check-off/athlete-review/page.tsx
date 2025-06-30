@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { CheckOffDateParams } from '@/api/types/checkOff';
 import { ByAthleteData, MonthCalendar } from '../team-data/_components';
 import { useAuthStore } from '@/store';
+import { useRole } from '@/hooks';
 
 export default function AthleteReview() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -14,12 +15,17 @@ export default function AthleteReview() {
     };
   }, [selectedDate]);
   const { info } = useAuthStore();
+  const { isCoach } = useRole();
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-4xl mx-auto px-4">
       <MonthCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
 
       <div className="py-4">
-        <ByAthleteData selectedDate={formattedDate} athleteId={info?.id} />
+        <ByAthleteData
+          selectedDate={formattedDate}
+          athleteId={info?.id}
+          coachCode={isCoach ? info?.coachCode : undefined}
+        />
       </div>
     </div>
   );
