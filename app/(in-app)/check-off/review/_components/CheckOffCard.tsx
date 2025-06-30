@@ -142,7 +142,7 @@ export function CheckOffCard({ data: checkOff, onSubmit: refetch }: Props) {
           render={({ field, formState: { errors } }) => (
             <AppTextarea
               errorMessage={errors.coach_review_note?.message}
-              textareaProps={{ placeholder: 'Check Off Feedback', readOnly: isCompleted }}
+              textareaProps={{ placeholder: 'Enter check off feedback…', readOnly: isCompleted }}
               {...field}
             />
           )}

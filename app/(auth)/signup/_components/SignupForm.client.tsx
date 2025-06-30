@@ -22,8 +22,9 @@ import { useSignup } from '../_hooks';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import AppMultipleSelect from '@/components/compose/AppMultipleSelect';
-import { PasswordStrength } from '../../_components';
+import { FooterSection, PasswordStrength } from '../../_components';
 import { AccountType } from '@/utils/types';
+import LoginLinkSection from './LoginLinkSection';
 
 export default function SignupForm() {
   const router = useRouter();
@@ -35,8 +36,18 @@ export default function SignupForm() {
     measurementUnits: measurementUnitOptions,
   } = useCategories();
 
-  const { insetTop } = useSafeAreaInset();
-  const { control, isValid, userType, password, loading, onSubmit, trigger, setValue } = useSignup({
+  const {
+    control,
+    isValid,
+    userType,
+    password,
+    loading,
+    onSubmit,
+    trigger,
+    setValue,
+    getValues,
+    reset,
+  } = useSignup({
     onSuccess: () => {
       toast.success('Account create successfully');
       router.push(`/${ROUTES.LOGIN}`);
@@ -49,13 +60,38 @@ export default function SignupForm() {
   const [isAgree, setIsAgree] = useState(false);
 
   const roleOptionsByType = useMemo(() => {
-    return roleOptions.filter(item => item.isCoach === (userType === AccountType.Coach));
+    return roleOptions?.filter(item => item.isCoach === (userType === AccountType.Coach)) || [];
   }, [roleOptions, userType]);
 
   useEffect(() => {
     setValue('role', roleOptionsByType.find(item => item.isCoach)?.value ?? '');
   }, [userType]);
 
+  const onCacheInfo = () => {
+    const value = getValues();
+    sessionStorage.setItem('signupFormData', JSON.stringify(value));
+  };
+  useEffect(() => {
+    const cachedData = sessionStorage.getItem('signupFormData');
+    const clearSessionStorage = () => {
+      sessionStorage.removeItem('signupFormData');
+    };
+    if (cachedData) {
+      const parsedData = JSON.parse(cachedData);
+
+      setTimeout(() => {
+        reset(parsedData, {
+          keepErrors: false,
+          keepDefaultValues: false,
+        });
+        clearSessionStorage();
+      });
+    }
+    window.addEventListener('beforeunload', clearSessionStorage);
+    () => {
+      window.removeEventListener('beforeunload', clearSessionStorage);
+    };
+  }, []);
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
       <form onSubmit={onSubmit} className="space-y-4">
@@ -66,7 +102,7 @@ export default function SignupForm() {
             <AppRadioGroup
               label="I am a:"
               options={USER_TYPE_OPTIONS}
-              defaultSelected={value}
+              selected={value}
               onChangeSelected={onChange}
             />
           )}
@@ -207,12 +243,12 @@ export default function SignupForm() {
             <AppSelect
               label="Type of Cheer"
               placeholder="Select Type"
-              selectedValue={value}
-              onChangeSelected={onChange}
-              options={cheerTypeOptions}
+              options={cheerTypeOptions || []}
               errorMessage={error?.message}
               fullWidth
               required
+              selectedValue={value}
+              onChangeSelected={onChange}
             />
           )}
         />
@@ -226,7 +262,7 @@ export default function SignupForm() {
               selectedValue={value}
               onChangeSelected={onChange}
               placeholder="Select Style"
-              options={cheerStyleOptions}
+              options={cheerStyleOptions || []}
               errorMessage={error?.message}
               fullWidth
               required
@@ -266,7 +302,7 @@ export default function SignupForm() {
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <AppMultipleSelect
               label="Equipment Access"
-              options={equipmentOptions}
+              options={equipmentOptions || []}
               selectedValues={value}
               onChangeSelected={onChange}
               placeholder="Select Equipment"
@@ -283,7 +319,7 @@ export default function SignupForm() {
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <AppSelect
               label="Measurement Unit"
-              options={measurementUnitOptions}
+              options={measurementUnitOptions || []}
               selectedValue={value}
               onChangeSelected={onChange}
               placeholder="Select Unit"
@@ -318,18 +354,8 @@ export default function SignupForm() {
         </Button>
       </form>
 
-      {/* <div className="mt-6">
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-200"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Or sign up with</span>
-          </div>
-        </div>
-
-        <SSOViaSocial type="signup" />
-      </div> */}
+      <LoginLinkSection />
+      <FooterSection onNavigate={onCacheInfo} />
     </div>
   );
 }

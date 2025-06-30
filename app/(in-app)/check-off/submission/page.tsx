@@ -12,7 +12,23 @@ import { useCheckOffSubmit } from './_hooks/useCheckOffStudent';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useGetCheckOffStudentReview } from '../review/_hooks';
-import { format, isPast } from 'date-fns';
+import { format, isPast, differenceInDays, isToday } from 'date-fns';
+
+const formatDueDateWithTimeRemaining = (dueDateString: string): string => {
+  const dueDate = new Date(dueDateString);
+  const today = new Date();
+  const diffDays = differenceInDays(dueDate, today);
+
+  const formattedDate = format(dueDate, 'dd/MM/yyyy');
+
+  if (isToday(dueDate)) {
+    return `${formattedDate} - due today`;
+  } else if (diffDays > 0) {
+    return `${formattedDate} - due in ${diffDays} day${diffDays === 1 ? '' : 's'}`;
+  } else {
+    return `${formattedDate} - overdue by ${Math.abs(diffDays)} day${Math.abs(diffDays) === 1 ? '' : 's'}`;
+  }
+};
 
 export default function CheckOffSubmissionPage() {
   const [mediaFile, setMediaFile] = useState<File | null>(null);
@@ -137,7 +153,7 @@ export default function CheckOffSubmissionPage() {
             label="Due Date"
             value={
               selectedCheckOff?.due_date
-                ? format(new Date(selectedCheckOff.due_date), 'dd/MM/yyyy')
+                ? formatDueDateWithTimeRemaining(selectedCheckOff.due_date)
                 : ''
             }
             readonly
@@ -152,11 +168,11 @@ export default function CheckOffSubmissionPage() {
         <div className="space-y-2 [&_label]:h-7 [&_label]:justify-center [&_label]:text-foreground [&_label]:text-lg [&_label]:font-medium">
           <AppInput
             label="Instructions / Notes from Coach"
-            value={selectedCheckOff?.note || '-'}
+            value={selectedCheckOff?.note}
             readonly
             inputProps={{
               placeholder: 'Select a check-off to see notes',
-              className: 'text-center',
+              className: 'text-center placeholder:text-left',
             }}
             fullWidth
           />
@@ -223,7 +239,13 @@ export default function CheckOffSubmissionPage() {
           />
         </div>
 
-        <Button size="lg" type="submit" className="w-full" loading={isMutating}>
+        <Button
+          size="lg"
+          type="submit"
+          className="w-full"
+          disabled={!mediaFile}
+          loading={isMutating}
+        >
           {!isMutating && <Send className="size-5" />}
           Submit Check-Off
         </Button>
