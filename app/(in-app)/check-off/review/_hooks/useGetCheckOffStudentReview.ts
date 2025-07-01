@@ -12,7 +12,7 @@ export function useGetCheckOffStudentReview(limit = 10) {
   return useSWRInfinite(
     (pageIndex, previousPageData) => {
       if (previousPageData && pageIndex + 1 > previousPageData.meta?.totalPages) return null;
-      return [CHECK_OFF_STUDENT_REVIEW.CHECK_OFF_STUDENT_REVIEW_KEY, pageIndex + 1];
+      return [CHECK_OFF_STUDENT_REVIEW.CHECK_OFF_STUDENT_REVIEW_KEY, pageIndex + 1, limit];
     },
     async (key: string[]) => {
       const { data } = await getCheckOffStudentReview({ page: Number(key?.[1] || 1), limit });
@@ -22,7 +22,7 @@ export function useGetCheckOffStudentReview(limit = 10) {
       dedupingInterval: 1000, // 1 second,
       initialSize: 1,
       parallel: true,
-      persistSize: false,
+      revalidateAll: true,
     }
   );
 }

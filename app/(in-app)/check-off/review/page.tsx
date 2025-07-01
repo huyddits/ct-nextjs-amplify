@@ -20,6 +20,7 @@ export default function CheckOffStudent() {
   useEffect(() => {
     return () => {
       setSize(1);
+      refetch();
     };
   }, []);
   const isEmpty = useMemo(() => !data?.[0]?.data?.length, [data]);

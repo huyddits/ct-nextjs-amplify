@@ -6,7 +6,7 @@ import { AppInput, AppTextarea } from '@/components/compose';
 import { CheckOffStatusEnum, CheckOffStudentReview } from '@/api/types/checkOff';
 import * as yup from 'yup';
 import { useUpdateCheckOffStudentReview } from '../_hooks/useGetCheckOffStudentReview';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { CHECKOFF_SCHEMA, useCheckOffForm } from '../_hooks/useCheckOffForm';
 import { useAuthStore } from '@/store';
@@ -52,27 +52,57 @@ export function CheckOffCard({ data: checkOff, onSubmit: refetch }: Props) {
       }
     );
   };
-
-  return (
-    <div className="bg-white rounded-lg shadow-sm">
-      {/* Video Player */}
-      <div className="mb-6">
+  const previewComponent = useMemo(() => {
+    const IMG_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif', '.bmp', '.tiff'];
+    if (checkOff.media_link && IMG_EXTENSIONS.some(ext => checkOff.media_link.endsWith(ext))) {
+      return (
         <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden">
-          <video className="w-full h-full object-contain" controls playsInline preload="metadata">
-            <source src={checkOff.media_link} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <img
+            src={checkOff.media_link}
+            alt="Check Off Media"
+            className="size-full object-contain"
+          />
           <a
             href={checkOff.media_link}
             download
             className="absolute top-3 right-3 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
-            aria-label="Download video"
-            title="Download video"
+            aria-label="Download image"
+            title="Download image"
           >
             <Download className="h-5 w-5" />
           </a>
         </div>
+      );
+    }
+
+    return (
+      <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden">
+        <video
+          className="w-full h-full object-contain"
+          controls
+          playsInline
+          preload="metadata"
+          autoPlay={false}
+        >
+          <source src={checkOff.media_link} />
+          Your browser does not support the video tag.
+        </video>
+        <a
+          href={checkOff.media_link}
+          download
+          className="absolute top-3 right-3 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
+          aria-label="Download video"
+          title="Download video"
+        >
+          <Download className="h-5 w-5" />
+        </a>
       </div>
+    );
+  }, [checkOff.media_link]);
+  return (
+    <div className="bg-white rounded-lg shadow-sm">
+      {/* Video Player */}
+      <div className="mb-6">{previewComponent}</div>
 
       {/* Form Content */}
       <form className="space-y-6 p-4" onSubmit={handleSubmit(onSubmit)}>

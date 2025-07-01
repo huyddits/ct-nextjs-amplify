@@ -53,6 +53,7 @@ export default function CheckOffSubmissionPage() {
   useEffect(
     () => () => {
       setSize(1);
+      refetch();
     },
     []
   );
