@@ -22,7 +22,7 @@ const schema = object().shape({
   ),
   assignedTask: string()
     .max(100, 'Text exceeds maximum length of [100] characters. Please shorten your entry.')
-    .required('His field is required. Please enter a value to continue'),
+    .required('This field is required. Please enter a value to continue'),
   note: string().max(
     500,
     'Text exceeds maximum length of [500] characters. Please shorten your entry.'

@@ -29,7 +29,7 @@ const DEFAULT_FORM: DraftType = {
       duration: '',
       rpe: '1',
       distance: '',
-      distanceUnit: '',
+      // distanceUnit: '',
       heartRateMin: '',
       heartRateMax: '',
     },

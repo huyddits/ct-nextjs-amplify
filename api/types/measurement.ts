@@ -85,7 +85,7 @@ export type CoachStudentPayload = {
 export type CreateMeasurementPayload = {
   measurement_id: number;
   athlete_id: string;
-  result: number;
+  result: string;
 };
 
 export type AthletePayload = {

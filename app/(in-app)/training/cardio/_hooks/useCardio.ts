@@ -123,8 +123,8 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     mode: 'onChange',
   });
 
-  const getExercises = async () => {
-    if (exerciseOptions.length > 0) {
+  const getExercises = async (forceReload = false) => {
+    if (exerciseOptions.length > 0 && !forceReload) {
       setExercisesItems(exerciseOptions);
       return;
     }
@@ -177,19 +177,33 @@ export const useCardio = (options?: UseCardioFormOptions) => {
 
   const exercise = useWatch({ control, name: 'exercise' });
 
-  const selectedExercise = useMemo(() => {
-    return exercisesItems.find(item => item.value === exercise);
-  }, [exercisesItems, exercise]);
+  useEffect(() => {
+    if (!exercise || !exercisesItems.length) return;
+
+    const selected = exercisesItems.find(item => item.value === exercise);
+    if (!selected) return;
+
+    const defaultUnit = selected.units?.[0]?.value ?? '';
+
+    const intervals = getValues('intervals') || [];
+    const updated = intervals.map(interval => ({
+      ...interval,
+      distanceUnit: defaultUnit,
+    }));
+
+    setValue('intervals', updated, {
+      shouldDirty: true,
+    });
+  }, [exercise, exercisesItems, info?.measurementUnitType]);
 
   useEffect(() => {
-    if (selectedExercise && selectedExercise.units.length) {
-      const defaultUnit = selectedExercise.units?.[0].value;
-      setValue('intervals.0.distanceUnit', defaultUnit);
+    if (info?.measurementUnitType) {
+      getExercises(true);
     }
-  }, [selectedExercise, setValue]);
+  }, [info?.measurementUnitType]);
 
   useEffect(() => {
-    getExercises();
+    // getExercises();
     getRpe();
 
     if (draft.intervals) {
@@ -254,9 +268,9 @@ export const useCardio = (options?: UseCardioFormOptions) => {
     handleSubmit,
     formState,
     exercisesItems,
-    units: selectedExercise?.units ?? [],
+    // units: selectedExercise?.units ?? [],
     rpeItems,
-    selectedExercise,
+    // selectedExercise,
     reset,
     onCompleteWorkout,
     getExercises,

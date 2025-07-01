@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { MeasurementApi } from '@/api';
-import { CoachStudentItem, MeasurementItem } from '../_types';
 import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMeasurementStore } from '@/store/useMeasurement.store';
@@ -18,12 +17,11 @@ type UseMeasurementFormOptions = {
 const schema = object().shape({
   measurement: string().required('Measurement is a required field'),
   athleteList: string().required('Athlete is a required field'),
-  result: string()
-    .required('Result is a required field')
-    .test('is-valid-distance', 'Result must not exceed 100', value => {
-      const num = Number(value);
-      return !isNaN(num) && num >= 0 && num <= 1000;
-    }),
+  result: string().required('Result is a required field'),
+  // .test('is-valid-distance', 'Result must not exceed 100', value => {
+  //   const num = Number(value);
+  //   return !isNaN(num) && num >= 0 && num <= 1000;
+  // }),
 });
 
 export const useMeasurement = (options?: UseMeasurementFormOptions) => {
@@ -80,6 +78,10 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     return baseMeasurementList.find(m => m.measurementsId.toString() === measurement);
   }, [baseMeasurementList, measurement]);
 
+  useEffect(() => {
+    setValue('result', '');
+  }, [measurement, setValue]);
+
   const getCoachStudentList = async (payload: CoachStudentPayload) => {
     if (coachStudentList.length > 0) {
       return;
@@ -121,7 +123,7 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
       await MeasurementApi.postMeasurement({
         measurement_id: Number(formData.measurement),
         athlete_id: formData.athleteList ?? '',
-        result: Number(formData.result),
+        result: formData.result,
       });
       setRefreshBasesSpotter(true);
       setRefreshFlyer(true);

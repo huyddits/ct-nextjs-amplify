@@ -1,16 +1,15 @@
 'use client';
 
 import { AppSelect } from '@/components/compose';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useDataHitMiss } from './_components';
 import { Controller } from 'react-hook-form';
 
 export default function DataPage() {
-  const { control, hitMissRoutineList, selectedHitMissRoutines, summarySection, summaryGroup } =
-    useDataHitMiss({
-      onSuccess: () => {},
-      onFailure: () => {},
-    });
+  const { control, hitMissRoutineList, summarySection, summaryGroup } = useDataHitMiss({
+    onSuccess: () => {},
+    onFailure: () => {},
+  });
 
   const hitMissRoutineOptions = useMemo(() => {
     return hitMissRoutineList.map(item => ({
@@ -36,12 +35,6 @@ export default function DataPage() {
             />
           )}
         />
-      </div>
-
-      <div className="mx-4 mt-4">
-        <div className="w-full border border-gray-300 rounded-md p-3 text-center bg-white text-gray-700 font-medium break-all whitespace-pre-wrap">
-          {selectedHitMissRoutines && <div>{selectedHitMissRoutines.name}</div>}
-        </div>
       </div>
 
       <div className="mx-4 mt-6 border border-primary rounded-md overflow-hidden">
