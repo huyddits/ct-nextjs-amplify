@@ -35,6 +35,11 @@ export type CoachStudentItem = {
 
 export type CreateMeasurementItem = {
   measurementId: number;
-  athleteId: number;
-  result: number;
+  athleteResults?: AthleteResults[];
+  result?: number;
+};
+
+export type AthleteResults = {
+  athletId: string;
+  result: string;
 };

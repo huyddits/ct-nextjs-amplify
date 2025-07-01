@@ -7,13 +7,15 @@ import { useEffect, useState } from 'react';
 import { useCardioStore } from '@/store/useCardio.store';
 import Link from 'next/link';
 import { useAcknowledgement, useLoading } from '@/hooks';
-import { InfoIcon } from 'lucide-react';
-import { useAuthStore } from '@/store';
+import { InfoIcon, XIcon } from 'lucide-react';
+import InfoCardio from './_components/infoCardio';
 
 export default function CardioPage() {
   const { acknowledgementCardio } = useAcknowledgement();
   const { intervalsList, clearCardioSession, setDraft, draft } = useCardioStore();
   const { loading, startLoading, stopLoading } = useLoading();
+  const [showInfoModal, setShowInfoModal] = useState(false);
+
   const {
     control,
     setValue,
@@ -21,11 +23,9 @@ export default function CardioPage() {
     getValues,
     rpeItems: rpeOptions,
     exercisesItems: exercisesOptions,
-    selectedExercise,
+    // selectedExercise,
     onCompleteWorkout,
     reset,
-    setError,
-    clearErrors,
   } = useCardio({
     onSuccess: () => {
       clearCardioSession();
@@ -118,7 +118,10 @@ export default function CardioPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-medium">Cardio Training Selection</h2>
-                <InfoIcon className="h-5 w-5 text-gray-400" />
+                <InfoIcon
+                  className="h-5 w-5 text-gray-400 cursor-pointer hover:text-green-500"
+                  onClick={() => setShowInfoModal(true)}
+                />
               </div>
               <Controller
                 control={control}
@@ -166,7 +169,7 @@ export default function CardioPage() {
                   name="intervals.0.rpe"
                   render={({ field, fieldState: { error } }) => (
                     <AppSelect
-                      label="RPE (0-10)"
+                      label="RPE (1-10)"
                       placeholder="Select RPE"
                       selectedValue={field.value?.toString()}
                       onChangeSelected={field.onChange}
@@ -222,17 +225,18 @@ export default function CardioPage() {
                   control={control}
                   name="intervals.0.distanceUnit"
                   render={({ field, fieldState: { error } }) => (
-                    <AppSelect
-                      label="Unit"
-                      placeholder="Select Unit"
-                      selectedValue={field.value ?? ''}
-                      onChangeSelected={field.onChange}
-                      options={selectedExercise?.units ?? []}
-                      errorMessage={error?.message}
-                      className="text-sm text-gray-600"
-                      disabled={inputDisabled}
-                      fullWidth
-                    />
+                    <div className="w-full">
+                      <AppInput
+                        label="Unit"
+                        value={field.value}
+                        readonly
+                        errorMessage={error?.message}
+                        inputProps={{
+                          className: ' text-sm text-gray-600',
+                        }}
+                        fullWidth
+                      />
+                    </div>
                   )}
                 />
                 <div className="col-span-2 space-y-2">
@@ -257,11 +261,13 @@ export default function CardioPage() {
                           errorMessage={error?.message}
                           disabled={inputDisabled}
                           value={field.value}
-                          className="text-sm text-gray-600 w-full"
+                          className="text-sm text-gray-600 w-full "
                         />
                       )}
                     />
-                    <span className="text-gray-600 flex items-center h-9">-</span>
+                    <span className="text-gray-600 flex items-center height-icon padding-bottom-icon">
+                      -
+                    </span>
                     <Controller
                       control={control}
                       name="intervals.0.heartRateMax"
@@ -323,6 +329,25 @@ export default function CardioPage() {
           </form>
         </div>
       </div>
+      {showInfoModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-modal p-4"
+          onClick={() => setShowInfoModal(false)}
+        >
+          <div
+            className="relative bg-white rounded-lg shadow-lg max-h-[90vh] overflow-y-auto w-full max-w-xl p-6"
+            onClick={e => e.stopPropagation()}
+          >
+            <XIcon
+              onClick={() => setShowInfoModal(false)}
+              className="absolute top-3 right-4 text-gray-500 hover:text-gray-800 text-3xl"
+            >
+              &times;
+            </XIcon>
+            <InfoCardio />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -62,6 +62,27 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
   const athleteId = watch('athleteList');
   const measurementId = watch('measurement');
 
+  const normalizeResult = (value: string | number): number => {
+    if (typeof value === 'number') {
+      return value;
+    }
+
+    if (typeof value === 'string') {
+      if (value.includes(':')) {
+        const [minStr, secStr] = value.split(':');
+        const minutes = parseInt(minStr, 10);
+        const seconds = parseInt(secStr, 10);
+        if (isNaN(minutes) || isNaN(seconds)) return NaN;
+        return minutes * 60 + Math.min(seconds, 59);
+      }
+
+      const num = parseFloat(value);
+      return isNaN(num) ? NaN : num;
+    }
+
+    return NaN;
+  };
+
   const getBasesSpotter = async (payload: FlyerAndBasesPayLoad) => {
     if (basesSpotterList.length > 0 && !refreshBasesSpotter) {
       setbasesSpotter(basesSpotterList);
@@ -219,7 +240,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
         maxResult: data.max_result,
         results: data.results.map(data => ({
           measurementSessionId: data.measurement_session_id,
-          result: data.result,
+          result: normalizeResult(data.result),
           measurementUnit: data.measurement_unit,
           createdAt: data.created_at,
         })),

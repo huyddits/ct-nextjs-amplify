@@ -123,6 +123,7 @@ export const useProfileForm = () => {
         lastName: dataResponse?.last_name,
         measurementUnitId: dataResponse?.measurement_unit.id,
         measurementUnitName: dataResponse?.measurement_unit.name,
+        measurementUnitType: dataResponse?.measurement_unit.type,
         schoolName: dataResponse?.school_name,
         cheerStyleId: dataResponse?.cheer_styles?.[0].id,
         cheerStyleName: dataResponse?.cheer_styles?.[0]?.name,
