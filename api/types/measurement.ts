@@ -84,6 +84,11 @@ export type CoachStudentPayload = {
 
 export type CreateMeasurementPayload = {
   measurement_id: number;
+  athlete_results?: AthleteResults[];
+  result?: string;
+};
+
+export type AthleteResults = {
   athlete_id: string;
   result: string;
 };
