@@ -3,7 +3,7 @@
 	"appName": "Cheer Trainer",
 	"webDir": "www",
 	"server": {
-		"url": "http://localhost:3001",
+		"url": "https://staging.d1xu0qw1fwot4p.amplifyapp.com",
 		"cleartext": true
 	},
 	"ios": {
