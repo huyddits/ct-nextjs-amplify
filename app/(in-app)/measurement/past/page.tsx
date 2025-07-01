@@ -14,28 +14,6 @@ import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import { AppSelect } from '@/components/compose';
 import usePastMeasurement from '../_hooks/usePastMeasurement';
 
-const chartData = [
-  { date: '1/1', value: 150 },
-  { date: '1/15', value: 155 },
-  { date: '2/1', value: 160 },
-  { date: '2/15', value: 165 },
-  { date: '3/1', value: 170 },
-];
-
-const performanceData = [
-  { test: 'Broad Jump', value: 0, date: '7/15/23' },
-  { test: 'Left Single Leg Triple Jump', value: 0, date: '7/15/23' },
-  { test: 'Right Single Leg Triple Jump', value: 0, date: '7/15/23' },
-  { test: 'Vertical Jump', value: 0, date: '7/15/23' },
-  { test: 'Max Squat', value: 0, date: '7/15/23' },
-  { test: 'Max Bench Press', value: 0, date: '7/15/23' },
-  { test: 'Max Shoulder Press', value: 0, date: '7/15/23' },
-  { test: 'Max Dead Lift', value: 0, date: '7/15/23' },
-  { test: '40 Yard Dash', value: 0, date: '7/15/23' },
-  { test: 'Mile Time', value: 0, date: '7/15/23' },
-  { test: 'Two Mile Time', value: 0, date: '7/15/23' },
-];
-
 export default function MeasurementPastPage() {
   const {
     measurementList,
@@ -133,7 +111,7 @@ export default function MeasurementPastPage() {
 
                     {dataImprovement ? (
                       <div className="text-2xl font-semibold">
-                        {dataImprovement.improvement}
+                        {dataImprovement.improvement.toString()}
                         <span className=" ml-1 text-sm font-normal text-gray-500">
                           {dataImprovement.measurementUnit}
                         </span>
