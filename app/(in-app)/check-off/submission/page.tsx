@@ -12,21 +12,21 @@ import { useCheckOffSubmit } from './_hooks/useCheckOffStudent';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useGetCheckOffStudentReview } from '../review/_hooks';
-import { format, isPast, differenceInDays, isToday } from 'date-fns';
+import { format, isPast, differenceInDays, differenceInMinutes, isToday } from 'date-fns';
 
 const formatDueDateWithTimeRemaining = (dueDateString: string): string => {
   const dueDate = new Date(dueDateString);
   const today = new Date();
-  const diffDays = differenceInDays(dueDate, today);
+  const diffDays = differenceInDays(dueDate, today) + 1;
 
   const formattedDate = format(dueDate, 'dd/MM/yyyy');
 
   if (isToday(dueDate)) {
-    return `${formattedDate} - due today`;
+    return `${formattedDate} - Due today`;
   } else if (diffDays > 0) {
-    return `${formattedDate} - due in ${diffDays} day${diffDays === 1 ? '' : 's'}`;
+    return `${formattedDate} - Due in ${diffDays} day${diffDays === 1 ? '' : 's'}`;
   } else {
-    return `${formattedDate} - overdue by ${Math.abs(diffDays)} day${Math.abs(diffDays) === 1 ? '' : 's'}`;
+    return `${formattedDate} - Overdue by ${Math.abs(diffDays)} day${Math.abs(diffDays) === 1 ? '' : 's'}`;
   }
 };
 
@@ -105,6 +105,43 @@ export default function CheckOffSubmissionPage() {
     });
   };
 
+  const getClassDueDate = (dueDate: string | null) => {
+    if (!dueDate) return '';
+
+    const due = new Date(dueDate);
+    const today = new Date();
+    const diffMinutes = differenceInMinutes(due, today);
+    const min1Day = 1440; // 1 day in minutes
+    // Convert thresholds to minutes: 1 day = 1440 minutes, 5 days = 7200 minutes
+    if (diffMinutes <= min1Day) {
+      // 1 day in minutes
+      return 'bg-red-300 hover:!bg-red-400 transition-colors focus:bg-red-400 rounded-none';
+    } else if (diffMinutes <= min1Day * 5) {
+      // 5 days in minutes
+      return 'bg-yellow-200 hover:!bg-yellow-300 focus:!bg-yellow-300 transition-colors rounded-none';
+    } else {
+      return 'bg-green-500 text-white hover:!bg-green-400 focus:!bg-green-400 transition-colors rounded-none'; // More than 5 days
+    }
+  };
+  const getDueDateLabelColor = () => {
+    const dueDate = selectedCheckOff?.due_date;
+    if (!dueDate) return '';
+
+    const due = new Date(dueDate);
+    const today = new Date();
+    const diffMinutes = differenceInMinutes(due, today);
+    const min1Day = 1440; // 1 day in minutes
+    // Convert thresholds to minutes: 1 day = 1440 minutes, 5 days = 7200 minutes
+    if (diffMinutes <= min1Day) {
+      // 1 day in minutes
+      return '[&>button]:bg-red-300 [&_svg]:!text-red-500';
+    } else if (diffMinutes <= min1Day * 5) {
+      // 5 days in minutes
+      return '[&>button]:bg-yellow-200 [&_svg]:!text-red-500';
+    } else {
+      return '[&>button]:bg-green-500 [&>button]:!text-white [&_svg]:!text-white'; // More than 5 days
+    }
+  };
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-4xl mx-auto px-4">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-md mx-auto">
@@ -126,11 +163,13 @@ export default function CheckOffSubmissionPage() {
                           note: option.checkoff.note || '-',
                           status: option.status || '',
                         }),
-                        disabled: !!option.status,
+                        // disabled: !!option.status,
+                        className: getClassDueDate(option.due_date),
                       }))
                     ) || []
                   ).flat() as any
                 }
+                className={getDueDateLabelColor()}
                 loading={isLoading}
                 selectedValue={field.value}
                 onChangeSelected={v => onSelect(v, field.onChange)}

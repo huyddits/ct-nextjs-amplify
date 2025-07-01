@@ -69,10 +69,6 @@ export default function ExercisePicker({ isNested, programId, onClose }: Exercis
         roleOptions={roleOptions}
         skillOptions={skillTypeOptions}
         problemOptions={problemOptions}
-        onChangeSearchText={value => {
-          setPageExercise(1);
-          setFilterForm(prev => ({ ...prev, exerciseName: value }));
-        }}
         onChangeSelected={(field, value) => {
           setFilterForm(prev => {
             console.log(field, value);
@@ -102,6 +98,10 @@ export default function ExercisePicker({ isNested, programId, onClose }: Exercis
         }}
       />
       <ExerciseProgramSection
+        onChangeSearchText={value => {
+          setPageExercise(1);
+          setFilterForm(prev => ({ ...prev, exerciseName: value }));
+        }}
         listExcercises={listExercises}
         page={pageExercise}
         totalPages={totalPagesExercise}

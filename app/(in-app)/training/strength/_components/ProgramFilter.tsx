@@ -10,7 +10,6 @@ interface ProgramFilterProps {
   skillOptions: SelectOption[];
   problemOptions: SelectOption[];
   onChangeSelected: (field: 'role' | 'skillType' | 'problem', value: string[]) => void;
-  onChangeSearchText: (value: string) => void;
 }
 
 export default function ProgramFilter({
@@ -21,19 +20,9 @@ export default function ProgramFilter({
   skillOptions,
   problemOptions,
   onChangeSelected,
-  onChangeSearchText,
 }: ProgramFilterProps) {
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
-      <div className="mb-4">
-        <AppInput
-          onChange={debounce(e => onChangeSearchText(e.target.value), 500)}
-          iconPosition="start"
-          inputProps={{ placeholder: 'Search exercises...' }}
-          icon={<SearchIcon className="w-5 h-5 text-gray-400" />}
-        />
-      </div>
-
       <div className="mb-3">
         <AppMultipleSelect
           label="What Role?"

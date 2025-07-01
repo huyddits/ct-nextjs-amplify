@@ -226,7 +226,7 @@ export default function ReportPage() {
                 loading={isLoading('reset')}
               >
                 {!isLoading('reset')}
-                Reset All
+                Save data
               </Button>
             </div>
           </>
