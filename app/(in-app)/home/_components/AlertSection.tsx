@@ -1,7 +1,14 @@
+import { DashboardAlerts } from '@/api/types/dashboard';
 import AlertGroup from './AlertGroup';
 import AppAlert from '@/components/compose/AppAlert';
+import { useRole } from '@/hooks';
 
-export default function AlertSection() {
+type Props = {
+  alerts?: DashboardAlerts;
+  loading?: boolean;
+};
+export default function AlertSection({ alerts, loading }: Props) {
+  const { isCoach } = useRole();
   const listItems = [
     {
       title: 'Past-due check-offs',
@@ -39,6 +46,13 @@ export default function AlertSection() {
           <h2 className="font-semibold mb-3">Alerts</h2>
 
           <div className="grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-8">
+            {loading && (
+              <div className="space-y-2">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div className="animate-pulse bg-gray-300 h-[84px] rounded" key={index} />
+                ))}
+              </div>
+            )}
             {listItems.map(item => (
               <AlertGroup key={item.title} title={item.title} colorClass={item.colorClass}>
                 {item.content.map((alertItem, idx) => (

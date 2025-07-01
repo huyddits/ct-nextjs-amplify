@@ -1,19 +1,31 @@
 import StatisticOnTime from './StatisticOnTime';
-export default function StatisticOnTimeSection() {
+
+type Props = {
+  teamCheckOff?: {
+    weekly: number;
+    monthly: number;
+  };
+  hitMiss?: {
+    weekly: number;
+    total: number;
+  };
+  loading?: boolean;
+};
+export default function StatisticOnTimeSection({ teamCheckOff, hitMiss, loading }: Props) {
   const listItems = [
     {
       title: 'Team Check-Off',
       statistic: [
-        { value: 85, unit: 'Weekly' },
-        { value: 82, unit: 'Monthly' },
+        { value: teamCheckOff?.weekly ?? 0, unit: 'Weekly' },
+        { value: teamCheckOff?.monthly ?? 0, unit: 'Monthly' },
       ],
       colorClass: 'text-green-500',
     },
     {
       title: 'Hit/Miss',
       statistic: [
-        { value: 78, unit: 'Weekly' },
-        { value: 75, unit: 'Total' },
+        { value: hitMiss?.weekly ?? 0, unit: 'Weekly' },
+        { value: hitMiss?.total ?? 0, unit: 'Total' },
       ],
       colorClass: 'text-orange-500',
     },
@@ -23,7 +35,12 @@ export default function StatisticOnTimeSection() {
       <div className="mb-12">
         <div className="grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-8">
           {listItems.map(item => (
-            <StatisticOnTime key={item.title} title={item.title} colorClass={item.colorClass}>
+            <StatisticOnTime
+              key={item.title}
+              title={item.title}
+              colorClass={item.colorClass}
+              loading={loading}
+            >
               <div className="grid grid-cols-2 gap-4">
                 {item.statistic.map((stat, index) => (
                   <div key={index}>

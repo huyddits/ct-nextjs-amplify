@@ -72,4 +72,7 @@ export const END_POINTS = {
 
   // Notification
   NOTIFICATION_SUBSCRIBE_WEB: 'notification/subscribe-web',
+
+  // Dashboard
+  DASHBOARD: 'dashboard',
 };

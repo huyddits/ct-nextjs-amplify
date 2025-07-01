@@ -1,6 +1,6 @@
 'use client';
 import { Send, Upload } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, Form } from 'react-hook-form';
 import { InferType } from 'yup';
 import { toast } from 'react-toastify';
@@ -31,6 +31,7 @@ const formatDueDateWithTimeRemaining = (dueDateString: string): string => {
 };
 
 export default function CheckOffSubmissionPage() {
+  const key = useRef(Math.random().toString(36).substring(2, 15));
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [mediaPreview, setMediaPreview] = useState<string | null>(null);
   const {
@@ -40,23 +41,16 @@ export default function CheckOffSubmissionPage() {
     setSize,
     size,
     mutate: refetch,
-  } = useGetCheckOffStudentReview(20);
+  } = useGetCheckOffStudentReview(key.current);
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useCheckoffSubmission();
   const [fileKey, setFileKey] = useState(0); // Reset key to force re-render on file change
   const { trigger: submitCheckOff, isMutating } = useCheckOffSubmit();
   const [selectedCheckOff, setSelectedCheckOff] = useState<any>();
-
-  useEffect(
-    () => () => {
-      setSize(1);
-      refetch();
-    },
-    []
-  );
 
   const onSelect = (value: string, onChange: (value: string) => void) => {
     const parsedValue = JSON.parse(value);
@@ -96,6 +90,7 @@ export default function CheckOffSubmissionPage() {
     formData.append('note', data.note || '');
     await submitCheckOff(formData, {
       onSuccess: () => {
+        reset(); // Reset form state
         toast.success('Check-off submitted successfully!');
         setMediaFile(null);
         setMediaPreview(null);
@@ -208,7 +203,7 @@ export default function CheckOffSubmissionPage() {
         <div className="space-y-2 [&_label]:h-7 [&_label]:justify-center [&_label]:text-foreground [&_label]:text-lg [&_label]:font-medium">
           <AppInput
             label="Instructions / Notes from Coach"
-            value={selectedCheckOff?.note}
+            value={selectedCheckOff?.note || ''}
             readonly
             inputProps={{
               placeholder: 'Select a check-off to see notes',

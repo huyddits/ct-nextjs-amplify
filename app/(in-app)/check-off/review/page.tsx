@@ -5,9 +5,10 @@ import { CheckOffStudentReview } from '@/api/types/checkOff';
 import { CheckOffCard } from './_components';
 import { Loader2Icon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useEffect, useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 
 export default function CheckOffStudent() {
+  const key = useRef(Math.random().toString(36).substring(2, 15));
   const {
     data,
     isLoading,
@@ -15,14 +16,8 @@ export default function CheckOffStudent() {
     size,
     isValidating,
     mutate: refetch,
-  } = useGetCheckOffStudentReview();
+  } = useGetCheckOffStudentReview(key.current);
 
-  useEffect(() => {
-    return () => {
-      setSize(1);
-      refetch();
-    };
-  }, []);
   const isEmpty = useMemo(() => !data?.[0]?.data?.length, [data]);
 
   return (
