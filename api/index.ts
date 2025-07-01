@@ -9,3 +9,4 @@ export * as MeasurementApi from './measurement.api';
 export * as HitMissApi from './hitMiss.api';
 export * as CheckOffApi from './checkOff.api';
 export * as NotificationApi from './notification.api';
+export * as DashboardApi from './dashboard.api';
