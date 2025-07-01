@@ -6,8 +6,8 @@ type Props = {
     monthly: number;
   };
   hitMiss?: {
-    weekly: number;
-    total: number;
+    weekly_hit_percentage: number;
+    total_hit_percentage: number;
   };
   loading?: boolean;
 };
@@ -24,8 +24,8 @@ export default function StatisticOnTimeSection({ teamCheckOff, hitMiss, loading 
     {
       title: 'Hit/Miss',
       statistic: [
-        { value: hitMiss?.weekly ?? 0, unit: 'Weekly' },
-        { value: hitMiss?.total ?? 0, unit: 'Total' },
+        { value: hitMiss?.weekly_hit_percentage ?? 0, unit: 'Weekly' },
+        { value: hitMiss?.total_hit_percentage ?? 0, unit: 'Total' },
       ],
       colorClass: 'text-orange-500',
     },

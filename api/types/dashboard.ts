@@ -28,8 +28,8 @@ export type DashboardApiResponse = {
     minutesPerWeek: number;
   };
   hit_miss: {
-    weekly: number;
-    total: number;
+    total_hit_percentage: number;
+    weekly_hit_percentage: number;
   };
   alerts: DashboardAlerts;
 };

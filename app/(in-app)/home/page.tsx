@@ -20,7 +20,7 @@ export default function HomePage() {
         teamTrainingAverages={dashboardData?.team_training_average}
         loading={isLoading}
       />
-      <AlertSection alert={dashboardData?.alerts} loading={isLoading} />
+      <AlertSection alerts={dashboardData?.alerts} loading={isLoading} />
       <div className="mt-8">
         <NotificationModal />
       </div>

@@ -1,4 +1,7 @@
-export default function CoachFitnessPolicy() {
+type Props = {
+  ref?: React.ForwardedRef<any>;
+};
+export default function CoachFitnessPolicy({ ref }: Props) {
   return (
     <div className="text-sm space-y-6">
       <p>
@@ -168,7 +171,7 @@ export default function CoachFitnessPolicy() {
 
       <h3 className="font-bold text-lg">PROFESSIONAL STANDARDS ACKNOWLEDGMENT:</h3>
       <p>By accessing fitness testing features as a coach, you acknowledge that you:</p>
-      <ul className="list-disc pl-5">
+      <ul className="list-disc pl-5" ref={ref}>
         <li>Meet all professional requirements for fitness test administration</li>
       </ul>
     </div>

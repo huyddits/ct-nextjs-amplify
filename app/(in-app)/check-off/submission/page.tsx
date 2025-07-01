@@ -1,7 +1,7 @@
 'use client';
 import { Send, Upload } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { Controller, Form } from 'react-hook-form';
+import { useRef, useState } from 'react';
+import { Controller } from 'react-hook-form';
 import { InferType } from 'yup';
 import { toast } from 'react-toastify';
 import AppInput from '@/components/compose/AppInput.client';
@@ -31,7 +31,7 @@ const formatDueDateWithTimeRemaining = (dueDateString: string): string => {
 };
 
 export default function CheckOffSubmissionPage() {
-  const key = useRef(Math.random().toString(36).substring(2, 15));
+  const loadingKey = useRef(Math.random().toString(36).substring(2, 15));
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [mediaPreview, setMediaPreview] = useState<string | null>(null);
   const {
@@ -41,7 +41,7 @@ export default function CheckOffSubmissionPage() {
     setSize,
     size,
     mutate: refetch,
-  } = useGetCheckOffStudentReview(key.current);
+  } = useGetCheckOffStudentReview(loadingKey.current);
   const {
     control,
     handleSubmit,

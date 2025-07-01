@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useMemo, useRef } from 'react';
 
 export default function CheckOffStudent() {
-  const key = useRef(Math.random().toString(36).substring(2, 15));
+  const loadingKey = useRef(Math.random().toString(36).substring(2, 15));
   const {
     data,
     isLoading,
@@ -16,7 +16,7 @@ export default function CheckOffStudent() {
     size,
     isValidating,
     mutate: refetch,
-  } = useGetCheckOffStudentReview(key.current);
+  } = useGetCheckOffStudentReview(loadingKey.current);
 
   const isEmpty = useMemo(() => !data?.[0]?.data?.length, [data]);
 

@@ -55,7 +55,7 @@ export default function RouteGuardPolicyFitness() {
             setIsAgree(false);
           }
         },
-        { threshold: 1.0 }
+        { threshold: 0.5 }
       );
       observer.observe(allowCheckedRef);
       return () => observer.disconnect();
@@ -72,13 +72,12 @@ export default function RouteGuardPolicyFitness() {
           </DialogDescription>
         </DialogHeader>
         <div className="max-h-[400px] overflow-y-auto">
-          {isCoach ? <CoachFitnessPolicy /> : <AthleteFitnessPolicy />}
-          <div
-            aria-hidden
-            className="h-px"
-            aria-label="bottom"
-            ref={ref => setAllowCheckedRef(ref)}
-          />
+          {isCoach ? (
+            <CoachFitnessPolicy ref={ref => setAllowCheckedRef(ref)} />
+          ) : (
+            <AthleteFitnessPolicy ref={ref => setAllowCheckedRef(ref)} />
+          )}
+          <div aria-hidden className="h-px" aria-label="bottom" />
         </div>
 
         <div>
