@@ -22,11 +22,11 @@ const formatDueDateWithTimeRemaining = (dueDateString: string): string => {
   const formattedDate = format(dueDate, 'dd/MM/yyyy');
 
   if (isToday(dueDate)) {
-    return `${formattedDate} - due today`;
+    return `${formattedDate} - Due today`;
   } else if (diffDays > 0) {
-    return `${formattedDate} - due in ${diffDays} day${diffDays === 1 ? '' : 's'}`;
+    return `${formattedDate} - Due in ${diffDays} day${diffDays === 1 ? '' : 's'}`;
   } else {
-    return `${formattedDate} - overdue by ${Math.abs(diffDays)} day${Math.abs(diffDays) === 1 ? '' : 's'}`;
+    return `${formattedDate} - Overdue by ${Math.abs(diffDays)} day${Math.abs(diffDays) === 1 ? '' : 's'}`;
   }
 };
 
