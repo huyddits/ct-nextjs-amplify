@@ -7,7 +7,7 @@ import { useMeasurementStore } from '@/store/useMeasurement.store';
 import { array, InferType, object, string } from 'yup';
 import { CoachStudentPayload } from '@/api/types/measurement';
 import { useAuthStore } from '@/store';
-import { useLoading } from '@/hooks';
+import { useLoading, useRole } from '@/hooks';
 
 type UseMeasurementFormOptions = {
   onSuccess?: () => void;
@@ -34,6 +34,7 @@ const schema = object().shape({
 export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   const { info } = useAuthStore();
   const { loading, startLoading, stopLoading } = useLoading();
+  const { isCoach } = useRole();
   const {
     baseMeasurementList,
     coachStudent: coachStudentList,
@@ -44,11 +45,16 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   } = useMeasurementStore();
   const { control, setValue, getValues, handleSubmit, formState } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      measurement: '',
-      athleteResults: [{ athletId: '', result: '' }],
-      result: '',
-    },
+    defaultValues: isCoach
+      ? {
+          measurement: '',
+          athleteResults: [{ athletId: '', result: '' }],
+          result: '',
+        }
+      : {
+          measurement: '',
+          result: '',
+        },
     mode: 'onChange',
   });
 
