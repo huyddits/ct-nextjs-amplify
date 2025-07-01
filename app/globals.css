@@ -325,6 +325,9 @@ pre {
 .bg-green-20 {
   @apply bg-[var(--color-green-20)];
 }
+.bg-modal {
+  @apply bg-[rgba(0,0,0,0.3)];
+}
 
 /* Add border */
 .border-red-500 {
@@ -401,6 +404,10 @@ pre {
   @apply pb-[80px];
 }
 
+.padding-bottom-icon {
+  @apply pt-[6px];
+}
+
 /* add bottom */
 .bottom-app {
   @apply bottom-[60px];
@@ -414,4 +421,9 @@ pre {
 /* stop color */
 .stop-primary {
   stop-color: var(--stop-color-primary);
+}
+
+/* add height */
+.height-icon {
+  @apply h-[50%];
 }

@@ -56,11 +56,6 @@ export const useDataHitMiss = (options?: UseDataHitMissFormOptions) => {
     }
   };
 
-  const hitMissRoutines = useWatch({ control, name: 'routines' });
-  const selectedHitMissRoutines = hitMissRoutineList.find(
-    m => m.routineId.toString() === hitMissRoutines
-  );
-
   const getSummarySection = async (params: SummaryPayload) => {
     try {
       const response = await HitMissApi.getSummarySection(params);
@@ -126,7 +121,6 @@ export const useDataHitMiss = (options?: UseDataHitMissFormOptions) => {
     hitMissRoutineList,
     getHitMissRoutinesList,
     control,
-    selectedHitMissRoutines,
     getSummarySection,
     summarySection,
     getSummaryGroup,
