@@ -4,6 +4,7 @@ import { BillingCycle, PlanStatus, PlanType, Platform } from '@/utils/types';
 import { useAuthStore } from '@/store';
 import { usePagination } from './usePagination';
 import { Capacitor } from '@capacitor/core';
+import { useRouter } from 'next/navigation';
 export type SubscriptionPlan = {
   name: string;
   type: PlanType;
@@ -54,7 +55,7 @@ export const useBillingAndSubscription = () => {
   const [listAthletePlans, setListAthletePlans] = useState<SubscriptionPlan[]>([]);
   const [listBillings, setListBillings] = useState<BillingReceipt[]>([]);
   const [listApplied, setListApplied] = useState<string[]>([]);
-
+  const router = useRouter();
   // promo
   const [discount, setDiscount] = useState(0);
   const [promoCode, setPromoCode] = useState('');
@@ -205,11 +206,11 @@ export const useBillingAndSubscription = () => {
         discounts,
         platform: isMobile ? Platform.mobile : Platform.web,
       });
-      console.log('response.data', response.data);
       if (!response.data.data?.url) {
         throw response.data.error;
       }
-      location.href = response.data.data.url;
+      router.push(response.data.data.url);
+      // location.href = response.data.data.url;
     } catch (error) {
       console.log(error);
     }
@@ -239,7 +240,8 @@ export const useBillingAndSubscription = () => {
         throw response.data.error;
       }
 
-      window.open(response.data.data.url, '_blank');
+      router.push(response.data.data.url);
+      // window.open(response.data.data.url, '_blank');
     } catch (error) {
       console.log(error);
     }
