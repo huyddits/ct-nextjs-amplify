@@ -10,7 +10,7 @@ export interface CheckOffSubmission {
 
 export const CHECKOFF_SUBMISSION_SCHEMA = object().shape({
   submit_id: string().required(ERROR_MESSAGES.INPUT),
-  note: string().optional(),
+  note: string().max(500, ERROR_MESSAGES.MAX_LENGTH(500)).optional(),
 });
 
 export const useCheckoffSubmission = () => {

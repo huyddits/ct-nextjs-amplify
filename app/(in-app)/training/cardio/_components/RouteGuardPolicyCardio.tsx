@@ -53,7 +53,7 @@ export default function RouteGuardPolicyCardio() {
             setIsAgree(false);
           }
         },
-        { threshold: 1.0 }
+        { threshold: 0.5 }
       );
       observer.observe(allowCheckedRef);
       return () => observer.disconnect();
@@ -306,16 +306,10 @@ export default function RouteGuardPolicyCardio() {
               features.
             </strong>
           </p>
-          <p>
+          <p ref={ref => setAllowCheckedRef(ref)}>
             For complete legal terms, see Section 23 "Comprehensive Training and Testing
             Disclaimers" in our Terms and Conditions.
           </p>
-          <div
-            aria-hidden
-            className="h-px"
-            aria-label="bottom"
-            ref={ref => setAllowCheckedRef(ref)}
-          />
         </div>
 
         <div>

@@ -58,7 +58,7 @@ export default function TopApp({ className }: { className?: string }) {
 
   const onLogout = () => {
     removeToken();
-    location.replace(`/${ROUTES.LOGIN}`);
+    router.replace(`/${ROUTES.LOGIN}`);
   };
 
   if (platform === Platform.mobile) {
@@ -141,8 +141,9 @@ export default function TopApp({ className }: { className?: string }) {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="cursor-pointer flex items-center text-red-600"
+              className="cursor-pointer flex items-center"
               onClick={onLogout}
+              variant="destructive"
             >
               <LogOutIcon className="mr-2 h-4 w-4" />
               <span>Logout</span>

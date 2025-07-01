@@ -1,13 +1,21 @@
 import StatisticOnValue from './StatisticOnValue';
 
-export default function StatisticOnValueSection() {
+type Props = {
+  teamTrainingAverages?: {
+    strength: number;
+    cardio: number;
+    minutesPerWeek: number;
+  };
+  loading?: boolean;
+};
+export default function StatisticOnValueSection({ teamTrainingAverages, loading }: Props) {
   const listItems = [
     {
       title: 'Team Training Averages',
       statistic: [
-        { name: 'Strength', value: 3.5, unit: 'Weekly' },
-        { name: 'Cardios', value: 32, unit: 'Monthly' },
-        { value: 224, unit: 'Minutes per week' },
+        { name: 'Strength', value: teamTrainingAverages?.strength ?? 0, unit: 'Weekly' },
+        { name: 'Cardios', value: teamTrainingAverages?.cardio ?? 0, unit: 'Monthly' },
+        { value: teamTrainingAverages?.minutesPerWeek ?? 0, unit: 'Minutes per week' },
       ],
       colorClass: 'text-green-800',
     },
@@ -18,7 +26,7 @@ export default function StatisticOnValueSection() {
       <div className="mb-12">
         <div className="grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-8">
           {listItems.map(item => (
-            <StatisticOnValue key={item.title} title={item.title} colorClass={item.colorClass}>
+            <StatisticOnValue key={item.title} title={item.title} loading={loading}>
               {item.statistic.map((stat, index) => (
                 <div key={index}>
                   <div className="text-sm font-medium text-gray-700 min-h-[20px]">{stat.name}</div>

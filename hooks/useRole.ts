@@ -9,6 +9,7 @@ export const useRole = () => {
     () => ({
       isCoach: info?.accountType === AccountType.Coach,
       isAthlete: info?.accountType === AccountType.Athlete,
+      isHydrated: !!info,
     }),
     [info]
   );

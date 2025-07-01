@@ -1,4 +1,7 @@
-export default function AthleteFitnessPolicy() {
+type Props = {
+  ref?: React.ForwardedRef<any>;
+};
+export default function AthleteFitnessPolicy({ ref }: Props) {
   return (
     <div className="text-sm space-y-6">
       <p>
@@ -242,7 +245,7 @@ export default function AthleteFitnessPolicy() {
 
       <p>If you do not agree to these terms, you must not use the fitness testing features.</p>
       <p>
-        <strong>
+        <strong ref={ref}>
           For complete legal terms, see Section 23 "Comprehensive Training and Testing Disclaimers"
           in our Terms and Conditions
         </strong>
