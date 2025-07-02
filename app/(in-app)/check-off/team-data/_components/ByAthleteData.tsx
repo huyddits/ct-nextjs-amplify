@@ -26,7 +26,7 @@ export function ByAthleteData({ selectedDate, athleteId, coachCode }: Props) {
     selectedDate
   );
   const { data: athleteList, isLoading: isLoadingAthleteList } = useGetListAthlete(coachCode || '');
-  console.log('athleteList', athleteList);
+
   const athleteOptions = useMemo(() => {
     return (
       athleteList?.map(athlete => ({
