@@ -2,8 +2,6 @@
 
 import { useGetListAthlete } from '@/app/(in-app)/hit-miss/routines/_hooks';
 import { AppSelect } from '@/components/compose';
-import { usePersonalInfo } from '@/hooks';
-import { useAuthStore } from '@/store';
 import { useEffect, useMemo, useState } from 'react';
 import { useCheckOffByAthlete } from '../_hooks';
 import { SingleAthleteTask } from './SingleAthleteTask';
@@ -28,7 +26,7 @@ export function ByAthleteData({ selectedDate, athleteId, coachCode }: Props) {
     selectedDate
   );
   const { data: athleteList, isLoading: isLoadingAthleteList } = useGetListAthlete(coachCode || '');
-
+  console.log('athleteList', athleteList);
   const athleteOptions = useMemo(() => {
     return (
       athleteList?.map(athlete => ({

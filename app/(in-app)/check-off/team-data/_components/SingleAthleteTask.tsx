@@ -18,11 +18,18 @@ export function SingleAthleteTask({ data }: Props) {
           status: 'Not Completed',
           className: 'bg-destructive text-white',
         };
-      case CheckOffStatusEnum.Excused:
+      case CheckOffStatusEnum.Excused: {
+        if (data.reviewed_date) {
+          return {
+            status: 'Excused',
+            className: 'bg-primary text-white',
+          };
+        }
         return {
-          status: 'Excused',
-          className: 'bg-primary text-white',
+          status: '',
+          className: 'bg-yellow-200',
         };
+      }
       default:
         return {
           status: '',

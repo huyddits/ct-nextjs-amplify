@@ -15,7 +15,7 @@ export function useGetCheckOffStudentReview(key?: string) {
       return [CHECK_OFF_STUDENT_REVIEW.CHECK_OFF_STUDENT_REVIEW_KEY, pageIndex + 1, key];
     },
     async (key: string[]) => {
-      const { data } = await getCheckOffStudentReview({ page: Number(key?.[1] || 1), limit: 5 });
+      const { data } = await getCheckOffStudentReview({ page: Number(key?.[1] || 1), limit: 15 });
       return data;
     },
     {
