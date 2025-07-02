@@ -45,7 +45,7 @@ export default function AppAlert({
           text: 'text-blue-600',
         };
     }
-  });
+  }, [colorClass]);
   return (
     <div className={`relative ${color.bg} p-3 rounded text-sm border-l-2 ${color.border} pr-9`}>
       {closable && onDelete && (

@@ -40,7 +40,6 @@ export default function AlertSection({ alerts, loading }: Props) {
             colorClass: 'green',
           })) || []),
         ],
-        colorClass: 'yellow',
         closable: true,
         disabled: isCoach,
       },
