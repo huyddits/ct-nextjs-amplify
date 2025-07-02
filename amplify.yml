@@ -7,6 +7,7 @@ frontend:
     build:
       commands:
         - npm run build
+        - npm run add-sw
   artifacts:
     baseDirectory: .next
     files:
