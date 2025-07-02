@@ -8,12 +8,13 @@
     "dev:https": "next dev --experimental-https --port 3001",
     "serve": "npx serve -l 3001 out",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --port 3200",
     "prod": "next build && next start",
     "lint": "next lint",
     "prepare": "husky",
     "build:mobile": "BUILD_TARGET=mobile next build",
-    "build:ios": "npm run build:mobile && npx cap sync ios"
+    "build:ios": "npm run build:mobile && npx cap sync ios",
+    "add-sw": "node scripts/add-sw.js"
   },
   "engines": {
     "node": "20.x",
