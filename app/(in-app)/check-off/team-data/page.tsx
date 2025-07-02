@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import { TabsContent } from '@radix-ui/react-tabs';
 import { format, startOfMonth } from 'date-fns';
 import { CheckOffDateParams } from '@/api/types/checkOff';
+import { useAuthStore } from '@/store';
 
 const TAB_OPTIONS = [
   { value: 'quickref', label: 'Quick Reference', Component: ReferenceData },
@@ -13,6 +14,7 @@ const TAB_OPTIONS = [
 ];
 
 export default function CheckOffTeamDataPage() {
+  const { info } = useAuthStore();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const formattedDate = useMemo((): CheckOffDateParams | undefined => {
     if (!selectedDate) return undefined;
@@ -36,7 +38,7 @@ export default function CheckOffTeamDataPage() {
           </TabsList>
           {TAB_OPTIONS.map(tab => (
             <TabsContent key={tab.value} value={tab.value}>
-              <tab.Component selectedDate={formattedDate} />
+              <tab.Component selectedDate={formattedDate} coachCode={info?.coachCode} />
             </TabsContent>
           ))}
         </Tabs>

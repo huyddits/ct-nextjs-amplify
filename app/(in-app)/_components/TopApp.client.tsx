@@ -93,9 +93,12 @@ export default function TopApp({ className }: { className?: string }) {
         )}
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
           <DropdownMenuTrigger asChild>
-            <button className="w-8 h-8 flex ml-auto items-center justify-center focus:outline-none">
-              <MenuIcon className="h-6 w-6" />
-            </button>
+            <Button
+              size="icon"
+              className="flex ml-auto items-center justify-center focus:outline-none"
+            >
+              <MenuIcon className="size-7" />
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuItem
