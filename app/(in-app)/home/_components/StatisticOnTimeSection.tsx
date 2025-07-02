@@ -1,3 +1,4 @@
+import { useRole } from '@/hooks';
 import StatisticOnTime from './StatisticOnTime';
 
 type Props = {
@@ -12,9 +13,10 @@ type Props = {
   loading?: boolean;
 };
 export default function StatisticOnTimeSection({ teamCheckOff, hitMiss, loading }: Props) {
+  const { isCoach } = useRole();
   const listItems = [
     {
-      title: 'Team Check-Off',
+      title: isCoach ? 'Team Check-Off' : 'Check-Off',
       statistic: [
         { value: teamCheckOff?.weekly ?? 0, unit: 'Weekly' },
         { value: teamCheckOff?.monthly ?? 0, unit: 'Monthly' },

@@ -5,10 +5,11 @@ import {
   AlertSection,
   NotificationModal,
 } from './_components';
-import { useDashboardApi } from './_hooks/useDashboardApi';
+import { useDashboardApi, useGetDashboardAlert } from './_hooks/useDashboardApi';
 
 export default function HomePage() {
   const { data: dashboardData, isLoading } = useDashboardApi();
+  const { data: alertsData, isLoading: isLoadingAlert } = useGetDashboardAlert();
   return (
     <div className="pt-4 pb-[80px] max-w-3xl mx-auto p-4">
       <StatisticOnTimeSection
@@ -20,7 +21,7 @@ export default function HomePage() {
         teamTrainingAverages={dashboardData?.team_training_average}
         loading={isLoading}
       />
-      <AlertSection alerts={dashboardData?.alerts} loading={isLoading} />
+      <AlertSection alerts={alertsData?.alerts} loading={isLoadingAlert} />
       <div className="mt-8">
         <NotificationModal />
       </div>
