@@ -4,13 +4,14 @@ export interface DashboardAlert {
   name: string;
   task: string;
   dueDate: string;
+  id?: string; // Optional ID for React key usage
 }
 
 export interface DashboardAlerts {
   pastDue: DashboardAlert[];
   submitted: DashboardAlert[];
   recentMeasurements: DashboardAlert[];
-  dueCheckoff: {
+  dueCheckoffs: {
     '1DayLeft': DashboardAlert[];
     '3DaysLeft': DashboardAlert[];
     '5DaysLeft': DashboardAlert[];
@@ -31,7 +32,10 @@ export type DashboardApiResponse = {
     total_hit_percentage: number;
     weekly_hit_percentage: number;
   };
-  alerts: DashboardAlerts;
 };
 
 export type DashboardResponse = ApiResponse<DashboardApiResponse>;
+
+export type DashboardAlertsResponse = ApiResponse<{
+  alerts: DashboardAlerts;
+}>;

@@ -1,5 +1,6 @@
 import { DashboardAlerts } from '@/api/types/dashboard';
 import AlertGroup from './AlertGroup';
+import { useDeletedAlertsStore } from '@/store';
 import AppAlert from '@/components/compose/AppAlert';
 import { useRole } from '@/hooks';
 import { useMemo } from 'react';
@@ -10,29 +11,32 @@ type Props = {
 };
 export default function AlertSection({ alerts, loading }: Props) {
   const { isCoach } = useRole();
+  const { deletedIds, deleteAlert } = useDeletedAlertsStore();
 
-  // Map alerts data to the expected format
   const listItems = useMemo(
     () => [
       {
         title: 'Check-Offs due',
         content: [
-          ...(alerts?.dueCheckoff?.['1DayLeft']?.map(alert => ({
+          ...(alerts?.dueCheckoffs?.['1DayLeft']?.map(alert => ({
             name: alert.name,
             content: alert.task,
-            value: alert.dueDate,
+            value: `Due: ${alert.dueDate}`,
+            id: alert.id ?? '',
             colorClass: 'red',
           })) || []),
-          ...(alerts?.dueCheckoff?.['3DaysLeft']?.map(alert => ({
+          ...(alerts?.dueCheckoffs?.['3DaysLeft']?.map(alert => ({
             name: alert.name,
             content: alert.task,
-            value: alert.dueDate,
-            colorClass: 'orange',
+            value: `Due: ${alert.dueDate}`,
+            id: alert.id ?? '',
+            colorClass: 'yellow',
           })) || []),
-          ...(alerts?.dueCheckoff?.['5DaysLeft']?.map(alert => ({
+          ...(alerts?.dueCheckoffs?.['5DaysLeft']?.map(alert => ({
             name: alert.name,
             content: alert.task,
-            value: alert.dueDate,
+            value: `Due: ${alert.dueDate}`,
+            id: alert.id ?? '',
             colorClass: 'green',
           })) || []),
         ],
@@ -43,39 +47,52 @@ export default function AlertSection({ alerts, loading }: Props) {
       {
         title: 'Past-due check-offs',
         content:
-          alerts?.pastDue?.map(alert => ({
+          (alerts?.pastDue?.map(alert => ({
             name: alert.name,
             content: alert.task,
-            value: alert.dueDate,
-          })) || [],
+            value: `Due: ${alert.dueDate}`,
+            id: alert.id ?? '',
+          })) as any) || [],
         colorClass: 'red',
         closable: true,
       },
       {
         title: 'Submitted check-offs',
         content:
-          alerts?.submitted?.map(alert => ({
+          (alerts?.submitted?.map(alert => ({
             name: alert.name,
             content: alert.task,
-            value: alert.dueDate,
-          })) || [],
+            value: `Due: ${alert.dueDate}`,
+            id: alert.id ?? '',
+          })) as any) || [],
         colorClass: 'green',
         closable: true,
       },
       {
         title: 'Recent measurements',
         content:
-          alerts?.recentMeasurements?.map(alert => ({
+          (alerts?.recentMeasurements?.map(alert => ({
             name: alert.name,
-            content: alert.task,
-            value: alert.dueDate,
-          })) || [],
+            content: (alert as any).measurement,
+            value: (alert as any).result,
+            id: alert.id ?? '',
+          })) as any) || [],
         colorClass: 'blue',
         closable: true,
       },
     ],
     [alerts, isCoach]
   );
+
+  const visibleSections = listItems
+    .map(section => ({
+      ...section,
+      content: section.content.filter(
+        (item: { id: string }) => item.id && !deletedIds.has(item.id)
+      ),
+    }))
+    .filter(section => section.content.length > 0);
+
   return (
     <section>
       <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
@@ -90,22 +107,21 @@ export default function AlertSection({ alerts, loading }: Props) {
                 ))}
               </div>
             )}
-            {listItems
-              .filter(item => item.content.length > 0) // Only show sections with content
-              .map(item => (
-                <AlertGroup key={item.title} title={item.title} colorClass={item.colorClass}>
-                  {item.content.map((alertItem, idx) => (
-                    <AppAlert
-                      key={idx}
-                      name={alertItem.name}
-                      content={alertItem.content || '-'}
-                      value={alertItem.value || '-'}
-                      colorClass={item.colorClass}
-                      closable={item.closable}
-                    />
-                  ))}
-                </AlertGroup>
-              ))}
+            {visibleSections.map(section => (
+              <AlertGroup key={section.title} title={section.title} colorClass={section.colorClass}>
+                {section.content.map((alertItem: any) => (
+                  <AppAlert
+                    key={alertItem.id}
+                    name={alertItem.name}
+                    content={alertItem.content || '-'}
+                    value={alertItem.value || '-'}
+                    colorClass={alertItem.colorClass || section.colorClass}
+                    closable={section.closable}
+                    onDelete={() => deleteAlert(alertItem.id)}
+                  />
+                ))}
+              </AlertGroup>
+            ))}
           </div>
         </div>
       </div>

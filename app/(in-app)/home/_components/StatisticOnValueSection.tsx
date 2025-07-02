@@ -1,3 +1,4 @@
+import { useRole } from '@/hooks/useRole';
 import StatisticOnValue from './StatisticOnValue';
 
 type Props = {
@@ -9,12 +10,13 @@ type Props = {
   loading?: boolean;
 };
 export default function StatisticOnValueSection({ teamTrainingAverages, loading }: Props) {
+  const { isCoach } = useRole();
   const listItems = [
     {
-      title: 'Team Training Averages',
+      title: isCoach ? 'Team Training Averages' : 'Training Averages',
       statistic: [
-        { name: 'Strength', value: teamTrainingAverages?.strength ?? 0, unit: 'Weekly' },
-        { name: 'Cardios', value: teamTrainingAverages?.cardio ?? 0, unit: 'Monthly' },
+        { name: 'Strength', value: teamTrainingAverages?.strength ?? 0, unit: 'Days per week' },
+        { name: 'Cardios', value: teamTrainingAverages?.cardio ?? 0, unit: 'Minutes per day' },
         { value: teamTrainingAverages?.minutesPerWeek ?? 0, unit: 'Minutes per week' },
       ],
       colorClass: 'text-green-800',
@@ -31,7 +33,7 @@ export default function StatisticOnValueSection({ teamTrainingAverages, loading 
                 <div key={index}>
                   <div className="text-sm font-medium text-gray-700 min-h-[20px]">{stat.name}</div>
                   <div className={`text-2xl font-bold ${item.colorClass} min-h-[36px]`}>
-                    {stat.value != null ? `${stat.value}%` : ''}
+                    {stat.value != null ? `${stat.value}` : ''}
                   </div>
                   <div className="text-xs text-gray-500 min-h-[20px]">{stat.unit}</div>
                 </div>

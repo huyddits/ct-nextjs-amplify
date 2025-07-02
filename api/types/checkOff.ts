@@ -111,6 +111,7 @@ export type CheckOffByAthleteItem = {
   submitted_date?: string;
   status?: CheckOffStatusEnum;
   notes: string;
+  reviewed_date?: string;
 };
 
 export type CheckOffByAthleteData = {
