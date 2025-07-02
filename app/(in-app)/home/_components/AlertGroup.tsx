@@ -7,7 +7,7 @@ export default function AlertGroup({
 }: {
   title: string;
   children: ReactNode;
-  colorClass: string;
+  colorClass?: string;
 }) {
   return (
     <div className="mb-3">
