@@ -7,7 +7,7 @@ const withPWA = require('next-pwa')({
   disable: process.env.NODE_ENV === 'development',
   // Force service worker to update
   runtimeCaching: [],
-  buildExcludes: [/middleware-manifest.json$/],
+  buildExcludes: [/middleware-manifest.json$/, /app-build-manifest.json$/],
   // Disable default SW caching for custom SW
   sw: 'sw.js',
   // Force SW reload
