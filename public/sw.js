@@ -24,6 +24,7 @@ if (!self.define) {
     a[r] = Promise.all(i.map(e => d[e] || c(e))).then(e => (s(...e), o));
   };
 }
+// Service Worker Version: 2025-01-02-v1
 define(['./workbox-4754cb34'], function (e) {
   'use strict';
   importScripts(),
