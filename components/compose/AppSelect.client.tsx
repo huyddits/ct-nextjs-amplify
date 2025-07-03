@@ -107,7 +107,11 @@ export default function AppSelect({
             <SelectValue placeholder={placeholder} aria-disabled={disabled} />
           )}
         </SelectTrigger>
-        <SelectContent className="max-h-96">
+        <SelectContent
+          className="max-h-96"
+          position="popper"
+          style={{ maxWidth: 'var(--radix-popper-available-width)' }}
+        >
           {options.length ? (
             <>
               {options.map(item => (
@@ -115,7 +119,7 @@ export default function AppSelect({
                   key={item.value}
                   value={item.value}
                   disabled={item.disabled}
-                  className={item.className}
+                  className={`${item.className}`}
                 >
                   {item.label}
                 </SelectItem>
