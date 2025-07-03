@@ -2,10 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSCameraUsageDescription</key>
+    <string>You can take photos to document your job.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>You can record audio and video using this description key.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>Cheer Trainer</string>
+	<string>Cheer Trainer</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -18,6 +22,17 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.cheertrainer.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>cheertrainer</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -45,18 +60,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<!--  -->
-	<key>CFBundleURLTypes</key>
-	<array>
-	<dict>
-		<key>CFBundleURLName</key>
-		<string>com.cheertrainer.app</string>
-		<key>CFBundleURLSchemes</key>
-		<array>
-		<string>cheertrainer</string>
-		</array>
-	</dict>
-	</array>
-
 </dict>
 </plist>
