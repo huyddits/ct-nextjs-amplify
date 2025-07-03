@@ -1,3 +1,4 @@
+'use client';
 import { useRole } from '@/hooks';
 import StatisticOnTime from './StatisticOnTime';
 
@@ -34,8 +35,8 @@ export default function StatisticOnTimeSection({ teamCheckOff, hitMiss, loading 
   ];
   return (
     <section>
-      <div className="mb-12">
-        <div className="grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-8">
+      <div className="mb-6">
+        <div className="space-y-6">
           {listItems.map(item => (
             <StatisticOnTime
               key={item.title}
@@ -43,14 +44,14 @@ export default function StatisticOnTimeSection({ teamCheckOff, hitMiss, loading 
               colorClass={item.colorClass}
               loading={loading}
             >
-              <div className="grid grid-cols-2 gap-4">
-                {item.statistic.map((stat, index) => (
-                  <div key={index}>
-                    <div className={`text-3xl font-bold ${item.colorClass}`}>{stat.value}%</div>
-                    <div className="text-xs text-gray-500">{stat.unit}</div>
+              {item.statistic.map((stat, index) => (
+                <div key={index}>
+                  <div className={`text-2xl sm:text-3xl font-bold ${item.colorClass}`}>
+                    {stat.value}%
                   </div>
-                ))}
-              </div>
+                  <div className="text-xs text-gray-500">{stat.unit}</div>
+                </div>
+              ))}
             </StatisticOnTime>
           ))}
         </div>

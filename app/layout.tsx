@@ -5,6 +5,7 @@ import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import { SWRProvider } from '@/context/SWRContext';
 import { DeepLinkHandler } from './_components';
+import NotificationModal from './_components/NotificationModal.client';
 
 export const metadata: Metadata = {
   title: 'My PWA App',
@@ -81,13 +82,13 @@ export default function RootLayout({
         />
       </head>
       <body className={`antialiased`}>
+        <NotificationModal />
         <StripeProvider>
           <SWRProvider>{children}</SWRProvider>
         </StripeProvider>
         <ToastContainerClient />
         <AppConfirm />
         <DeepLinkHandler />
-        <div className="hidden bg-gray-100/50 w-5 h-5" />
       </body>
     </html>
   );

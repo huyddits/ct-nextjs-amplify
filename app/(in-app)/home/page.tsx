@@ -1,10 +1,5 @@
 'use client';
-import {
-  StatisticOnTimeSection,
-  StatisticOnValueSection,
-  AlertSection,
-  NotificationModal,
-} from './_components';
+import { StatisticOnTimeSection, StatisticOnValueSection, AlertSection } from './_components';
 import { useDashboardApi, useGetDashboardAlert } from './_hooks/useDashboardApi';
 
 export default function HomePage() {
@@ -22,9 +17,6 @@ export default function HomePage() {
         loading={isLoading}
       />
       <AlertSection alerts={alertsData?.alerts} loading={isLoadingAlert} />
-      <div className="mt-8">
-        <NotificationModal />
-      </div>
     </div>
   );
 }
