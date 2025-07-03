@@ -154,11 +154,26 @@ export default function CardioPage() {
                       label="Duration (min)"
                       inputProps={{
                         placeholder: '5',
-                        onKeyDown: e => isNumber(e, true),
+                        type: 'text',
+                        min: 0,
+                        inputMode: 'decimal',
                       }}
                       errorMessage={error?.message}
                       disabled={inputDisabled}
                       {...field}
+                      onChange={e => {
+                        let raw = e.target.value;
+
+                        if (raw.includes(',')) return;
+
+                        if (!/^\d*\.?\d{0,2}$/.test(raw)) return;
+
+                        const numberValue = Number(raw);
+
+                        if (numberValue > 500) return;
+
+                        field.onChange(raw); // Gán lại giá trị hợp lệ
+                      }}
                       className="text-sm text-gray-600"
                       onBlur={() => trigger('intervals.0.duration')}
                     />
@@ -189,9 +204,16 @@ export default function CardioPage() {
                       label={distanceLabel}
                       inputProps={{
                         placeholder: '0.0',
-                        min: 0,
                         type: 'number',
-                        onKeyUp: isNumber,
+                        min: 0,
+                        onKeyDown: e => {
+                          if (
+                            distanceLabel === 'Stairs' &&
+                            (e.key === '.' || e.key === ',' || e.key === 'e')
+                          ) {
+                            e.preventDefault();
+                          }
+                        },
                       }}
                       errorMessage={error?.message}
                       disabled={inputDisabled}
@@ -200,12 +222,14 @@ export default function CardioPage() {
                         const value = e.target.value;
                         if (distanceLabel === 'Stairs') {
                           const onlyDigits = value.replace(/\D/g, '');
+                          if (Number(onlyDigits) > 100) return;
                           field.onChange(onlyDigits);
                         } else {
                           const cleaned = value.replace(',', '.');
                           const formatted = cleaned.includes('.')
                             ? cleaned.replace(/^(\d+)\.(\d).*/, '$1.$2')
                             : cleaned;
+                          if (Number(formatted) > 100) return;
                           field.onChange(formatted);
                         }
                       }}

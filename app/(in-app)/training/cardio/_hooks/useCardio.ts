@@ -23,7 +23,16 @@ const schema = object().shape({
   intervals: array(
     object().shape({
       cardio_interval_id: string(),
-      duration: string().required('Please enter the data duration'),
+      duration: string()
+        .required('Please enter the data duration')
+        .test('is-valid-number', 'Duration must be a number less than or equal to 500', value => {
+          const num = Number(value);
+          return !isNaN(num) && num <= 500;
+        })
+        .test('is-decimal', 'Only up to 2 decimal places allowed', value => {
+          if (!value) return false;
+          return /^\d+(\.\d{1,2})?$/.test(value);
+        }),
       distance: string()
         .min(0)
         .required('Please enter the data distance')
