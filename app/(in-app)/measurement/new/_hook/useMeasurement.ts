@@ -24,8 +24,8 @@ const schema = object().shape({
       })
     )
     .optional(),
-  result: string().required('Result is a required field'),
-  // .test('is-valid-distance', 'Result must not exceed 100', value => {
+  result: string().required('Result is required'),
+  athleteId: array().of(string().required('Athlete ID is required')).optional(), // .test('is-valid-distance', 'Result must not exceed 100', value => {
   //   const num = Number(value);
   //   return !isNaN(num) && num >= 0 && num <= 1000;
   // }),
@@ -43,13 +43,12 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     setRefreshBasesSpotter,
     setRefreshFlyer,
   } = useMeasurementStore();
-  const { control, setValue, getValues, handleSubmit, formState } = useForm({
+  const { control, setValue, getValues, handleSubmit, formState, trigger } = useForm({
     resolver: yupResolver(schema),
     defaultValues: isCoach
       ? {
           measurement: '',
           athleteResults: [{ athletId: '', result: '' }],
-          result: '',
         }
       : {
           measurement: '',
@@ -143,7 +142,6 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
       });
       setRefreshBasesSpotter(true);
       setRefreshFlyer(true);
-
       await getMeasurementList();
       toast.success('Successfully saved the measurement');
       options?.onSuccess?.();
@@ -155,7 +153,13 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     }
   };
 
-  const onSubmit = handleSubmit(onSaveResult);
+  const onError = (err: any) => {
+    toast.error('Failed to save check off');
+    console.log(err);
+    options?.onFailure?.('Failed to save check off');
+  };
+
+  const onSubmit = handleSubmit(onSaveResult, onError);
 
   useEffect(() => {
     getMeasurementList();
@@ -191,5 +195,6 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     formState,
     selectedMeasurement,
     loading,
+    trigger,
   };
 };

@@ -1,7 +1,7 @@
 'use client';
-import { AppInput, AppSelect } from '@/components/compose';
+import { AppInput, AppMultipleSelect, AppSelect } from '@/components/compose';
 import { Button } from '@/components/ui/button';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useMeasurementStore } from '@/store/useMeasurement.store';
 import { useAuthStore } from '@/store';
@@ -10,6 +10,8 @@ import { useAcknowledgement } from '@/hooks';
 import { TIME_UNIT } from '@/utils/constants';
 import { VideoPlayer } from '../../_components';
 import { useMeasurement } from '../_hook';
+import ModalPopupMesurementCoach from './modalPopupMesurementCoach';
+import { toast } from 'react-toastify';
 export default function MeasurementNewCoachPage() {
   const { measurementListOptions } = useMeasurementStore();
   const { info } = useAuthStore();
@@ -26,9 +28,9 @@ export default function MeasurementNewCoachPage() {
     formState: { isValid },
     getValues,
     loading,
+    trigger,
   } = useMeasurement({
     onSuccess: () => {
-      setValue('result', '');
       setValue('athleteResults', []);
       setValue('measurement', measurementList[0]?.measurementsId.toString() || '');
     },
@@ -71,6 +73,26 @@ export default function MeasurementNewCoachPage() {
 
   if (!acknowledgementFitness) return;
 
+  const [openModal, setOpenModal] = useState(false);
+  const athleteIds = getValues('athleteId') || [];
+
+  const selectedAthletes = coachStudentList.filter(c => athleteIds.includes(c.athleteId));
+
+  const handleSaveResults = async (results: { athletId: string; result: string }[]) => {
+    const validResults = results.filter(r => r.athletId && r.result?.trim());
+
+    setValue('athleteResults', validResults);
+
+    const isValid = await trigger('athleteResults');
+    console.log('trigger result:', isValid, validResults);
+
+    if (isValid) {
+      onSubmit();
+    } else {
+      toast.error('Please check the results before submitting');
+    }
+  };
+
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">
       <div className="py-4">
@@ -111,89 +133,32 @@ export default function MeasurementNewCoachPage() {
           <div>
             <Controller
               control={control}
-              name="athleteResults"
-              render={({ field, fieldState: { error } }) => (
-                <AppSelect
+              name="athleteId"
+              render={({ field: { value, onChange }, fieldState: { error } }) => (
+                <AppMultipleSelect
                   label="Select Athlete"
-                  options={athleteOptions}
+                  options={athleteOptions || []}
                   placeholder="Choose an athlete"
-                  // selectedValue={field.value}
-                  onChangeSelected={field.onChange}
+                  selectedValues={value || []}
+                  onChangeSelected={onChange}
                   errorMessage={error?.message}
-                  fullWidth
                 />
               )}
             />
           </div>
 
-          <div>
-            <Controller
-              control={control}
-              name="result"
-              render={({ field, fieldState: { error } }) => (
-                <AppInput
-                  label="Record Result"
-                  inputProps={{
-                    placeholder: 'Enter measurement',
-                    type: 'text',
-                    min: 0,
-                    className:
-                      'appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
-                  }}
-                  errorMessage={error?.message}
-                  value={field.value}
-                  postfix={postfixUnit}
-                  onChange={e => {
-                    const raw = e.target.value;
-                    if (postfixUnit === TIME_UNIT.MINUTES || postfixUnit === TIME_UNIT.SECONDS) {
-                      const digits = raw.replace(/\D/g, '');
-                      let formatted = '';
-                      if (digits.length <= 2) {
-                        formatted = digits;
-                      } else {
-                        const minutes = digits.slice(0, 2);
-                        let seconds = digits.slice(2, 4);
-                        formatted = `${minutes}:${seconds}`;
-                      }
-                      field.onChange(formatted);
-                    } else {
-                      const input = e.target.value;
-                      if (/^\d*\.?\d*$/.test(input)) field.onChange(input);
-                    }
-                  }}
-                  onBlur={() => {
-                    if (postfixUnit === TIME_UNIT.MINUTES || postfixUnit === TIME_UNIT.SECONDS) {
-                      const raw = field.value;
-                      const digits = raw.replace(/\D/g, '');
-                      let formatted = '';
-                      if (digits.length <= 2) {
-                        formatted = digits.padStart(2, '0') + ':00';
-                      } else {
-                        const minutes = digits.slice(0, 2);
-                        let seconds = digits.slice(2, 4);
-                        if (+seconds > 59) {
-                          seconds = '59';
-                        }
-                        formatted = `${minutes}:${seconds}`;
-                      }
-                      field.onChange(formatted);
-                    }
-                  }}
-                />
-              )}
-            />
-          </div>
-
-          <Button
-            type="button"
-            onClick={onSubmit}
-            size="lg"
-            className="w-full"
-            disabled={!isValid}
-            loading={loading}
-          >
-            Save Result
+          <Button className="w-full" size="lg" onClick={() => setOpenModal(true)}>
+            Set Record Result
           </Button>
+
+          <ModalPopupMesurementCoach
+            open={openModal}
+            onClose={() => setOpenModal(false)}
+            athletes={selectedAthletes}
+            postfixUnit={postfixUnit}
+            // measurement={getValues('measurement')}
+            onSubmit={handleSaveResults}
+          />
         </div>
       </div>
     </div>

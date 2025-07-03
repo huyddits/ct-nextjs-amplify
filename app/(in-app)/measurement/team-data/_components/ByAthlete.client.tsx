@@ -74,7 +74,6 @@ export default function ByAthleteContent() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-medium">Progress Chart</h2>
-            <Info className="h-4 w-4 text-gray-400" />
           </div>
 
           <div className="bg-white p-4 rounded-lg space-y-4">

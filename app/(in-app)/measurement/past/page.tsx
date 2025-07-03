@@ -1,14 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-import { ArrowUpRight, ArrowUpRightIcon, InfoIcon } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { ArrowUpRightIcon } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import { AppSelect } from '@/components/compose';
@@ -42,7 +34,6 @@ export default function MeasurementPastPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-medium">Progress Chart</h2>
-                <InfoIcon className="h-4 w-4 text-gray-400" />
               </div>
 
               <div className="bg-white p-4 rounded-lg space-y-4">
@@ -95,7 +86,7 @@ export default function MeasurementPastPage() {
                     {dataLatestResult ? (
                       <div className="text-2xl font-semibold">
                         {dataLatestResult.result}
-                        <span className="text-sm font-normal text-gray-500">
+                        <span className=" ml-1 text-sm font-normal text-gray-500">
                           {dataLatestResult.measurementUnit}
                         </span>
                       </div>
