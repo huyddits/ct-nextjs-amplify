@@ -1,8 +1,18 @@
+'use client';
 import { AlertTriangle } from 'lucide-react';
-import { ROUTES } from '@/utils/constants';
+import { DEEP_LINK_ROOT, ROUTES } from '@/utils/constants';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Platform } from '@/utils/types';
 
 export default function CheckoutFailPage() {
+  const searchParams = useSearchParams();
+  const isMobile = searchParams.get('platform') === Platform.mobile;
+  const router = useRouter();
+  const onNavigateBack = () => {
+    window.location.href = `${DEEP_LINK_ROOT}/${ROUTES.BILLING_AND_SUBSCRIPTION}`;
+  };
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
       <div className="p-6 rounded-xl shadow-sm max-w-md w-full">
@@ -16,12 +26,22 @@ export default function CheckoutFailPage() {
           persists.
         </p>
 
-        <Link
-          href={`/${ROUTES.BILLING_AND_SUBSCRIPTION}`}
-          className="text-primary hover:underline text-sm"
-        >
-          Try again
-        </Link>
+        {isMobile ? (
+          <Button
+            onClick={onNavigateBack}
+            variant="link"
+            className="text-primary hover:underline text-sm"
+          >
+            Try again
+          </Button>
+        ) : (
+          <Link
+            href={`/${ROUTES.BILLING_AND_SUBSCRIPTION}`}
+            className="text-primary hover:underline text-sm"
+          >
+            Try again
+          </Link>
+        )}
       </div>
       <div className="padding-bottom-app" />
     </div>

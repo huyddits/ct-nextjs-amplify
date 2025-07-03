@@ -4,6 +4,7 @@ import { StripeProvider } from '@/context/StripeContext';
 import './globals.css';
 import { SWRProvider } from '@/context/SWRContext';
 import { DeepLinkHandler } from './_components';
+import NotificationModal from './_components/NotificationModal.client';
 
 export default function RootLayout({
   children,
@@ -37,13 +38,13 @@ export default function RootLayout({
         />
       </head>
       <body className={`antialiased`}>
+        <NotificationModal />
         <StripeProvider>
           <SWRProvider>{children}</SWRProvider>
         </StripeProvider>
         <ToastContainerClient />
         <AppConfirm />
         <DeepLinkHandler />
-        <div className="hidden bg-gray-100/50 w-5 h-5" />
       </body>
     </html>
   );

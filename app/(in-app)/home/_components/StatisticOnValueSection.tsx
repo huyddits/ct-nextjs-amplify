@@ -1,3 +1,4 @@
+'use client';
 import { useRole } from '@/hooks/useRole';
 import StatisticOnValue from './StatisticOnValue';
 
@@ -25,14 +26,16 @@ export default function StatisticOnValueSection({ teamTrainingAverages, loading 
 
   return (
     <section>
-      <div className="mb-12">
-        <div className="grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-8">
+      <div className="mb-6">
+        <div className="space-y-6">
           {listItems.map(item => (
             <StatisticOnValue key={item.title} title={item.title} loading={loading}>
               {item.statistic.map((stat, index) => (
                 <div key={index}>
                   <div className="text-sm font-medium text-gray-700 min-h-[20px]">{stat.name}</div>
-                  <div className={`text-2xl font-bold ${item.colorClass} min-h-[36px]`}>
+                  <div
+                    className={`text-[22px] sm:text-2xl font-bold ${item.colorClass} min-h-[36px]`}
+                  >
                     {stat.value != null ? `${stat.value}` : ''}
                   </div>
                   <div className="text-xs text-gray-500 min-h-[20px]">{stat.unit}</div>

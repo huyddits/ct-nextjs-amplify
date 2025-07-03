@@ -12,18 +12,18 @@ import { Button } from '@/components/ui/button';
 import { NotificationApi } from '@/api';
 import { toast } from 'react-toastify';
 
-function urlBase64ToUint8Array(base64String: string) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-}
-
 export default function NotificationModal() {
+  function urlBase64ToUint8Array(base64String: string) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
   const { token } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
   const [isAlreadySubscribed, setIsAlreadySubscribed] = useState(false);
@@ -31,7 +31,6 @@ export default function NotificationModal() {
   const registration = useRef<ServiceWorkerRegistration>(null);
 
   const subscribe = async () => {
-    console.log('registration.current', registration.current);
     if (!registration.current) return;
     try {
       const permission = await Notification.requestPermission();
@@ -87,9 +86,13 @@ export default function NotificationModal() {
           <DialogTitle>Notifications</DialogTitle>
           <DialogDescription>Allows notifications</DialogDescription>
 
-          <div className="space-x-2 ml-auto">
-            <Button onClick={subscribe}>Allow</Button>
-            <Button variant="outline">Cancel</Button>
+          <div className="flex gap-2 mt-4">
+            <Button onClick={subscribe} className="flex-1">
+              Allow
+            </Button>
+            <Button onClick={() => setIsOpen(false)} variant="outline" className="flex-1">
+              Cancel
+            </Button>
           </div>
         </DialogHeader>
       </DialogContent>
