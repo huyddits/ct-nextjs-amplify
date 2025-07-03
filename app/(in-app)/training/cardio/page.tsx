@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useAcknowledgement, useLoading } from '@/hooks';
 import { InfoIcon, XIcon } from 'lucide-react';
 import InfoCardio from './_components/infoCardio';
+import { isNumber } from '@/utils/formatter';
 
 export default function CardioPage() {
   const { acknowledgementCardio } = useAcknowledgement();
@@ -153,8 +154,7 @@ export default function CardioPage() {
                       label="Duration (min)"
                       inputProps={{
                         placeholder: '5',
-                        type: 'number',
-                        min: 0,
+                        onKeyDown: e => isNumber(e, true),
                       }}
                       errorMessage={error?.message}
                       disabled={inputDisabled}
@@ -189,16 +189,9 @@ export default function CardioPage() {
                       label={distanceLabel}
                       inputProps={{
                         placeholder: '0.0',
-                        type: 'number',
                         min: 0,
-                        onKeyDown: e => {
-                          if (
-                            distanceLabel === 'Stairs' &&
-                            (e.key === '.' || e.key === ',' || e.key === 'e')
-                          ) {
-                            e.preventDefault();
-                          }
-                        },
+                        type: 'number',
+                        onKeyUp: isNumber,
                       }}
                       errorMessage={error?.message}
                       disabled={inputDisabled}
@@ -253,6 +246,7 @@ export default function CardioPage() {
                             placeholder: '140',
                             type: 'number',
                             min: 30,
+                            onKeyDown: e => isNumber(e, true),
                           }}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             field.onChange(e);
@@ -277,6 +271,7 @@ export default function CardioPage() {
                             placeholder: '160',
                             type: 'number',
                             min: 30,
+                            onKeyDown: e => isNumber(e, true),
                           }}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             field.onChange(e);

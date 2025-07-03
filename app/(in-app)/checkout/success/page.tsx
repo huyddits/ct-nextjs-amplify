@@ -2,16 +2,16 @@
 import { CheckCircle } from 'lucide-react';
 import { DEEP_LINK_ROOT, ROUTES } from '@/utils/constants';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Platform } from '@/utils/types';
 import { Button } from '@/components/ui/button';
 
 export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams();
   const isMobile = searchParams.get('platform') === Platform.mobile;
+  const router = useRouter();
   const onNavigateOnMobileHome = () => {
-    window.location.href = `${DEEP_LINK_ROOT}/${ROUTES.HOME}`;
+    router.push(`${DEEP_LINK_ROOT}/${ROUTES.HOME}`);
   };
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
