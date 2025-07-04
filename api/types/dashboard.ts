@@ -37,3 +37,10 @@ export type DashboardApiResponse = {
 export type DashboardResponse = ApiResponse<DashboardApiResponse>;
 
 export type DashboardAlertsResponse = ApiResponse<DashboardAlert[]>;
+
+export type DismissAlertParams = {
+  alert_type: 'checkoff_due' | 'past_due' | 'submitted' | 'recent_measurement';
+  alertRefId: string;
+  status?: string;
+  isPermanent?: boolean;
+};

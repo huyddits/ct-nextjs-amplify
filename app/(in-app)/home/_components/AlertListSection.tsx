@@ -1,12 +1,12 @@
 'use client';
 
-import { ReactNode } from 'react';
 import AlertGroup from './AlertGroup';
 import AppAlert from '@/components/compose/AppAlert';
-import { LoaderWithIcon } from '@/components/ui/loader';
 import { Button } from '@/components/ui/button';
 import { differenceInDays, format } from 'date-fns';
-import { ApiResponse } from '@/utils/types';
+import { useDismissDashboardAlert } from '@/app/(in-app)/home/_hooks/useDashboardApi';
+import { toast } from 'react-toastify';
+import { SWRInfiniteResponse } from 'swr/infinite';
 
 interface Alert {
   id?: string;
@@ -18,17 +18,12 @@ interface Alert {
 interface AlertListSectionProps {
   title: string;
   colorClass?: string;
-  fetcherHook: (key: string) => {
-    data: ApiResponse<any[]>[] | undefined;
-    size: number;
-    setSize: (size: number) => void;
-    isValidating: boolean;
-    isLoading: boolean;
-  };
+  fetcherHook: (key: string) => SWRInfiniteResponse<any>;
   valuePrefix?: string;
   emptyText: string;
   fetchKey: string; // Optional key for fetcher hook
   isMeasurement?: boolean; // Optional
+  alertType: 'checkoff_due' | 'past_due' | 'submitted' | 'recent_measurement';
 }
 
 export default function AlertListSection({
@@ -39,10 +34,10 @@ export default function AlertListSection({
   emptyText,
   fetchKey,
   isMeasurement,
+  alertType,
 }: AlertListSectionProps) {
-  // Call the hook to get the data and functions
-  const { data, size, setSize, isLoading, isValidating } = fetcherHook(fetchKey);
-
+  const { data, size, setSize, isLoading, isValidating, mutate: refetch } = fetcherHook(fetchKey);
+  const { trigger: onDismissAlert } = useDismissDashboardAlert();
   // Check if data is empty
   const isEmpty = !data?.[0]?.data?.length;
   // Helper to get color class based on dueDate
@@ -54,6 +49,22 @@ export default function AlertListSection({
     if (diff <= 4) return 'yellow';
     return 'green';
   };
+  const handleDismiss = async (alert: any) => {
+    if (!alertType || !alert.id) return;
+    const payload: any = {
+      alertType: alertType,
+      alertRefId: alert.id,
+      isPermanent: alertType !== 'checkoff_due',
+    };
+    if (alert.status) payload.status = alert.status;
+    await onDismissAlert(payload, {
+      onSuccess: () => {
+        toast.success('Removed alert successfully');
+        refetch();
+      },
+    });
+  };
+
   return (
     <AlertGroup title={title} colorClass={colorClass}>
       {isLoading ? (
@@ -79,6 +90,7 @@ export default function AlertListSection({
                 }
                 colorClass={colorClass ? colorClass : getColorClass(alert?.dueDate)}
                 closable
+                onDelete={() => handleDismiss(alert)}
               />
             ))
           )}

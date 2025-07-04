@@ -36,6 +36,7 @@ export default function HomePage() {
                 valuePrefix="Due:"
                 emptyText="No check-offs due."
                 fetchKey={fetchKey.current}
+                alertType="checkoff_due"
               />
               <AlertListSection
                 title="Past-Due Check-Offs"
@@ -44,6 +45,7 @@ export default function HomePage() {
                 valuePrefix="Due:"
                 emptyText="No past-due check-offs."
                 fetchKey={fetchKey.current}
+                alertType="past_due"
               />
               <AlertListSection
                 title="Submitted Check-Offs"
@@ -52,6 +54,7 @@ export default function HomePage() {
                 valuePrefix="Submitted:"
                 emptyText="No submitted check-offs."
                 fetchKey={fetchKey.current}
+                alertType="submitted"
               />
               <AlertListSection
                 title="Recent Measurements"
@@ -59,6 +62,7 @@ export default function HomePage() {
                 fetcherHook={useGetDashboardRecentMeasurements}
                 emptyText="No recent measurements."
                 fetchKey={fetchKey.current}
+                alertType="recent_measurement"
               />
             </div>
           </div>

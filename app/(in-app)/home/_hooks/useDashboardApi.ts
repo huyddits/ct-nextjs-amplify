@@ -4,9 +4,13 @@ import {
   getDashboardPastDue,
   getDashboardCheckOffSubmitted,
   getDashboardRecentMeasurements,
+  dismissDashboardAlert,
 } from '@/api/dashboard.api';
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
+import useSWRMutation from 'swr/mutation';
+import { DismissAlertParams } from '@/api/types/dashboard';
+
 export const DASHBOARD_KEYS = {
   DASHBOARD: 'DASHBOARD',
   DASHBOARD_ALERTS: 'DASHBOARD_ALERTS',
@@ -14,6 +18,10 @@ export const DASHBOARD_KEYS = {
   PAST_DUE: 'DASHBOARD_PAST_DUE',
   CHECKOFF_SUBMITTED: 'DASHBOARD_CHECKOFF_SUBMITTED',
   RECENT_MEASUREMENTS: 'DASHBOARD_RECENT_MEASUREMENTS',
+};
+
+export const DASHBOARD_MUTATION_KEYS = {
+  DISMISS_ALERT: 'DASHBOARD_DISMISS_ALERT',
 };
 
 export function useDashboardApi() {
@@ -144,6 +152,16 @@ export function useGetDashboardRecentMeasurements(fetchKey: string) {
       initialSize: 1,
       parallel: true,
       persistSize: false,
+    }
+  );
+}
+
+export function useDismissDashboardAlert() {
+  return useSWRMutation<any, Error, string, DismissAlertParams>(
+    DASHBOARD_MUTATION_KEYS.DISMISS_ALERT,
+    async (_key, { arg }) => {
+      const { data } = await dismissDashboardAlert(arg);
+      return data;
     }
   );
 }

@@ -2,21 +2,18 @@ import { X } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useRole } from '@/hooks/useRole';
 import { useMemo } from 'react';
-export default function AppAlert({
-  name,
-  content,
-  value,
-  colorClass,
-  closable,
-  onDelete,
-}: {
+import { useLoading } from '@/hooks';
+
+type Props = {
   name: string;
   content: string;
   value: string;
   colorClass: string;
   closable: boolean;
-  onDelete?: () => void;
-}) {
+  onDelete: () => Promise<void>;
+};
+export default function AppAlert({ name, content, value, colorClass, closable, onDelete }: Props) {
+  const { loading, startLoading, stopLoading } = useLoading();
   const { isCoach } = useRole();
   const color = useMemo(() => {
     switch (colorClass) {
@@ -46,16 +43,22 @@ export default function AppAlert({
         };
     }
   }, [colorClass]);
+  const startDelete = async () => {
+    startLoading();
+    await onDelete();
+    stopLoading();
+  };
   return (
     <div className={`relative ${color.bg} p-3 rounded text-sm border-l-2 ${color.border} pr-9`}>
-      {closable && onDelete && (
+      {closable && (
         <Button
-          onClick={onDelete}
+          onClick={() => startDelete()}
           className={`absolute top-1 right-1 ${color.text}`}
           variant="link"
           size="icon"
+          loading={loading}
         >
-          <X className="h-4 w-4" />
+          {!loading && <X className="h-4 w-4" />}
         </Button>
       )}
       {isCoach && <div className="font-medium break-words">{name}</div>}

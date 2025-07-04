@@ -1,6 +1,6 @@
 import axiosIns from '@/lib/axiosIns';
 import { END_POINTS } from '@/utils/constants/endpoints';
-import { DashboardAlertsResponse, DashboardResponse } from './types/dashboard';
+import { DashboardAlertsResponse, DashboardResponse, DismissAlertParams } from './types/dashboard';
 
 export const getDashboard = async () => {
   return axiosIns.get<DashboardResponse>(`${END_POINTS.DASHBOARD}/data`);
@@ -30,4 +30,8 @@ export const getDashboardRecentMeasurements = async (params?: {
   return axiosIns.get<DashboardAlertsResponse>(`${END_POINTS.DASHBOARD}/recent-measurement`, {
     params,
   });
+};
+
+export const dismissDashboardAlert = async (params: DismissAlertParams) => {
+  return axiosIns.post(`${END_POINTS.DASHBOARD}/dismiss-alert`, params);
 };
