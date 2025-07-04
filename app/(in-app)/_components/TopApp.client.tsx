@@ -58,7 +58,7 @@ export default function TopApp({ className }: { className?: string }) {
 
   const onLogout = () => {
     removeToken();
-    router.replace(`/${ROUTES.LOGIN}`);
+    window.location.href = `/${ROUTES.LOGIN}`; // Redirect to the root path
   };
 
   if (platform === Platform.mobile) {
