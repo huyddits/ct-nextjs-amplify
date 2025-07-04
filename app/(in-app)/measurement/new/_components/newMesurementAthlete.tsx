@@ -2,12 +2,13 @@
 import { AppInput, AppSelect } from '@/components/compose';
 import { Button } from '@/components/ui/button';
 import { useEffect, useMemo } from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { useAuthStore } from '@/store';
 import { useAcknowledgement } from '@/hooks';
 import { TIME_UNIT } from '@/utils/constants';
 import { VideoPlayer } from '../../_components';
 import { useMeasurement } from '../_hook';
+
 export default function MeasurementNewAthletePage() {
   const { info } = useAuthStore();
   const { acknowledgementFitness } = useAcknowledgement();
@@ -20,6 +21,9 @@ export default function MeasurementNewAthletePage() {
     setValue,
     formState: { isValid },
     loading,
+    trigger,
+    setError,
+    clearErrors,
   } = useMeasurement({
     onSuccess: () => {
       setValue('result', '');
@@ -44,7 +48,28 @@ export default function MeasurementNewAthletePage() {
       ? selectedMeasurement?.metricUnit
       : selectedMeasurement?.imperialUnit;
 
-  if (!acknowledgementFitness) return;
+  if (!acknowledgementFitness) return null;
+
+  const validateAndFormat = (value: string): string | null => {
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+    const digits = value.replace(/\D/g, '');
+    if (postfixUnit === TIME_UNIT.MINUTES || postfixUnit === TIME_UNIT.SECONDS) {
+      if (digits.length < 2) return null;
+      const minutes = digits.slice(0, 2);
+      let seconds = digits.slice(2, 4) || '00';
+      if (seconds?.length === 1) {
+        seconds = seconds + '0';
+      }
+      if (+seconds > 59) seconds = '59';
+      return `${minutes}:${seconds}`;
+    } else {
+      const numericStr = trimmed.replace(/^0+(?=\d)/, '').replace(',', '.');
+      const numeric = Number(numericStr);
+      if (isNaN(numeric) || numeric < 0 || numeric > 1000) return null;
+      return numeric.toString();
+    }
+  };
 
   return (
     <div className="padding-top-pagePast padding-bottom-pagePast max-w-3xl mx-auto px-4">
@@ -76,7 +101,7 @@ export default function MeasurementNewAthletePage() {
 
               <div>
                 <h3 className="text-gray-700 font-medium mb-2">Instructions:</h3>
-                <p className="text-gray-600  break-all whitespace-pre-wrap">
+                <p className="text-gray-600 break-all whitespace-pre-wrap">
                   {selectedMeasurement?.instruction}
                 </p>
               </div>
@@ -101,39 +126,37 @@ export default function MeasurementNewAthletePage() {
                   value={field.value}
                   postfix={postfixUnit}
                   onChange={e => {
-                    const raw = e.target.value;
+                    let value = e.target.value;
                     if (postfixUnit === TIME_UNIT.MINUTES || postfixUnit === TIME_UNIT.SECONDS) {
-                      const digits = raw.replace(/\D/g, '');
+                      const digitsOnly = value.replace(/\D/g, '').slice(0, 4);
                       let formatted = '';
-                      if (digits.length <= 2) {
-                        formatted = digits;
+
+                      if (digitsOnly.length <= 2) {
+                        formatted = digitsOnly;
                       } else {
-                        const minutes = digits.slice(0, 2);
-                        let seconds = digits.slice(2, 4);
+                        const minutes = digitsOnly.slice(0, 2);
+                        const seconds = digitsOnly.slice(2, 4);
                         formatted = `${minutes}:${seconds}`;
                       }
+
                       field.onChange(formatted);
                     } else {
-                      const input = e.target.value;
-                      if (/^\d*\.?\d*$/.test(input)) field.onChange(input);
+                      field.onChange(value);
                     }
                   }}
                   onBlur={() => {
-                    if (postfixUnit === TIME_UNIT.MINUTES || postfixUnit === TIME_UNIT.SECONDS) {
-                      const raw = field.value;
-                      const digits = raw.replace(/\D/g, '');
-                      let formatted = '';
-                      if (digits.length <= 2) {
-                        formatted = digits.padStart(2, '0') + ':00';
-                      } else {
-                        const minutes = digits.slice(0, 2);
-                        let seconds = digits.slice(2, 4);
-                        if (+seconds > 59) {
-                          seconds = '59';
-                        }
-                        formatted = `${minutes}:${seconds}`;
-                      }
+                    const formatted = validateAndFormat(field.value ?? '');
+                    if (formatted !== null) {
+                      clearErrors('result');
                       field.onChange(formatted);
+                    } else {
+                      setError('result', {
+                        type: 'manual',
+                        message:
+                          postfixUnit === TIME_UNIT.MINUTES || postfixUnit === TIME_UNIT.SECONDS
+                            ? 'Please enter valid format MM:SS'
+                            : 'Please enter number between 0 and 1000',
+                      });
                     }
                   }}
                 />

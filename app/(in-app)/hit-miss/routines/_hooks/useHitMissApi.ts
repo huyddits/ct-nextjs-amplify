@@ -41,9 +41,6 @@ export const useDuplicateHitMissRoutine = () => {
         mutate(HIT_MISS_ROUTINE.HIT_MISS_ROUTINE_LIST_KEY);
         toast.success('Routine duplicated successfully');
       },
-      onError: err => {
-        toast.error('Failed to duplicate routine');
-      },
     }
   );
 };

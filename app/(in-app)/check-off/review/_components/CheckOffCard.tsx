@@ -17,9 +17,9 @@ type Props = {
 };
 
 const statusOptions = [
-  { label: 'Completed', value: CheckOffStatusEnum.Completed },
-  { label: 'Not Completed', value: CheckOffStatusEnum.NotCompleted },
-  { label: 'Excused', value: CheckOffStatusEnum.Excused },
+  { label: 'Completed', value: CheckOffStatusEnum.Completed, variant: 'default' },
+  { label: 'Not Completed', value: CheckOffStatusEnum.NotCompleted, variant: 'red' },
+  { label: 'Excused', value: CheckOffStatusEnum.Excused, variant: 'yellow' },
 ];
 
 export function CheckOffCard({ data: checkOff, onSubmit: refetch }: Props) {
@@ -93,6 +93,7 @@ export function CheckOffCard({ data: checkOff, onSubmit: refetch }: Props) {
           className="absolute top-3 right-3 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
           aria-label="Download video"
           title="Download video"
+          target="_blank"
         >
           <Download className="h-5 w-5" />
         </a>
@@ -152,7 +153,7 @@ export function CheckOffCard({ data: checkOff, onSubmit: refetch }: Props) {
                     key={option.value}
                     type="button"
                     onClick={() => !isCompleted && field.onChange(option.value)}
-                    variant={field.value === option.value ? 'default' : 'outline'}
+                    variant={field.value === option.value ? (option.variant as any) : 'outline'}
                     aria-checked={field.value === option.value}
                     role="radio"
                   >

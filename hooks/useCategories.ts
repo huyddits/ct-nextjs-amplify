@@ -1,4 +1,6 @@
 import { CategoryApi } from '@/api';
+import { useCategoriesStore } from '@/store';
+import { useEffect } from 'react';
 import useSWR from 'swr';
 
 const ONE_HOUR = 60 * 60 * 1000; // 1 hour in milliseconds
@@ -53,6 +55,8 @@ const fetchers = {
 };
 
 export const useCategories = () => {
+  const { setRoles } = useCategoriesStore();
+
   const { data: roles } = useSWR('categories/roles', fetchers.roles, {
     dedupingInterval: ONE_HOUR,
   });
@@ -76,6 +80,10 @@ export const useCategories = () => {
       dedupingInterval: ONE_HOUR,
     }
   );
+
+  useEffect(() => {
+    if (roles) setRoles(roles);
+  }, [roles]);
 
   return {
     roles,

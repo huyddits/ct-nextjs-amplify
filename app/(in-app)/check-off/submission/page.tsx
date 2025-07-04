@@ -106,36 +106,39 @@ export default function CheckOffSubmissionPage() {
 
     const due = new Date(dueDate);
     const today = new Date();
-    const diffMinutes = differenceInMinutes(due, today);
-    const min1Day = 1440; // 1 day in minutes
-    // Convert thresholds to minutes: 1 day = 1440 minutes, 5 days = 7200 minutes
-    if (diffMinutes <= min1Day) {
-      // 1 day in minutes
+    const diffDays = differenceInDays(due, today) + 1;
+
+    // 1-2 days
+    if (diffDays <= 2) {
       return 'bg-red-300 hover:!bg-red-400 transition-colors focus:bg-red-400 rounded-none';
-    } else if (diffMinutes <= min1Day * 5) {
-      // 5 days in minutes
+    }
+    // 3-4 days
+    else if (diffDays <= 4) {
       return 'bg-yellow-200 hover:!bg-yellow-300 focus:!bg-yellow-300 transition-colors rounded-none';
-    } else {
-      return 'bg-green-500 text-white hover:!bg-green-400 focus:!bg-green-400 transition-colors rounded-none'; // More than 5 days
+    }
+    // 5+ days
+    else {
+      return 'bg-green-500 text-white hover:!bg-green-400 focus:!bg-green-400 transition-colors rounded-none';
     }
   };
+
   const getDueDateLabelColor = () => {
     const dueDate = selectedCheckOff?.due_date;
     if (!dueDate) return '';
 
     const due = new Date(dueDate);
     const today = new Date();
-    const diffMinutes = differenceInMinutes(due, today);
-    const min1Day = 1440; // 1 day in minutes
-    // Convert thresholds to minutes: 1 day = 1440 minutes, 5 days = 7200 minutes
-    if (diffMinutes <= min1Day) {
-      // 1 day in minutes
+    const diffDays = differenceInDays(due, today) + 1;
+
+    if (diffDays <= 2) {
+      // 1-2 days
       return '[&>button]:bg-red-300 [&_svg]:!text-red-500';
-    } else if (diffMinutes <= min1Day * 5) {
-      // 5 days in minutes
+    } else if (diffDays <= 4) {
+      // 3-4 days
       return '[&>button]:bg-yellow-200 [&_svg]:!text-red-500';
     } else {
-      return '[&>button]:bg-green-500 [&>button]:!text-white [&_svg]:!text-white'; // More than 5 days
+      // 5+ days
+      return '[&>button]:bg-green-500 [&>button]:!text-white [&_svg]:!text-white';
     }
   };
   return (
