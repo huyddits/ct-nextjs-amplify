@@ -183,15 +183,19 @@ export default function ByAthleteContent() {
             Current Measurements
           </div>
           <div className="bg-white rounded-b-lg divide-y">
-            {resultForAllMeasurements.map(item => (
-              <div key={item.measurementId} className="flex justify-between py-3 px-4">
-                <div>{item.measurementName}</div>
-                <div className="text-right space-x-4">
-                  <span>{item.result}</span>
-                  <span className="text-gray-400">{item.createdAt}</span>
+            {resultForAllMeasurements.length === 0 ? (
+              <div className="flex justify-between py-3 px-4"></div>
+            ) : (
+              resultForAllMeasurements.map(item => (
+                <div key={item.measurementId} className="flex justify-between py-3 px-4">
+                  <div>{item.measurementName}</div>
+                  <div className="text-right space-x-4">
+                    <span>{item.result}</span>
+                    <span className="text-gray-400">{item.createdAt}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>

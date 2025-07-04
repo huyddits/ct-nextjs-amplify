@@ -1,6 +1,8 @@
+'use client';
 import { AppInput, SelectOption, AppMultipleSelect } from '@/components/compose';
 import { SearchIcon } from 'lucide-react';
 import { debounce } from '@/utils/helpers';
+import { useRole } from '@/hooks';
 
 interface ProgramFilterProps {
   role: string[];
@@ -21,16 +23,19 @@ export default function ProgramFilter({
   problemOptions,
   onChangeSelected,
 }: ProgramFilterProps) {
+  const { isCoach } = useRole();
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
       <div className="mb-3">
-        <AppMultipleSelect
-          label="What Role?"
-          placeholder="Select role"
-          selectedValues={role}
-          onChangeSelected={values => onChangeSelected('role', values)}
-          options={roleOptions}
-        />
+        {isCoach && (
+          <AppMultipleSelect
+            label="What Role?"
+            placeholder="Select role"
+            selectedValues={role}
+            onChangeSelected={values => onChangeSelected('role', values)}
+            options={roleOptions}
+          />
+        )}
       </div>
 
       <div className="mb-3">
