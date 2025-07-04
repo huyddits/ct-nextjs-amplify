@@ -24,11 +24,9 @@ const schema = object().shape({
       })
     )
     .optional(),
-  result: string().required('Result is required'),
-  athleteId: array().of(string().required('Athlete ID is required')).optional(), // .test('is-valid-distance', 'Result must not exceed 100', value => {
-  //   const num = Number(value);
-  //   return !isNaN(num) && num >= 0 && num <= 1000;
-  // }),
+
+  result: string(),
+  athleteId: array().of(string().required('Athlete ID is required')).optional(),
 });
 
 export const useMeasurement = (options?: UseMeasurementFormOptions) => {
@@ -43,19 +41,20 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     setRefreshBasesSpotter,
     setRefreshFlyer,
   } = useMeasurementStore();
-  const { control, setValue, getValues, handleSubmit, formState, trigger } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: isCoach
-      ? {
-          measurement: '',
-          athleteResults: [{ athletId: '', result: '' }],
-        }
-      : {
-          measurement: '',
-          result: '',
-        },
-    mode: 'onChange',
-  });
+  const { control, setValue, getValues, handleSubmit, formState, trigger, setError, clearErrors } =
+    useForm({
+      resolver: yupResolver(schema),
+      defaultValues: isCoach
+        ? {
+            measurement: '',
+            athleteResults: [{ athletId: '', result: '' }],
+          }
+        : {
+            measurement: '',
+            result: '',
+          },
+      mode: 'onChange',
+    });
 
   type FormType = InferType<typeof schema>;
 
@@ -132,14 +131,28 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   const onSaveResult = async (formData: FormType) => {
     try {
       startLoading();
-      await MeasurementApi.postMeasurement({
-        measurement_id: Number(formData.measurement),
-        result: formData.result,
-        athlete_results: formData.athleteResults?.map(data => ({
-          athlete_id: data.athletId,
-          result: data.result,
-        })),
-      });
+      if (isCoach) {
+        if (!formData.athleteResults || formData.athleteResults.length === 0) {
+          setError('athleteResults', { message: 'At least one athlete result is required' });
+          return;
+        }
+        await MeasurementApi.postMeasurement({
+          measurement_id: Number(formData.measurement),
+          athlete_results: formData.athleteResults?.map(data => ({
+            athlete_id: data.athletId,
+            result: data.result,
+          })),
+        });
+      } else {
+        if (!formData.result) {
+          setError('result', { message: 'Result is required' });
+          return;
+        }
+        await MeasurementApi.postMeasurement({
+          measurement_id: Number(formData.measurement),
+          result: formData.result,
+        });
+      }
       setRefreshBasesSpotter(true);
       setRefreshFlyer(true);
       await getMeasurementList();
@@ -154,9 +167,8 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
   };
 
   const onError = (err: any) => {
-    toast.error('Failed to save check off');
-    console.log(err);
-    options?.onFailure?.('Failed to save check off');
+    toast.error('Failed to save measurement');
+    options?.onFailure?.('Failed to save measurement');
   };
 
   const onSubmit = handleSubmit(onSaveResult, onError);
@@ -196,5 +208,7 @@ export const useMeasurement = (options?: UseMeasurementFormOptions) => {
     selectedMeasurement,
     loading,
     trigger,
+    setError,
+    clearErrors,
   };
 };

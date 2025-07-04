@@ -96,7 +96,7 @@ const ExerciseProgramSection = forwardRef(
             <h2 className="text-primary font-medium mb-2">
               Added Exercises ({listExercisesFromStore.length})
             </h2>
-            <div className="bg-white rounded-lg shadow-sm">
+            <div className="bg-white rounded-lg shadow-sm max-h-95 overflow-y-auto">
               {listExercisesFromStore.map(item => (
                 <ExerciseItem
                   key={item.id}
