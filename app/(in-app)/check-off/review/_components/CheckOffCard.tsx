@@ -93,6 +93,7 @@ export function CheckOffCard({ data: checkOff, onSubmit: refetch }: Props) {
           className="absolute top-3 right-3 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
           aria-label="Download video"
           title="Download video"
+          target="_blank"
         >
           <Download className="h-5 w-5" />
         </a>

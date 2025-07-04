@@ -36,6 +36,4 @@ export type DashboardApiResponse = {
 
 export type DashboardResponse = ApiResponse<DashboardApiResponse>;
 
-export type DashboardAlertsResponse = ApiResponse<{
-  alerts: DashboardAlerts;
-}>;
+export type DashboardAlertsResponse = ApiResponse<DashboardAlert[]>;
