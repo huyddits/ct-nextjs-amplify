@@ -2,7 +2,7 @@
 import { AppInput, AppMultipleSelect, AppSelect } from '@/components/compose';
 import { Button } from '@/components/ui/button';
 import { useEffect, useMemo, useState } from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller, useWatch } from 'react-hook-form';
 import { useMeasurementStore } from '@/store/useMeasurement.store';
 import { useAuthStore } from '@/store';
 import { CoachStudentPayload } from '@/api/types/measurement';
@@ -13,7 +13,6 @@ import { useMeasurement } from '../_hook';
 import ModalPopupMesurementCoach from './modalPopupMesurementCoach';
 import { toast } from 'react-toastify';
 export default function MeasurementNewCoachPage() {
-  const { measurementListOptions } = useMeasurementStore();
   const { info } = useAuthStore();
   const { acknowledgementFitness } = useAcknowledgement();
   const {
@@ -74,7 +73,7 @@ export default function MeasurementNewCoachPage() {
   if (!acknowledgementFitness) return;
 
   const [openModal, setOpenModal] = useState(false);
-  const athleteIds = getValues('athleteId') || [];
+  const athleteIds = useWatch({ control, name: 'athleteId' }) || [];
 
   const selectedAthletes = coachStudentList.filter(c => athleteIds.includes(c.athleteId));
 
@@ -84,7 +83,6 @@ export default function MeasurementNewCoachPage() {
     setValue('athleteResults', validResults);
 
     const isValid = await trigger('athleteResults');
-    console.log('trigger result:', isValid, validResults);
 
     if (isValid) {
       onSubmit();
@@ -147,7 +145,13 @@ export default function MeasurementNewCoachPage() {
             />
           </div>
 
-          <Button className="w-full" size="lg" onClick={() => setOpenModal(true)}>
+          <Button
+            className="w-full"
+            size="lg"
+            onClick={() => setOpenModal(true)}
+            loading={loading}
+            disabled={athleteIds.length === 0}
+          >
             Set Record Result
           </Button>
 
@@ -156,7 +160,6 @@ export default function MeasurementNewCoachPage() {
             onClose={() => setOpenModal(false)}
             athletes={selectedAthletes}
             postfixUnit={postfixUnit}
-            // measurement={getValues('measurement')}
             onSubmit={handleSaveResults}
           />
         </div>

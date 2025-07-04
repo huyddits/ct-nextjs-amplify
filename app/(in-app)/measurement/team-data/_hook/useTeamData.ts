@@ -274,7 +274,7 @@ export const useTeamData = (options?: UseMeasurementFormOptions) => {
     try {
       const response = await MeasurementApi.getResultForAllMeasurements(payload);
       const { data, error } = response.data;
-      if (!data || data.length === 0) throw error;
+      if (!data) throw error;
       const dataResponse = data.map(data => ({
         measurementId: data.measurement_id,
         measurementName: data.measurement_name,
