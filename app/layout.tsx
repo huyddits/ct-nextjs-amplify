@@ -38,7 +38,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`antialiased`}>
-        <NotificationModal />
+        {/* <NotificationModal /> */}
         <StripeProvider>
           <SWRProvider>{children}</SWRProvider>
         </StripeProvider>
