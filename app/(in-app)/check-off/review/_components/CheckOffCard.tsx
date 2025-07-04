@@ -17,9 +17,9 @@ type Props = {
 };
 
 const statusOptions = [
-  { label: 'Completed', value: CheckOffStatusEnum.Completed },
-  { label: 'Not Completed', value: CheckOffStatusEnum.NotCompleted },
-  { label: 'Excused', value: CheckOffStatusEnum.Excused },
+  { label: 'Completed', value: CheckOffStatusEnum.Completed, variant: 'default' },
+  { label: 'Not Completed', value: CheckOffStatusEnum.NotCompleted, variant: 'red' },
+  { label: 'Excused', value: CheckOffStatusEnum.Excused, variant: 'yellow' },
 ];
 
 export function CheckOffCard({ data: checkOff, onSubmit: refetch }: Props) {
@@ -153,7 +153,7 @@ export function CheckOffCard({ data: checkOff, onSubmit: refetch }: Props) {
                     key={option.value}
                     type="button"
                     onClick={() => !isCompleted && field.onChange(option.value)}
-                    variant={field.value === option.value ? 'default' : 'outline'}
+                    variant={field.value === option.value ? (option.variant as any) : 'outline'}
                     aria-checked={field.value === option.value}
                     role="radio"
                   >

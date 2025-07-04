@@ -48,9 +48,9 @@ export default function RouteGuardPolicyCardio() {
     if (allowCheckedRef) {
       const observer = new IntersectionObserver(
         entries => {
-          setAllowChecked(entries[0].isIntersecting);
-          if (!entries[0].isIntersecting) {
-            setIsAgree(false);
+          const isInView = entries[0].isIntersecting;
+          if (isInView) {
+            setAllowChecked(true);
           }
         },
         { threshold: 0.5 }
